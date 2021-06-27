@@ -84,15 +84,10 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['hbf.c', 'hbfThunderblade.c', 'firewalker.c', 
-			'lightrider.c', 'ironbender.c', 'windcutter.c', 
-			'potioneer.c', 'shadowstealer.c', 'venomancer.c', 
-			'snowshaper.c', 'tidechaser.c', 'timejumper.c',
-			'deathbringer.c', 'hbf tutorial.c', 'hbf waves.c', 
-			'hbf rewards.c', 'hbf final boss.c', 'hbf secret boss.c']
+	files = ['shared.c']
 	named = True
-	FILE_2 = 'hbfAll.xml'
-	NAME = "Z  hbf all"
+	FILE_2 = 'cardGameAll.xml'
+	NAME = " Card Game"
 else:
 	files = [FILE_1]
 try:
