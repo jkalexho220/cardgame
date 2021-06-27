@@ -1,3 +1,7 @@
+bool amINoob(){
+	return true;
+}
+
 
 bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
