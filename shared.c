@@ -1,10 +1,11 @@
-bool amINoob(){
-	return true;
-}
-
 
 bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
+}
+
+void trVectorScale(string db = "", float s = 1.0) {
+	trQuestVarSet(db+"x", trQuestVarGet(db+"x") * s);
+	trQuestVarSet(db+"z", trQuestVarGet(db+"z") * s);
 }
 
 
@@ -98,6 +99,7 @@ float zDistanceToVectorSquared(string qv = "", string v = "") {
 	return(zDistanceBetweenVectorsSquared("abcd", v));
 }
 
+/* For use in a ySearch */
 float zDistanceToVector(string qv = "", string v = "") {
 	trVectorQuestVarSet("abcd", kbGetBlockPosition(""+1*trQuestVarGet(qv), true));
 	return(zDistanceBetweenVectors("abcd", v));
@@ -144,6 +146,12 @@ vector crossProduct(string a = "", string b = "") {
 	return(ret);
 }
 
+/* 
+A shitty binary search algorithm to approximate the intersection of a line with 
+the circle specified by the center vector and radius. Behavior is undefined if start
+vector is outside the circle.  
+Did this to avoid using trig as much as possible because trig is expensive.
+*/
 vector intersectionWithCircle(string start = "", string end = "", string center = "", float radius = 0) {
 	trVectorQuestVarSet("iDir", zGetUnitVector(start, end));
 	float x = 0;
@@ -165,12 +173,14 @@ vector intersectionWithCircle(string start = "", string end = "", string center 
 	return(xsVectorSet(x,0,z));
 }
 
+/* initializes a modular counter. */
 void modularCounterInit(string name = "", int size = 0) {
 	trQuestVarSet("counter" + name + "size", size);
 	trQuestVarSet("counter" + name + "pointer", 1);
 	trQuestVarSet(name, 1);
 }
 
+/* Progresses the modular counter by 1 and returns the value */
 int modularCounterNext(string name = "") {
 	trQuestVarSet("counter" + name + "pointer", 1 + trQuestVarGet("counter" + name + "pointer"));
 	if (trQuestVarGet("counter" + name + "pointer") > trQuestVarGet("counter" + name + "size")) {
@@ -180,7 +190,8 @@ int modularCounterNext(string name = "") {
 	return(0 + trQuestVarGet("counter" + name + "pointer"));
 }
 
-int getModularCounterNext(string name = "") {
+/* Peeks at the next value of the modular counter */
+int peekModularCounterNext(string name = "") {
 	trQuestVarSet("counter" + name + "fake", 1 + trQuestVarGet("counter" + name + "pointer"));
 	if (trQuestVarGet("counter" + name + "fake") >= trQuestVarGet("counter" + name + "size")) {
 		trQuestVarSet("counter" + name + "fake", 1);
@@ -188,6 +199,59 @@ int getModularCounterNext(string name = "") {
 	return(0 + trQuestVarGet("counter" + name + "fake"));
 }
 
+/* 
+Initializes a database of units given a starting value and length. 
+Units are selected using trUnitSelectByID, which is O(1), as opposed
+to trUnitSelect, which is O(n).
+Variables are associated with the unit value rather than the index in
+the database.
+This database is meant to be static. No adding or removing is supported.
+This allows faster access of units and variables and less memory consumed.
+*/
+void zBankInit(string name = "", int start = 0, int length = 0) {
+	trQuestVarSet("z"+name+"start", start);
+	trQuestVarSet("z"+name+"end", start + length);
+	trQuestVarSet("z"+name+"pointer", start);
+	trQuestVarSet(name, start);
+}
+
+/* Gets the next unit in the bank. */
+int zBankNext(string name = "", bool select = false) {
+	trQuestVarSet("z"+name+"pointer", trQuestVarGet("z"+name+"pointer") + 1);
+	if (trQuestVarGet("z"+name+"pointer") >= trQuestVarGet("z"+name+"end")) {
+		trQuestVarSet("z"+name+"pointer", trQuestVarGet("z"+name+"start"));
+	}
+	trQuestVarCopy(name, "z"+name+"pointer");
+	if (select) {
+		trUnitSelectClear();
+		trUnitSelectByID(1*trQuestVarGet(name));
+	}
+	return(1*trQuestVarGet(name));
+}
+
+/* Sets the variable of the currently selected bank item */
+void zSetVar(string name = "", string var = "", float val = 0) {
+	int index = trQuestVarGet(name);
+	trQuestVarSet("z"+name+"i"+index+"v"+var, val);
+}
+
+/* Sets the variable of the bank item specified by index */
+void zSetVarIndex(string name = "", string var = "", int index = 0, float val = 0) {
+	trQuestVarSet("z"+name+"i"+index+"v"+var, val);
+}
+
+/* Gets the variable of the currently selected bank item */
+float zGetVar(string name = "", string var = "") {
+	int index = trQuestVarGet(name);
+	return(trQuestVarGet("z"+name+"i"+index+"v"+var));
+}
+
+/* Gets the variable of the bank item given by index */
+float zGetVarIndex(string name = "", string var = "", int index = 0) {
+	return(trQuestVarGet("z"+name+"i"+index+"v"+var));	
+}
+
+/* Adds a unit specified by the quest var 'from' to the database 'to' */
 void yAddToDatabase(string to = "", string from = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + to + "count");
    	trQuestVarSet("zdatalite" + to + "index"+zdatacount, trQuestVarGet(from));
@@ -198,6 +262,10 @@ int yGetDatabaseCount(string db = "") {
 	return(trQuestVarGet("zdatalite" + db + "count"));
 }
 
+/*
+Gets the next unit in the database 'db'. Variables are associated with the
+database index rather than the value.
+*/
 int yDatabaseNext(string db = "", bool select = false) {
 	for(zdatapointer=0;>1){}
 	trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "pointer")-1);
@@ -242,6 +310,12 @@ void yDatabasePointerDefault(string db = "") {
 	trQuestVarSet("zdatalite" + db + "pointer", 0);
 }
 
+/*
+When something is removed from the database, we simply swap it with
+the last item in the array and decrease count by 1. However, the variables
+are associated by index, so we must call yRemoveUpdateVar afterwards for each
+variable associated in this database.
+*/
 void yRemoveFromDatabase(string db = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
@@ -287,8 +361,12 @@ void yClearDatabase(string db = "") {
 }
 
 
-
-int yFindLatest(string qv = "", string proto = "", int p = 0) {
+/* 
+Starting from NextUnitScenarioNameNumber and going backwards until the quest var 'qv',
+looks for the specified protounit. If none found, returns -1. Otherwise, returns the
+unit name.
+*/
+int yFindLatestReverse(string qv = "", string proto = "", int p = 0) {
 	int id = kbGetProtoUnitID(proto);
 	trUnitSelectClear();
 	for(x=trGetNextUnitScenarioNameNumber(); >trQuestVarGet(qv)) {
@@ -305,7 +383,12 @@ int yFindLatest(string qv = "", string proto = "", int p = 0) {
 	return(-1);
 }
 
-int yFindLatestReverse(string qv = "", string proto = "", int p = 0) {
+/*
+Starting from quest var 'qv' and going up until NextUnitScenarioNameNumber,
+looks for the specified protounit. If none found, returns -1. Otherwise, returns the
+unit name.
+*/
+int yFindLatest(string qv = "", string proto = "", int p = 0) {
 	int id = kbGetProtoUnitID(proto);
 	trUnitSelectClear();
 	trQuestVarSet("next",trGetNextUnitScenarioNameNumber() - 1);
@@ -329,6 +412,7 @@ highFrequency
 active
 runImmediately
 {
-	
+	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
+	trSetUnitIdleProcessing(false); 
 	xsDisableRule("initializeEverything");
 }

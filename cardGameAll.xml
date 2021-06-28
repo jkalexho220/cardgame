@@ -1,0 +1,487 @@
+<?xml version = "1.0"?>
+<trigger version="2">
+
+<!-- Z DUSK Triggers -->
+
+<Conditions>
+	<Condition name="$$22289$$Always">
+		<Expression>true</Expression>
+	</Condition>
+
+</Conditions>
+
+<Effects>
+	<Effect name="$$22355$$SetIdleProcessing">
+    	<Param name="IdleProc" dispName="$$22356$$Process Idle:" varType="bool">true</Param>
+    	<Command>trSetUnitIdleProcessing(%mod%IdleProc%mod%);</Command>
+	</Effect>
+
+<Effect name=" Card Game">
+
+<Command>bool playerIsPlaying(int p = 0) {</Command>
+<Command><![CDATA[	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);]]></Command>
+<Command>}</Command>
+
+<Command>void trVectorScale(string db = "", float s = 1.0) {</Command>
+<Command>	trQuestVarSet(db+"x", trQuestVarGet(db+"x") * s);</Command>
+<Command>	trQuestVarSet(db+"z", trQuestVarGet(db+"z") * s);</Command>
+<Command>}</Command>
+
+
+<Command>void vectorSnapToGrid(string qv = "") {</Command>
+<Command>	int x = trQuestVarGet(qv+"x") / 2;</Command>
+<Command>	int z = trQuestVarGet(qv+"z") / 2;</Command>
+<Command>	trQuestVarSet(qv+"x", x * 2 + 1);</Command>
+<Command>	trQuestVarSet(qv+"z", z * 2 + 1);</Command>
+<Command>}</Command>
+
+<Command>int zModulo(int mod = 10, float val = 0) {</Command>
+<Command>	int m = 0 + mod;</Command>
+<Command>	int v = xsRound(val);</Command>
+<Command>	return(v - xsFloor(val / m) * m);</Command>
+<Command>}</Command>
+
+<Command>float fModulo(float mod = 0, float val = 0) {</Command>
+<Command>	int c = 0;</Command>
+<Command>	if (val > 0) {</Command>
+<Command>		c = val / mod;</Command>
+<Command>	} else {</Command>
+<Command>		c = val / mod - 1;</Command>
+<Command>	}</Command>
+<Command>	return(0.0 + val - mod * c);</Command>
+<Command>}</Command>
+
+
+<Command>void zUnitHeading(float a = 0) {</Command>
+<Command>	trSetUnitOrientation(xsVectorSet(xsSin(a),0,xsCos(a)), xsVectorSet(0,1,0), true);</Command>
+<Command>}</Command>
+
+<Command>void zInitProtoUnitStat(string r = "", int p = 0, int f = 0, float v = 0.0) {</Command>
+<Command>	trQuestVarSet("p"+p+"pf"+kbGetProtoUnitID(r)+"f"+f, v);</Command>
+<Command>}</Command>
+
+<Command>void zSetProtoUnitStat(string r = "", int p = 0, int f = 0, float v = 0.0) {</Command>
+<Command>	for(zsps=0; >1){}</Command>
+<Command>	zsps = kbGetProtoUnitID(r);</Command>
+<Command>	trModifyProtounit(r, p, f, 0.0 + v - trQuestVarGet("p"+p+"pf"+zsps+"f"+f));</Command>
+<Command>	trQuestVarSet("p"+p+"pf"+zsps+"f"+f, 0.0 + v);</Command>
+<Command>}</Command>
+
+<Command>void vectorToGrid(string from = "", string to = ""){</Command>
+<Command>	int x = 0 + trQuestVarGet(from+"x") / 2;</Command>
+<Command>	int z = 0 + trQuestVarGet(from+"z") / 2;</Command>
+<Command>	trQuestVarSet(to+"x", x);</Command>
+<Command>	trQuestVarSet(to+"z", z);</Command>
+<Command>}</Command>
+
+<Command>void gridToVector(string from = "", string to = "") {</Command>
+<Command>	trQuestVarSet(to+"x", trQuestVarGet(from+"x") * 2 + 1);</Command>
+<Command>	trQuestVarSet(to+"z", trQuestVarGet(from+"z") * 2 + 1);</Command>
+<Command>}</Command>
+
+<Command>float gridDistanceSquared(string from = "", string to = "") {</Command>
+<Command>	float xdiff = trQuestVarGet(to+"x") - trQuestVarGet(from+"x");</Command>
+<Command>	float zdiff = trQuestVarGet(to+"z") - trQuestVarGet(from+"z");</Command>
+<Command>	return(xdiff * xdiff + zdiff * zdiff);</Command>
+<Command>}</Command>
+
+<Command>void zSquareVar(string qv = "") {</Command>
+<Command>	trQuestVarSet(qv, xsPow(trQuestVarGet(qv), 2));</Command>
+<Command>}</Command>
+
+<Command>float zDistanceBetweenVectorsSquared(string start = "", string end = "") {</Command>
+<Command>	float xdiff = trQuestVarGet(end + "X") - trQuestVarGet(start + "X");</Command>
+<Command>	float zdiff = trQuestVarGet(end + "Z") - trQuestVarGet(start + "Z");</Command>
+<Command>	float dist = xdiff * xdiff + zdiff * zdiff;</Command>
+<Command>	return(dist);</Command>
+<Command>}</Command>
+
+
+
+<Command>float zDistanceBetweenVectors(string start = "", string end = "") {</Command>
+<Command>	float xdiff = trQuestVarGet(end + "X") - trQuestVarGet(start + "X");</Command>
+<Command>	float zdiff = trQuestVarGet(end + "Z") - trQuestVarGet(start + "Z");</Command>
+<Command>	float dist = xsSqrt(xdiff * xdiff + zdiff * zdiff);</Command>
+<Command>	return(dist);</Command>
+<Command>}</Command>
+
+<Command>float zDistanceBetweenVectors3d(string start = "", string end = "") {</Command>
+<Command>	float xdiff = trQuestVarGet(end + "X") - trQuestVarGet(start + "X");</Command>
+<Command>	float ydiff = trQuestVarGet(end + "Y") - trQuestVarGet(start + "Y");</Command>
+<Command>	float zdiff = trQuestVarGet(end + "Z") - trQuestVarGet(start + "Z");</Command>
+<Command>	float dist = xsSqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);</Command>
+<Command>	return(dist);</Command>
+<Command>}</Command>
+
+<Command>float zDistanceToVectorSquared(string qv = "", string v = "") {</Command>
+<Command>	trVectorQuestVarSet("abcd", kbGetBlockPosition(""+1*trQuestVarGet(qv), true));</Command>
+<Command>	return(zDistanceBetweenVectorsSquared("abcd", v));</Command>
+<Command>}</Command>
+
+<Command>float zDistanceToVector(string qv = "", string v = "") {</Command>
+<Command>	trVectorQuestVarSet("abcd", kbGetBlockPosition(""+1*trQuestVarGet(qv), true));</Command>
+<Command>	return(zDistanceBetweenVectors("abcd", v));</Command>
+<Command>}</Command>
+
+<Command>void trVectorSetFromAngle(string qv = "", float angle = 0) {</Command>
+<Command>	trVectorQuestVarSet(qv,xsVectorSet(Math_sin(angle), 0, Math_cos(angle)));</Command>
+<Command>}</Command>
+
+<Command>float angleBetweenVectors(string from = "", string to = "") {</Command>
+<Command>	float a = Math_atan((trQuestVarGet(to+"X")-trQuestVarGet(from+"X"))/(trQuestVarGet(to+"Z")-trQuestVarGet(from+"Z")));</Command>
+<Command>	if (trVectorQuestVarGetZ(from) > trVectorQuestVarGetZ(to)) {</Command>
+<Command>	    if (trVectorQuestVarGetX(from) > trVectorQuestVarGetX(to)) {</Command>
+<Command>			a = a - PI;</Command>
+<Command>	    } else {</Command>
+<Command>			a = a + PI;</Command>
+<Command>	    }</Command>
+<Command>  	}</Command>
+<Command>  	return(a);</Command>
+<Command>}</Command>
+
+<Command>vector zGetUnitVector(string start = "", string end = "", float mod = 1.0) {</Command>
+<Command>	float xdiff = trQuestVarGet(end + "X") - trQuestVarGet(start + "X");</Command>
+<Command>	float zdiff = trQuestVarGet(end + "Z") - trQuestVarGet(start + "Z");</Command>
+<Command>	float dist = xsSqrt(xdiff * xdiff + zdiff * zdiff);</Command>
+<Command>	vector ret = xsVectorSet(xdiff / dist * mod, 0, zdiff / dist * mod);</Command>
+<Command>	return(ret);</Command>
+<Command>}</Command>
+
+<Command>vector zGetUnitVector3d(string start = "", string end = "", float mod = 1.0) {</Command>
+<Command>	float xdiff = trQuestVarGet(end + "X") - trQuestVarGet(start + "X");</Command>
+<Command>	float ydiff = trQuestVarGet(end + "Y") - trQuestVarGet(start + "Y");</Command>
+<Command>	float zdiff = trQuestVarGet(end + "Z") - trQuestVarGet(start + "Z");</Command>
+<Command>	float dist = xsSqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);</Command>
+<Command>	vector ret = xsVectorSet(xdiff / dist * mod, ydiff / dist * mod, zdiff / dist * mod);</Command>
+<Command>	return(ret);</Command>
+<Command>}</Command>
+
+<Command>vector crossProduct(string a = "", string b = "") {</Command>
+<Command>	float x = trQuestVarGet(a + "y") * trQuestVarGet(b + "z") - trQuestVarGet(a + "z") * trQuestVarGet(b + "y");</Command>
+<Command>	float y = trQuestVarGet(a + "z") * trQuestVarGet(b + "x") - trQuestVarGet(a + "x") * trQuestVarGet(b + "z");</Command>
+<Command>	float z = trQuestVarGet(a + "x") * trQuestVarGet(b + "y") - trQuestVarGet(a + "y") * trQuestVarGet(b + "x");</Command>
+<Command>	vector ret = xsVectorSet(x, y, z);</Command>
+<Command>	return(ret);</Command>
+<Command>}</Command>
+
+<Command>vector intersectionWithCircle(string start = "", string end = "", string center = "", float radius = 0) {</Command>
+<Command>	trVectorQuestVarSet("iDir", zGetUnitVector(start, end));</Command>
+<Command>	float x = 0;</Command>
+<Command>	float z = 0;</Command>
+<Command>	float dist = 0;</Command>
+<Command>	float len = radius * 2;</Command>
+<Command>	float lenmod = radius;</Command>
+<Command>	for(i=8; >0) {</Command>
+<Command>		x = trQuestVarGet(start+"x") + trQuestVarGet("iDirx") * len;</Command>
+<Command>		z = trQuestVarGet(start+"z") + trQuestVarGet("iDirz") * len;</Command>
+<Command>		dist = xsPow(x - trQuestVarGet(center+"x"), 2) + xsPow(z - trQuestVarGet(center+"z"), 2);</Command>
+<Command>		if (dist > radius * radius) {</Command>
+<Command>			len = len - lenmod;</Command>
+<Command>		} else {</Command>
+<Command>			len = len + lenmod;</Command>
+<Command>		}</Command>
+<Command>		lenmod = lenmod * 0.5;</Command>
+<Command>	}</Command>
+<Command>	return(xsVectorSet(x,0,z));</Command>
+<Command>}</Command>
+
+<Command>void modularCounterInit(string name = "", int size = 0) {</Command>
+<Command>	trQuestVarSet("counter" + name + "size", size);</Command>
+<Command>	trQuestVarSet("counter" + name + "pointer", 1);</Command>
+<Command>	trQuestVarSet(name, 1);</Command>
+<Command>}</Command>
+
+<Command>int modularCounterNext(string name = "") {</Command>
+<Command>	trQuestVarSet("counter" + name + "pointer", 1 + trQuestVarGet("counter" + name + "pointer"));</Command>
+<Command>	if (trQuestVarGet("counter" + name + "pointer") > trQuestVarGet("counter" + name + "size")) {</Command>
+<Command>		trQuestVarSet("counter" + name + "pointer", 1);</Command>
+<Command>	}</Command>
+<Command>	trQuestVarCopy(name, "counter" + name + "pointer");</Command>
+<Command>	return(0 + trQuestVarGet("counter" + name + "pointer"));</Command>
+<Command>}</Command>
+
+<Command>int peekModularCounterNext(string name = "") {</Command>
+<Command>	trQuestVarSet("counter" + name + "fake", 1 + trQuestVarGet("counter" + name + "pointer"));</Command>
+<Command>	if (trQuestVarGet("counter" + name + "fake") >= trQuestVarGet("counter" + name + "size")) {</Command>
+<Command>		trQuestVarSet("counter" + name + "fake", 1);</Command>
+<Command>	}</Command>
+<Command>	return(0 + trQuestVarGet("counter" + name + "fake"));</Command>
+<Command>}</Command>
+
+<Command>void zBankInit(string name = "", int start = 0, int length = 0) {</Command>
+<Command>	trQuestVarSet("z"+name+"start", start);</Command>
+<Command>	trQuestVarSet("z"+name+"end", start + length);</Command>
+<Command>	trQuestVarSet("z"+name+"pointer", start);</Command>
+<Command>	trQuestVarSet(name, start);</Command>
+<Command>}</Command>
+
+<Command>int zBankNext(string name = "", bool select = false) {</Command>
+<Command>	trQuestVarSet("z"+name+"pointer", trQuestVarGet("z"+name+"pointer") + 1);</Command>
+<Command>	if (trQuestVarGet("z"+name+"pointer") >= trQuestVarGet("z"+name+"end")) {</Command>
+<Command>		trQuestVarSet("z"+name+"pointer", trQuestVarGet("z"+name+"start"));</Command>
+<Command>	}</Command>
+<Command>	trQuestVarCopy(name, "z"+name+"pointer");</Command>
+<Command>	if (select) {</Command>
+<Command>		trUnitSelectClear();</Command>
+<Command>		trUnitSelectByID(1*trQuestVarGet(name));</Command>
+<Command>	}</Command>
+<Command>	return(1*trQuestVarGet(name));</Command>
+<Command>}</Command>
+
+<Command>void zSetVar(string name = "", string var = "", float val = 0) {</Command>
+<Command>	int index = trQuestVarGet(name);</Command>
+<Command>	trQuestVarSet("z"+name+"i"+index+"v"+var, val);</Command>
+<Command>}</Command>
+
+<Command>void zSetVarIndex(string name = "", string var = "", int index = 0, float val = 0) {</Command>
+<Command>	trQuestVarSet("z"+name+"i"+index+"v"+var, val);</Command>
+<Command>}</Command>
+
+<Command>float zGetVar(string name = "", string var = "") {</Command>
+<Command>	int index = trQuestVarGet(name);</Command>
+<Command>	return(trQuestVarGet("z"+name+"i"+index+"v"+var));</Command>
+<Command>}</Command>
+
+<Command>float zGetVarIndex(string name = "", string var = "", int index = 0) {</Command>
+<Command>	return(trQuestVarGet("z"+name+"i"+index+"v"+var));</Command>
+<Command>}</Command>
+
+<Command>void yAddToDatabase(string to = "", string from = "") {</Command>
+<Command>	int zdatacount = trQuestVarGet("zdatalite" + to + "count");</Command>
+<Command>   	trQuestVarSet("zdatalite" + to + "index"+zdatacount, trQuestVarGet(from));</Command>
+<Command>   	trQuestVarSet("zdatalite" + to + "count", zdatacount+1);</Command>
+<Command>}</Command>
+
+<Command>int yGetDatabaseCount(string db = "") {</Command>
+<Command>	return(trQuestVarGet("zdatalite" + db + "count"));</Command>
+<Command>}</Command>
+
+<Command>int yDatabaseNext(string db = "", bool select = false) {</Command>
+<Command>	for(zdatapointer=0;>1){}</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "pointer")-1);</Command>
+<Command>	if (0 > trQuestVarGet("zdatalite" + db + "pointer")) {</Command>
+<Command>		trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "count")-1);</Command>
+<Command>	}</Command>
+<Command>	if (trQuestVarGet("zdatalite" + db + "pointer") >= trQuestVarGet("zdatalite" + db + "count")) {</Command>
+<Command>		trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "count")-1);</Command>
+<Command>	}</Command>
+<Command>	zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");</Command>
+<Command>	trQuestVarSet(db, trQuestVarGet("zdatalite" + db + "index"+zdatapointer));</Command>
+<Command>	if (select) {</Command>
+<Command>		trUnitSelectClear();</Command>
+<Command>		trUnitSelect(""+1*trQuestVarGet(db), true);</Command>
+<Command>		return(kbGetBlockID(""+1*trQuestVarGet(db), true));</Command>
+<Command>	}</Command>
+<Command>	return(trQuestVarGet(db));</Command>
+<Command>}</Command>
+
+<Command>void yDatabaseSelectAll(string db = "") {</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command><![CDATA[	for(zdatapointer=0; <yGetDatabaseCount(db)) {]]></Command>
+<Command>		trUnitSelect(""+1*trQuestVarGet("zdatalite"+db+"index"+zdatapointer), true);</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>bool yDatabaseContains(string db = "", int index = 0) {</Command>
+<Command>	for (x=yGetDatabaseCount(db) - 1; >=0) {</Command>
+<Command>		if (xsRound(trQuestVarGet("zdatalite" + db + "index" + x)) == index) {</Command>
+<Command>			trQuestVarSet("zdatalite" + db + "pointer", x);</Command>
+<Command>			trQuestVarSet(db, index);</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelect(""+index, true);</Command>
+<Command>			return(true);</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	return(false);</Command>
+<Command>}</Command>
+
+
+<Command>void yDatabasePointerDefault(string db = "") {</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "pointer", 0);</Command>
+<Command>}</Command>
+
+<Command>void yRemoveFromDatabase(string db = "") {</Command>
+<Command>	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;</Command>
+<Command>	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "index"+zdataremove,</Command>
+<Command>		trQuestVarGet("zdatalite" + db + "index"+zdatacount));</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "count", zdatacount);</Command>
+<Command>}</Command>
+
+<Command>void yRemoveUpdateVar(string db = "", string attr = "") {</Command>
+<Command>	int zdatacount = trQuestVarGet("zdatalite" + db + "count");</Command>
+<Command>	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr,</Command>
+<Command>		trQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, 0);</Command>
+<Command>}</Command>
+
+<Command>void yTransferUpdateVar(string to = "", string from = "", string attr = "") {</Command>
+<Command>	int zdatato = trQuestVarGet("zdatalite" + to + "count");</Command>
+<Command>	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");</Command>
+<Command>	trQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr,</Command>
+<Command>		trQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));</Command>
+<Command>}</Command>
+
+<Command>void yAddUpdateVar(string db = "", string attr = "", float value = 0.0) {</Command>
+<Command>	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, value);</Command>
+<Command>}</Command>
+
+<Command>float yGetVar(string db = "", string attr = "") {</Command>
+<Command>	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");</Command>
+<Command>	return(trQuestVarGet("zdatalite" + db + "" + zdatapointer + "" + attr));</Command>
+<Command>}</Command>
+
+<Command>void ySetVar(string db = "", string attr = "", float value = 0.0) {</Command>
+<Command>	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "" + zdatapointer + "" + attr, value);</Command>
+<Command>}</Command>
+
+<Command>void yClearDatabase(string db = "") {</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "count", 0);</Command>
+<Command>	trQuestVarSet("zdatalite" + db + "pointer", 0);</Command>
+<Command>	trQuestVarSet(db, 0);</Command>
+<Command>}</Command>
+
+
+<Command>int yFindLatestReverse(string qv = "", string proto = "", int p = 0) {</Command>
+<Command>	int id = kbGetProtoUnitID(proto);</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	for(x=trGetNextUnitScenarioNameNumber(); >trQuestVarGet(qv)) {</Command>
+<Command>		int i = kbGetBlockID(""+x, true);</Command>
+<Command>		if (kbGetUnitBaseTypeID(i) == id) {</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelectByID(i);</Command>
+<Command>			if (trUnitIsOwnedBy(p)) {</Command>
+<Command>				trQuestVarSet(qv, x);</Command>
+<Command>				return(i);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	return(-1);</Command>
+<Command>}</Command>
+
+<Command>int yFindLatest(string qv = "", string proto = "", int p = 0) {</Command>
+<Command>	int id = kbGetProtoUnitID(proto);</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	trQuestVarSet("next",trGetNextUnitScenarioNameNumber() - 1);</Command>
+<Command>	while(trQuestVarGet("next") > trQuestVarGet(qv)) {</Command>
+<Command>		trQuestVarSet(qv, 1 + trQuestVarGet(qv));</Command>
+<Command>		int i = kbGetBlockID(""+1*trQuestVarGet(qv), true);</Command>
+<Command>		if (kbGetUnitBaseTypeID(i) == id) {</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelectByID(i);</Command>
+<Command>			if (trUnitIsOwnedBy(p)) {</Command>
+<Command>				return(i);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	return(-1);</Command>
+<Command>}</Command>
+
+
+<Command>rule initializeEverything</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>runImmediately</Command>
+<Command>{</Command>
+<Command>	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos</Command>
+<Command>	trSetUnitIdleProcessing(false);</Command>
+<Command>	xsDisableRule("initializeEverything");</Command>
+<Command>}</Command>
+
+<Command>// P1 murmillos = 0 - 63</Command>
+<Command>// P2 murmillos = 64 - 127</Command>
+<Command>// Tile cinematic blocks = 128 - 218 (91 tiles)</Command>
+<Command>// Lines between tiles = 219 - 524 (306 lines)</Command>
+
+<Command>// Number of tiles in a hexagonal grid of X*X*X dimensions:</Command>
+<Command>// (X^3-X^2)/2</Command>
+<Command>// Number of border lines in a hexagonal grid of X*X*X dimensions:</Command>
+<Command>// (X^3-X^2)/2 * 3 + 3*(2X-1)</Command>
+
+<Command>rule setup</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>	// Teleport p1 murmillos to the corner</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	for (x=63; >=0) {</Command>
+<Command>		trUnitSelectByID(x);</Command>
+<Command>	}</Command>
+<Command>	trUnitTeleport(1,1,1);</Command>
+
+<Command>	// Teleport p2 murmillos to the corner</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	for(x=127; >=64) {</Command>
+<Command>		trUnitSelectByID(x);</Command>
+<Command>	}</Command>
+<Command>	trUnitTeleport(1,1,1);</Command>
+
+<Command>	// Map is 100x100?</Command>
+<Command>	trQuestVarSet("posx", 50);</Command>
+<Command>	trQuestVarSet("posz", 50);</Command>
+<Command>	float radius = 2.0;</Command>
+
+<Command>	// setup a step vector for each of the six directional angles</Command>
+<Command>	float angle = 0.0;</Command>
+<Command>	for(x=6; >0) {</Command>
+<Command>		trVectorSetFromAngle("step"+x, angle);</Command>
+<Command>		trVectorScale("step"+x, radius);</Command>
+<Command>		trQuestVarSet("angle"+x, angle);</Command>
+<Command>		angle = fModulo(6.283185, angle + 1.047197);</Command>
+<Command>	}</Command>
+
+<Command>	zBankInit("tiles", 128, 91);</Command>
+<Command>	zBankInit("borders", 219, 306);</Command>
+
+<Command>	zSetVar("tiles", "posx", 50);</Command>
+<Command>	zSetVar("tiles", "posz", 50);</Command>
+<Command>	trQuestVarSet("x50z50", 1);</Command>
+
+<Command>	trUnitSelectClear();</Command>
+<Command>	trUnitSelectByID(1*trQuestVarGet("tiles"));</Command>
+<Command>	trUnitTeleport(50,0,50);</Command>
+
+<Command><![CDATA[	for (c=128; < 219) {]]></Command>
+<Command>		// loop through the 6 directions</Command>
+<Command>		for(x=6; >0) {</Command>
+<Command>			// 0 means the tile hasn't been explored</Command>
+<Command>			// 1 means the tile is in the fringe and doesn't needed to be added again</Command>
+<Command>			// 2 means the tile is done and removed from the fringe</Command>
+<Command>			trQuestVarSet("posx", zGetVarIndex("tiles", "posx", c) + 2.0*trQuestVarGet("step"+x+"x"));</Command>
+<Command>			trQuestVarSet("posz", zGetVarIndex("tiles", "posz", c) + 2.0*trQuestVarGet("step"+x+"z"));</Command>
+<Command>			if (trQuestVarGet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz"))) == 0) {</Command>
+<Command>				zBankNext("tiles", true);</Command>
+<Command>				if (trQuestVarGet("tiles") > c) {</Command>
+<Command>					trUnitTeleport(trQuestVarGet("posx"),0,trQuestVarGet("posz"));</Command>
+<Command>					zSetVar("tiles", "posx", trQuestVarGet("posx"));</Command>
+<Command>					zSetVar("tiles", "posz", trQuestVarGet("posz"));</Command>
+<Command>				}</Command>
+<Command>				trQuestVarSet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz")),1);</Command>
+<Command>			}</Command>
+
+<Command>			// Draw border line if it isn't there</Command>
+<Command><![CDATA[			if (trQuestVarGet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz"))) < 2) {]]></Command>
+<Command>				// teleport border line</Command>
+<Command>				trQuestVarSet("borderx", zGetVarIndex("tiles", "posx", c) + trQuestVarGet("step"+x+"x"));</Command>
+<Command>				trQuestVarSet("borderz", zGetVarIndex("tiles", "posz", c) + trQuestVarGet("step"+x+"z"));</Command>
+<Command>				zBankNext("borders", true);</Command>
+<Command>				trUnitTeleport(trQuestVarGet("borderx"),0,trQuestVarGet("borderz"));</Command>
+<Command>				zUnitHeading(trQuestVarGet("angle"+x));</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("undermine ground decal long"));</Command>
+<Command>				trSetSelectedScale(0.1 * radius + 0.1, 1, 0.2);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		// set the position as explored</Command>
+<Command>		trQuestVarSet("posx", zGetVarIndex("tiles", "posx", c));</Command>
+<Command>		trQuestVarSet("posz", zGetVarIndex("tiles", "posz", c));</Command>
+<Command>		trQuestVarSet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz")),2);</Command>
+<Command>	}</Command>
+
+<Command>	xsDisableRule("setup");</Command>
+<Command>}</Command>
+</Effect>
+</Effects>
+</trigger>

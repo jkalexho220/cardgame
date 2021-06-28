@@ -5,6 +5,7 @@ FILE_1 = None
 FILE_2 = None
 NAME = None
 named = False
+comment = False
 
 try:
 	FILE_1 = sys.argv[1]
@@ -84,7 +85,7 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['shared.c']
+	files = ['shared.c', 'setupTeleports.c']
 	named = True
 	FILE_2 = 'cardGameAll.xml'
 	NAME = " Card Game"
@@ -106,37 +107,42 @@ try:
 				line = file_data_1.readline()
 				while line:
 					if not line.isspace():
-						templine = line.strip()
-						checkQuestVarSet(templine, ln)
-						checkUnknownFunctions(templine, ln)
-								
-						if ('if ' in templine or 'if(' in templine) and ('yGetVar' in templine or 'trQuestVarGet' in templine) and not ('=' in templine or '>' in templine or '<' in templine or 'ySetContains' in templine or 'trUnitIsOwnedBy' in templine or 'cWatchActive' in templine or 'yDatabaseContains' in templine or 'trCheckGPActive' in templine):
-							print("Missing equality statement")
-							print("Line " + str(ln) + ":\n    " + line)
-						if not (templine[-1] == ';' or '//' in templine or templine[-1] == '{' or templine[-1] == '}' or templine[-2:] == '||' or templine[-2:] == '&&' or templine[-1] == ',' or templine[-4:] == 'else' or templine[0:4] == 'rule' or templine == 'highFrequency' or templine == 'runImmediately' or templine[-1] == '/' or templine[-6:] == 'active' or templine[0:11] == 'minInterval' or templine[0:4] == 'case' or templine[0:7] == 'switch('):
-							print("Missing semicolon")
-							print("Line " + str(ln) + ":\n    " + line)
-						if '{' in templine and not 'else' in templine and not 'if' in templine and not 'for' in templine and not 'while' in templine and ')' in templine and not '{P' in templine:
-							equalCount = templine.count('string', templine.index('(')) + templine.count('int', templine.index('(')) + templine.count('float', templine.index('(')) + templine.count('bool', templine.index('('))
-							if equalCount > templine.count('='):
-								print("Needs equals sign")
+						if ('/*' in line):
+							comment = True
+						
+						if (not comment):
+							templine = line.strip()
+							checkQuestVarSet(templine, ln)
+							checkUnknownFunctions(templine, ln)
+							if ('if ' in templine or 'if(' in templine) and ('yGetVar' in templine or 'trQuestVarGet' in templine) and not ('=' in templine or '>' in templine or '<' in templine or 'ySetContains' in templine or 'trUnitIsOwnedBy' in templine or 'cWatchActive' in templine or 'yDatabaseContains' in templine or 'trCheckGPActive' in templine):
+								print("Missing equality statement")
 								print("Line " + str(ln) + ":\n    " + line)
-						if 'return' in templine and not '(' in templine:
-							print("Needs parenthesis")
-							print("Line " + str(ln) + ":\n    " + line)
-						if 'for' in templine and '";' in templine:
-							print("Wrong parenthesis")
-							print("Line " + str(ln) + ":\n    " + line)
-						if 'for' in templine and not ';' in templine:
-							print("Missing semicolon in for statement")
-							print("Line " + str(ln) + ":\n    " + line)
-						if 'trMutateSelected("' in templine:
-							print("Needs kbGetProtoUnitID()")
-							print("Line " + str(ln) + ":\n    " + line)
-						if '<' in line or '&' in line or '|' in line:
-							file_data_2.write('<Command><![CDATA[' + line.rstrip() + ']]></Command>\n')
-						else:
-							file_data_2.write('<Command>' + line.rstrip() + '</Command>\n')
+							if not (templine[-1] == ';' or '//' in templine or templine[-1] == '{' or templine[-1] == '}' or templine[-2:] == '||' or templine[-2:] == '&&' or templine[-1] == ',' or templine[-4:] == 'else' or templine[0:4] == 'rule' or templine == 'highFrequency' or templine == 'runImmediately' or templine[-1] == '/' or templine[-6:] == 'active' or templine[0:11] == 'minInterval' or templine[0:4] == 'case' or templine[0:7] == 'switch('):
+								print("Missing semicolon")
+								print("Line " + str(ln) + ":\n    " + line)
+							if '{' in templine and not 'else' in templine and not 'if' in templine and not 'for' in templine and not 'while' in templine and ')' in templine and not '{P' in templine:
+								equalCount = templine.count('string', templine.index('(')) + templine.count('int', templine.index('(')) + templine.count('float', templine.index('(')) + templine.count('bool', templine.index('('))
+								if equalCount > templine.count('='):
+									print("Needs equals sign")
+									print("Line " + str(ln) + ":\n    " + line)
+							if 'return' in templine and not '(' in templine:
+								print("Needs parenthesis")
+								print("Line " + str(ln) + ":\n    " + line)
+							if 'for' in templine and '";' in templine:
+								print("Wrong parenthesis")
+								print("Line " + str(ln) + ":\n    " + line)
+							if 'for' in templine and not ';' in templine and not '//':
+								print("Missing semicolon in for statement")
+								print("Line " + str(ln) + ":\n    " + line)
+							if 'trMutateSelected("' in templine:
+								print("Needs kbGetProtoUnitID()")
+								print("Line " + str(ln) + ":\n    " + line)
+							if '<' in line or '&' in line or '|' in line:
+								file_data_2.write('<Command><![CDATA[' + line.rstrip() + ']]></Command>\n')
+							else:
+								file_data_2.write('<Command>' + line.rstrip() + '</Command>\n')
+						if ('*/' in line):
+							comment = False
 					else:
 						file_data_2.write('\n')
 					line = file_data_1.readline()
