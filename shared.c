@@ -414,5 +414,22 @@ runImmediately
 {
 	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
 	trSetUnitIdleProcessing(false); 
+    trSetObscuredUnits(false);
+	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
+	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
+	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart
+	if(multiplayer && kbIsPlayerHuman(2) == false){
+		multiplayer = false; // or kick?
+	}
+	if(multiplayer){
+		trChatSend(0, "Mode:Multiplayer");
+	} else {
+		trChatSend(0, "Mode:Singleplayer");
+		bool virgin = true;
+		trChatSend(0, "Checking if played before...");
+		if(virgin){
+			xsEnableRule("CinPrologue00");
+		}
+	}
 	xsDisableRule("initializeEverything");
 }

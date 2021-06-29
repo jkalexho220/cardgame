@@ -81,11 +81,12 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'trOverlayText', 'Math_sin', 'trUnitMoveToPoint', 'trSetFogAndBlackmap', 'xsMax', 'trForbidProtounit', 'xsGetContextPlayer', 
 			'trSetPlayerWon', 'trEndGame', 'trSetPlayerDefeated', 'trUnitChangeName', 'trChatSendSpoofed', 'trUnitSetAnimationPath',
 			'trMusicPlayCurrent', 'trVectorQuestVarGet', 'trUnitEjectContained', 'trObjectiveSetID', 'trUIFlash', 'kbUnitGetCurrentHitpoints', 
-			'trMusicStop', 'uiFindType', 'xsRound', 'xsFloor', 'trChatHistoryClear', 'trSetCivilizationNameOverride', 'kbIsPlayerResigned'}
+			'trMusicStop', 'uiFindType', 'xsRound', 'xsFloor', 'trChatHistoryClear', 'trSetCivilizationNameOverride', 'kbIsPlayerResigned',
+			'trSoundPlayDialog', 'trChangeTerrainHeight', 'trRenderSky', 'trFadeOutAllSounds', 'aiIsMultiplayer'}
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['shared.c', 'setupTeleports.c']
+	files = ['shared.c', 'setupTeleports.c', 'prologue.c']
 	named = True
 	FILE_2 = 'cardGameAll.xml'
 	NAME = " Card Game"

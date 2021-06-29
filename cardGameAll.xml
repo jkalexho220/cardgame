@@ -388,6 +388,23 @@
 <Command>{</Command>
 <Command>	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos</Command>
 <Command>	trSetUnitIdleProcessing(false);</Command>
+<Command>    trSetObscuredUnits(false);</Command>
+<Command>	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos</Command>
+<Command>	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos</Command>
+<Command>	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart</Command>
+<Command><![CDATA[	if(multiplayer && kbIsPlayerHuman(2) == false){]]></Command>
+<Command>		multiplayer = false; // or kick?</Command>
+<Command>	}</Command>
+<Command>	if(multiplayer){</Command>
+<Command>		trChatSend(0, "Mode:Multiplayer");</Command>
+<Command>	} else {</Command>
+<Command>		trChatSend(0, "Mode:Singleplayer");</Command>
+<Command>		bool virgin = true;</Command>
+<Command>		trChatSend(0, "Checking if played before...");</Command>
+<Command>		if(virgin){</Command>
+<Command>			xsEnableRule("CinPrologue00");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
 <Command>	xsDisableRule("initializeEverything");</Command>
 <Command>}</Command>
 
@@ -403,7 +420,7 @@
 
 <Command>rule setup</Command>
 <Command>highFrequency</Command>
-<Command>active</Command>
+<Command>inactive</Command>
 <Command>{</Command>
 <Command>	// Teleport p1 murmillos to the corner</Command>
 <Command>	trUnitSelectClear();</Command>
@@ -481,6 +498,350 @@
 <Command>	}</Command>
 
 <Command>	xsDisableRule("setup");</Command>
+<Command>}</Command>
+
+<Command>void DeploySober(string p="", string v=""){</Command>
+<Command>	int next = trGetNextUnitScenarioNameNumber();</Command>
+<Command>	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);</Command>
+<Command>	trUnitSelectClear();trUnitSelect(""+next);</Command>
+<Command>	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));</Command>
+<Command>}</Command>
+<Command>void MusicHigh(){</Command>
+<Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
+<Command>	if(trQuestVarGet("random") == 1){</Command>
+<Command>		trSoundPlayFN("cinematics\8_in\music.mp3", "26", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 2){</Command>
+<Command>		trSoundPlayFN("cinematics\9_out\music.mp3", "29", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 3){</Command>
+<Command>		trSoundPlayFN("cinematics\23_out\music 2.mp3", "30", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 4){</Command>
+<Command>		trSoundPlayFN("xpack\xcinematics\8_in\music.mp3", "56", -1, "","");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>void MusicMedium(){</Command>
+<Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
+<Command>	if(trQuestVarGet("random") == 1){</Command>
+<Command>		trSoundPlayFN("cinematics\05_out\music.mp3", "19", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 2){</Command>
+<Command>		trSoundPlayFN("cinematics\31_out\music.mp3", "34", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 3){</Command>
+<Command>		trSoundPlayFN("cinematics\22_in\music 2.mp3", "14", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 4){</Command>
+<Command>		trSoundPlayFN("xpack\xcinematics\7_out\music.mp3", "19", -1, "","");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>void MusicLow(){</Command>
+<Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
+<Command>	if(trQuestVarGet("random") == 1){</Command>
+<Command>		trSoundPlayFN("cinematics\26_out\music.mp3", "37", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 2){</Command>
+<Command>		trSoundPlayFN("cinematics\21_in\music.mp3", "51", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 3){</Command>
+<Command>		trSoundPlayFN("cinematics\04_in\music 1.mp3", "13", -1, "","");</Command>
+<Command>	}</Command>
+<Command>	if(trQuestVarGet("random") == 4){</Command>
+<Command>		trSoundPlayFN("cinematics\26_in\music.mp3", "26", -1, "","");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue00</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	trChangeTerrainHeight(0, 0, 60, 60, 0, false);</Command>
+<Command>	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black</Command>
+<Command>	trPaintTerrain(30, 30, 60, 60, 0, 9, false); //GaiaCreepASnow</Command>
+<Command>    trPaintTerrain(0, 30, 30, 60, 0, 5, false); //CliffGreekB</Command>
+<Command>    trLetterBox(true);</Command>
+<Command>    trSoundPlayDialog("default", "1", -1, false, " :It was a fine day for Rogers.", "");</Command>
+<Command>    trUIFadeToColor(0,0,0,1000,1000,false);</Command>
+<Command>	trCameraCut(vector(-21.635717,32.595444,96.573792), vector(0.707104,-0.707109,-0.001133), vector(0.707104,0.707109,-0.001133), vector(-0.001603,0.000000,-0.999999));</Command>
+<Command>    trSetFogAndBlackmap(false, false);</Command>
+<Command>    trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());</Command>
+<Command>    trArmyDispatch("1,10", "Hero Greek Jason", 1, -0.19, 0.00, 97.42, 0, true);</Command>
+<Command>	unitTransform("Hero Birth","Cinematic Block");</Command>
+<Command>    trArmySelect("1,10");</Command>
+<Command>    trUnitMoveToPoint(24.06, 0.00, 97.19, -1, false);</Command>
+<Command>    trQuestVarSet("otherRogers", trGetNextUnitScenarioNameNumber());</Command>
+<Command>    trArmyDispatch("1,10", "Hero Greek Jason", 1, 73.67, 0.00, 105.90, 270, true);</Command>
+<Command>    trArmyDispatch("1,10", "Columns Broken", 1, 71.27, -0.00, 109.91, 47, true);</Command>
+<Command>    trArmyDispatch("1,10", "Columns Broken", 1, 77.61, 0.00, 102.63, 333, true);</Command>
+<Command>    trArmyDispatch("1,10", "Columns Broken", 1, 72.03, 0.00, 101.51, 111, true);</Command>
+<Command>    trArmyDispatch("1,10", "Skeleton", 1, 78.01, 0.00, 109.91, 222, true);</Command>
+<Command>    trArmyDispatch("1,10", "Mist Olympus", 1, 70.03, 0.00, 101.93, 222, true);</Command>
+<Command>    trArmyDispatch("1,10", "Mist Olympus", 1, 74.71, 0.00, 109.70, 222, true);</Command>
+<Command>    trArmyDispatch("1,10", "Mist Olympus", 1, 77.57, 0.00, 103.82, 222, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 11.34, 0.00, 104.54, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 15.13, 0.00, 82.10, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 7.41, 0.00, 86.42, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 7.99, 0.00, 93.50, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 9.34, 0.00, 108.28, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 17.80, 0.00, 103.35, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 25.46, -0.00, 107.95, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 32.37, 0.00, 113.47, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 45.28, 0.00, 108.99, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 48.73, 0.00, 90.59, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Berry Bush", 1, 30.57, 0.00, 92.07, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 34.31, 0.00, 95.09, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 43.62, 0.00, 94.96, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 29.75, 0.00, 107.86, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 43.11, 0.00, 107.56, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rock Limestone Big", 1, 18.63, 0.00, 91.59, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rain", 1, 32.11, 0.00, 91.33, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Rain", 1, 42.46, 0.00, 95.41, 0, true);</Command>
+<Command>    trArmyDispatch("1,10", "Gate", 1, 119.84, 0.00, 100.72, 270, true);</Command>
+<Command>    trArmySelect("1,10");</Command>
+<Command>    trSetSelectedScale(2.5, 1.5, 2.5);</Command>
+<Command>    trTechSetStatus(1, 413, 4);</Command>
+<Command>    MusicLow();</Command>
+<Command>    xsDisableRule("CinPrologue00");</Command>
+<Command>	xsEnableRule("CinPrologue01");</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue01</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " :He finished work and was heading home feeling good.", "");</Command>
+<Command>      trRenderSky(true, "SkyBlue");</Command>
+<Command>      xsDisableRule("CinPrologue01");</Command>
+<Command>	  xsEnableRule("CinPrologue02");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue02</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " :However fate was about to intervene...", "");</Command>
+<Command>      trCameraCut(vector(115.395638,-62.376621,13.212063), vector(-0.913248,0.407394,0.002918), vector(0.407396,0.913250,-0.001302), vector(0.003194,0.000000,0.999995));</Command>
+<Command>      trSoundPlayFN("lightthunder.wav", "14", -1, "","");</Command>
+<Command>      xsDisableRule("CinPrologue02");</Command>
+<Command>	  xsEnableRule("CinPrologue03");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue03</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : ", "");</Command>
+<Command>      trFadeOutAllSounds(0.0);</Command>
+<Command>      trUIFadeToColor(255,255,255,500,0,false);</Command>
+<Command>      trSoundPlayFN("lightningstrike2.wav", "2", -1, "","");</Command>
+<Command>      trRenderSky(true, "SkyStormy");</Command>
+<Command>      trSoundPlayFN("lightningbirth.wav", "4", -1, "","");</Command>
+<Command>	  MusicHigh();</Command>
+<Command>      xsDisableRule("CinPrologue03");</Command>
+<Command>	  xsEnableRule("CinPrologue04");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue04</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : ", "");</Command>
+<Command>      trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));</Command>
+<Command>      trVectorQuestVarSet("V", xsVectorSet(23.99, 0.00, 34.41));</Command>
+<Command><![CDATA[	  for(x=0;<20){]]></Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 1));</Command>
+<Command>		  DeploySober("Curse SFX", "V");</Command>
+<Command>	  }</Command>
+<Command><![CDATA[	  for(x=0;<12){]]></Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - -0.75));</Command>
+<Command>		  DeploySober("Curse SFX", "V");</Command>
+<Command>	  }</Command>
+<Command><![CDATA[	  for(x=0;<12){]]></Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 0.75));</Command>
+<Command>		  DeploySober("Curse SFX", "V");</Command>
+<Command>	  }</Command>
+<Command>      trSoundPlayFN("lightningstrike1.wav", "2", -1, "","");</Command>
+<Command>      trUIFadeToColor(255,255,255,500,0,false);</Command>
+<Command>      trOverlayText("Zenophobia presents...", 4.0, -1, -1, -1);</Command>
+<Command>      trSoundPlayFN("godpower.wav", "6", -1, "","");</Command>
+<Command>      xsDisableRule("CinPrologue04");</Command>
+<Command>	  xsEnableRule("CinPrologue05");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue05</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " :Spooked by the sudden storm, Rogers picked up the pace!", "");</Command>
+<Command>      trCameraCut(vector(34.321800,34.885281,60.436821), vector(0.004775,-0.665678,0.746224), vector(0.004259,0.746244,0.665658), vector(0.999979,0.000000,-0.006399));</Command>
+<Command>	  trUnitSelectClear();trUnitSelect(""+1*trQuestVarGet("idsStart"));</Command>
+<Command>	  trUnitMoveToPoint(58.63, 0.00, 101.83, -1, false);</Command>
+<Command>      trUIFadeToColor(255,255,255,500,0,false);</Command>
+<Command>      trSoundPlayFN("lightningstrike5.wav", "4", -1, "","");</Command>
+<Command>      xsDisableRule("CinPrologue05");</Command>
+<Command>	  xsEnableRule("CinPrologue06");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue06</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " :Inevitably, he stumbled and fell.", "");</Command>
+<Command>      trUnitSelectClear();</Command>
+<Command>      trUnitSelect(""+1*trQuestVarGet("idsStart")+"");</Command>
+<Command>      trDamageUnitPercent(100);</Command>
+<Command>	  trUnitSetAnimation("default",false,-1);</Command>
+<Command>      xsDisableRule("CinPrologue06");</Command>
+<Command>	  xsEnableRule("CinPrologue07");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue07</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : ", "");</Command>
+<Command>      trUIFadeToColor(255,255,255,500,0,false);</Command>
+<Command>      trSoundPlayFN("lightningstrike4.wav", "5", -1, "","");</Command>
+<Command>      trSoundPlayFN("vortexstart.wav", "3", -1, "","");</Command>
+<Command>      trCameraCut(vector(16.595451,124.640816,14.744846), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));</Command>
+<Command>      trOverlayText("...in collaboration with Nickonhawk...", 4.0, 450, 600, 1000);</Command>
+<Command>      trVectorQuestVarSet("V", xsVectorSet(7.98, 0.00, 2.24));</Command>
+<Command>	  string n = "Curse SFX";</Command>
+<Command>	  string g = "Increase Prosperity Small";</Command>
+<Command><![CDATA[	  for(z=0;<26){]]></Command>
+<Command><![CDATA[		  for(x=0;<24){]]></Command>
+<Command>			  string p = "";</Command>
+<Command><![CDATA[			  if(z==0 && x>14 && x<17){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==1 && (x>3 && x<6 || x>11 && x<19)){ if(x>16){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==2 && x<19){ if(x>14){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==3 && x<19){ if(x>11 && x<18){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==4){ if(x>10 && x<17){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==5){ if(x>8 && x<17){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==6){ if(x>8 && x<17){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==7 && x<22){ if(x>8&&x<18){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==8 && x<19 && x!=12){ if(x>12){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==9 && x<19 && x!=12 && x!=13){ if(x>16){p=g;}else{p=n;} }]]></Command>
+<Command><![CDATA[			  if(z==10 && x>0 && x<18){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==11 && x>0 && x<15){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==12 && x>0 && x<11){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==13 && x<11){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==14 && x<11){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==15 && x<11){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==16 && x<11){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==17 && x<13){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==18 && x<15){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==19 && x<17){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==20 && x>0 && x<18){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==21 && x>2 && x<19){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==22 && x>4 && x<19){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==23 && x>14 && x<19){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==24 && x>14 && x<18){p=n;}]]></Command>
+<Command><![CDATA[			  if(z==25 && x>14 && x<17){p=n;}]]></Command>
+<Command>			  if(p!=""){</Command>
+<Command>				  trArmyDispatch("1,10",p,1,trVectorQuestVarGetX("V")+x,0,trVectorQuestVarGetZ("V")+z,0,true);</Command>
+<Command>			}</Command>
+<Command>		}}</Command>
+<Command>      xsDisableRule("CinPrologue07");</Command>
+<Command>	  xsEnableRule("CinPrologue08");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue08</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : ", "");</Command>
+<Command>      trUIFadeToColor(255,255,255,500,0,true);</Command>
+<Command>      trFadeOutAllSounds(3.0);</Command>
+<Command>      trSoundPlayFN("lightningstrike5.wav", "4", -1, "","");</Command>
+<Command>      trVectorQuestVarSet("V", xsVectorSet(74.62, 0.00, 119.92));</Command>
+<Command>      trVectorQuestVarSet("U", trVectorQuestVarGet("V"));</Command>
+<Command>      trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") - 0,trVectorQuestVarGetY("U") - 0,trVectorQuestVarGetZ("U") - 28));</Command>
+<Command><![CDATA[	  for(x=0;<18){]]></Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V") + 0,trVectorQuestVarGetZ("V") + 0));</Command>
+<Command>		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("V"), trVectorQuestVarGetY("V"), trVectorQuestVarGetZ("V"), 270, true);</Command>
+<Command>		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U") + 0,trVectorQuestVarGetZ("U") + 0));</Command>
+<Command>		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("U"), trVectorQuestVarGetY("U"), trVectorQuestVarGetZ("U"), 90, true);</Command>
+<Command>	  }</Command>
+<Command>      unitTransform("Dwarf","Palace");</Command>
+<Command>      xsDisableRule("CinPrologue08");</Command>
+<Command>	  xsEnableRule("CinPrologue09");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue09</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 2){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : When Rogers woke up, he found himself in a different place.", "");</Command>
+<Command>      trUIFadeToColor(255,255,255,2000,0,false);</Command>
+<Command>      trSoundPlayFN("visionswoosh.wav", "4", -1, "","");</Command>
+<Command>      trSoundPlayFN("skypassageout.wav", "1", -1, "","");</Command>
+<Command>	  trCameraCut(vector(54.713875,7.545822,105.967346), vector(0.930725,-0.365716,-0.001491), vector(0.365710,0.930729,-0.000586), vector(-0.001603,0.000000,-0.999999));</Command>
+<Command>      xsDisableRule("CinPrologue09");</Command>
+<Command>	  xsEnableRule("CinPrologue10");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue10</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>      trSoundPlayDialog("default", "1", -1, false, " : ", "");</Command>
+<Command>      unitTransform("Mist Olympus","Cinematic Block");</Command>
+<Command>	  trUnitSelectClear();trUnitSelect(""+1*trQuestVarGet("otherRogers"));</Command>
+<Command>	  trUnitMoveToPoint(75, 0.00, 104.7, -1, false);</Command>
+<Command>      trCamTrackLoad("Prologue");</Command>
+<Command>      trCamTrackPlay(-1, -1);</Command>
+<Command>      xsDisableRule("CinPrologue10");</Command>
+<Command>	  xsEnableRule("CinPrologue11");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue11</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 4){</Command>
+<Command>	  trOverlayText("G A M E S   O F   H E A V E N", 4.7, 500, 200, 1000);</Command>
+<Command>      trSoundPlayFN("xsentinelbirth.wav", "3", -1, "","");</Command>
+<Command>      trSoundPlayFN("cinematics\32_in\music.mp3", "15", -1, "","");</Command>
+<Command>      xsDisableRule("CinPrologue11");</Command>
+<Command>	  xsEnableRule("CinPrologue12");</Command>
+<Command>   }</Command>
+<Command>}</Command>
+
+<Command>rule CinPrologue12</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 7){</Command>
+<Command>      trPaintTerrain(0, 0, 100, 100, 5, 4, false); //Black</Command>
+<Command>	  int next = trGetNextUnitScenarioNameNumber();</Command>
+<Command><![CDATA[	  for(i=trQuestVarGet("idsStart");<next){]]></Command>
+<Command>		  trUnitSelectClear();trUnitSelect(""+i);</Command>
+<Command>		  trUnitDestroy();</Command>
+<Command>	  }</Command>
+<Command>      trLetterBox(false);</Command>
+<Command>      xsDisableRule("CinPrologue12");</Command>
+<Command>   }</Command>
 <Command>}</Command>
 </Effect>
 </Effects>
