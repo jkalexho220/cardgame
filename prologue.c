@@ -1,10 +1,3 @@
-
-void DeploySober(string p="", string v=""){
-	int next = trGetNextUnitScenarioNameNumber();
-	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);
-	trUnitSelectClear();trUnitSelect(""+next, true);
-	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
-}
 void MusicHigh(){
 	trQuestVarSetFromRand("random", 1, 4, true);
 	if(trQuestVarGet("random") == 1){
@@ -156,15 +149,15 @@ inactive
       trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
       trVectorQuestVarSet("V", xsVectorSet(23.99, 0.00, 34.41));
 	  for(x=0;<20){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 1));
+		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V"),trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 1));
 		  DeploySober("Curse SFX", "V");
 	  }
 	  for(x=0;<12){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - -0.75));
+		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - -0.75));
 		  DeploySober("Curse SFX", "V");
 	  }
 	  for(x=0;<12){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 0.75));
+		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 0.75));
 		  DeploySober("Curse SFX", "V");
 	  }
       trSoundPlayFN("lightningstrike1.wav", "2", -1, "","");
@@ -199,7 +192,7 @@ inactive
    if ((trTime()-cActivationTime) >= 4){
       trSoundPlayDialog("default", "1", -1, false, " :Inevitably, he stumbled and fell.", "");
       trUnitSelectClear();
-      trUnitSelect(""+1*trQuestVarGet("idsStart")+"");
+      trUnitSelect(""+1*trQuestVarGet("idsStart"));
       trDamageUnitPercent(100);
 	  trUnitSetAnimation("default",false,-1);
       xsDisableRule("CinPrologue06");
@@ -270,11 +263,11 @@ inactive
       trSoundPlayFN("lightningstrike5.wav", "4", -1, "","");
       trVectorQuestVarSet("V", xsVectorSet(74.62, 0.00, 119.92));
       trVectorQuestVarSet("U", trVectorQuestVarGet("V"));
-      trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") - 0,trVectorQuestVarGetY("U") - 0,trVectorQuestVarGetZ("U") - 28));
+      trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U"),trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U") - 28));
 	  for(x=0;<18){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V") + 0,trVectorQuestVarGetZ("V") + 0));
+		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")));
 		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("V"), trVectorQuestVarGetY("V"), trVectorQuestVarGetZ("V"), 270, true);
-		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U") + 0,trVectorQuestVarGetZ("U") + 0));
+		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U")));
 		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("U"), trVectorQuestVarGetY("U"), trVectorQuestVarGetZ("U"), 90, true);
 	  }
       unitTransform("Dwarf","Palace");

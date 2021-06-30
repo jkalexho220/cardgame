@@ -405,7 +405,17 @@ int yFindLatest(string qv = "", string proto = "", int p = 0) {
 	}
 	return(-1);
 }
-
+/*
+Deploy a unit exactly where I want.
+p - protounit name, v - vector name
+Used in prologue.c
+*/
+void DeploySober(string p="", string v=""){
+	int next = trGetNextUnitScenarioNameNumber();
+	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);
+	trUnitSelectClear();trUnitSelect(""+next, true);
+	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
+}
 
 rule initializeEverything
 highFrequency
