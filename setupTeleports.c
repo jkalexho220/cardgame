@@ -11,7 +11,7 @@
 
 rule setup
 highFrequency
-active
+inactive
 {
 	// Teleport p1 murmillos to the corner
 	trUnitSelectClear();
