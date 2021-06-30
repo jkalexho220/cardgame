@@ -450,9 +450,22 @@ runImmediately
 		trChatSend(0, "Mode:Singleplayer");
 		bool virgin = true;
 		trChatSend(0, "Checking if played before...");
-		if(virgin){
+		if(virgin && trQuestVarGet("chad") == 0){
 			xsEnableRule("CinPrologue00");
 		}
 	}
+
+
+	// Modify animal attractor pop count
+	trModifyProtounit("Animal Attractor", 1, 6, 9999);
+	trModifyProtounit("Animal Attractor", 2, 6, 9999);
+	// Modify animal attractor flying
+	trModifyProtounit("Animal Attractor", 1, 55, 4);
+	trModifyProtounit("Animal Attractor", 2, 55, 4);
+
+	// Disable god powers
+	trPlayerTechTreeEnabledGodPowers(1, false);
+	trPlayerTechTreeEnabledGodPowers(2, false);
+
 	xsDisableRule("initializeEverything");
 }
