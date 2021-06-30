@@ -22,6 +22,10 @@
 <Command><![CDATA[	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);]]></Command>
 <Command>}</Command>
 
+<Command>void trVectorSetUnitPos(string v = "", string db = "", bool reverse = true) {</Command>
+<Command>	trVectorQuestVarSet(v, kbGetBlockPosition(""+1*trQuestVarGet(db), reverse));</Command>
+<Command>}</Command>
+
 <Command>void trVectorScale(string db = "", float s = 1.0) {</Command>
 <Command>	trQuestVarSet(db+"x", trQuestVarGet(db+"x") * s);</Command>
 <Command>	trQuestVarSet(db+"z", trQuestVarGet(db+"z") * s);</Command>
@@ -233,7 +237,7 @@
 <Command>	trQuestVarSet("z"+name+"i"+index+"v"+var, val);</Command>
 <Command>}</Command>
 
-<Command>void zSetVarIndex(string name = "", string var = "", int index = 0, float val = 0) {</Command>
+<Command>void zSetVarByIndex(string name = "", string var = "", int index = 0, float val = 0) {</Command>
 <Command>	trQuestVarSet("z"+name+"i"+index+"v"+var, val);</Command>
 <Command>}</Command>
 
@@ -242,8 +246,12 @@
 <Command>	return(trQuestVarGet("z"+name+"i"+index+"v"+var));</Command>
 <Command>}</Command>
 
-<Command>float zGetVarIndex(string name = "", string var = "", int index = 0) {</Command>
+<Command>float zGetVarByIndex(string name = "", string var = "", int index = 0) {</Command>
 <Command>	return(trQuestVarGet("z"+name+"i"+index+"v"+var));</Command>
+<Command>}</Command>
+
+<Command>int zGetBankCount(string name = "") {</Command>
+<Command>	return(trQuestVarGet("z"+name+"end") - trQuestVarGet("z"+name+"start"));</Command>
 <Command>}</Command>
 
 <Command>void yAddToDatabase(string to = "", string from = "") {</Command>
@@ -381,6 +389,76 @@
 <Command>}</Command>
 
 
+<Command>void setupBoard() {</Command>
+<Command>	unitTransform("Statue of Automaton Base", "Rocket");</Command>
+
+<Command>	trQuestVarSet("borders", trQuestVarGet("zbordersend") - 2);</Command>
+<Command>	bool allborders = false;</Command>
+<Command>	int count = 0;</Command>
+<Command>	int statue = kbGetProtoUnitID("Statue of Automaton Base");</Command>
+<Command>	for (x=zGetBankCount("tiles"); >0) {</Command>
+<Command>		trVectorSetUnitPos("currentPos", "tiles", false);</Command>
+<Command>		if (allborders == false) {</Command>
+<Command>			for(y=6; >0) {</Command>
+<Command>				zBankNext("borders");</Command>
+<Command>				yAddToDatabase("borderSearch", "borders");</Command>
+<Command>				if (trQuestVarGet("borders") == trQuestVarGet("zbordersend") - 2) {</Command>
+<Command>					allborders = true;</Command>
+<Command>					break;</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+
+
+<Command>		// Assigning neighbors to the tile</Command>
+<Command>		for (y=yGetDatabaseCount("neighbors"); >0) {</Command>
+<Command>			yDatabaseNext("neighbors");</Command>
+<Command>			if (zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors")) == 6) {</Command>
+<Command>				yRemoveFromDatabase("neighbors");</Command>
+<Command>			} else {</Command>
+<Command>				// Tiles have radius 3 and are 6 units apart.</Command>
+<Command>				// Add this tile to the neighborlist of adjacent tiles and add adjacent neighbors to this tile's neighborlist</Command>
+<Command><![CDATA[				if (zDistanceToVectorSquared("neighbors", "currentPos") < 40) {]]></Command>
+<Command>					count = zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"));</Command>
+<Command>					zSetVarByIndex("tiles", "neighbor"+count, 1*trQuestVarGet("neighbors"), trQuestVarGet("tiles"));</Command>
+<Command>					zSetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"), count + 1);</Command>
+
+<Command>					count = zGetVar("tiles", "neighborCount");</Command>
+<Command>					zSetVar("tiles", "neighbor"+count, trQuestVarGet("neighbors"));</Command>
+<Command>					zSetVar("tiles", "neighborCount", count + 1);</Command>
+<Command>					if (count == 6) {</Command>
+<Command>						break;</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		yAddToDatabase("neighbors", "tiles");</Command>
+
+<Command>		// Assigning borders to the tile</Command>
+<Command>		for (y=yGetDatabaseCount("borderSearch"); >0) {</Command>
+<Command>			yDatabaseNext("borderSearch");</Command>
+<Command>			if (yGetVar("borderSearch", "count") == 2) {</Command>
+<Command>				yRemoveFromDatabase("borderSearch");</Command>
+<Command>				yRemoveUpdateVar("borderSearch", "count");</Command>
+<Command>			} else {</Command>
+<Command><![CDATA[				if (zDistanceToVectorSquared("borderSearch", "currentPos") < 10) {]]></Command>
+<Command>					count = zGetVar("tiles", "borderCount");</Command>
+<Command>					zSetVar("tiles", "border"+count, trQuestVarGet("borderSearch"));</Command>
+<Command>					zSetVar("tiles", "borderCount", count + 1);</Command>
+<Command>					ySetVar("borderSearch", "count", yGetVar("borderSearch", "count") + 1);</Command>
+<Command>					trUnitSelectClear();</Command>
+<Command>					trUnitSelectByID(1*trQuestVarGet("borderSearch"));</Command>
+<Command>					trMutateSelected(statue);</Command>
+<Command>					if (count == 6) {</Command>
+<Command>						break;</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		zBankNext("tiles");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
 <Command>rule initializeEverything</Command>
 <Command>highFrequency</Command>
 <Command>active</Command>
@@ -388,100 +466,21 @@
 <Command>{</Command>
 <Command>	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos</Command>
 <Command>	trSetUnitIdleProcessing(false);</Command>
-<Command>	xsDisableRule("initializeEverything");</Command>
-<Command>}</Command>
 
-<Command>// P1 murmillos = 0 - 63</Command>
-<Command>// P2 murmillos = 64 - 127</Command>
-<Command>// Tile victory markers = 128 - 296 (169 tiles)</Command>
-<Command>// Lines between tiles = 297 - 848 (552 lines)</Command>
 
-<Command>// Number of tiles in a hexagonal grid of X*X*X dimensions:</Command>
-<Command>// 3*(X^2-X) + 1</Command>
-<Command>// Number of border lines in a hexagonal grid of X*X*X dimensions:</Command>
-<Command>// (3*(X^2-X) + 1 + (2X-1))*3</Command>
-
-<Command>rule setup</Command>
-<Command>highFrequency</Command>
-<Command>active</Command>
-<Command>{</Command>
-<Command>	// Teleport p1 murmillos to the corner</Command>
-<Command>	trUnitSelectClear();</Command>
-<Command>	for (x=63; >=0) {</Command>
-<Command>		trUnitSelectByID(x);</Command>
+<Command><![CDATA[	if (trQuestVarGet("dimension") <= 1) {]]></Command>
+<Command>		trQuestVarSetFromRand("dimension", 6, 8, true);</Command>
 <Command>	}</Command>
-<Command>	trUnitTeleport(1,1,1);</Command>
-
-<Command>	// Teleport p2 murmillos to the corner</Command>
-<Command>	trUnitSelectClear();</Command>
-<Command>	for(x=127; >=64) {</Command>
-<Command>		trUnitSelectByID(x);</Command>
-<Command>	}</Command>
-<Command>	trUnitTeleport(1,1,1);</Command>
-
-<Command>	// Map is 120x120</Command>
-<Command>	trQuestVarSet("posx", 60);</Command>
-<Command>	trQuestVarSet("posz", 60);</Command>
-<Command>	float radius = trQuestVarGet("radius");</Command>
-
-<Command>	// setup a step vector for each of the six directional angles</Command>
-<Command>	float angle = 0.785398;</Command>
-<Command>	for(x=6; >0) {</Command>
-<Command>		trVectorSetFromAngle("step"+x, angle);</Command>
-<Command>		trVectorScale("step"+x, radius);</Command>
-<Command>		trQuestVarSet("angle"+x, angle);</Command>
-<Command>		angle = fModulo(6.283185, angle + 1.047197);</Command>
-<Command>	}</Command>
-
-<Command>	zBankInit("tiles", 128, 169);</Command>
+<Command>	int tiles = 1 + 3 * (xsPow(trQuestVarGet("dimension"), 2) - trQuestVarGet("dimension"));</Command>
+<Command>	// Number of tiles in a hexagonal grid of X*X*X dimensions:</Command>
+<Command>	// 3*(X^2-X) + 1</Command>
+<Command>	zBankInit("tiles", 128, tiles);</Command>
 <Command>	zBankInit("borders", 297, 552);</Command>
 
-<Command>	zSetVar("tiles", "posx", 60);</Command>
-<Command>	zSetVar("tiles", "posz", 60);</Command>
-<Command>	trQuestVarSet("x60z60", 1);</Command>
+<Command>	setupBoard();</Command>
 
-<Command>	trUnitSelectClear();</Command>
-<Command>	trUnitSelectByID(1*trQuestVarGet("tiles"));</Command>
-<Command>	trUnitTeleport(60,0,60);</Command>
 
-<Command><![CDATA[	for (c=128; < 297) {]]></Command>
-<Command>		// loop through the 6 directions</Command>
-<Command>		for(x=6; >0) {</Command>
-<Command>			// 0 means the tile hasn't been explored</Command>
-<Command>			// 1 means the tile is in the fringe and doesn't needed to be added again</Command>
-<Command>			// 2 means the tile is done and removed from the fringe</Command>
-<Command>			trQuestVarSet("posx", zGetVarIndex("tiles", "posx", c) + 2.0*trQuestVarGet("step"+x+"x"));</Command>
-<Command>			trQuestVarSet("posz", zGetVarIndex("tiles", "posz", c) + 2.0*trQuestVarGet("step"+x+"z"));</Command>
-<Command>			if (trQuestVarGet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz"))) == 0) {</Command>
-<Command>				zBankNext("tiles", true);</Command>
-<Command>				if (trQuestVarGet("tiles") > c) {</Command>
-<Command>					trUnitTeleport(trQuestVarGet("posx"),0,trQuestVarGet("posz"));</Command>
-<Command>					zSetVar("tiles", "posx", trQuestVarGet("posx"));</Command>
-<Command>					zSetVar("tiles", "posz", trQuestVarGet("posz"));</Command>
-<Command>				}</Command>
-<Command>				trQuestVarSet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz")),1);</Command>
-<Command>			}</Command>
-
-<Command>			// Draw border line if it isn't there</Command>
-<Command><![CDATA[			if (trQuestVarGet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz"))) < 2) {]]></Command>
-<Command>				// teleport border line</Command>
-<Command>				trQuestVarSet("borderx", zGetVarIndex("tiles", "posx", c) + trQuestVarGet("step"+x+"x"));</Command>
-<Command>				trQuestVarSet("borderz", zGetVarIndex("tiles", "posz", c) + trQuestVarGet("step"+x+"z"));</Command>
-<Command>				zBankNext("borders", true);</Command>
-<Command>				trUnitTeleport(trQuestVarGet("borderx"),0,trQuestVarGet("borderz"));</Command>
-<Command>				zUnitHeading(trQuestVarGet("angle"+x));</Command>
-<Command>				// trMutateSelected(kbGetProtoUnitID("undermine ground decal long"));</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Statue of Automaton Base"));</Command>
-<Command>				trSetSelectedScale(radius + 0.1, 0.1, 0.2);</Command>
-<Command>			}</Command>
-<Command>		}</Command>
-<Command>		// set the position as explored</Command>
-<Command>		trQuestVarSet("posx", zGetVarIndex("tiles", "posx", c));</Command>
-<Command>		trQuestVarSet("posz", zGetVarIndex("tiles", "posz", c));</Command>
-<Command>		trQuestVarSet("x"+1*xsRound(trQuestVarGet("posx"))+"z"+1*xsRound(trQuestVarGet("posz")),2);</Command>
-<Command>	}</Command>
-
-<Command>	xsDisableRule("setup");</Command>
+<Command>	xsDisableRule("initializeEverything");</Command>
 <Command>}</Command>
 </Effect>
 </Effects>
