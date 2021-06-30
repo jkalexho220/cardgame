@@ -1,13 +1,13 @@
 
 // P1 murmillos = 0 - 63
 // P2 murmillos = 64 - 127
-// Tile cinematic blocks = 128 - 218 (91 tiles)
-// Lines between tiles = 219 - 524 (306 lines)
+// Tile victory markers = 128 - 296 (169 tiles)
+// Lines between tiles = 297 - 848 (552 lines)
 
 // Number of tiles in a hexagonal grid of X*X*X dimensions:
-// (X^3-X^2)/2
+// 3*(X^2-X) + 1
 // Number of border lines in a hexagonal grid of X*X*X dimensions:
-// (X^3-X^2)/2 * 3 + 3*(2X-1)
+// (3*(X^2-X) + 1 + (2X-1))*3
 
 rule setup
 highFrequency
@@ -27,13 +27,13 @@ inactive
 	}
 	trUnitTeleport(1,1,1);
 
-	// Map is 100x100?
-	trQuestVarSet("posx", 50);
-	trQuestVarSet("posz", 50);
-	float radius = 2.0;
+	// Map is 120x120
+	trQuestVarSet("posx", 60);
+	trQuestVarSet("posz", 60);
+	float radius = trQuestVarGet("radius");
 
 	// setup a step vector for each of the six directional angles
-	float angle = 0.0;
+	float angle = 0.785398;
 	for(x=6; >0) {
 		trVectorSetFromAngle("step"+x, angle);
 		trVectorScale("step"+x, radius);
@@ -41,18 +41,18 @@ inactive
 		angle = fModulo(6.283185, angle + 1.047197);
 	}
 
-	zBankInit("tiles", 128, 91);
-	zBankInit("borders", 219, 306);
+	zBankInit("tiles", 128, 169);
+	zBankInit("borders", 297, 552);
 
-	zSetVar("tiles", "posx", 50);
-	zSetVar("tiles", "posz", 50);
-	trQuestVarSet("x50z50", 1);
+	zSetVar("tiles", "posx", 60);
+	zSetVar("tiles", "posz", 60);
+	trQuestVarSet("x60z60", 1);
 
 	trUnitSelectClear();
 	trUnitSelectByID(1*trQuestVarGet("tiles"));
-	trUnitTeleport(50,0,50);
+	trUnitTeleport(60,0,60);
 
-	for (c=128; < 219) {
+	for (c=128; < 297) {
 		// loop through the 6 directions
 		for(x=6; >0) {
 			// 0 means the tile hasn't been explored
@@ -78,8 +78,9 @@ inactive
 				zBankNext("borders", true);
 				trUnitTeleport(trQuestVarGet("borderx"),0,trQuestVarGet("borderz"));
 				zUnitHeading(trQuestVarGet("angle"+x));
-				trMutateSelected(kbGetProtoUnitID("undermine ground decal long"));
-				trSetSelectedScale(0.1 * radius + 0.1, 1, 0.2);
+				// trMutateSelected(kbGetProtoUnitID("undermine ground decal long"));
+				trMutateSelected(kbGetProtoUnitID("Statue of Automaton Base"));
+				trSetSelectedScale(radius + 0.1, 0.1, 0.2);
 			}
 		}
 		// set the position as explored

@@ -3,6 +3,14 @@ bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
 }
 
+/* 
+Given a quest var that stores a unit name, store
+the unit's position in the vector.
+*/
+void trVectorSetUnitPos(string v = "", string db = "", bool reverse = true) {
+	trVectorQuestVarSet(v, kbGetBlockPosition(""+1*trQuestVarGet(db), reverse));
+}
+
 void trVectorScale(string db = "", float s = 1.0) {
 	trQuestVarSet(db+"x", trQuestVarGet(db+"x") * s);
 	trQuestVarSet(db+"z", trQuestVarGet(db+"z") * s);
@@ -236,7 +244,7 @@ void zSetVar(string name = "", string var = "", float val = 0) {
 }
 
 /* Sets the variable of the bank item specified by index */
-void zSetVarIndex(string name = "", string var = "", int index = 0, float val = 0) {
+void zSetVarByIndex(string name = "", string var = "", int index = 0, float val = 0) {
 	trQuestVarSet("z"+name+"i"+index+"v"+var, val);
 }
 
@@ -247,8 +255,12 @@ float zGetVar(string name = "", string var = "") {
 }
 
 /* Gets the variable of the bank item given by index */
-float zGetVarIndex(string name = "", string var = "", int index = 0) {
+float zGetVarByIndex(string name = "", string var = "", int index = 0) {
 	return(trQuestVarGet("z"+name+"i"+index+"v"+var));	
+}
+
+int zGetBankCount(string name = "") {
+	return(trQuestVarGet("z"+name+"end") - trQuestVarGet("z"+name+"start"));
 }
 
 /* Adds a unit specified by the quest var 'from' to the database 'to' */
@@ -416,6 +428,7 @@ void DeploySober(string p="", string v=""){
 	trUnitSelectClear();trUnitSelect(""+next, true);
 	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
 }
+
 
 rule initializeEverything
 highFrequency
