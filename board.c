@@ -72,15 +72,11 @@ void setupBoard() {
 	}
 }
 
-rule initializeEverything
+rule initializeBoard
 highFrequency
 active
 runImmediately
 {
-	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
-	trSetUnitIdleProcessing(false); 
-
-
 	/*
 	Tile index increases outwards from the center.
 	To vary the size of the map, just vary the 
@@ -98,5 +94,5 @@ runImmediately
 	setupBoard();
 
 
-	xsDisableRule("initializeEverything");
+	xsDisableRule("initializeBoard");
 }
