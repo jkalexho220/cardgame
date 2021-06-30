@@ -456,9 +456,12 @@ runImmediately
 	}
 
 
-	// Modify animal attractor pop count
-	trModifyProtounit("Animal Attractor", 1, 6, 9999);
-	trModifyProtounit("Animal Attractor", 2, 6, 9999);
+	// Modify vision revealer pop count
+	trModifyProtounit("Vision Revealer", 1, 6, 9999);
+	trModifyProtounit("Vision Revealer", 2, 6, 9999);
+	// Modify vision sfx hp
+	trModifyProtounit("Vision SFX", 1, 0, -9999);
+	trModifyProtounit("Vision SFX", 2, 0, -9999);
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
