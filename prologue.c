@@ -2,7 +2,7 @@
 void DeploySober(string p="", string v=""){
 	int next = trGetNextUnitScenarioNameNumber();
 	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);
-	trUnitSelectClear();trUnitSelect(""+next);
+	trUnitSelectClear();trUnitSelect(""+next, true);
 	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
 }
 void MusicHigh(){
