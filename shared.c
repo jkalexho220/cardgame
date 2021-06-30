@@ -417,5 +417,42 @@ int yFindLatest(string qv = "", string proto = "", int p = 0) {
 	}
 	return(-1);
 }
+/*
+Deploy a unit exactly where I want.
+p - protounit name, v - vector name
+Used in prologue.c
+*/
+void DeploySober(string p="", string v=""){
+	int next = trGetNextUnitScenarioNameNumber();
+	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);
+	trUnitSelectClear();trUnitSelect(""+next, true);
+	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
+}
 
 
+rule initializeEverything
+highFrequency
+active
+runImmediately
+{
+	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
+	trSetUnitIdleProcessing(false); 
+    trSetObscuredUnits(false);
+	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
+	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
+	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart
+	if(multiplayer && kbIsPlayerHuman(2) == false){
+		multiplayer = false; // or kick?
+	}
+	if(multiplayer){
+		trChatSend(0, "Mode:Multiplayer");
+	} else {
+		trChatSend(0, "Mode:Singleplayer");
+		bool virgin = true;
+		trChatSend(0, "Checking if played before...");
+		if(virgin){
+			xsEnableRule("CinPrologue00");
+		}
+	}
+	xsDisableRule("initializeEverything");
+}
