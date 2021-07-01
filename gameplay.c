@@ -93,6 +93,16 @@ void findTargets(int index = 0, string db = "") {
 }
 
 /*
+If target of the right-click was an enemy within range, start an attack
+*/
+void attackUnitAtCursor(int p = 0) {
+	for(x=yGetDatabaseCount("targets"); >0) {
+		yDatabaseNext("targets");
+		if (zDistanceToVectorSquared())
+	}
+}
+
+/*
 Action that takes place with a generic left click  
 */
 void selectUnitAtCursor(int p = 0) {
@@ -108,6 +118,11 @@ void selectUnitAtCursor(int p = 0) {
 				highlightTile(1*yDatabaseNext("reachable"), 0.1);
 			}
 			yClearDatabase("reachable");
+		}
+		if (yGetDatabaseCount("targets") > 0) {
+			yDatabaseSelectAll("targets");
+			trUnitHighlight(0.1, false);
+			yClearDatabase("targets");
 		}
 		if (yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected")) == ACTION_MOVED) {
 			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_DONE);
@@ -128,6 +143,9 @@ void selectUnitAtCursor(int p = 0) {
 			yGetVarByIndex("allUnits", "action", unit) == ACTION_READY &&
 			trQuestVarGet("activePlayer") == p) {
 			highlightReachable(unit);
+			findTargets(unit, "targets");
+			yDatabaseSelectAll("targets");
+			trUnitHighlight(3600.0, false);
 		}
 	} else {
 		// TODO: Check if player selected a unit in hand.
@@ -147,36 +165,43 @@ void unitWorkAtCursor(int p = 0) {
 				case ACTION_READY:
 				{
 					/*
-					TODO: First check if player wants unit to attack something in range 
+					First check if player wants unit to attack something in range 
 					without moving it.
 					 */
-					for (x=yGetDatabaseCount("reachable"); >0) {
-						yDatabaseNext("reachable");
-						if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
-							trQuestVarCopy("moveTile", "reachable");
-						}
-					}
-					if (trQuestVarGet("moveTile") == -1) {
-						if (trCurrentPlayer() == p) {
-							trSoundPlayFN("cantdothat.wav","1",-1,"","");
-						}
-					} else {
-						// un-highlight all tiles
+					if (attackUnitAtCursor(p) == false) {
 						for (x=yGetDatabaseCount("reachable"); >0) {
-							highlightTile(1*yDatabaseNext("reachable", false), 0.1);
+							yDatabaseNext("reachable");
+							if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
+								trQuestVarCopy("moveTile", "reachable");
+							}
 						}
-						yClearDatabase("reachable");
-						trVectorSetUnitPos("moveDestination", "moveTile");
-						trQuestVarSet("movingUnitName", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("p"+p+"selected")));
-						trQuestVarSet("movingUnitID", kbGetBlockID(""+1*trQuestVarGet("movingUnitName"), true));
-						trUnitSelectClear();
-						trUnitSelectByID(1*trQuestVarGet("movingUnitID"));
-						trUnitMoveToVector("moveDestination");
-						trQuestVarSet("p"+p+"casting", CASTING_WAIT);
-						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_MOVED);
-						trQuestVarSet("moving", 0);
-						xsEnableRule("moveComplete");
+						if (trQuestVarGet("moveTile") == -1) {
+							if (trCurrentPlayer() == p) {
+								trSoundPlayFN("cantdothat.wav","1",-1,"","");
+							}
+						} else {
+							// un-highlight all tiles
+							for (x=yGetDatabaseCount("reachable"); >0) {
+								highlightTile(1*yDatabaseNext("reachable", false), 0.1);
+							}
+							yClearDatabase("reachable");
+
+							/* setting old tile to unoccupied */
+							trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", unit), true));
+
+							trVectorSetUnitPos("moveDestination", "moveTile");
+							trQuestVarSet("movingUnitName", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("p"+p+"selected")));
+							trQuestVarSet("movingUnitID", kbGetBlockID(""+1*trQuestVarGet("movingUnitName"), true));
+							trUnitSelectClear();
+							trUnitSelectByID(1*trQuestVarGet("movingUnitID"));
+							trUnitMoveToVector("moveDestination");
+							trQuestVarSet("p"+p+"casting", CASTING_WAIT);
+							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_MOVED);
+							trQuestVarSet("moving", 0);
+							xsEnableRule("moveComplete");
+						}
 					}
+					
 				}
 				case ACTION_MOVED:
 				{
