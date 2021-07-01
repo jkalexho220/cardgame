@@ -55,7 +55,8 @@ inactive
     trLetterBox(true);
     trSoundPlayDialog("default", "1", -1, false, " :It was a fine day for Rogers.", "");
     trUIFadeToColor(0,0,0,1000,1000,false);
-	trCameraCut(vector(-21.635717,32.595444,96.573792), vector(0.707104,-0.707109,-0.001133), vector(0.707104,0.707109,-0.001133), vector(-0.001603,0.000000,-0.999999));
+	trCameraCut(vector(-21.635717,32.595444,96.573792), vector(0.707104,-0.707109,-0.001133), 
+		vector(0.707104,0.707109,-0.001133), vector(-0.001603,0.000000,-0.999999));
     trSetFogAndBlackmap(false, false);
     trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
     trArmyDispatch("1,10", "Hero Greek Jason", 1, -0.19, 0.00, 97.42, 0, true);
@@ -116,7 +117,8 @@ inactive
 {
    if ((trTime()-cActivationTime) >= 4){
       trSoundPlayDialog("default", "1", -1, false, " :However fate was about to intervene...", "");
-      trCameraCut(vector(115.395638,-62.376621,13.212063), vector(-0.913248,0.407394,0.002918), vector(0.407396,0.913250,-0.001302), vector(0.003194,0.000000,0.999995));
+      trCameraCut(vector(115.395638,-62.376621,13.212063), vector(-0.913248,0.407394,0.002918), 
+      	vector(0.407396,0.913250,-0.001302), vector(0.003194,0.000000,0.999995));
       trSoundPlayFN("lightthunder.wav", "14", -1, "","");
       xsDisableRule("CinPrologue02");
 	  xsEnableRule("CinPrologue03");
@@ -146,18 +148,19 @@ inactive
 {
    if ((trTime()-cActivationTime) >= 4){
       trSoundPlayDialog("default", "1", -1, false, " : ", "");
-      trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
+      trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003), 
+      	vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
       trVectorQuestVarSet("V", xsVectorSet(23.99, 0.00, 34.41));
 	  for(x=0;<20){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V"),trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 1));
+		  trVectorQuestVarSet("V",xsVectorSet(trVectorQuestVarGetX("V"),trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")-1));
 		  DeploySober("Curse SFX", "V");
 	  }
 	  for(x=0;<12){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - -0.75));
+		  trVectorQuestVarSet("V",xsVectorSet(trVectorQuestVarGetX("V")-0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")+0.75));
 		  DeploySober("Curse SFX", "V");
 	  }
 	  for(x=0;<12){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 0.75));
+		  trVectorQuestVarSet("V",xsVectorSet(trVectorQuestVarGetX("V")-0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")-0.75));
 		  DeploySober("Curse SFX", "V");
 	  }
       trSoundPlayFN("lightningstrike1.wav", "2", -1, "","");
@@ -175,7 +178,8 @@ inactive
 {
    if ((trTime()-cActivationTime) >= 4){
       trSoundPlayDialog("default", "1", -1, false, " :Spooked by the sudden storm, Rogers picked up the pace!", "");
-      trCameraCut(vector(34.321800,34.885281,60.436821), vector(0.004775,-0.665678,0.746224), vector(0.004259,0.746244,0.665658), vector(0.999979,0.000000,-0.006399));
+      trCameraCut(vector(34.321800,34.885281,60.436821), vector(0.004775,-0.665678,0.746224), 
+      	vector(0.004259,0.746244,0.665658), vector(0.999979,0.000000,-0.006399));
 	  trUnitSelectClear();trUnitSelect(""+1*trQuestVarGet("idsStart"));
 	  trUnitMoveToPoint(58.63, 0.00, 101.83, -1, false);
       trUIFadeToColor(255,255,255,500,0,false);
@@ -209,7 +213,8 @@ inactive
       trUIFadeToColor(255,255,255,500,0,false);
       trSoundPlayFN("lightningstrike4.wav", "5", -1, "","");
       trSoundPlayFN("vortexstart.wav", "3", -1, "","");
-      trCameraCut(vector(16.595451,124.640816,14.744846), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
+      trCameraCut(vector(16.595451,124.640816,14.744846), vector(0.000398,-1.000000,-0.000003), 
+      	vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
       trOverlayText("...in collaboration with Nickonhawk...", 4.0, 450, 600, 1000);
       trVectorQuestVarSet("V", xsVectorSet(7.98, 0.00, 2.24));
 	  string n = "Curse SFX";
@@ -265,10 +270,10 @@ inactive
       trVectorQuestVarSet("U", trVectorQuestVarGet("V"));
       trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U"),trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U") - 28));
 	  for(x=0;<18){
-		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")));
-		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("V"), trVectorQuestVarGetY("V"), trVectorQuestVarGetZ("V"), 270, true);
-		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U")));
-		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("U"), trVectorQuestVarGetY("U"), trVectorQuestVarGetZ("U"), 90, true);
+		  trVectorQuestVarSet("V",xsVectorSet(trVectorQuestVarGetX("V")+8,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")));
+		  trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("V"),trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V"),270,true);
+		  trVectorQuestVarSet("U",xsVectorSet(trVectorQuestVarGetX("U")+8,trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U")));
+		  trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("U"),trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U"),90,true);
 	  }
       unitTransform("Dwarf","Palace");
       xsDisableRule("CinPrologue08");
@@ -285,7 +290,8 @@ inactive
       trUIFadeToColor(255,255,255,2000,0,false);
       trSoundPlayFN("visionswoosh.wav", "4", -1, "","");
       trSoundPlayFN("skypassageout.wav", "1", -1, "","");
-	  trCameraCut(vector(54.713875,7.545822,105.967346), vector(0.930725,-0.365716,-0.001491), vector(0.365710,0.930729,-0.000586), vector(-0.001603,0.000000,-0.999999));
+	  trCameraCut(vector(54.713875,7.545822,105.967346), vector(0.930725,-0.365716,-0.001491), 
+	  	vector(0.365710,0.930729,-0.000586), vector(-0.001603,0.000000,-0.999999));
       xsDisableRule("CinPrologue09");
 	  xsEnableRule("CinPrologue10");
    }

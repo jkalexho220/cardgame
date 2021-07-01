@@ -86,7 +86,7 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['shared.c', 'board.c', 'prologue.c']
+	files = ['shared.c', 'board.c', 'prologue.c', 'clicking.c']
 	named = True
 	FILE_2 = 'cardGameAll.xml'
 	NAME = " Card Game"

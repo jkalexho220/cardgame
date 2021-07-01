@@ -387,6 +387,60 @@
 <Command>	}</Command>
 <Command>	return(-1);</Command>
 <Command>}</Command>
+<Command>void DeploySober(string p="", string v=""){</Command>
+<Command>	int next = trGetNextUnitScenarioNameNumber();</Command>
+<Command>	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);</Command>
+<Command>	trUnitSelectClear();trUnitSelect(""+next, true);</Command>
+<Command>	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));</Command>
+<Command>}</Command>
+
+
+<Command>rule initializeEverything</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>runImmediately</Command>
+<Command>{</Command>
+<Command>	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos</Command>
+<Command>	trSetUnitIdleProcessing(false);</Command>
+<Command>    trSetObscuredUnits(false);</Command>
+<Command>	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos</Command>
+<Command>	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos</Command>
+<Command>	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart</Command>
+<Command><![CDATA[	if(multiplayer && kbIsPlayerHuman(2) == false){]]></Command>
+<Command>		multiplayer = false; // or kick?</Command>
+<Command>	}</Command>
+<Command>	if(multiplayer){</Command>
+<Command>		trChatSend(0, "Mode:Multiplayer");</Command>
+<Command>	} else {</Command>
+<Command>		trChatSend(0, "Mode:Singleplayer");</Command>
+<Command>		bool virgin = true;</Command>
+<Command>		trChatSend(0, "Checking if played before...");</Command>
+<Command><![CDATA[		if(virgin && trQuestVarGet("chad") == 0){]]></Command>
+<Command>			xsEnableRule("CinPrologue00");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+
+
+<Command>	// Modify vision revealer pop count</Command>
+<Command>	trModifyProtounit("Vision Revealer", 1, 6, 9999);</Command>
+<Command>	trModifyProtounit("Vision Revealer", 2, 6, 9999);</Command>
+<Command>	// Modify vision sfx hp</Command>
+<Command>	trModifyProtounit("Vision SFX", 1, 0, -9999);</Command>
+<Command>	trModifyProtounit("Vision SFX", 2, 0, -9999);</Command>
+<Command>	// Modify animal attractor flying</Command>
+<Command>	trModifyProtounit("Animal Attractor", 1, 55, 4);</Command>
+<Command>	trModifyProtounit("Animal Attractor", 2, 55, 4);</Command>
+
+<Command>	// Disable god powers</Command>
+<Command>	trPlayerTechTreeEnabledGodPowers(1, false);</Command>
+<Command>	trPlayerTechTreeEnabledGodPowers(2, false);</Command>
+
+<Command>	xsDisableRule("initializeEverything");</Command>
+<Command>}</Command>
+
+<Command>const int TILE_EMPTY = 0;</Command>
+<Command>const int TILE_IMPASSABLE = 1;</Command>
+<Command>const int TILE_OCCUPIED = 2;</Command>
 
 
 <Command>void setupBoard() {</Command>
@@ -459,14 +513,65 @@
 <Command>	}</Command>
 <Command>}</Command>
 
-<Command>rule initializeEverything</Command>
+<Command>int findNearestTile(string v = "") {</Command>
+<Command>	for (x=zGetBankCount("tiles"); >0) {</Command>
+<Command>		zBankNext("tiles");</Command>
+<Command><![CDATA[		if (zDistanceToVectorSquared("tiles", v) < 9) {]]></Command>
+<Command>			return(1*trQuestVarGet("tiles"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	return(-1);</Command>
+<Command>}</Command>
+
+<Command>void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost = false) {</Command>
+<Command>	for (x=zGetBankCount("tiles"); >0) {</Command>
+<Command>		zBankNext("tiles");</Command>
+<Command>		zSetVar("tiles", "searched", 0);</Command>
+<Command>	}</Command>
+<Command>	int push = 0;</Command>
+<Command>	int pop = -1;</Command>
+<Command>	int tile = 0;</Command>
+<Command>	int neighbor = 0;</Command>
+<Command>	trQuestVarSet("search"+push+"tile", id);</Command>
+<Command>	trQuestVarSet("search"+push+"distance", distance);</Command>
+<Command><![CDATA[	while (pop < push) {]]></Command>
+<Command>		pop = pop + 1;</Command>
+<Command>		tile = trQuestVarGet("search"+pop+"tile");</Command>
+<Command>		// Add it to the db if it is not occupied</Command>
+<Command><![CDATA[		if (zGetVarByIndex("tiles", "occupied", tile) < TILE_OCCUPIED) {]]></Command>
+<Command>			yAddToDatabase(db, "search"+pop+"tile");</Command>
+<Command>		}</Command>
+<Command>		// Search neighbors</Command>
+<Command>		if (trQuestVarGet("search"+pop+"distance") > 0) {</Command>
+<Command><![CDATA[			for (x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {]]></Command>
+<Command>				neighbor = zGetVarByIndex("tiles", "neighbor"+x, tile);</Command>
+<Command>				if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {</Command>
+<Command>					zSetVarByIndex("tiles", "searched", neighbor, 1);</Command>
+<Command>					// Add to fringe if it can be moved through.</Command>
+<Command><![CDATA[					if (zGetVarByIndex("tiles", "occupied", neighbor) == TILE_EMPTY || ghost) {]]></Command>
+<Command>						push = push + 1;</Command>
+<Command>						trQuestVarSet("search"+push+"tile", neighbor);</Command>
+<Command>						trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void highlightTile(int tile = 0, float duration = 0.1) {</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command><![CDATA[	for (x=0; < zGetVarByIndex("tiles", "borderCount", tile)) {]]></Command>
+<Command>		trUnitSelectByID(zGetVarByIndex("tiles", "border"+x, tile));</Command>
+<Command>	}</Command>
+<Command>	trUnitHighlight(duration, false);</Command>
+<Command>}</Command>
+
+<Command>rule initializeBoard</Command>
 <Command>highFrequency</Command>
 <Command>active</Command>
 <Command>runImmediately</Command>
 <Command>{</Command>
-<Command>	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos</Command>
-<Command>	trSetUnitIdleProcessing(false);</Command>
-
 <Command><![CDATA[	if (trQuestVarGet("dimension") <= 1) {]]></Command>
 <Command>		trQuestVarSetFromRand("dimension", 6, 8, true);</Command>
 <Command>	}</Command>
@@ -479,14 +584,7 @@
 <Command>	setupBoard();</Command>
 
 
-<Command>	xsDisableRule("initializeEverything");</Command>
-<Command>}</Command>
-
-<Command>void DeploySober(string p="", string v=""){</Command>
-<Command>	int next = trGetNextUnitScenarioNameNumber();</Command>
-<Command>	trArmyDispatch("1,10",p,1,trVectorQuestVarGetX(v), trVectorQuestVarGetY(v), trVectorQuestVarGetZ(v),0,true);</Command>
-<Command>	trUnitSelectClear();trUnitSelect(""+next);</Command>
-<Command>	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));</Command>
+<Command>	xsDisableRule("initializeBoard");</Command>
 <Command>}</Command>
 <Command>void MusicHigh(){</Command>
 <Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
@@ -639,15 +737,15 @@
 <Command>      trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003), vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));</Command>
 <Command>      trVectorQuestVarSet("V", xsVectorSet(23.99, 0.00, 34.41));</Command>
 <Command><![CDATA[	  for(x=0;<20){]]></Command>
-<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 1));</Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V"),trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 1));</Command>
 <Command>		  DeploySober("Curse SFX", "V");</Command>
 <Command>	  }</Command>
 <Command><![CDATA[	  for(x=0;<12){]]></Command>
-<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - -0.75));</Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - -0.75));</Command>
 <Command>		  DeploySober("Curse SFX", "V");</Command>
 <Command>	  }</Command>
 <Command><![CDATA[	  for(x=0;<12){]]></Command>
-<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V") - 0,trVectorQuestVarGetZ("V") - 0.75));</Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") - 0.75,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V") - 0.75));</Command>
 <Command>		  DeploySober("Curse SFX", "V");</Command>
 <Command>	  }</Command>
 <Command>      trSoundPlayFN("lightningstrike1.wav", "2", -1, "","");</Command>
@@ -682,7 +780,7 @@
 <Command>   if ((trTime()-cActivationTime) >= 4){</Command>
 <Command>      trSoundPlayDialog("default", "1", -1, false, " :Inevitably, he stumbled and fell.", "");</Command>
 <Command>      trUnitSelectClear();</Command>
-<Command>      trUnitSelect(""+1*trQuestVarGet("idsStart")+"");</Command>
+<Command>      trUnitSelect(""+1*trQuestVarGet("idsStart"));</Command>
 <Command>      trDamageUnitPercent(100);</Command>
 <Command>	  trUnitSetAnimation("default",false,-1);</Command>
 <Command>      xsDisableRule("CinPrologue06");</Command>
@@ -753,11 +851,11 @@
 <Command>      trSoundPlayFN("lightningstrike5.wav", "4", -1, "","");</Command>
 <Command>      trVectorQuestVarSet("V", xsVectorSet(74.62, 0.00, 119.92));</Command>
 <Command>      trVectorQuestVarSet("U", trVectorQuestVarGet("V"));</Command>
-<Command>      trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") - 0,trVectorQuestVarGetY("U") - 0,trVectorQuestVarGetZ("U") - 28));</Command>
+<Command>      trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U"),trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U") - 28));</Command>
 <Command><![CDATA[	  for(x=0;<18){]]></Command>
-<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V") + 0,trVectorQuestVarGetZ("V") + 0));</Command>
+<Command>		  trVectorQuestVarSet("V", xsVectorSet(trVectorQuestVarGetX("V") + 8,trVectorQuestVarGetY("V"),trVectorQuestVarGetZ("V")));</Command>
 <Command>		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("V"), trVectorQuestVarGetY("V"), trVectorQuestVarGetZ("V"), 270, true);</Command>
-<Command>		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U") + 0,trVectorQuestVarGetZ("U") + 0));</Command>
+<Command>		  trVectorQuestVarSet("U", xsVectorSet(trVectorQuestVarGetX("U") + 8,trVectorQuestVarGetY("U"),trVectorQuestVarGetZ("U")));</Command>
 <Command>		  trArmyDispatch("1,10", "Dwarf", 1, trVectorQuestVarGetX("U"), trVectorQuestVarGetY("U"), trVectorQuestVarGetZ("U"), 90, true);</Command>
 <Command>	  }</Command>
 <Command>      unitTransform("Dwarf","Palace");</Command>
@@ -824,6 +922,41 @@
 <Command>      trLetterBox(false);</Command>
 <Command>      xsDisableRule("CinPrologue12");</Command>
 <Command>   }</Command>
+<Command>}</Command>
+<Command>rule detectClick</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>	for (p=2; >0) {</Command>
+<Command>		if (trPlayerGetPopulation(p) > 9000) {</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			yFindLatestReverse("vision", "Vision Revealer", p);</Command>
+<Command>			trVectorSetUnitPos("p"+p+"clickPos", "vision", true);</Command>
+<Command>			trQuestVarSet("p"+p+"click", 2);</Command>
+<Command>			trUnitDestroy();</Command>
+<Command>			trTechGodPower(p, "Vision", 1);</Command>
+<Command>		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {</Command>
+<Command>			yFindLatest("magnet", "Animal Attractor", p);</Command>
+<Command>			trVectorSetUnitPos("p"+p+"clickPos", "magnet", true);</Command>
+<Command>			trQuestVarSet("p"+p+"click", 1);</Command>
+<Command>			trUnitDestroy();</Command>
+<Command>			trTechGodPower(p, "Animal magnetism", 1);</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule initializeClick</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>runImmediately</Command>
+<Command>{</Command>
+<Command>	trTechGodPower(1, "Animal magnetism", 1);</Command>
+<Command>	trTechGodPower(2, "Animal magnetism", 1);</Command>
+<Command>	trTechGodPower(1, "Vision", 1);</Command>
+<Command>	trTechGodPower(2, "Vision", 1);</Command>
+<Command>	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");</Command>
+<Command>	map("mouse2up", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");</Command>
+<Command>	xsDisableRule("initializeClick");</Command>
 <Command>}</Command>
 </Effect>
 </Effects>
