@@ -11,6 +11,11 @@ void trVectorSetUnitPos(string v = "", string db = "", bool reverse = true) {
 	trVectorQuestVarSet(v, kbGetBlockPosition(""+1*trQuestVarGet(db), reverse));
 }
 
+
+void trUnitMoveToVector(string v = "", bool attack = false) {
+	trUnitMoveToPoint(trVectorQuestVarGetX(v),0,trVectorQuestVarGetZ(v),-1,attack);
+}
+
 void trVectorScale(string db = "", float s = 1.0) {
 	trQuestVarSet(db+"x", trQuestVarGet(db+"x") * s);
 	trQuestVarSet(db+"z", trQuestVarGet(db+"z") * s);
