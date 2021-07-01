@@ -361,9 +361,21 @@ float yGetVar(string db = "", string attr = "") {
 	return(trQuestVarGet("zdatalite" + db + "" + zdatapointer + "" + attr));
 }
 
+float yGetVarByIndex(string db = "", string attr = "", int index = 0) {
+	return(trQuestVarGet("zdatalite" + db + "" + index + "" + attr));
+}
+
 void ySetVar(string db = "", string attr = "", float value = 0.0) {
 	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");
 	trQuestVarSet("zdatalite" + db + "" + zdatapointer + "" + attr, value);
+}
+
+void ySetVarByIndex(string db = "", string attr = "", int index = 0, float value = 0.0) {
+	trQuestVarSet("zdatalite" + db + "" + index + "" + attr, value);
+}
+
+int yGetUnitAtIndex(string db = "", int index = 0) {
+	return(trQuestVarGet("zdatalite"+db+"index"+index));
 }
 
 void yClearDatabase(string db = "") {
