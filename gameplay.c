@@ -111,7 +111,6 @@ bool attackUnitAtCursor(int p = 0) {
 		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// TODO: Guard activates here
 			trQuestVarSet("counterAttack", 0);
-			trQuestVarSet("attackDamage", yGetVarByIndex("allUnits", "attack", a));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("activeUnit"), true);
 			trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
@@ -123,7 +122,6 @@ bool attackUnitAtCursor(int p = 0) {
 			if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 				trQuestVarSet("counterAttack", 1);
 				trQuestVarSet("targetUnitIndex", target);
-				trQuestVarSet("counterDamage", yGetVarByIndex("allUnits", "attack", target));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("targetUnit"), true);
 				trSetUnitOrientation(zGetUnitVector("d2pos", "d1pos"), xsVectorSet(0,1,0), true);
@@ -201,7 +199,6 @@ Action that takes place with a generic right click
 */
 void unitWorkAtCursor(int p = 0) {
 	int unit = trQuestVarGet("p"+p+"selected");
-	trQuestVarSet("moveTile", -1);
 	if (trQuestVarGet("activePlayer") == p) {
 		if (trQuestVarGet("activeUnitIndex") > -1) {
 			trQuestVarSet("activeUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("activeUnitIndex")));
@@ -214,10 +211,12 @@ void unitWorkAtCursor(int p = 0) {
 					without moving it.
 					 */
 					if (attackUnitAtCursor(p) == false) {
+						trQuestVarSet("moveTile", -1);
 						for (x=yGetDatabaseCount("reachable"); >0) {
 							yDatabaseNext("reachable");
 							if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
 								trQuestVarCopy("moveTile", "reachable");
+								break;
 							}
 						}
 						if (trQuestVarGet("moveTile") == -1) {
