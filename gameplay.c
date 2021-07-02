@@ -12,13 +12,17 @@ const int CASTING_WAIT = 3;
 Removes the currently selected unit in a search from
 the database. This is where we put all the special variables
 that need to be updated whenever a unit is removed.
+This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit() {
 	yRemoveFromDatabase("allUnits");
+	yRemoveUpdateString("allUnits", "name");
+	yRemoveUpdateString("allUnits", "ability");
 	yRemoveUpdateVar("allUnits", "health");
 	yRemoveUpdateVar("allUnits", "attack");
 	yRemoveUpdateVar("allUnits", "speed");
-	yRemoveUpdateVar("allUnits", "cardType");
+	// Since cardType = protounit, we don't need this variable
+	// yRemoveUpdateVar("allUnits", "cardType");
 	yRemoveUpdateVar("allUnits", "player");
 	yRemoveUpdateVar("allUnits", "ready");
 	yRemoveUpdateVar("allUnits", "keywords");
@@ -51,12 +55,12 @@ int findNearestUnit(string qv = "", float radius = 1) {
 
 
 /*
-Given a card type, print information of the
+Given a card index in the allCards array, print information
 of the selected unit.
 */
-void displayCardKeywordsAndDescription(int cardType = 0) {
-	trMessageSetText(trStringQuestVarGet("card"+cardType+"description"),-1);
-	trSoundPlayFN("default","1",-1,trStringQuestVarGet("card"+cardType+"keywords"),"");
+void displayCardKeywordsAndDescription(int index = 0) {
+	// TODO
+	// Example use: trMessageSetText(yGetStringByIndex("allUnits", "ability", index),-1);
 }
 
 /*
@@ -97,7 +101,7 @@ void findTargets(int index = 0, string db = "") {
 If target of the right-click was an enemy within range, start an attack
 */
 bool attackUnitAtCursor(int p = 0) {
-	int target = findNearestUnit("p"+p+"clickPos", 1);
+	int target = findNearestUnit("p"+p+"clickPos", 4);
 	int a = trQuestVarGet("activeUnitIndex");
 
 	if (target == -1) {
@@ -129,10 +133,10 @@ bool attackUnitAtCursor(int p = 0) {
 				trUnitOverrideAnimation(1,0,0,1,-1);
 			}
 
-			trQuestVarSet("p"+p+"casting", CASTING_WAIT);
+			
 			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
 
-			xsEnableRule("attackComplete");
+			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
 		}
 	}
@@ -140,163 +144,151 @@ bool attackUnitAtCursor(int p = 0) {
 	return(false);
 }
 
-/*
-Action that takes place with a generic left click  
-*/
-void selectUnitAtCursor(int p = 0) {
-	int unit = 0;
-	/*
-	Deselect previously selected unit
-	*/
-	if (trQuestVarGet("activePlayer") == p &&
-		trQuestVarGet("p"+p+"selected") > -1) {
-		// Clear previously highlighted tiles.
-		if (yGetDatabaseCount("reachable") > 0) {
-			for(x=yGetDatabaseCount("reachable"); >0) {
-				highlightTile(1*yDatabaseNext("reachable"), 0.1);
-			}
-			yClearDatabase("reachable");
-		}
-		/*
-		Clear previously highlighted target enemies
-		*/
-		if (yGetDatabaseCount("targets") > 0) {
-			yDatabaseSelectAll("targets");
-			trUnitHighlight(0.1, false);
-			yClearDatabase("targets");
-		}
-		if (yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected")) == ACTION_MOVED) {
-			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_DONE);
-		}
-	}
-	unit = findNearestUnit("p"+p+"clickPos", 1);
-	trQuestVarSet("p"+p+"selected", unit);
-	if (unit > -1) {
-		if (trCurrentPlayer() == p) {
-			displayCardKeywordsAndDescription(yGetVarByIndex("allUnits", "cardType", unit));
-		}
-		/*
-		If the player owns the selected unit and it is currently
-		their turn, and also the unit hasn't moved yet,
-		then highlight locations that it can move to.
-		*/
-		if (yGetVarByIndex("allUnits", "player", unit) == p &&
-			yGetVarByIndex("allUnits", "action", unit) == ACTION_READY &&
-			trQuestVarGet("activePlayer") == p) {
-			trQuestVarSet("activeUnitIndex", trQuestVarGet("p"+p+"selected"));
-			highlightReachable(unit);
-			findTargets(unit, "targets");
-			yDatabaseSelectAll("targets");
-			trUnitHighlight(3600.0, false);
-		}
-	} else {
-		// TODO: Check if player selected a unit in hand.
-	}
-}
 
 /*
-Action that takes place with a generic right click
+Game is waiting for the active player to select a unit. This trigger
+does not check what the inactive player is doing
 */
-void unitWorkAtCursor(int p = 0) {
-	int unit = trQuestVarGet("p"+p+"selected");
-	if (trQuestVarGet("activePlayer") == p) {
-		if (trQuestVarGet("activeUnitIndex") > -1) {
-			trQuestVarSet("activeUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("activeUnitIndex")));
-			switch(yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")))
-			{
-				case ACTION_READY:
-				{
-					/*
-					First check if player wants unit to attack something in range 
-					without moving it.
-					 */
-					if (attackUnitAtCursor(p) == false) {
-						trQuestVarSet("moveTile", -1);
-						for (x=yGetDatabaseCount("reachable"); >0) {
-							yDatabaseNext("reachable");
-							if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
-								trQuestVarCopy("moveTile", "reachable");
-								break;
-							}
-						}
-						if (trQuestVarGet("moveTile") == -1) {
-							if (trCurrentPlayer() == p) {
-								trSoundPlayFN("cantdothat.wav","1",-1,"","");
-							}
-						} else {
-							// un-highlight all tiles
-							for (x=yGetDatabaseCount("reachable"); >0) {
-								highlightTile(1*yDatabaseNext("reachable", false), 0.1);
-							}
-							yClearDatabase("reachable");
-
-							/* setting old tile to unoccupied */
-							trVectorSetUnitPos("pos", "activeUnit");
-							int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
-							zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
-
-							trVectorSetUnitPos("moveDestination", "moveTile");
-							trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
-							trUnitSelectClear();
-							trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-							trUnitMoveToVector("moveDestination");
-							trQuestVarSet("p"+p+"casting", CASTING_WAIT);
-							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
-							trQuestVarSet("moving", 0);
-							xsEnableRule("moveComplete");
-						}
-					}
-				}
-				case ACTION_MOVED:
-				{
-					attackUnitAtCursor(p);
-				}
-			}
-		}
-	}
-}
-
-/*
-p1casting determines the behavior of the left/right click based on the following:
-	CASTING_NORMAL: normal behavior (i.e. unit click and move)
-	CASTING_SUMMON: summoning a unit
-	CASTING_SPELL: special rules when casting a spell
-	CASTING_WAIT: nothing should happen. Waiting for animations to finish playing.
-
-allUnits is a database that contains all units of both players
-
-activePlayer is the player who's turn it currently is
-*/
-rule selectAndMove
+rule gameplay_01_select
 highFrequency
-active
+inactive
 {
-	for (p=2; >0) {
-		if (trQuestVarGet("p"+p+"click") > 0) {
-			switch(1*trQuestVarGet("p"+p+"casting")) 
-			{
-				case CASTING_NORMAL:
-				{
-					switch(1*trQuestVarGet("p"+p+"click"))
-					{
-						case LEFT_CLICK:
-						{
-							selectUnitAtCursor(p);
-						}
-						case RIGHT_CLICK:
-						{
-							unitWorkAtCursor(p);
-						}
+	int p = trQuestVarGet("activePlayer");
+	if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
+		int unit = findNearestUnit("p"+p+"clickPos", 4);
+		trQuestVarSet("activeUnitIndex", unit);
+		if (unit > -1) {
+			/* this might be put somewhere else idk */
+			if (trCurrentPlayer() == p) {
+				displayCardKeywordsAndDescription(unit);
+			}
+			/*
+			If the player owns the selected unit and and the unit hasn't moved yet,
+			then highlight locations that it can move to and proceed to gameplay_02_work.
+			*/
+			if (yGetVarByIndex("allUnits", "player", unit) == p &&
+				yGetVarByIndex("allUnits", "action", unit) == ACTION_READY) {
+				highlightReachable(unit);
+
+				// highlight attackable enemies within range
+				findTargets(unit, "targets");
+				yDatabaseSelectAll("targets");
+				trUnitHighlight(3600.0, false);
+
+				xsDisableRule("gameplay_01_select");
+				xsEnableRule("gameplay_02_work");
+
+			}
+		} else {
+			// TODO: Check if user selected a unit in hand
+		}
+
+		trQuestVarSet("p"+p+"click", 0);
+	}
+}
+
+/*
+Game is waiting for the active player to issue a right click, 
+which can be a move or an attack command. A left click will cancel
+and send us back to gameplay_01_select.
+Again, we ignore whatever the inactive player is doing.
+*/
+rule gameplay_02_work
+highFrequency
+inactive
+{
+	int p = trQuestVarGet("activePlayer");
+	switch(1*trQuestVarGet("p"+p+"click"))
+	{
+		case LEFT_CLICK:
+		{
+			/*
+			Deselect previously selected unit
+			*/
+			if (trQuestVarGet("activeUnitIndex") > -1) {
+				// Clear previously highlighted tiles.
+				if (yGetDatabaseCount("reachable") > 0) {
+					for(x=yGetDatabaseCount("reachable"); >0) {
+						highlightTile(1*yDatabaseNext("reachable"), 0.1);
+					}
+					yClearDatabase("reachable");
+				}
+				/*
+				Clear previously highlighted target enemies
+				*/
+				if (yGetDatabaseCount("targets") > 0) {
+					yDatabaseSelectAll("targets");
+					trUnitHighlight(0.1, false);
+					yClearDatabase("targets");
+				}
+				if (yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) == ACTION_MOVED) {
+					ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+				}
+
+				xsDisableRule("gameplay_02_work");
+				xsEnableRule("gameplay_01_select");
+
+				/* 
+				We DON'T set click back to zero in case the user selected another unit 
+				with this click.
+				*/
+				// trQuestVarSet("p"+p+"click", 0);
+			}
+		}
+		case RIGHT_CLICK:
+		{
+			int unit = trQuestVarGet("activeUnitIndex");
+			trQuestVarSet("activeUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("activeUnitIndex")));
+			/*
+			First check if player wants unit to attack something in range 
+			without moving it.
+			 */
+			if (attackUnitAtCursor(p) == false) {
+				trQuestVarSet("moveTile", -1);
+				for (x=yGetDatabaseCount("reachable"); >0) {
+					yDatabaseNext("reachable");
+					if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
+						trQuestVarCopy("moveTile", "reachable");
+						break;
 					}
 				}
-				case CASTING_SUMMON:
-				{
+				if (trQuestVarGet("moveTile") == -1) {
+					if (trCurrentPlayer() == p) {
+						trSoundPlayFN("cantdothat.wav","1",-1,"","");
+					}
+				} else {
+					// un-highlight all tiles
+					for (x=yGetDatabaseCount("reachable"); >0) {
+						highlightTile(1*yDatabaseNext("reachable", false), 0.1);
+					}
+					yClearDatabase("reachable");
 
-				}
-				case CASTING_SPELL:
-				{
+					/*
+					Clear previously highlighted target enemies
+					*/
+					if (yGetDatabaseCount("targets") > 0) {
+						yDatabaseSelectAll("targets");
+						trUnitHighlight(0.1, false);
+						yClearDatabase("targets");
+					}
 
+					/* setting old tile to unoccupied */
+					int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
+					zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+
+					trVectorSetUnitPos("moveDestination", "moveTile");
+					trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
+					trUnitSelectClear();
+					trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
+					trUnitMoveToVector("moveDestination");
+					
+					ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
+					trQuestVarSet("moving", 0);
+					xsEnableRule("gameplay_03_moveComplete");
+					xsDisableRule("gameplay_02_work");
 				}
+			} else {
+				xsDisableRule("gameplay_02_work");
 			}
 			trQuestVarSet("p"+p+"click", 0);
 		}
@@ -307,7 +299,7 @@ active
 Called when a unit is moving to its destination tile. Only one unit can be
 moving at a time.
 */
-rule moveComplete
+rule gameplay_03_moveComplete
 highFrequency
 inactive
 {
@@ -345,9 +337,15 @@ inactive
 
 			findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
 
+			/*
+			If no targets found, we go back to gameplay_01_select
+			Otherwise, we go to gameplay_04_attack
+			*/
 			if (yGetDatabaseCount("targets") == 0) {
+				xsEnableRule("gameplay_01_select");
 				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
 			} else {
+				xsEnableRule("gameplay_04_attack");
 				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
 				yDatabaseSelectAll("targets");
 				trUnitHighlight(3600, false);
@@ -356,18 +354,59 @@ inactive
 			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));
 			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
 
-			trQuestVarSet("p"+p+"casting", CASTING_NORMAL);
 
-			xsDisableRule("moveComplete");
+			xsDisableRule("gameplay_03_moveComplete");
 		}
 	}
+}
+
+/*
+Wait for the user to issue an attack command.
+*/
+rule gameplay_04_attack
+highFrequency
+inactive
+{
+	int p = trQuestVarGet("activePlayer");
+	switch(1*trQuestVarGet("p"+p+"click"))
+	{
+		case LEFT_CLICK:
+		{
+			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+			/*
+			Clear previously highlighted target enemies
+			*/
+			if (yGetDatabaseCount("targets") > 0) {
+				yDatabaseSelectAll("targets");
+				trUnitHighlight(0.1, false);
+				yClearDatabase("targets");
+			}
+			xsDisableRule("gameplay_04_attack");
+			xsEnableRule("gameplay_01_select");
+		}
+		case RIGHT_CLICK:
+		{
+			if (attackUnitAtCursor(p)) {
+				/*
+				Clear previously highlighted target enemies
+				*/
+				if (yGetDatabaseCount("targets") > 0) {
+					yDatabaseSelectAll("targets");
+					trUnitHighlight(0.1, false);
+					yClearDatabase("targets");
+				}
+				xsDisableRule("gameplay_04_attack");
+			}
+		}
+	}
+	trQuestVarSet("p"+p+"click", 0);
 }
 
 
 /*
 Called to complete a duel of fates
 */
-rule attackComplete
+rule gameplay_05_attackComplete
 highFrequency
 inactive
 {
@@ -386,9 +425,8 @@ inactive
 			trDamageUnit(yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("targetUnitIndex")));
 		}
 
-		
-		trQuestVarSet("p"+p+"casting", CASTING_NORMAL);
-		xsDisableRule("attackComplete");
+		xsEnableRule("gameplay_01_select");
+		xsDisableRule("gameplay_05_attackComplete");
 		trDelayedRuleActivation("resolveDead");
 	}
 }
