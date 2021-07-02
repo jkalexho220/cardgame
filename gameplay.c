@@ -18,10 +18,11 @@ void removeUnit() {
 	yRemoveUpdateVar("allUnits", "health");
 	yRemoveUpdateVar("allUnits", "attack");
 	yRemoveUpdateVar("allUnits", "speed");
-	yRemoveUpdateVar("allUnits", "ghost");
 	yRemoveUpdateVar("allUnits", "cardType");
 	yRemoveUpdateVar("allUnits", "player");
 	yRemoveUpdateVar("allUnits", "ready");
+	yRemoveUpdateVar("allUnits", "keywords");
+	yRemoveUpdateVar("allUnits", "tile");
 }
 
 
@@ -95,11 +96,50 @@ void findTargets(int index = 0, string db = "") {
 /*
 If target of the right-click was an enemy within range, start an attack
 */
-void attackUnitAtCursor(int p = 0) {
-	for(x=yGetDatabaseCount("targets"); >0) {
-		yDatabaseNext("targets");
-		if (zDistanceToVectorSquared())
+bool attackUnitAtCursor(int p = 0) {
+	int target = findNearestUnit("p"+p+"clickPos", 1);
+	int a = trQuestVarGet("activeUnitIndex");
+
+	if (target == -1) {
+		return(false);
 	}
+	if (yGetVarByIndex("allUnits", "player", target) == 3 - p) {
+		trQuestVarSet("targetUnit", yGetUnitAtIndex("allUnits", target));
+		trVectorSetUnitPos("d1pos", "activeUnit");
+		trVectorSetUnitPos("d2pos", "targetUnit");
+		float range = xsPow(yGetVarByIndex("allUnits", "range", a) * 6 + 3, 2);
+		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
+			// TODO: Guard activates here
+			trQuestVarSet("counterAttack", 0);
+			trQuestVarSet("attackDamage", yGetVarByIndex("allUnits", "attack", a));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("activeUnit"), true);
+			trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+			// TODO: choose correct animation based on card type
+			trUnitOverrideAnimation(1,0,0,1,-1);
+
+			// Counterattack
+			range = xsPow(yGetVarByIndex("allUnits", "range", target) * 6 + 3, 2);
+			if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
+				trQuestVarSet("counterAttack", 1);
+				trQuestVarSet("targetUnitIndex", target);
+				trQuestVarSet("counterDamage", yGetVarByIndex("allUnits", "attack", target));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("targetUnit"), true);
+				trSetUnitOrientation(zGetUnitVector("d2pos", "d1pos"), xsVectorSet(0,1,0), true);
+				// TODO: choose correct animation based on card type
+				trUnitOverrideAnimation(1,0,0,1,-1);
+			}
+
+			trQuestVarSet("p"+p+"casting", CASTING_WAIT);
+			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+
+			xsEnableRule("attackComplete");
+			return(true);
+		}
+	}
+
+	return(false);
 }
 
 /*
@@ -119,6 +159,9 @@ void selectUnitAtCursor(int p = 0) {
 			}
 			yClearDatabase("reachable");
 		}
+		/*
+		Clear previously highlighted target enemies
+		*/
 		if (yGetDatabaseCount("targets") > 0) {
 			yDatabaseSelectAll("targets");
 			trUnitHighlight(0.1, false);
@@ -142,6 +185,7 @@ void selectUnitAtCursor(int p = 0) {
 		if (yGetVarByIndex("allUnits", "player", unit) == p &&
 			yGetVarByIndex("allUnits", "action", unit) == ACTION_READY &&
 			trQuestVarGet("activePlayer") == p) {
+			trQuestVarSet("activeUnitIndex", trQuestVarGet("p"+p+"selected"));
 			highlightReachable(unit);
 			findTargets(unit, "targets");
 			yDatabaseSelectAll("targets");
@@ -159,8 +203,9 @@ void unitWorkAtCursor(int p = 0) {
 	int unit = trQuestVarGet("p"+p+"selected");
 	trQuestVarSet("moveTile", -1);
 	if (trQuestVarGet("activePlayer") == p) {
-		if (trQuestVarGet("p"+p+"selected") > -1) {
-			switch(yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected")))
+		if (trQuestVarGet("activeUnitIndex") > -1) {
+			trQuestVarSet("activeUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("activeUnitIndex")));
+			switch(yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")))
 			{
 				case ACTION_READY:
 				{
@@ -187,25 +232,25 @@ void unitWorkAtCursor(int p = 0) {
 							yClearDatabase("reachable");
 
 							/* setting old tile to unoccupied */
-							trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", unit), true));
+							trVectorSetUnitPos("pos", "activeUnit");
+							int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
+							zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
 
 							trVectorSetUnitPos("moveDestination", "moveTile");
-							trQuestVarSet("movingUnitName", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("p"+p+"selected")));
-							trQuestVarSet("movingUnitID", kbGetBlockID(""+1*trQuestVarGet("movingUnitName"), true));
+							trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
 							trUnitSelectClear();
-							trUnitSelectByID(1*trQuestVarGet("movingUnitID"));
+							trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 							trUnitMoveToVector("moveDestination");
 							trQuestVarSet("p"+p+"casting", CASTING_WAIT);
-							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_MOVED);
+							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
 							trQuestVarSet("moving", 0);
 							xsEnableRule("moveComplete");
 						}
 					}
-					
 				}
 				case ACTION_MOVED:
 				{
-
+					attackUnitAtCursor(p);
 				}
 			}
 		}
@@ -269,15 +314,15 @@ inactive
 {
 	// unit starts moving
 	if (trQuestVarGet("moving") == 0) {
-		if (kbUnitGetAnimationActionType(1*trQuestVarGet("movingUnitID")) == 11 ||
-			kbUnitGetAnimationActionType(1*trQuestVarGet("movingUnitID")) == 10) {
+		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 11 ||
+			kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 10) {
 			trQuestVarSet("moving", 1);
 		}
 	} else if (trQuestVarGet("moving") == 1) {
-		if (kbUnitGetAnimationActionType(1*trQuestVarGet("movingUnitID")) == 9) {
+		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9) {
 			int p = trQuestVarGet("activePlayer");
 
-			trVectorSetUnitPos("start", "movingUnitName");
+			trVectorSetUnitPos("start", "activeUnit");
 			trVectorSetUnitPos("end", "moveTile");
 
 			trUnitSelectClear();
@@ -286,10 +331,10 @@ inactive
 			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
 
-			int type = kbGetUnitBaseTypeID(1*trQuestVarGet("movingUnitID"));
+			int type = kbGetUnitBaseTypeID(1*trQuestVarGet("activeUnitID"));
 
 			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("movingUnitID"));
+			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 			trMutateSelected(kbGetProtoUnitID("Dwarf"));
 			trImmediateUnitGarrison(""+1*trQuestVarGet("moveTile"));
 			trUnitChangeProtoUnit(kbGetProtoUnitName(type));
@@ -299,16 +344,17 @@ inactive
 			trUnitConvert(0);
 			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 
-			findTargets(1*trQuestVarGet("p"+p+"selected"), "targets");
+			findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
 
 			if (yGetDatabaseCount("targets") == 0) {
-				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_DONE);
+				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
 			} else {
-				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("p"+p+"selected"), ACTION_MOVED);
+				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
 				yDatabaseSelectAll("targets");
 				trUnitHighlight(3600, false);
 			}
 
+			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));
 			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
 
 			trQuestVarSet("p"+p+"casting", CASTING_NORMAL);
@@ -316,4 +362,54 @@ inactive
 			xsDisableRule("moveComplete");
 		}
 	}
+}
+
+
+/*
+Called to complete a duel of fates
+*/
+rule attackComplete
+highFrequency
+inactive
+{
+	int attackerID = kbGetBlockID(""+1*trQuestVarGet("activeUnit"));
+	int targetID = kbGetBlockID(""+1*trQuestVarGet("targetUnit"));
+	if (kbUnitGetAnimationActionType(attackerID) == 9 &&
+		kbUnitGetAnimationActionType(targetID) == 9) {
+		int p = trQuestVarGet("activePlayer");
+		trUnitSelectClear();
+		trUnitSelectByID(targetID);
+		trDamageUnit(yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("activeUnitIndex")));
+
+		if (trQuestVarGet("counterAttack") == 1) {
+			trUnitSelectClear();
+			trUnitSelectByID(attackerID);
+			trDamageUnit(yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("targetUnitIndex")));
+		}
+
+		
+		trQuestVarSet("p"+p+"casting", CASTING_NORMAL);
+		xsDisableRule("attackComplete");
+		trDelayedRuleActivation("resolveDead");
+	}
+}
+
+rule resolveDead
+highFrequency
+inactive
+{
+	/*
+	Resolve dead units.
+	*/
+	int id = 0;
+	int tile = 0;
+	for (x=yGetDatabaseCount("allUnits"); >0) {
+		id = yDatabaseNext("allUnits", true);
+		if (id == -1 || trUnitAlive() == false) {
+			tile = yGetVar("allUnits", "tile");
+			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+			removeUnit();
+		}
+	}
+	xsDisableRule("resolveDead");
 }
