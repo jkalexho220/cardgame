@@ -101,6 +101,52 @@ bool HasWard(int keywords = 0){
 	return (GetBit(keywords, 9));
 }
 
+void SelectionInterface(){
+	int unitsCount = trQuestVarGet("cardUnitsIndex");
+	string dialog = "";
+	string message = "";
+	for(i=0;<unitsCount){
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("cardUnits_"+i));
+		if(trUnitIsSelected()){
+			int keywords = trQuestVarGet("cardUnits_" + i + "_Keywords");
+			if(keywords>0){					
+				bool multiple = false;
+				for(k=0;<10){
+					if(GetBit(keywords, k)){
+						if(multiple){
+							dialog = dialog + ", ";
+						}
+						multiple = true;
+						dialog = dialog + GetKeywordName(k);
+					}
+				}
+			}
+			message = trStringQuestVarGet("cardUnits_" + i + "_Ability");
+			//Message fades and is annoying, putting custom card text in fake counter for now
+			/*
+			if(message!=""){
+				trMessageSetText(message, -1);
+			} else {
+				gadgetUnreal("messageWindow");
+			}
+			*/
+			gadgetUnreal("DetailedHelpButton");
+			if(HasArmor(keywords)){
+				gadgetUnreal("NormalArmorTextDisplay");			
+			} else {
+				gadgetUnreal("unitStatPanel-stat-normalArmor");
+			}
+			if(HasWard(keywords)){
+				gadgetUnreal("PierceArmorTextDisplay");			
+			} else {
+				gadgetUnreal("unitStatPanel-stat-pierceArmor");
+			}
+		}
+	}
+	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
+	trSetCounterDisplay(message);
+}
 
 void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, string ability=""){
 	int proto = kbGetProtoUnitID(protoName);
@@ -222,7 +268,7 @@ runImmediately
 	//Pick a card. Any card.
 	CardSetup("Militia", 				1, "Farmer", 			1, 3, 1, 0);
 	CardSetup("Maceman", 				1, "Squire", 			1, 2, 1, 0, Guard());
-	CardSetup("Ulfsark", 				1, "Wolfpelt", 			1, 2, 1, 0, Charge());
+	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 1, 0, Charge());
 	CardSetup("Slinger", 				1, "Gypsy", 			1, 1, 1, 1);
 	CardSetup("Toxotes", 				2, "Townguard Archer", 	2, 2, 1, 1);
 	CardSetup("Spearman", 				2, "Roadside Bandit", 	3, 2, 1, 0);
@@ -233,7 +279,7 @@ runImmediately
 	CardSetup("Trident Soldier",		4, "Throne Shield", 	2, 6, 1, 0, Guard());
 	CardSetup("Avenger", 				5, "Avian Warrior", 	3, 5, 1, 0, Airdrop(Furious()));
 	CardSetup("Battle Boar", 			5, "Golden Hog", 		4, 4, 2, 0, Charge(Guard()));
-	CardSetup("Hero Greek Odysseus",	9, "Nickonhawk", 		4, 7, 1, 0, Guard(Ethereal(Regenerate())), "Listening to anime music and eating trash.");
+	CardSetup("Hero Greek Odysseus",	9, "Nickonhawk", 		4, 7, 1, 2, Guard(Ethereal(Regenerate())), "Listening to anime music and eating trash.");
 	CardSetup("Hoplite", 				9, "Zenophobia", 		7, 4, 1, 0, Charge(Armor(Deadly())), "Currently hard at work on Star Fighter Ace 3.");
 	CardSetup("Pharaoh of Osiris", 		9, "Yeebaagooon", 		9, 9, 9, 0, Airdrop(Ward(Lightning())), "Seraph addicted to dota and tea.");
 	
@@ -241,11 +287,16 @@ runImmediately
 	int cardIndex = 0;
 	for(i=0;<16){
 		int n = trGetScenarioUserData(i);
-		CardLoad((n<0), GetBit(n,0), cardIndex);
+		CardLoad((n<0), (zModulo(2,n)==1), cardIndex);
+		n=n/2;
 		cardIndex = cardIndex + 1;
 		int j=1;
 		while(j<29){
-			CardLoad(GetBit(n,j), GetBit(n,j+1), cardIndex);
+			bool firstBit = (zModulo(2,n)==1);
+			n=n/2;
+			bool secondBit = (zModulo(2,n)==1);
+			n=n/2;
+			CardLoad(firstBit, secondBit, cardIndex);
 			cardIndex = cardIndex + 1;
 			j=j+2;
 		}
@@ -269,50 +320,7 @@ rule SelectionLoop
 highFrequency
 inactive
 {
-	int unitsCount = trQuestVarGet("cardUnitsIndex");
-	string dialog = "";
-	string message = "";
-	for(i=0;<unitsCount){
-		trUnitSelectClear();
-		trUnitSelect(""+1*trQuestVarGet("cardUnits_"+i));
-		if(trUnitIsSelected()){
-			int keywords = trQuestVarGet("cardUnits_" + i + "_Keywords");
-			if(keywords>0){					
-				bool multiple = false;
-				for(k=0;<10){
-					if(GetBit(keywords, k)){
-						if(multiple){
-							dialog = dialog + ", ";
-						}
-						multiple = true;
-						dialog = dialog + GetKeywordName(k);
-					}
-				}
-			}
-			message = trStringQuestVarGet("cardUnits_" + i + "_Ability");
-			//Message fades and is annoying, putting custom card text in fake counter for now
-			/*
-			if(message!=""){
-				trMessageSetText(message, -1);
-			} else {
-				gadgetUnreal("messageWindow");
-			}
-			*/
-			gadgetUnreal("DetailedHelpButton");
-			if(HasArmor(keywords)){
-				gadgetUnreal("NormalArmorTextDisplay");			
-			} else {
-				gadgetUnreal("unitStatPanel-stat-normalArmor");
-			}
-			if(HasWard(keywords)){
-				gadgetUnreal("PierceArmorTextDisplay");			
-			} else {
-				gadgetUnreal("unitStatPanel-stat-pierceArmor");
-			}
-		}
-	}
-	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
-	trSetCounterDisplay(message);
+	SelectionInterface();
 	xsDisableRule("SelectionLoop");
 	xsEnableRule("SelectionLoop_");
 }
