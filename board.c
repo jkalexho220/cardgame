@@ -1,3 +1,9 @@
+
+const int TILE_EMPTY = 0;
+const int TILE_IMPASSABLE = 1;
+const int TILE_OCCUPIED = 2;
+
+
 void setupBoard() {
 	unitTransform("Statue of Automaton Base", "Rocket");
 	
@@ -70,6 +76,69 @@ void setupBoard() {
 		}
 		zBankNext("tiles");
 	}
+}
+
+/*
+Given a QV vector name, find the ID of the closest space to it.
+Returns -1 if none found.
+*/
+int findNearestTile(string v = "") {
+	for (x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		if (zDistanceToVectorSquared("tiles", v) < 9) {
+			return(1*trQuestVarGet("tiles"));
+		}
+	}
+	return(-1);
+}
+
+/*
+Finds all tiles that can be reached by the tile indicated by 'id'.
+Adds all of the found tiles to the yDatabase 'db'.
+If 'ghost' is set to true, uses ghost pathfinding rules (ignore occupied and impassable terrain)
+*/
+void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost = false) {
+	for (x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		zSetVar("tiles", "searched", 0);
+	}
+	int push = 0;
+	int pop = -1;
+	int tile = 0;
+	int neighbor = 0;
+	trQuestVarSet("search"+push+"tile", id);
+	trQuestVarSet("search"+push+"distance", distance);
+	while (pop < push) {
+		pop = pop + 1;
+		tile = trQuestVarGet("search"+pop+"tile");
+		// Add it to the db if it is not occupied
+		if (zGetVarByIndex("tiles", "occupied", tile) < TILE_OCCUPIED) {
+			yAddToDatabase(db, "search"+pop+"tile");
+		}
+		// Search neighbors
+		if (trQuestVarGet("search"+pop+"distance") > 0) {
+			for (x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+				neighbor = zGetVarByIndex("tiles", "neighbor"+x, tile);
+				if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
+					zSetVarByIndex("tiles", "searched", neighbor, 1);
+					// Add to fringe if it can be moved through.
+					if (zGetVarByIndex("tiles", "occupied", neighbor) == TILE_EMPTY || ghost) {
+						push = push + 1;
+						trQuestVarSet("search"+push+"tile", neighbor);
+						trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
+					}
+				}
+			}
+		}
+	}
+}
+
+void highlightTile(int tile = 0, float duration = 0.1) {
+	trUnitSelectClear();
+	for (x=0; < zGetVarByIndex("tiles", "borderCount", tile)) {
+		trUnitSelectByID(zGetVarByIndex("tiles", "border"+x, tile));
+	}
+	trUnitHighlight(duration, false);
 }
 
 rule initializeBoard
