@@ -446,6 +446,41 @@ void DeploySober(string p="", string v=""){
 	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
 }
 
+/*
+Bit functions
+n - number, p - position
+*/
+bool GetBit(int n=0, int p=0){
+	for(i=0;<30){
+		if(i==p){
+			return (zModulo(2,n)==1);
+		}
+		n=n/2;
+	}
+	return (false);
+}
+
+int SetBit(int n=0, int p=0){
+	int r = 0;
+	for(i=0;<30){
+		if(zModulo(2,n)==1||i==p){
+			r=r+xsPow(2,i);
+		}
+		n=n/2;
+	}
+	return (r);
+}
+		
+int ClearBit(int n=0, int p=0){
+	int r = 0;
+	for(i=0;<30){
+		if(zModulo(2,n)==1&&i!=p){
+			r=r+xsPow(2,i);
+		}
+		n=n/2;
+	}
+	return (r);
+}
 
 rule initializeEverything
 highFrequency
@@ -465,7 +500,9 @@ runImmediately
 		trChatSend(0, "Mode:Multiplayer");
 	} else {
 		trChatSend(0, "Mode:Singleplayer");
-		bool virgin = true;
+		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
+		bool virgin = trGetScenarioUserData(0); 
+		virgin = false; // testing
 		trChatSend(0, "Checking if played before...");
 		if(virgin && trQuestVarGet("chad") == 0){
 			xsEnableRule("CinPrologue00");
