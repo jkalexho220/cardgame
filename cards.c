@@ -303,6 +303,7 @@ runImmediately
 		}
 	}
 	
+	/*
 	//Deploy one of each card to playtest.
 	int cardsCount = trQuestVarGet("cardProtosIndex");
 	for(i=0;<cardsCount){
@@ -310,9 +311,7 @@ runImmediately
 		trVectorQuestVarSet("temp", kbGetBlockPosition(""+1*trQuestVarGet("random")));
 		CardInstantiate(kbGetProtoUnitName(trQuestVarGet("cardProtos_"+i)),"temp");
 	}
-	
-	//Fire Selection
-	xsEnableRule("SelectionLoop");
+	*/
 	
 	xsDisableRule("initializeCards");
 }

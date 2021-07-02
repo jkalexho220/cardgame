@@ -341,6 +341,13 @@ void yRemoveFromDatabase(string db = "") {
 	trQuestVarSet("zdatalite" + db + "count", zdatacount);
 }
 
+void yRemoveUpdateString(string db = "", string attr = "") {
+	int zdatacount = trQuestVarGet("zdatalite" + db + "count");
+	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
+	trStringQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr, 
+		trStringQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));
+}
+
 void yRemoveUpdateVar(string db = "", string attr = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count");
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
@@ -356,9 +363,26 @@ void yTransferUpdateVar(string to = "", string from = "", string attr = "") {
 		trQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
 }
 
+void yTransferUpdateString(string to = "", string from = "", string attr = "") {
+	int zdatato = trQuestVarGet("zdatalite" + to + "count");
+	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
+	trStringQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
+		trStringQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
+}
+
+void yAddUpdateString(string db = "", string attr = "", string value = "") {
+	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;
+	trStringQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, value);
+}
+
 void yAddUpdateVar(string db = "", string attr = "", float value = 0.0) {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;
 	trQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, value);
+}
+
+string yGetString(string db = "", string attr = "") {
+	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");
+	return(trStringQuestVarGet("zdatalite" + db + "" + zdatapointer + "" + attr));
 }
 
 float yGetVar(string db = "", string attr = "") {
@@ -366,13 +390,26 @@ float yGetVar(string db = "", string attr = "") {
 	return(trQuestVarGet("zdatalite" + db + "" + zdatapointer + "" + attr));
 }
 
+string yGetStringByIndex(string db = "", string attr = "", int index = 0) {
+	return(trStringQuestVarGet("zdatalite" + db + "" + index + "" + attr));
+}
+
 float yGetVarByIndex(string db = "", string attr = "", int index = 0) {
 	return(trQuestVarGet("zdatalite" + db + "" + index + "" + attr));
+}
+
+void ySetString(string db = "", string attr = "", string value = "") {
+	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");
+	trStringQuestVarSet("zdatalite" + db + "" + zdatapointer + "" + attr, value);
 }
 
 void ySetVar(string db = "", string attr = "", float value = 0.0) {
 	int zdatapointer = trQuestVarGet("zdatalite" + db + "pointer");
 	trQuestVarSet("zdatalite" + db + "" + zdatapointer + "" + attr, value);
+}
+
+void ySetStringByIndex(string db = "", string attr = "", int index = 0, string value = "") {
+	trStringQuestVarSet("zdatalite" + db + "" + index + "" + attr, value);
 }
 
 void ySetVarByIndex(string db = "", string attr = "", int index = 0, float value = 0.0) {
