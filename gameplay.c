@@ -54,14 +54,7 @@ int findNearestUnit(string qv = "", float radius = 1) {
 }
 
 
-/*
-Given a card index in the allCards array, print information
-of the selected unit.
-*/
-void displayCardKeywordsAndDescription(int index = 0) {
-	// TODO
-	// Example use: trMessageSetText(yGetStringByIndex("allUnits", "ability", index),-1);
-}
+
 
 /*
 Given the index of a unit in the allUnits database, highlight

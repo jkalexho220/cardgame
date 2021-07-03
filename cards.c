@@ -102,52 +102,46 @@ bool HasWard(int keywords = 0){
 	return (GetBit(keywords, 9));
 }
 
-void SelectionInterface(){
-	int unitsCount = trQuestVarGet("cardUnitsIndex");
+/*
+Given a card index in the allCards array, print information
+of the selected unit.
+*/
+void displayCardKeywordsAndDescription(int index = 0) {
+	// TODO
+	// Example use: trMessageSetText(yGetStringByIndex("allUnits", "ability", index),-1);
 	string dialog = "";
 	string message = "";
-	for(i=0;<unitsCount){
-		trUnitSelectClear();
-		trUnitSelect(""+1*trQuestVarGet("cardUnits_"+i));
-		if(trUnitIsSelected()){
-			int keywords = trQuestVarGet("cardUnits_" + i + "_Keywords");
-			if(keywords>0){					
-				bool multiple = false;
-				for(k=0;<10){
-					if(GetBit(keywords, k)){
-						if(multiple){
-							dialog = dialog + ", ";
-						}
-						multiple = true;
-						dialog = dialog + GetKeywordName(k);
-					}
+	int keywords = yGetVarByIndex("allUnits", "keywords", index);
+	if(keywords>0){
+		bool multiple = false;
+		for(k=0;<10){
+			if(GetBit(keywords, k)){
+				if(multiple){
+					dialog = dialog + ", ";
 				}
-			}
-			message = trStringQuestVarGet("cardUnits_" + i + "_Ability");
-			//Message fades and is annoying, putting custom card text in fake counter for now
-			/*
-			if(message!=""){
-				trMessageSetText(message, -1);
-			} else {
-				gadgetUnreal("messageWindow");
-			}
-			*/
-			gadgetUnreal("DetailedHelpButton");
-			if(HasArmor(keywords)){
-				gadgetUnreal("NormalArmorTextDisplay");			
-			} else {
-				gadgetUnreal("unitStatPanel-stat-normalArmor");
-			}
-			if(HasWard(keywords)){
-				gadgetUnreal("PierceArmorTextDisplay");			
-			} else {
-				gadgetUnreal("unitStatPanel-stat-pierceArmor");
+				multiple = true;
+				dialog = dialog + GetKeywordName(k);
 			}
 		}
 	}
+	message = yGetStringByIndex("allUnits", "ability", index);
+
+	gadgetUnreal("DetailedHelpButton");
+	if(HasArmor(keywords)){
+		gadgetUnreal("NormalArmorTextDisplay");			
+	} else {
+		gadgetUnreal("unitStatPanel-stat-normalArmor");
+	}
+	if(HasWard(keywords)){
+		gadgetUnreal("PierceArmorTextDisplay");			
+	} else {
+		gadgetUnreal("unitStatPanel-stat-pierceArmor");
+	}
+
 	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
 	trSetCounterDisplay(message);
 }
+
 
 void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, string ability=""){
 	int proto = kbGetProtoUnitID(protoName);
