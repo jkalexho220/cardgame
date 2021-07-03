@@ -1,3 +1,6 @@
+const int RIGHT_CLICK = 2;
+const int LEFT_CLICK = 1;
+
 rule detectClick
 highFrequency
 active
@@ -7,13 +10,13 @@ active
 			trUnitSelectClear();
 			yFindLatestReverse("vision", "Vision Revealer", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "vision", true);
-			trQuestVarSet("p"+p+"click", 2);
+			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Vision", 1);
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet", "Animal Attractor", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "magnet", true);
-			trQuestVarSet("p"+p+"click", 1);
+			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
 		}
