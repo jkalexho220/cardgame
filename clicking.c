@@ -34,5 +34,6 @@ runImmediately
 	trTechGodPower(2, "Vision", 1);
 	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");
 	map("mouse2up", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
+	map("mouse2doubleup", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
 	xsDisableRule("initializeClick");
 }

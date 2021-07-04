@@ -420,6 +420,14 @@ int yGetUnitAtIndex(string db = "", int index = 0) {
 	return(trQuestVarGet("zdatalite"+db+"index"+index));
 }
 
+int yGetPointer(string db = "") {
+	return(trQuestVarGet("zdatalite"+db+"pointer"));
+}
+
+void ySetPointer(string db = "", int val = 0) {
+	trQuestVarSet("zdatalite"+db+"pointer", val);
+}
+
 void yClearDatabase(string db = "") {
 	trQuestVarSet("zdatalite" + db + "count", 0);
 	trQuestVarSet("zdatalite" + db + "pointer", 0);

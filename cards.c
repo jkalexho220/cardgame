@@ -103,15 +103,13 @@ bool HasWard(int keywords = 0){
 }
 
 /*
-Given a card index in the allCards array, print information
+Given a card index in a given db array, print information
 of the selected unit.
 */
-void displayCardKeywordsAndDescription(int index = 0) {
-	// TODO
-	// Example use: trMessageSetText(yGetStringByIndex("allUnits", "ability", index),-1);
+void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	string dialog = "";
 	string message = "";
-	int keywords = yGetVarByIndex("allUnits", "keywords", index);
+	int keywords = yGetVarByIndex(db, "keywords", index);
 	if(keywords>0){
 		bool multiple = false;
 		for(k=0;<10){
@@ -124,7 +122,7 @@ void displayCardKeywordsAndDescription(int index = 0) {
 			}
 		}
 	}
-	message = yGetStringByIndex("allUnits", "ability", index);
+	message = yGetStringByIndex(db, "ability", index);
 
 	gadgetUnreal("DetailedHelpButton");
 	if(HasArmor(keywords)){
