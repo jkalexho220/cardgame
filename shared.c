@@ -420,6 +420,10 @@ int yGetUnitAtIndex(string db = "", int index = 0) {
 	return(trQuestVarGet("zdatalite"+db+"index"+index));
 }
 
+int ySetUnitAtIndex(string db = "", int index = 0, int value = 0) {
+	trQuestVarSet("zdatalite"+db+"index"+index, value);
+}
+
 int yGetPointer(string db = "") {
 	return(trQuestVarGet("zdatalite"+db+"pointer"));
 }
@@ -568,6 +572,16 @@ runImmediately
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);
 	trPlayerTechTreeEnabledGodPowers(2, false);
+
+	// omniscience for p0
+	trTechSetStatus(0, 304, 4);
+
+	trPlayerSetDiplomacy(0, 1, "Enemy");
+	trPlayerSetDiplomacy(0, 2, "Enemy");
+	trPlayerSetDiplomacy(1, 0, "Neutral");
+	trPlayerSetDiplomacy(2, 0, "Neutral");
+	trPlayerSetDiplomacy(2, 1, "Enemy");
+	trPlayerSetDiplomacy(1, 2, "Enemy");
 
 	xsDisableRule("initializeEverything");
 }

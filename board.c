@@ -5,7 +5,7 @@ const int TILE_OCCUPIED = 2;
 
 
 void setupBoard() {
-	unitTransform("Statue of Automaton Base", "Rocket");
+	unitTransform("Statue of Automaton Base", "Victory Marker");
 	
 	trQuestVarSet("borders", trQuestVarGet("zbordersend") - 2);
 	bool allborders = false;
@@ -161,7 +161,14 @@ runImmediately
 	zBankInit("borders", 297, 552);
 
 	setupBoard();
+	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
+	trQuestVarCopy("p1startPosz", "p1startposx");
+	// Since p2 goes second, they start one tile closer to the center
+	trQuestVarSet("p2startPosx", 60.0 + 4.24 * (trQuestVarGet("dimension") - 2));
+	trQuestVarCopy("p2startposz", "p2startposx");
 
+	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
+	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));
 
 	xsDisableRule("initializeBoard");
 }

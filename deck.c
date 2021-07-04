@@ -1,4 +1,21 @@
+/*
+Fischer-Yates shuffle
+*/
+void shuffleDeck(int p = 0) {
+	int i = 0;
+	for(x=yGetDatabaseCount("p"+p+"deck")-1; >=0) {
+		trQuestVarSetFromRand("pos", 0, x, true);
+		i = trQuestVarGet("pos");
+		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));
+		trQuestVarSet("tempSpell", yGetVarByIndex("p"+p+"deck", "spell", i));
 
+		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
+		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));
+		
+		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
+		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
+	}
+}
 /* 
 Updates the hand UI by highlighting cards that the user can
 afford to play
@@ -14,6 +31,12 @@ void updateHandPlayable(int p = 0) {
 			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		}
 	}
+}
+
+void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
+	trQuestVarSet("proto", kbGetProtoUnitID(proto));
+	yAddToDatabase("p"+p+"deck", "proto");
+	yAddUpdateVar("p"+p+"deck", "spell", spell);
 }
 
 
@@ -70,13 +93,22 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 
 void drawCard(int p = 0) {
 	int proto = yDatabaseNext("p"+p+"deck");
-	if (yGetVar("p"+p+"deck", "spell") == 0) {
+	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		if (trCurrentPlayer() == p) {
-			trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+			if (yGetVar("p"+p+"deck", "spell") == 0) {
+				trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
+			}
+		}
+		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
+	} else {
+		if (trCurrentPlayer() == p) {
+			trSoundPlayFN("cantdothat.wav","1",-1,"","");
+			if (yGetVar("p"+p+"deck", "spell") == 0) {
+				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));
+			}
 		}
 	}
-	addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
 	yRemoveFromDatabase("p"+p+"deck");
 	yRemoveUpdateVar("p"+p+"deck", "spell");
 
@@ -95,4 +127,18 @@ active
 	trVectorQuestVarSet("p2deck", xsVectorSet(119,0,119));
 
 	xsDisableRule("initializeHand");
+}
+
+
+rule card_draw
+highFrequency
+active
+{
+	// We want to give the trCountUnitsInArea some time to update
+	for(p=2; >0) {
+		if (trQuestVarGet("p"+p+"drawCards") > 0) {
+			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);
+			drawCard(p);
+		}
+	}
 }

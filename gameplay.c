@@ -594,7 +594,7 @@ inactive
 
 					transferUnit("allUnits", "p"+p+"hand");
 					yAddUpdateVar("allUnits", "tile", tile);
-					if (HasCharge(1*yGetVar("p"+p+"hand", "keywords")) == true) {
+					if (HasKeyword(CHARGE, 1*yGetVar("p"+p+"hand", "keywords")) == true) {
 						yAddUpdateVar("allUnits", "action", ACTION_READY);
 					} else {
 						yAddUpdateVar("allUnits", "action", ACTION_DONE);
