@@ -3,118 +3,76 @@ void ThrowError(string message = "Zeno you made bug again!"){
 	trShowWinLose(message, "xpack\xtaunts\en\999 theme.mp3");
 }
 
+
+/*
+Spells
+*/
+const int SPELL_NONE = 0;
+const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
+
+/*
+Keyword bit positions. Use these to index into keywords by bit position
+*/
+const int CHARGE = 0;			// Action is ready when summoned
+const int GUARD = 1;			// If an adjacent ally is attacked, swap spaces with it before combat occurs.
+const int AIRDROP = 2;			// Doesn't have to be summoned next to the commander.
+const int FURIOUS = 3;			// Two attacks each turn.
+const int LIGHTNING = 4;		// Attack will chain through connected enemies.
+const int REGENERATE = 5;		// Restores to full health at the start of your turn.
+const int DEADLY = 6;
+const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
+const int ARMOR = 8;
+const int WARD = 9;
+const int BEACON = 10;			// Allies can be summoned next to this unit.
+
+const int NUM_KEYWORDS = 11;
+
+
 string GetKeywordName(int bitPosition=0){
 	switch(bitPosition){
-		case 0: return ("Charge"); 		// Has action when summoned.
-		case 1: return ("Guard"); 		// If an adjacent ally is attacked, swap spaces with it before combat occurs.
-		case 2: return ("Airdrop"); 	// Doesn’t have to be summoned next to commander.
-		case 3: return ("Furious"); 	// Two attacks each turn.
-		case 4: return ("Lightning"); 	// Also attacks the enemies connected to the target.
-		case 5: return ("Regenerate"); 	// Restores to full health at the start of your turn.
-		case 6: return ("Deadly"); 		// Destroy minions damaged by this.
-		case 7: return ("Ethereal"); 	// Can pass through units and impassable terrain.
-		case 8: return ("Armor"); 		// Takes half physical damage, rounded down.
-		case 9: return ("Ward"); 		// Takes half magical damage, rounded down.
+		case CHARGE: return ("Charge");
+		case GUARD: return ("Guard");
+		case AIRDROP: return ("Airdrop");
+		case FURIOUS: return ("Furious");
+		case LIGHTNING: return ("Lightning");
+		case REGENERATE: return ("Regenerate");
+		case DEADLY: return ("Deadly");
+		case ETHEREAL: return ("Ethereal");
+		case ARMOR: return ("Armor");
+		case WARD: return ("Ward");
+		case BEACON: return ("Beacon");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
 }
 
-//Hard to maintain but maybe convenient later functions?
-
-int Charge(int keywords = 0){
-	return (SetBit(keywords, 0));
-}
-
-int Guard(int keywords = 0){
-	return (SetBit(keywords, 1));
-}
-
-int Airdrop(int keywords = 0){
-	return (SetBit(keywords, 2));
-}
-
-int Furious(int keywords = 0){
-	return (SetBit(keywords, 3));
-}
-
-int Lightning(int keywords = 0){
-	return (SetBit(keywords, 4));
-}
-
-int Regenerate(int keywords = 0){
-	return (SetBit(keywords, 5));
-}
-
-int Deadly(int keywords = 0){
-	return (SetBit(keywords, 6));
-}
-
-int Ethereal(int keywords = 0){
-	return (SetBit(keywords, 7));
-}
-
-int Armor(int keywords = 0){
-	return (SetBit(keywords, 8));
-}
-
-int Ward(int keywords = 0){
-	return (SetBit(keywords, 9));
-}
-
-bool HasCharge(int keywords = 0){
-	return (GetBit(keywords, 0));
-}
-
-bool HasGuard(int keywords = 0){
-	return (GetBit(keywords, 1));
-}
-
-bool HasAirdrop(int keywords = 0){
-	return (GetBit(keywords, 2));
-}
-
-bool HasFurious(int keywords = 0){
-	return (GetBit(keywords, 3));
-}
-
-bool HasLightning(int keywords = 0){
-	return (GetBit(keywords, 4));
-}
-
-bool HasRegenerate(int keywords = 0){
-	return (GetBit(keywords, 5));
-}
-
-bool HasDeadly(int keywords = 0){
-	return (GetBit(keywords, 6));
-}
-
-bool HasEthereal(int keywords = 0){
-	return (GetBit(keywords, 7));
-}
-
-bool HasArmor(int keywords = 0){
-	return (GetBit(keywords, 8));
-}
-
-bool HasWard(int keywords = 0){
-	return (GetBit(keywords, 9));
+/* 
+Given a bitPosition, return 2^bitPosition
+*/
+int Keyword(int bitPos = 0) {
+	return(1*xsPow(2, bitPos));
 }
 
 /*
-Given a card index in the allCards array, print information
+Example: HasKeyword(CHARGE, 123456) = false
+
+Given a key and a keywords integer, returns true if the keywords integer has the keyword
+*/
+bool HasKeyword(int key = 0, int keywords = 0) {
+	return(GetBit(keywords, key));
+}
+
+/*
+Given a card index in a given db array, print information
 of the selected unit.
 */
-void displayCardKeywordsAndDescription(int index = 0) {
-	// TODO
-	// Example use: trMessageSetText(yGetStringByIndex("allUnits", "ability", index),-1);
+void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	string dialog = "";
 	string message = "";
-	int keywords = yGetVarByIndex("allUnits", "keywords", index);
+	int keywords = yGetVarByIndex(db, "keywords", index);
 	if(keywords>0){
 		bool multiple = false;
-		for(k=0;<10){
+		for(k=0;<NUM_KEYWORDS){
 			if(GetBit(keywords, k)){
 				if(multiple){
 					dialog = dialog + ", ";
@@ -124,15 +82,15 @@ void displayCardKeywordsAndDescription(int index = 0) {
 			}
 		}
 	}
-	message = yGetStringByIndex("allUnits", "ability", index);
+	message = yGetStringByIndex(db, "ability", index);
 
 	gadgetUnreal("DetailedHelpButton");
-	if(HasArmor(keywords)){
+	if(HasKeyword(ARMOR, keywords)){
 		gadgetUnreal("NormalArmorTextDisplay");			
 	} else {
 		gadgetUnreal("unitStatPanel-stat-normalArmor");
 	}
-	if(HasWard(keywords)){
+	if(HasKeyword(WARD, keywords)){
 		gadgetUnreal("PierceArmorTextDisplay");			
 	} else {
 		gadgetUnreal("unitStatPanel-stat-pierceArmor");
@@ -170,7 +128,7 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		trModifyProtounit(protoName, p, 19, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 19, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 19, cost); // Cost Favor
-		if(range==0){
+		if(range==1){
 			trModifyProtounit(protoName, p, 27, 9999999999999999999.0);
 			trModifyProtounit(protoName, p, 27, -9999999999999999999.0);
 			trModifyProtounit(protoName, p, 27, attack); // Hand Attack Hack
@@ -194,12 +152,17 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		trModifyProtounit(protoName, p, 0, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 0, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 0, health); // Hitpoints
-		trModifyProtounit(protoName, p, 1, 9999999999999999999.0);
-		trModifyProtounit(protoName, p, 1, -9999999999999999999.0);
-		trModifyProtounit(protoName, p, 1, speed); // Speed
+
 		trModifyProtounit(protoName, p, 11, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, range); // Range
+
+		trModifyProtounit(protoName, p, 1, 10); // Just give everything +10 speed
+
+		// 0 LOS
+		trModifyProtounit(protoName, p, 2, 9999999999999999999.0);
+		trModifyProtounit(protoName, p, 2, -9999999999999999999.0);
+
 		trStringQuestVarSet("card_" + proto + "_Ability",ability);
 	}
 }
@@ -261,22 +224,24 @@ runImmediately
 	}
 
 	//Pick a card. Any card.
-	CardSetup("Militia", 				1, "Farmer", 			1, 3, 1, 0);
-	CardSetup("Maceman", 				1, "Squire", 			1, 2, 1, 0, Guard());
-	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 1, 0, Charge());
-	CardSetup("Slinger", 				1, "Gypsy", 			1, 1, 1, 1);
-	CardSetup("Toxotes", 				2, "Townguard Archer", 	2, 2, 1, 1);
-	CardSetup("Spearman", 				2, "Roadside Bandit", 	3, 2, 1, 0);
-	CardSetup("Anubite", 				2, "Dark Dog", 			2, 1, 2, 0, Charge());
-	CardSetup("Raiding Cavalry",		3, "Wild Horseman", 	2, 1, 3, 0);
-	CardSetup("Wadjet", 				3, "Noble Cobra", 		2, 3, 1, 2, Regenerate());
+	/*
+	        Proto                  Cost    Name       Attack|Health|Speed|Range     Keywords|Ability
+	*/
+	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON));
+	CardSetup("Militia", 				1, "Farmer", 			1, 3, 2, 1);
+	CardSetup("Maceman", 				1, "Squire", 			1, 2, 2, 1, Keyword(GUARD));
+	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));
+	CardSetup("Slinger", 				1, "Gypsy", 			1, 1, 2, 2);
+	CardSetup("Toxotes", 				2, "Townguard Archer", 	2, 2, 2, 2);
+	CardSetup("Spearman", 				2, "Roadside Bandit", 	3, 2, 2, 1);
+	CardSetup("Anubite", 				2, "Dark Dog", 			2, 1, 2, 1, Keyword(CHARGE));
+	CardSetup("Raiding Cavalry",		3, "Wild Horseman", 	2, 1, 3, 1);
+	CardSetup("Wadjet", 				3, "Noble Cobra", 		2, 3, 2, 2, Keyword(REGENERATE));
 	CardSetup("Ballista", 				4, "Giant Crossbow", 	3, 2, 1, 3);
-	CardSetup("Trident Soldier",		4, "Throne Shield", 	2, 6, 1, 0, Guard());
-	CardSetup("Avenger", 				5, "Avian Warrior", 	3, 5, 1, 0, Airdrop(Furious()));
-	CardSetup("Battle Boar", 			5, "Golden Hog", 		4, 4, 2, 0, Charge(Guard()));
-	CardSetup("Hero Greek Odysseus",	9, "Nickonhawk", 		4, 7, 1, 2, Guard(Ethereal(Regenerate())), "Listening to anime music and eating trash.");
-	CardSetup("Hoplite", 				9, "Zenophobia", 		7, 4, 1, 0, Charge(Armor(Deadly())), "Currently hard at work on Star Fighter Ace 3.");
-	CardSetup("Pharaoh of Osiris", 		9, "Yeebaagooon", 		9, 9, 9, 0, Airdrop(Ward(Lightning())), "Seraph addicted to dota and tea.");
+	CardSetup("Trident Soldier",		4, "Throne Shield", 	2, 6, 1, 1, Keyword(GUARD));
+	CardSetup("Avenger", 				5, "Avian Warrior", 	3, 5, 2, 1, Keyword(AIRDROP) + Keyword(BEACON));
+	CardSetup("Battle Boar", 			5, "Golden Hog", 		4, 4, 2, 1, Keyword(CHARGE) + Keyword(GUARD));
+	
 	
 	//Loading player collection
 	int cardIndex = 0;

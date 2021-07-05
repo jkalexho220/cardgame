@@ -357,14 +357,14 @@ void yRemoveUpdateVar(string db = "", string attr = "") {
 }
 
 void yTransferUpdateVar(string to = "", string from = "", string attr = "") {
-	int zdatato = trQuestVarGet("zdatalite" + to + "count");
+	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
 	trQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
 		trQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
 }
 
 void yTransferUpdateString(string to = "", string from = "", string attr = "") {
-	int zdatato = trQuestVarGet("zdatalite" + to + "count");
+	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
 	trStringQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
 		trStringQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
@@ -418,6 +418,19 @@ void ySetVarByIndex(string db = "", string attr = "", int index = 0, float value
 
 int yGetUnitAtIndex(string db = "", int index = 0) {
 	return(trQuestVarGet("zdatalite"+db+"index"+index));
+}
+
+int ySetUnitAtIndex(string db = "", int index = 0, int value = 0) {
+	trQuestVarSet("zdatalite"+db+"index"+index, value);
+}
+
+int yGetPointer(string db = "") {
+	return(trQuestVarGet("zdatalite"+db+"pointer"));
+}
+
+void ySetPointer(string db = "", int val = 0) {
+	trQuestVarSet("zdatalite"+db+"pointer", val);
+	trQuestVarSet(db, trQuestVarGet("zdatalite" + db + "index"+val));
 }
 
 void yClearDatabase(string db = "") {
@@ -557,9 +570,20 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 
+
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);
 	trPlayerTechTreeEnabledGodPowers(2, false);
+
+	// omniscience for p0
+	trTechSetStatus(0, 304, 4);
+
+	trPlayerSetDiplomacy(0, 1, "Enemy");
+	trPlayerSetDiplomacy(0, 2, "Enemy");
+	trPlayerSetDiplomacy(1, 0, "Neutral");
+	trPlayerSetDiplomacy(2, 0, "Neutral");
+	trPlayerSetDiplomacy(2, 1, "Enemy");
+	trPlayerSetDiplomacy(1, 2, "Enemy");
 
 	xsDisableRule("initializeEverything");
 }
