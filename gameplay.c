@@ -8,53 +8,6 @@ const int CASTING_SUMMON = 1;
 const int CASTING_SPELL = 2;
 const int CASTING_WAIT = 3;
 
-/*
-Removes the currently selected unit in a search from
-the database. This is where we put all the special variables
-that need to be updated whenever a unit is removed.
-This is called only after a yDatabaseNext("allUnits").
-*/
-void removeUnit(string db = "allUnits") {
-	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "name");
-	yRemoveUpdateString(db, "ability");
-	yRemoveUpdateVar(db, "cost");
-	yRemoveUpdateVar(db, "pos");
-	yRemoveUpdateVar(db, "health");
-	yRemoveUpdateVar(db, "attack");
-	yRemoveUpdateVar(db, "range");
-	yRemoveUpdateVar(db, "speed");
-	yRemoveUpdateVar(db, "proto");
-	yRemoveUpdateVar(db, "player");
-	yRemoveUpdateVar(db, "ready");
-	yRemoveUpdateVar(db, "keywords");
-	yRemoveUpdateVar(db, "tile");
-	yRemoveUpdateVar(db, "spell");
-	yRemoveUpdateVar(db, "action");
-}
-
-/*
-Transfers the unit at the current pointer in the 'from' database
-to the 'to' database.
-*/
-void transferUnit(string to = "", string from = "") {
-	yAddToDatabase(to, from);
-	yTransferUpdateString(to, from, "name");
-	yTransferUpdateString(to, from, "ability");
-	yTransferUpdateVar(to, from, "cost");
-	yTransferUpdateVar(to, from, "pos");
-	yTransferUpdateVar(to, from, "health");
-	yTransferUpdateVar(to, from, "attack");
-	yTransferUpdateVar(to, from, "range");
-	yTransferUpdateVar(to, from, "speed");
-	yTransferUpdateVar(to, from, "proto");
-	yTransferUpdateVar(to, from, "player");
-	yTransferUpdateVar(to, from, "ready");
-	yTransferUpdateVar(to, from, "keywords");
-	yTransferUpdateVar(to, from, "tile");
-	yTransferUpdateVar(to, from, "spell");
-	yTransferUpdateVar(to, from, "action");
-}
 
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
@@ -87,6 +40,28 @@ void teleportToTile(string db = "", int tile = 0, int index = -1) {
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 
 	ySetVarByIndex(db, "tile", index, tile);
+}
+
+
+void damageUnit(string db = "", int index = 0, float dmg = 0) {
+	xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));
+	ySetVarByIndex(db, "health", index, 1*yGetVarByIndex(db, "health", index) - dmg);
+	trUnitSelectClear();
+	trUnitSelect(""+1*yGetUnitAtIndex(db, index), true);
+	trDamageUnit(health - yGetVarByIndex(db, "health", index));
+}
+
+void removeIfDead(string db = "", int index = -1) {
+	if (index >= 0) {
+		ySetPointer(db, index);
+	}
+	if (yGetVar(db, "health") <= 0) {
+		int tile = yGetVar("allUnits", "tile");
+		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+		trDamageUnitPercent(100);
+		removeUnit(db);
+	}
 }
 
 
@@ -152,7 +127,7 @@ enemy units that can be attacked by the unit and add them to
 the database db.
 */
 void findTargets(int index = 0, string db = "") {
-	float dist = xsPow(yGetVarByIndex("allUnits", "range", index) * 6 + 3, 2);
+	float dist = xsPow(yGetVarByIndex("allUnits", "range", index) * 6 + 1, 2);
 	int p = 3 - yGetVarByIndex("allUnits", "player", index);
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", index), true));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -262,6 +237,22 @@ inactive
 }
 
 
+rule gameplay_select_show_keywords
+highFrequency
+active
+{
+	yDatabaseNext("allUnits", true);
+	if (trUnitIsSelected()) {
+		displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
+	}
+	for(p=2; >0) {
+		yDatabaseNext("p"+p+"hand", true);
+		if (trUnitIsSelected()) {
+			displayCardKeywordsAndDescription("p"+p+"hand", 1*yGetPointer("p"+p+"hand"));
+		}
+	}
+}
+
 /*
 Game is waiting for the active player to select a unit. This trigger
 does not check what the inactive player is doing
@@ -279,10 +270,7 @@ inactive
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
 			trQuestVarSet("activeUnitIndex", unit);
 			if (unit > -1) {
-				/* this might be put somewhere else idk */
-				if (trCurrentPlayer() == p) {
-					displayCardKeywordsAndDescription("allUnits", unit);
-				}
+				
 				/*
 				If the player owns the selected unit and and the unit hasn't moved yet,
 				then highlight locations that it can move to and proceed to gameplay_02_work.
@@ -347,9 +335,6 @@ inactive
 						highlightReady(0.1);
 					}
 					
-					if (trCurrentPlayer() == p) {
-						displayCardKeywordsAndDescription("p"+p+"hand", unit);
-					}
 				}
 			}
 
@@ -632,16 +617,17 @@ inactive
 			trUnitHighlight(0.1, false);
 			yClearDatabase("targets");
 		}
-		trUnitSelectClear();
-		trUnitSelectByID(targetID);
-		trDamageUnit(yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("activeUnitIndex")));
+		damageUnit("allUnits", 1*trQuestVarGet("targetUnitIndex"), yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("activeUnitIndex")));
 		deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("targetUnitIndex")));
-
+		
 		if (trQuestVarGet("counterAttack") == 1) {
-			trUnitSelectClear();
-			trUnitSelectByID(attackerID);
-			trDamageUnit(yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("targetUnitIndex")));
+			damageUnit("allUnits", 1*trQuestVarGet("activeUnitIndex"), yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("targetUnitIndex")));
 			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex")));
+		}
+
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits", true);
+			removeIfDead("allUnits");
 		}
 
 		if (trQuestVarGet("turnEnd") == 0) {
@@ -650,7 +636,6 @@ inactive
 		}
 		trQuestVarSet("attacking", 0);
 		xsDisableRule("gameplay_05_attackComplete");
-		trDelayedRuleActivation("resolveDead");
 	}
 }
 

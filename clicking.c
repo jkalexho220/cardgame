@@ -8,14 +8,14 @@ active
 	for (p=2; >0) {
 		if (trPlayerGetPopulation(p) > 9000) {
 			trUnitSelectClear();
-			yFindLatestReverse("vision", "Vision Revealer", p);
-			trVectorSetUnitPos("p"+p+"clickPos", "vision", true);
+			yFindLatestReverse("vision"+p, "Vision Revealer", p);
+			trVectorSetUnitPos("p"+p+"clickPos", "vision"+p, true);
 			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Vision", 1);
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
-			yFindLatest("magnet", "Animal Attractor", p);
-			trVectorSetUnitPos("p"+p+"clickPos", "magnet", true);
+			yFindLatest("magnet"+p, "Animal Attractor", p);
+			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
