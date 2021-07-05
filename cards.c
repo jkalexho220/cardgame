@@ -83,23 +83,21 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 		}
 	}
 	message = yGetStringByIndex(db, "ability", index);
-
-	gadgetUnreal("DetailedHelpButton");
+	
 	if(HasKeyword(ARMOR, keywords)){
-		gadgetUnreal("NormalArmorTextDisplay");			
+		xsEnableRule("GadgetHideHackArmorTextOnly");		
 	} else {
-		gadgetUnreal("unitStatPanel-stat-normalArmor");
+		xsEnableRule("GadgetHideHackArmor");
 	}
 	if(HasKeyword(WARD, keywords)){
-		gadgetUnreal("PierceArmorTextDisplay");			
+		xsEnableRule("GadgetHidePierceArmorTextOnly");			
 	} else {
-		gadgetUnreal("unitStatPanel-stat-pierceArmor");
+		xsEnableRule("GadgetHidePierceArmor");	
 	}
 
 	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
 	trSetCounterDisplay(message);
 }
-
 
 void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, string ability=""){
 	int proto = kbGetProtoUnitID(protoName);
@@ -235,8 +233,8 @@ runImmediately
 	CardSetup("Toxotes", 				2, "Townguard Archer", 	2, 2, 2, 2);
 	CardSetup("Spearman", 				2, "Roadside Bandit", 	3, 2, 2, 1);
 	CardSetup("Anubite", 				2, "Dark Dog", 			2, 1, 2, 1, Keyword(CHARGE));
-	CardSetup("Raiding Cavalry",		3, "Wild Horseman", 	2, 1, 3, 1);
-	CardSetup("Wadjet", 				3, "Noble Cobra", 		2, 3, 2, 2, Keyword(REGENERATE));
+	CardSetup("Raiding Cavalry",		3, "Wild Horseman", 	3, 1, 3, 1, Keyword(CHARGE));
+	CardSetup("Wadjet", 				3, "Venom Pet", 		1, 1, 2, 2, Keyword(DEADLY));
 	CardSetup("Ballista", 				4, "Giant Crossbow", 	3, 2, 1, 3);
 	CardSetup("Trident Soldier",		4, "Throne Shield", 	2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Avenger", 				5, "Avian Warrior", 	3, 5, 2, 1, Keyword(AIRDROP) + Keyword(BEACON));
@@ -273,4 +271,54 @@ runImmediately
 	*/
 	
 	xsDisableRule("initializeCards");
+}
+
+rule GadgetHideHelp
+highFrequency
+inactive
+{
+   if ((trTime()-cActivationTime) >= 1){
+	gadgetUnreal("DetailedHelpButton");
+	xsDisableRule("GadgetHideHelp");
+   }
+}
+
+rule GadgetHideHackArmor
+highFrequency
+inactive
+{
+   if ((trTime()-cActivationTime) >= 1){
+	   gadgetUnreal("unitStatPanel-stat-normalArmor");
+	   xsDisableRule("GadgetHideHackArmor");
+   }
+}
+
+rule GadgetHideHackArmorTextOnly
+highFrequency
+inactive
+{
+   if ((trTime()-cActivationTime) >= 1){
+	   gadgetUnreal("NormalArmorTextDisplay");
+	   xsDisableRule("GadgetHideHackArmorTextOnly");
+   }
+}
+
+rule GadgetHidePierceArmor
+highFrequency
+inactive
+{
+   if ((trTime()-cActivationTime) >= 1){
+	   gadgetUnreal("unitStatPanel-stat-pierceArmor");
+	   xsDisableRule("GadgetHidePierceArmor");
+   }
+}
+
+rule GadgetHidePierceArmorTextOnly
+highFrequency
+inactive
+{
+   if ((trTime()-cActivationTime) >= 1){
+	   gadgetUnreal("NormalArmorTextDisplay");
+	   xsDisableRule("GadgetHidePierceArmorTextOnly");
+   }
 }
