@@ -35,5 +35,7 @@ runImmediately
 	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");
 	map("mouse2up", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
 	map("mouse2doubleup", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
+	map("mouse2doubleup", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
+	map("space", "game", "uiSetSpecialPower(156) uiSpecialPowerAtPointer");
 	xsDisableRule("initializeClick");
 }

@@ -357,14 +357,14 @@ void yRemoveUpdateVar(string db = "", string attr = "") {
 }
 
 void yTransferUpdateVar(string to = "", string from = "", string attr = "") {
-	int zdatato = trQuestVarGet("zdatalite" + to + "count");
+	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
 	trQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
 		trQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
 }
 
 void yTransferUpdateString(string to = "", string from = "", string attr = "") {
-	int zdatato = trQuestVarGet("zdatalite" + to + "count");
+	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
 	trStringQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
 		trStringQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
@@ -430,6 +430,7 @@ int yGetPointer(string db = "") {
 
 void ySetPointer(string db = "", int val = 0) {
 	trQuestVarSet("zdatalite"+db+"pointer", val);
+	trQuestVarSet(db, trQuestVarGet("zdatalite" + db + "index"+val));
 }
 
 void yClearDatabase(string db = "") {
@@ -568,6 +569,7 @@ runImmediately
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
+
 
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);

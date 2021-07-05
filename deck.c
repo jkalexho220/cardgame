@@ -11,7 +11,7 @@ void shuffleDeck(int p = 0) {
 
 		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
 		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));
-		
+
 		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
 		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
 	}
@@ -21,14 +21,16 @@ Updates the hand UI by highlighting cards that the user can
 afford to play
 */
 void updateHandPlayable(int p = 0) {
+	for(x=zGetBankCount("p"+p+"handPos"); >0) {
+		zBankNext("p"+p+"handPos", true);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	}
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
-		trUnitSelectClear();
-		trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 		if (yGetVar("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
+			trUnitSelectClear();
+			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
-		} else {
-			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		}
 	}
 }
@@ -64,6 +66,7 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 	yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
 	yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 
+	yAddUpdateVar("p"+p+"hand", "player", p);
 	yAddUpdateVar("p"+p+"hand", "spell", spell);
 
 	// Find an empty position in the hand to place the unit.

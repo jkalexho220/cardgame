@@ -3,6 +3,27 @@ const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
 const int TILE_OCCUPIED = 2;
 
+int deployAtTile(int p = 0, string proto = "", int tile = 0) {
+	int next = trGetNextUnitScenarioNameNumber();
+	trArmyDispatch("1,10","Dwarf",1,119,0,1,0,true);
+
+	trUnitSelectClear();
+	trUnitSelectByID(tile);
+	trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
+
+	trUnitSelectClear();
+	trUnitSelect(""+next, true);
+	trUnitConvert(0);
+	trImmediateUnitGarrison(""+tile);
+	trUnitConvert(p);
+	trUnitChangeProtoUnit(proto);
+
+	trUnitSelectClear();
+	trUnitSelectByID(tile);
+	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+
+	return(next);
+}
 
 void setupBoard() {
 	unitTransform("Statue of Automaton Base", "Victory Marker");
