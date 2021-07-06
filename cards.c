@@ -227,7 +227,7 @@ runImmediately
 	/*
 	        Proto                  Cost    Name       Attack|Health|Speed|Range     Keywords|Ability
 	*/
-	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON));
+	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
 	CardSetup("Militia", 				1, "Farmer", 			1, 3, 2, 1);
 	CardSetup("Maceman", 				1, "Squire", 			1, 2, 2, 1, Keyword(GUARD));
 	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));

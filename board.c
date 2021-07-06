@@ -191,5 +191,9 @@ runImmediately
 	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
 	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));
 
+	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") - 6);
+	trModifyProtounit("Revealer to Player", 1, 2, 6);
+	trModifyProtounit("Revealer to Player", 2, 2, 6);
+
 	xsDisableRule("initializeBoard");
 }
