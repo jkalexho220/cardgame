@@ -1,3 +1,5 @@
+bool Multiplayer = false;
+bool Bot = false;
 
 bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
@@ -496,6 +498,27 @@ void DeploySober(string p="", string v=""){
 	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));
 }
 
+void ChatLogShow(int p = 1){
+	if (trCurrentPlayer() == p) {
+		trChatHistoryClear();
+	}
+	for(i=9;>=0){
+		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));
+	}
+}
+
+void ChatLog(int p = 1, string message = ""){
+	if (trCurrentPlayer() == p) {
+		trChatHistoryClear();
+	}
+	for(i=9;>0){
+		trStringQuestVarSet("chat" + p + "Log" + i, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));
+		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));
+	}
+	trStringQuestVarSet("chat" + p + "Log0", message);
+	trChatSendToPlayer(0, p, message);
+}
+
 /*
 Bit functions
 n - number, p - position
@@ -542,11 +565,11 @@ runImmediately
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
-	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart
-	if(multiplayer && kbIsPlayerHuman(2) == false){
-		multiplayer = false; // or kick?
+	Multiplayer = aiIsMultiplayer(); 	// nottud is smart
+	if(Multiplayer && kbIsPlayerHuman(2) == false){
+		Multiplayer = false; // or kick?
 	}
-	if(multiplayer){
+	if(Multiplayer){
 		trChatSend(0, "Mode:Multiplayer");
 	} else {
 		trChatSend(0, "Mode:Singleplayer");

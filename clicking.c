@@ -1,6 +1,16 @@
 const int RIGHT_CLICK = 2;
 const int LEFT_CLICK = 1;
 
+void BotClickLeft(){
+	trUnitSelectClear();
+	trTechInvokeGodPower(2, "animal magnetism", trVectorQuestVarGet("botLeftClick"), vector(0,0,0));
+}
+
+void BotClickRight(){
+	trUnitSelectClear();
+	trTechInvokeGodPower(2, "Vision", trVectorQuestVarGet("botRightClick"), vector(0,0,0));
+}
+
 rule detectClick
 highFrequency
 active
@@ -13,12 +23,14 @@ active
 			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Vision", 1);
+			ChatLogShow(p);
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet"+p, "Animal Attractor", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
+			ChatLogShow(p);
 		}
 	}
 }

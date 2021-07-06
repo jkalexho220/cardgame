@@ -75,13 +75,41 @@ void updateHandPlayable(int p = 0) {
 		zBankNext("p"+p+"handPos", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
+	bool anyPlayable = false;
+	int maxMana = -1;
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
 		if (yGetVar("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
+			anyPlayable = true;
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
+			// Bot plays cast in desc order of their cost
+			if(Bot){
+				int currentMana = yGetVar("p"+p+"hand", "cost");
+				// Bot loves Airdrop
+				if(HasKeyword(AIRDROP, 1*yGetVar("p"+p+"hand", "keywords"))){
+					currentMana = currentMana + 9000;
+				}
+				if(currentMana > maxMana){
+					maxMana = currentMana;
+					trVectorSetUnitPos("botLeftClick", "p"+p+"hand");
+				}	
+			}
 		}
+	}
+	if(anyPlayable){
+		trQuestVarSet("p"+p+"jobDoneHand", 0);
+		// Bot
+		if(Bot){
+			if(trQuestVarGet("p2jobSkipHand") == 1){
+				trQuestVarSet("p2jobDoneHand", 1);
+			} else {
+				BotClickLeft();				
+			}
+		}
+	} else {
+		trQuestVarSet("p"+p+"jobDoneHand", 1);
 	}
 }
 
@@ -149,18 +177,19 @@ void drawCard(int p = 0) {
 	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
-			if (yGetVar("p"+p+"deck", "spell") == 0) {
-				trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
-			}
+		}
+		if (yGetVar("p"+p+"deck", "spell") == 0) {
+			ChatLog(p, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
 		}
 		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
 	} else {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("cantdothat.wav","1",-1,"","");
-			if (yGetVar("p"+p+"deck", "spell") == 0) {
-				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));
-			}
 		}
+		if (yGetVar("p"+p+"deck", "spell") == 0) {
+			ChatLog(p, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));
+		}
+
 	}
 	yRemoveFromDatabase("p"+p+"deck");
 	yRemoveUpdateVar("p"+p+"deck", "spell");

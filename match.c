@@ -52,6 +52,8 @@ active
 
 		shuffleDeck(p);
 	}
+	
+	trQuestVarSet("turnsCount", 0);
 
 	// Ravens
 
@@ -96,10 +98,14 @@ inactive
 			}
 			trQuestVarSet("p"+p+"done", 0);
 		}
+		
 		trMessageSetText("Left click to choose cards to mulligan. Right click to finish.",-1);
-
-		trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);
-
+		
+		if(Multiplayer){
+			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
+		} else {
+			trQuestVarSet("p2done", 1);
+		}
 		xsEnableRule("match_02_mulligan");
 		xsDisableRule("match_01_mulliganStart");
 	}
@@ -109,7 +115,7 @@ rule match_02_mulligan
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || trTime() > cActivationTime + 20) {
+	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || (Multiplayer && (trTime() > cActivationTime + 20))) {
 		xsEnableRule("match_03_replace");
 		xsDisableRule("match_02_mulligan");
 	} else {
@@ -194,9 +200,15 @@ inactive
 
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");
-
+		trQuestVarSet("turnsCount", trQuestVarGet("turnsCount") + 1);
 
 		int p = 3 - trQuestVarGet("activePlayer");
+		
+		Bot = (Multiplayer == false && p == 2);
+
+		trQuestVarSet("p"+p+"jobDoneHand", 0);	
+		trQuestVarSet("p"+p+"jobDoneBoard", 0);
+		ChatLog(p, "=== Turn: " + 1*trQuestVarGet("turnsCount") + " ===");
 
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
@@ -223,9 +235,10 @@ inactive
 		trTechGodPower(p, "rain", 1);
 
 		trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
-
-		trCounterAddTime("turnTimer", 91, 1, "Turn end", -1);
-		trCounterAddTime("mana", -1, -91, 
+		if(Multiplayer){
+			trCounterAddTime("turnTimer", 91, 1, "Turn end", -1);	
+		}
+		trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
 
 		if (trQuestVarGet("activePlayer") == 1) {
@@ -233,6 +246,8 @@ inactive
 		} else {
 			trOverlayTextColour(255,0,0);
 		}
+
+		highlightReady(9999999);
 
 		xsEnableRule("gameplay_01_select");
 		xsEnableRule("turn_01_end");
@@ -246,7 +261,7 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if (trCheckGPActive("rain", p) == true || trTime() > cActivationTime + 90) {
+	if (trCheckGPActive("rain", p) == true || (Multiplayer && (trTime() > cActivationTime + 90))) {
 		trCounterAbort("mana");
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "vision", 1);

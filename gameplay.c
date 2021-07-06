@@ -8,11 +8,10 @@ const int CASTING_SUMMON = 1;
 const int CASTING_SPELL = 2;
 const int CASTING_WAIT = 3;
 
-
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
 	trCounterAbort("mana");
-	trCounterAddTime("mana", -1, -91, 
+	trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
 }
 
@@ -100,10 +99,17 @@ void highlightReachable(int index = 0) {
 	int tile = findNearestTile("pos");
 	findAvailableTiles(tile, yGetVarByIndex("allUnits", "speed", index), 
 		"reachable", HasKeyword(ETHEREAL, 1*yGetVarByIndex("allUnits", "keywords", index)));
+	trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("reachable"), true);
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
-		highlightTile(tile, 3600);
+		highlightTile(tile, 9999999);
+		// Bot moves
+		if(Bot && trQuestVarGet("botRandom") == x && trQuestVarGet("p2jobDoneHand") == 1){
+			trVectorSetUnitPos("botRightClick", "reachable");
+			BotClickRight();
+		}
 	}
+
 }
 
 /*
@@ -111,12 +117,40 @@ highlights units that are ready to perform an action
 */
 void highlightReady(float duration = 0.1) {
 	int p = trQuestVarGet("activePlayer");
+	bool anyReady = false;
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		if (yGetVar("allUnits", "action") == ACTION_READY && yGetVar("allUnits", "player") == p) {
+			anyReady = true;
 			if (trCurrentPlayer() == p) {
 				trUnitHighlight(duration, false);
 			}
+			// Bot 
+			if(Bot && duration > 1){
+				trVectorSetUnitPos("botLeftClick", "allUnits");
+			}
+		}
+	}
+	if(anyReady){
+		trQuestVarSet("p"+p+"jobDoneBoard", 0);
+		// Bot selects unit
+		if(Bot && duration > 1 && trQuestVarGet("p2jobDoneHand") == 1){ 
+			BotClickLeft();
+		}
+	} else {
+		trQuestVarSet("p"+p+"jobDoneBoard", 1);
+		if(trQuestVarGet("p"+p+"jobDoneHand") == 1){
+			trQuestVarSet("p"+p+"jobDoneHand", 0);	
+			trQuestVarSet("p"+p+"jobDoneBoard", 0);
+			// Bot ends turn
+			if(Bot){
+				trQuestVarSet("p2jobSkipHand", 0);
+				trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));
+			}
+			if (trCurrentPlayer() == p) {
+				trSoundPlayFN("market.wav", "1", -1, "","");
+			}
+			ChatLog(p, "Job done! Press Space to end turn.");
 		}
 	}
 }
@@ -130,12 +164,24 @@ void findTargets(int index = 0, string db = "") {
 	float dist = xsPow(yGetVarByIndex("allUnits", "range", index) * 6 + 1, 2);
 	int p = 3 - yGetVarByIndex("allUnits", "player", index);
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", index), true));
+	bool anyTargets = false;
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
 		if (yGetVar("allUnits", "player") == p) {
 			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
+				anyTargets = true;
 				yAddToDatabase(db, "allUnits");
+				// Bot
+				if(Bot){
+					trVectorSetUnitPos("botRightClick", "allUnits");
+				}
 			}
+		}
+	}
+	if(anyTargets){
+		// Bot attacks
+		if(Bot && trQuestVarGet("p2jobDoneHand") == 1){
+			BotClickRight();
 		}
 	}
 }
@@ -163,7 +209,7 @@ bool attackUnitAtCursor(int p = 0) {
 				dist = zDistanceToVectorSquared("allUnits", "d2pos");
 				if (dist < 81 && dist > 9 &&
 					yGetVar("allUnits", "player") == 3 - p &&
-					HasKeyword(GUARD, yGetVar("allUnits", "keywords"))) {
+					HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
 					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
 					trSoundPlayFN("militarycreate.wav","1",-1,"","");
 					trUnitHighlight(2.0, true);
@@ -282,7 +328,7 @@ inactive
 					// highlight attackable enemies within range
 					findTargets(unit, "targets");
 					yDatabaseSelectAll("targets");
-					trUnitHighlight(3600.0, false);
+					trUnitHighlight(9999999, false);
 
 					xsDisableRule("gameplay_01_select");
 					highlightReady(0.1);
@@ -322,10 +368,26 @@ inactive
 								}
 							}
 						}
+						// Bot tries to play a unit but there are no tiles where to summon it, skip playing cards
+						if(Bot){
+							if(yGetDatabaseCount("summonLocations") == 0){
+								trQuestVarSet("p2jobDoneHand", 1);
+								trQuestVarSet("p2jobSkipHand", 1);
+								trVectorQuestVarSet("botRightClick", trVectorQuestVarGet("botLeftClick"));
+								BotClickRight();
+							} else {
+								trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("summonLocations"), true);
+							}
+						}
 						for (x=yGetDatabaseCount("summonLocations"); >0) {
 							tile = yDatabaseNext("summonLocations");
 							if (trCurrentPlayer() == p) {
-								highlightTile(tile, 3600);
+								highlightTile(tile, 9999999);
+							}
+							// Bot summons a unit
+							if(Bot && trQuestVarGet("botRandom") == x){
+								trVectorSetUnitPos("botLeftClick", "summonLocations");
+								BotClickLeft();
 							}
 						}
 
@@ -397,7 +459,7 @@ inactive
 
 					xsDisableRule("gameplay_02_work");
 					xsEnableRule("gameplay_01_select");
-					highlightReady(100);
+					highlightReady(9999999);
 
 					/* 
 					We DON'T set click back to zero in case the user selected another unit 
@@ -518,7 +580,7 @@ inactive
 				*/
 				if (yGetDatabaseCount("targets") == 0) {
 					xsEnableRule("gameplay_01_select");
-					highlightReady(100);
+					highlightReady(9999999);
 					ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
 				} else {
 					xsEnableRule("gameplay_04_attack");
@@ -569,7 +631,7 @@ inactive
 				}
 				xsDisableRule("gameplay_04_attack");
 				xsEnableRule("gameplay_01_select");
-				highlightReady(100);
+				highlightReady(9999999);
 			}
 			case RIGHT_CLICK:
 			{
@@ -632,7 +694,7 @@ inactive
 
 		if (trQuestVarGet("turnEnd") == 0) {
 			xsEnableRule("gameplay_01_select");
-			highlightReady(100);
+			highlightReady(9999999);
 		}
 		trQuestVarSet("attacking", 0);
 		xsDisableRule("gameplay_05_attackComplete");
@@ -697,7 +759,7 @@ inactive
 					}
 					yClearDatabase("summonLocations");
 					xsEnableRule("gameplay_01_select");
-					highlightReady(100);
+					highlightReady(9999999);
 					xsDisableRule("gameplay_10_summon");
 					// We don't set the player click to 0 in case this click was used to select another unit in hand.
 				} else {
@@ -731,7 +793,7 @@ inactive
 					updateMana();
 
 					xsEnableRule("gameplay_01_select");
-					highlightReady(100);
+					highlightReady(9999999);
 					xsDisableRule("gameplay_10_summon");
 					trQuestVarSet("p"+p+"click", 0);
 				}
@@ -747,7 +809,7 @@ inactive
 				yClearDatabase("summonLocations");
 				trQuestVarSet("p"+p+"click", 0);
 				xsEnableRule("gameplay_01_select");
-				highlightReady(100);
+				highlightReady(9999999);
 				xsDisableRule("gameplay_10_summon");
 			}
 		}
