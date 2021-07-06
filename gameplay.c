@@ -2,6 +2,7 @@
 const int ACTION_READY = 0;
 const int ACTION_MOVED = 1;
 const int ACTION_DONE = 2;
+const int ACTION_FURY = 3;
 
 const int CASTING_NORMAL = 0;
 const int CASTING_SUMMON = 1;
@@ -631,8 +632,18 @@ inactive
 		}
 
 		if (trQuestVarGet("turnEnd") == 0) {
-			xsEnableRule("gameplay_01_select");
-			highlightReady(100);
+			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&
+				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY) {
+				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_FURY);
+				xsEnableRule("gameplay_04_attack");
+				yClearDatabase("targets");
+				findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
+				yDatabaseSelectAll("targets");
+				trUnitHighlight(3600, false);
+			} else {
+				xsEnableRule("gameplay_01_select");
+				highlightReady(100);
+			}
 		}
 		trQuestVarSet("attacking", 0);
 		xsDisableRule("gameplay_05_attackComplete");
