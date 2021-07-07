@@ -12,8 +12,9 @@ runImmediately
 			addCardToDeck(p, "Toxotes");
 			addCardToDeck(p, "Raiding Cavalry");
 			addCardToDeck(p, "Trident Soldier");
-			/*
 			addCardToDeck(p, "Jarl");
+			addCardToDeck(p, "Hero Greek Theseus");
+			/*
 			addCardToDeck(p, "Behemoth");
 			addCardToDeck(p, "Avenger");
 			*/

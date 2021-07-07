@@ -14,6 +14,11 @@ const int ATTACK_ANIMATE = 1;
 const int ATTACK_DONE = 2;
 
 
+const int EVENT_DRAW_CARD = 0;
+
+const int EVENT_COUNT = 1;
+
+
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
 	trCounterAbort("mana");
@@ -206,12 +211,20 @@ void processAttack(string db = "attacks") {
 		}
 		case ATTACK_DONE:
 		{
-			damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
-			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&
+				yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
+				ySetVarByIndex("allUnits", "health", targetIndex, 0);
+				damageUnit("allUnits", targetIndex, 1);
+				deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			} else {
+				damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
+				deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			}
 
 			/*
 			TODO: Special on-attack events go here. Need to figure out a good system.
 			Maybe use the HasKeyword() function but have Events instead of keywords.
+			But GetBit is super inefficient.
 			*/
 
 			yRemoveFromDatabase(db);
@@ -268,7 +281,8 @@ bool attackUnitAtCursor(int p = 0) {
 				startAttack(target, a, false, true);
 			}
 
-			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), 
+				xsMax(ACTION_DONE, yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"))));
 			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
 		}
@@ -686,6 +700,23 @@ inactive
 			yClearDatabase("targets");
 		}
 
+		yDatabasePointerDefault("allUnits");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits", true);
+			removeIfDead("allUnits");
+		}
+
+		/* 
+		Database has been modified after removing units.
+		If active unit has furious, we need to update the activeUnitIndex
+		*/
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			if (trQuestVarGet("activeUnit") == yDatabaseNext("allUnits")) {
+				trQuestVarSet("activeUnitIndex", yGetPointer("allUnits"));
+				break;
+			}
+		}
+
 		if (trQuestVarGet("turnEnd") == 0) {
 			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&
 				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY) {
@@ -701,10 +732,7 @@ inactive
 			}
 		}
 
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits", true);
-			removeIfDead("allUnits");
-		}
+		
 		xsDisableRule("gameplay_05_attackComplete");
 	}
 }
