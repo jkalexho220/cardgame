@@ -9,6 +9,10 @@ const int CASTING_SUMMON = 1;
 const int CASTING_SPELL = 2;
 const int CASTING_WAIT = 3;
 
+const int ATTACK_START = 0;
+const int ATTACK_ANIMATE = 1;
+const int ATTACK_DONE = 2;
+
 
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
@@ -142,6 +146,83 @@ void findTargets(int index = 0, string db = "") {
 }
 
 /*
+int attacker = index of attacking unit in the "allUnits" database
+int target = index of the target unit in the "allUnits" database
+bool first = true if the unit has Ambush keyword and activates it.
+bool animate = does this attack need an animation?
+*/
+void startAttack(int attacker = 0, int target = 0, bool first = false, bool animate = true) {
+	string db = "attacks";
+	if (first) {
+		db = "ambushAttacks";
+	}
+	trQuestVarSet("temp", attacker);
+	yAddToDatabase(db, "temp");
+	yAddUpdateVar(db, "target", target);
+	if (animate) {
+		yAddUpdateVar(db, "phase", ATTACK_START);
+	} else {
+		yAddUpdateVar(db, "phase", ATTACK_DONE);
+	}
+	
+}
+
+
+void processAttack(string db = "attacks") {
+	int attackerIndex = yDatabaseNext(db);
+	int targetIndex = yGetVar(db, "target");
+	int attackerUnit = yGetUnitAtIndex("allUnits", attackerIndex);
+	int targetUnit = yGetUnitAtIndex("allUnits", targetIndex);
+	int attackerID = kbGetBlockID(""+attackerUnit);
+	switch(1*yGetVar(db, "phase"))
+	{
+		case ATTACK_START:
+		{
+			if (yGetVarByIndex("allUnits", "health", attackerIndex) > 0) {
+				trVectorQuestVarSet("d1pos", kbGetBlockPosition(""+attackerUnit, true));
+				trVectorQuestVarSet("d2pos", kbGetBlockPosition(""+targetUnit, true));
+				trUnitSelectClear();
+				trUnitSelect(""+attackerUnit, true);
+				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+				if (yGetVarByIndex("allUnits", "range", attackerIndex) == 1) {
+					trUnitOverrideAnimation(1,0,0,1,-1);
+				} else {
+					trUnitOverrideAnimation(12,0,0,1,-1);
+				}
+				ySetVar(db, "phase", ATTACK_ANIMATE);
+				ySetVar(db, "timeout", trTime() + 1);
+			} else {
+				yRemoveFromDatabase(db);
+				yRemoveUpdateVar(db, "target");
+				yRemoveUpdateVar(db, "phase");
+				yRemoveUpdateVar(db, "timeout");
+			}
+		}
+		case ATTACK_ANIMATE:
+		{
+			if ((kbUnitGetAnimationActionType(attackerID) == 16) == false || trTime() > yGetVar(db, "timeout")) {
+				ySetVar(db, "phase", ATTACK_DONE);
+			}
+		}
+		case ATTACK_DONE:
+		{
+			damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
+			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+
+			/*
+			TODO: Special on-attack events go here. Need to figure out a good system.
+			Maybe use the HasKeyword() function but have Events instead of keywords.
+			*/
+
+			yRemoveFromDatabase(db);
+			yRemoveUpdateVar(db, "target");
+			yRemoveUpdateVar(db, "phase");
+			yRemoveUpdateVar(db, "timeout");
+		}
+	}
+}
+
+/*
 If target of the right-click was an enemy within range, start an attack
 */
 bool attackUnitAtCursor(int p = 0) {
@@ -162,9 +243,9 @@ bool attackUnitAtCursor(int p = 0) {
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				dist = zDistanceToVectorSquared("allUnits", "d2pos");
-				if (dist < 81 && dist > 9 &&
+				if (dist < 64 && dist > 9 &&
 					yGetVar("allUnits", "player") == 3 - p &&
-					HasKeyword(GUARD, yGetVar("allUnits", "keywords"))) {
+					HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
 					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
 					trSoundPlayFN("militarycreate.wav","1",-1,"","");
 					trUnitHighlight(2.0, true);
@@ -178,44 +259,33 @@ bool attackUnitAtCursor(int p = 0) {
 				}
 			}
 
-
-			trQuestVarSet("counterAttack", 0);
-			trUnitSelectClear();
-			trUnitSelect(""+1*trQuestVarGet("activeUnit"), true);
-			trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-			if (yGetVarByIndex("allUnits", "range", a) == 1) {
-				trUnitOverrideAnimation(1,0,0,1,-1);
-			} else {
-				trUnitOverrideAnimation(12,0,0,1,-1);
-			}
+			startAttack(a, target, HasKeyword(AMBUSH, 1*yGetVarByIndex("allUnits", "keywords", a)), true);
 
 			// Counterattack
 			trQuestVarSet("targetUnitIndex", target);
 			range = xsPow(yGetVarByIndex("allUnits", "range", target) * 6 + 3, 2);
 			if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
-				trQuestVarSet("counterAttack", 1);
-				
-				trUnitSelectClear();
-				trUnitSelect(""+1*trQuestVarGet("targetUnit"), true);
-				trSetUnitOrientation(zGetUnitVector("d2pos", "d1pos"), xsVectorSet(0,1,0), true);
-				if (yGetVarByIndex("allUnits", "range", target) == 1) {
-					trUnitOverrideAnimation(1,0,0,1,-1);
-				} else {
-					trUnitOverrideAnimation(12,0,0,1,-1);
-				}
+				startAttack(target, a, false, true);
 			}
 
-			
 			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
-
-			trQuestVarSet("attacking", 1);
-
 			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
 		}
 	}
 
 	return(false);
+}
+
+rule resolve_attacks
+highFrequency
+active
+{
+	if (yGetDatabaseCount("ambushAttacks") > 0) {
+		processAttack("ambushAttacks");
+	} else if (yGetDatabaseCount("attacks") > 0) {
+		processAttack("attacks");
+	}
 }
 
 rule gameplay_toggle_camera
@@ -595,16 +665,13 @@ inactive
 
 /*
 Called to complete a duel of fates
+Wait until all attacks are resolved to proceed.
 */
 rule gameplay_05_attackComplete
 highFrequency
 inactive
 {
-	int attackerID = kbGetBlockID(""+1*trQuestVarGet("activeUnit"));
-	int targetID = kbGetBlockID(""+1*trQuestVarGet("targetUnit"));
-	if ((kbUnitGetAnimationActionType(attackerID) == 9 &&
-		kbUnitGetAnimationActionType(targetID) == 9) ||
-		trTime() > cActivationTime + 2) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) || (trTime() > cActivationTime + 3)) {
 		int p = trQuestVarGet("activePlayer");
 
 		if (yGetDatabaseCount("reachable") > 0) {
@@ -617,18 +684,6 @@ inactive
 			yDatabaseSelectAll("targets");
 			trUnitHighlight(0.1, false);
 			yClearDatabase("targets");
-		}
-		damageUnit("allUnits", 1*trQuestVarGet("targetUnitIndex"), yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("activeUnitIndex")));
-		deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("targetUnitIndex")));
-		
-		if (trQuestVarGet("counterAttack") == 1) {
-			damageUnit("allUnits", 1*trQuestVarGet("activeUnitIndex"), yGetVarByIndex("allUnits", "attack", 1*trQuestVarGet("targetUnitIndex")));
-			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex")));
-		}
-
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits", true);
-			removeIfDead("allUnits");
 		}
 
 		if (trQuestVarGet("turnEnd") == 0) {
@@ -645,29 +700,13 @@ inactive
 				highlightReady(100);
 			}
 		}
-		trQuestVarSet("attacking", 0);
+
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits", true);
+			removeIfDead("allUnits");
+		}
 		xsDisableRule("gameplay_05_attackComplete");
 	}
-}
-
-rule resolveDead
-highFrequency
-inactive
-{
-	/*
-	Resolve dead units.
-	*/
-	int id = 0;
-	int tile = 0;
-	for (x=yGetDatabaseCount("allUnits"); >0) {
-		id = yDatabaseNext("allUnits", true);
-		if (id == -1 || trUnitAlive() == false) {
-			tile = yGetVar("allUnits", "tile");
-			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
-			removeUnit();
-		}
-	}
-	xsDisableRule("resolveDead");
 }
 
 

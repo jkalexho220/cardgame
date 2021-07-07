@@ -12,10 +12,11 @@ runImmediately
 			addCardToDeck(p, "Toxotes");
 			addCardToDeck(p, "Raiding Cavalry");
 			addCardToDeck(p, "Trident Soldier");
+			/*
 			addCardToDeck(p, "Jarl");
 			addCardToDeck(p, "Behemoth");
-			addCardToDeck(p, "Wadjet");
 			addCardToDeck(p, "Avenger");
+			*/
 			addCardToDeck(p, "Archer Atlantean Hero");
 		}
 	}
@@ -189,7 +190,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if (trQuestVarGet("attacking") == 0) {
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) {
 
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");
@@ -254,6 +255,7 @@ inactive
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "vision", 1);
 		trTechGodPower(p, "animal magnetism", 1);
+		trCounterAbort("mana");
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);

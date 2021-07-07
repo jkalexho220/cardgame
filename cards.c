@@ -24,7 +24,7 @@ const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
 const int ARMORED = 8;			// Unit regenerates to full health after combat
 const int WARD = 9;				// Unit is immune to spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
-const int AMBUSH = 11;		// When initiating combat, unit attacks first.
+const int AMBUSH = 11;			// When initiating combat, unit attacks first.
 
 const int NUM_KEYWORDS = 12;
 
