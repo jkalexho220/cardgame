@@ -21,11 +21,12 @@ const int LIGHTNING = 4;		// Attack will chain through connected enemies.
 const int REGENERATE = 5;		// Restores to full health at the start of your turn.
 const int DEADLY = 6;
 const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
-const int ARMOR = 8;
-const int WARD = 9;
+const int ARMORED = 8;			// Unit regenerates to full health after combat
+const int WARD = 9;				// Unit is immune to spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
+const int AMBUSH = 11;			// When initiating combat, unit attacks first.
 
-const int NUM_KEYWORDS = 11;
+const int NUM_KEYWORDS = 12;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -38,9 +39,10 @@ string GetKeywordName(int bitPosition=0){
 		case REGENERATE: return ("Regenerate");
 		case DEADLY: return ("Deadly");
 		case ETHEREAL: return ("Ethereal");
-		case ARMOR: return ("Armor");
+		case ARMORED: return ("Armored");
 		case WARD: return ("Ward");
 		case BEACON: return ("Beacon");
+		case AMBUSH: return ("Ambush");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -85,7 +87,7 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	message = yGetStringByIndex(db, "ability", index);
 
 	gadgetUnreal("DetailedHelpButton");
-	if(HasKeyword(ARMOR, keywords)){
+	if(HasKeyword(ARMORED, keywords)){
 		gadgetUnreal("NormalArmorTextDisplay");			
 	} else {
 		gadgetUnreal("unitStatPanel-stat-normalArmor");
@@ -228,19 +230,19 @@ runImmediately
 	        Proto                  Cost    Name       Attack|Health|Speed|Range     Keywords|Ability
 	*/
 	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
-	CardSetup("Militia", 				1, "Farmer", 			1, 3, 2, 1);
-	CardSetup("Maceman", 				1, "Squire", 			1, 2, 2, 1, Keyword(GUARD));
+	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1);
+	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));
-	CardSetup("Slinger", 				1, "Gypsy", 			1, 1, 2, 2);
-	CardSetup("Toxotes", 				2, "Townguard Archer", 	2, 2, 2, 2);
-	CardSetup("Spearman", 				2, "Roadside Bandit", 	3, 2, 2, 1);
-	CardSetup("Anubite", 				2, "Dark Dog", 			2, 1, 2, 1, Keyword(CHARGE));
-	CardSetup("Raiding Cavalry",		3, "Wild Horseman", 	2, 1, 3, 1);
-	CardSetup("Wadjet", 				3, "Noble Cobra", 		2, 3, 2, 2, Keyword(REGENERATE));
-	CardSetup("Ballista", 				4, "Giant Crossbow", 	3, 2, 1, 3);
-	CardSetup("Trident Soldier",		4, "Throne Shield", 	2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Avenger", 				5, "Avian Warrior", 	3, 5, 2, 1, Keyword(AIRDROP) + Keyword(BEACON));
-	CardSetup("Battle Boar", 			5, "Golden Hog", 		4, 4, 2, 1, Keyword(CHARGE) + Keyword(GUARD));
+	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);
+	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
+	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		4, 4, 2, 1);
+	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 1, 3, 1, Keyword(AMBUSH));
+	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
+	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
+	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));
+	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
+	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+
 	
 	
 	//Loading player collection

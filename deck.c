@@ -7,7 +7,6 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "name");
 	yRemoveUpdateString(db, "ability");
 	yRemoveUpdateVar(db, "cost");
 	yRemoveUpdateVar(db, "pos");
@@ -22,6 +21,8 @@ void removeUnit(string db = "allUnits") {
 	yRemoveUpdateVar(db, "tile");
 	yRemoveUpdateVar(db, "spell");
 	yRemoveUpdateVar(db, "action");
+	yRemoveUpdateVar(db, "attackEvent");
+	yRemoveUpdateVar(db, "deathEvent");
 }
 
 /*
@@ -30,7 +31,6 @@ to the 'to' database.
 */
 void transferUnit(string to = "", string from = "") {
 	yAddToDatabase(to, from);
-	yTransferUpdateString(to, from, "name");
 	yTransferUpdateString(to, from, "ability");
 	yTransferUpdateVar(to, from, "cost");
 	yTransferUpdateVar(to, from, "pos");
@@ -45,6 +45,8 @@ void transferUnit(string to = "", string from = "") {
 	yTransferUpdateVar(to, from, "tile");
 	yTransferUpdateVar(to, from, "spell");
 	yTransferUpdateVar(to, from, "action");
+	yTransferUpdateVar(to, from, "attackEvent");
+	yTransferUpdateVar(to, from, "deathEvent");
 }
 
 
@@ -107,7 +109,6 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 
 	yAddToDatabase("p"+p+"hand", "next");
 	yAddUpdateVar("p"+p+"hand", "proto", proto);
-	yAddUpdateString("p"+p+"hand", "name", trStringQuestVarGet("card_" + proto + "_Name"));
 	yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));
 	yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));
 	yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));

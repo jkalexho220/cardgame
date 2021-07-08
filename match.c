@@ -5,19 +5,20 @@ runImmediately
 {
 	for(x=3; >0) {
 		for(p=2; >0) {
-			addCardToDeck(p, "Militia");
-			addCardToDeck(p, "Anubite");
-			addCardToDeck(p, "Toxotes");
-			addCardToDeck(p, "Ballista");
-			addCardToDeck(p, "Slinger");
-			addCardToDeck(p, "Spearman");
-			addCardToDeck(p, "Raiding Cavalry");
-			addCardToDeck(p, "Trident Soldier");
+			addCardToDeck(p, "Swordsman");
 			addCardToDeck(p, "Maceman");
 			addCardToDeck(p, "Skraeling");
-			addCardToDeck(p, "Wadjet");
+			addCardToDeck(p, "Slinger");
+			addCardToDeck(p, "Toxotes");
+			addCardToDeck(p, "Raiding Cavalry");
+			addCardToDeck(p, "Trident Soldier");
+			addCardToDeck(p, "Jarl");
+			addCardToDeck(p, "Hero Greek Theseus");
+			/*
+			addCardToDeck(p, "Behemoth");
 			addCardToDeck(p, "Avenger");
-			addCardToDeck(p, "Battle Boar");
+			*/
+			addCardToDeck(p, "Archer Atlantean Hero");
 		}
 	}
 	xsDisableRule("match_test");
@@ -190,7 +191,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if (trQuestVarGet("attacking") == 0) {
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) {
 
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");
@@ -198,6 +199,7 @@ inactive
 
 		int p = 3 - trQuestVarGet("activePlayer");
 
+		xsSetContextPlayer(p);
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (yGetVar("allUnits", "player") == p) {
@@ -206,6 +208,8 @@ inactive
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 					trDamageUnitPercent(-100);
+					ySetVar("allUnits", "health", 
+						xsMax(yGetVar("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
 				}
 			} else {
 				ySetVar("allUnits", "action", ACTION_DONE);
@@ -247,10 +251,12 @@ inactive
 {
 	int p = trQuestVarGet("activePlayer");
 	if (trCheckGPActive("rain", p) == true || trTime() > cActivationTime + 90) {
-		trCounterAbort("mana");
+		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
+		
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "vision", 1);
 		trTechGodPower(p, "animal magnetism", 1);
+		trCounterAbort("mana");
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);
