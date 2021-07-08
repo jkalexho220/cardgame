@@ -10,6 +10,11 @@ Spells
 const int SPELL_NONE = 0;
 const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
 
+
+
+// Spell is also unused for regular minions. We will re-use it for battlecries instead
+const int PLAY_DRAW = 1;
+
 /*
 Keyword bit positions. Use these to index into keywords by bit position
 */
@@ -69,19 +74,24 @@ Given a card index in a given db array, print information
 of the selected unit.
 */
 void displayCardKeywordsAndDescription(string db = "", int index = 0) {
+	string bonus = " ";
 	string dialog = "";
 	string message = "";
+	int proto = yGetVarByIndex(db, "proto", index);
 	int keywords = yGetVarByIndex(db, "keywords", index);
 	if(keywords>0){
 		bool multiple = false;
-		for(k=0;<NUM_KEYWORDS){
-			if(GetBit(keywords, k)){
+		int current = xsPow(2, NUM_KEYWORDS - 1);
+		for(k=NUM_KEYWORDS - 1; >=0){
+			if (keywords >= current) {
 				if(multiple){
 					dialog = dialog + ", ";
 				}
 				multiple = true;
 				dialog = dialog + GetKeywordName(k);
+				keywords = keywords - current;
 			}
+			current = current / 2;
 		}
 	}
 	message = yGetStringByIndex(db, "ability", index);
@@ -98,8 +108,31 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 		gadgetUnreal("unitStatPanel-stat-pierceArmor");
 	}
 
-	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
+	int old = xsGetContextPlayer();
+	xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));
+	int diff = 1*yGetVarByIndex(db, "health", index) - kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));
+	if (diff > 0) {
+		bonus = bonus + "HP +" + diff;
+	}
+
+	diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");
+	if (diff > 0) {
+		bonus = bonus + "ATK + " + diff;
+	} else if (diff < 0) {
+		bonus = bonus + "ATK " + diff;
+	}
+
+	diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");
+	if (diff > 0) {
+		bonus = bonus + "SPD + " + diff;
+	} else if (diff < 0) {
+		bonus = bonus + "SPD " + diff;
+	}
+
+	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");
 	trSetCounterDisplay(message);
+
+	xsSetContextPlayer(old);
 }
 
 
