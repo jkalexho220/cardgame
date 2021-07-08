@@ -4,11 +4,50 @@ const int LEFT_CLICK = 1;
 void BotClickLeft(){
 	trUnitSelectClear();
 	trTechInvokeGodPower(2, "animal magnetism", trVectorQuestVarGet("botLeftClick"), vector(0,0,0));
+	//xsEnableRule("BotLeftClick");
 }
 
 void BotClickRight(){
 	trUnitSelectClear();
 	trTechInvokeGodPower(2, "Vision", trVectorQuestVarGet("botRightClick"), vector(0,0,0));
+	//xsEnableRule("BotRightClick");
+}
+
+/* 
+// These work but the Bot gets stuck sometimes
+rule BotLeftClick
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		trVectorQuestVarSet("p2clickPos", trVectorQuestVarGet("botLeftClick"));
+		trQuestVarSet("p2click", LEFT_CLICK);
+		xsEnableRule("BotGotStuck");
+		xsDisableRule("BotLeftClick");
+	}
+}
+
+rule BotRightClick
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		trVectorQuestVarSet("p2clickPos", trVectorQuestVarGet("botRightClick"));
+		trQuestVarSet("p2click", RIGHT_CLICK);
+		xsEnableRule("BotGotStuck");
+		xsDisableRule("BotRightClick");
+	}
+}
+*/
+rule BotGotStuck
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 10){
+		trQuestVarSet("p2jobSkipHand", 0);
+		trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));
+		xsDisableRule("BotGotStuck");
+	}
 }
 
 rule detectClick
@@ -23,14 +62,16 @@ active
 			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Vision", 1);
-			ChatLogShow(p);
+			ChatLogShow(1);
+			ChatLogShow(2);
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet"+p, "Animal Attractor", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
-			ChatLogShow(p);
+			ChatLogShow(1);
+			ChatLogShow(2);
 		}
 	}
 }

@@ -146,6 +146,7 @@ void highlightReady(float duration = 0.1) {
 			if(Bot){
 				trQuestVarSet("p2jobSkipHand", 0);
 				trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));
+				xsDisableRule("BotGotStuck");
 			}
 			if (trCurrentPlayer() == p) {
 				trSoundPlayFN("market.wav", "1", -1, "","");

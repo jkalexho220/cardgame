@@ -205,6 +205,10 @@ inactive
 		int p = 3 - trQuestVarGet("activePlayer");
 		
 		Bot = (Multiplayer == false && p == 2);
+		
+		if(Bot){
+			xsEnableRule("BotGotStuck");
+		}
 
 		trQuestVarSet("p"+p+"jobDoneHand", 0);	
 		trQuestVarSet("p"+p+"jobDoneBoard", 0);

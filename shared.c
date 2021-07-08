@@ -502,21 +502,18 @@ void ChatLogShow(int p = 1){
 	if (trCurrentPlayer() == p) {
 		trChatHistoryClear();
 	}
-	for(i=9;>=0){
+	int x = peekModularCounterNext("chat" + p + "Log");
+	for(i=x;<11){
+		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));
+	}
+	for(i=1;<x){
 		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));
 	}
 }
 
 void ChatLog(int p = 1, string message = ""){
-	if (trCurrentPlayer() == p) {
-		trChatHistoryClear();
-	}
-	for(i=9;>0){
-		trStringQuestVarSet("chat" + p + "Log" + i, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));
-		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));
-	}
-	trStringQuestVarSet("chat" + p + "Log0", message);
-	trChatSendToPlayer(0, p, message);
+	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
+	ChatLogShow(p);
 }
 
 /*
@@ -581,7 +578,16 @@ runImmediately
 			xsEnableRule("CinPrologue00");
 		}
 	}
-
+	
+	modularCounterInit("chat1Log", 10);
+	modularCounterInit("chat2Log", 10);
+	
+	ChatLog(1, "1");
+	ChatLog(1, "2");
+	ChatLog(1, "3");
+	ChatLog(1, "4");
+	ChatLog(1, "5");
+	ChatLog(1, "6");
 
 	// Modify vision revealer pop count
 	trModifyProtounit("Vision Revealer", 1, 6, 9999);

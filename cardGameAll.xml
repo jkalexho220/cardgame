@@ -467,21 +467,18 @@
 <Command>	if (trCurrentPlayer() == p) {</Command>
 <Command>		trChatHistoryClear();</Command>
 <Command>	}</Command>
-<Command>	for(i=9;>=0){</Command>
+<Command>	int x = peekModularCounterNext("chat" + p + "Log");</Command>
+<Command><![CDATA[	for(i=x;<11){]]></Command>
+<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));</Command>
+<Command>	}</Command>
+<Command><![CDATA[	for(i=1;<x){]]></Command>
 <Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
 <Command>void ChatLog(int p = 1, string message = ""){</Command>
-<Command>	if (trCurrentPlayer() == p) {</Command>
-<Command>		trChatHistoryClear();</Command>
-<Command>	}</Command>
-<Command>	for(i=9;>0){</Command>
-<Command>		trStringQuestVarSet("chat" + p + "Log" + i, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));</Command>
-<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + (i - 1)));</Command>
-<Command>	}</Command>
-<Command>	trStringQuestVarSet("chat" + p + "Log0", message);</Command>
-<Command>	trChatSendToPlayer(0, p, message);</Command>
+<Command>	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);</Command>
+<Command>	ChatLogShow(p);</Command>
 <Command>}</Command>
 
 <Command>bool GetBit(int n=0, int p=0){</Command>
@@ -543,6 +540,15 @@
 <Command>		}</Command>
 <Command>	}</Command>
 
+<Command>	modularCounterInit("chat1Log", 10);</Command>
+<Command>	modularCounterInit("chat2Log", 10);</Command>
+
+<Command>	ChatLog(1, "1");</Command>
+<Command>	ChatLog(1, "2");</Command>
+<Command>	ChatLog(1, "3");</Command>
+<Command>	ChatLog(1, "4");</Command>
+<Command>	ChatLog(1, "5");</Command>
+<Command>	ChatLog(1, "6");</Command>
 
 <Command>	// Modify vision revealer pop count</Command>
 <Command>	trModifyProtounit("Vision Revealer", 1, 6, 9999);</Command>
@@ -1101,11 +1107,25 @@
 <Command>void BotClickLeft(){</Command>
 <Command>	trUnitSelectClear();</Command>
 <Command>	trTechInvokeGodPower(2, "animal magnetism", trVectorQuestVarGet("botLeftClick"), vector(0,0,0));</Command>
+<Command>	//xsEnableRule("BotLeftClick");</Command>
 <Command>}</Command>
 
 <Command>void BotClickRight(){</Command>
 <Command>	trUnitSelectClear();</Command>
 <Command>	trTechInvokeGodPower(2, "Vision", trVectorQuestVarGet("botRightClick"), vector(0,0,0));</Command>
+<Command>	//xsEnableRule("BotRightClick");</Command>
+<Command>}</Command>
+
+
+<Command>rule BotGotStuck</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 10){</Command>
+<Command>		trQuestVarSet("p2jobSkipHand", 0);</Command>
+<Command>		trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));</Command>
+<Command>		xsDisableRule("BotGotStuck");</Command>
+<Command>	}</Command>
 <Command>}</Command>
 
 <Command>rule detectClick</Command>
@@ -1120,14 +1140,16 @@
 <Command>			trQuestVarSet("p"+p+"click", RIGHT_CLICK);</Command>
 <Command>			trUnitDestroy();</Command>
 <Command>			trTechGodPower(p, "Vision", 1);</Command>
-<Command>			ChatLogShow(p);</Command>
+<Command>			ChatLogShow(1);</Command>
+<Command>			ChatLogShow(2);</Command>
 <Command>		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {</Command>
 <Command>			yFindLatest("magnet"+p, "Animal Attractor", p);</Command>
 <Command>			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);</Command>
 <Command>			trQuestVarSet("p"+p+"click", LEFT_CLICK);</Command>
 <Command>			trUnitDestroy();</Command>
 <Command>			trTechGodPower(p, "Animal magnetism", 1);</Command>
-<Command>			ChatLogShow(p);</Command>
+<Command>			ChatLogShow(1);</Command>
+<Command>			ChatLogShow(2);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -1734,6 +1756,7 @@
 <Command>			if(Bot){</Command>
 <Command>				trQuestVarSet("p2jobSkipHand", 0);</Command>
 <Command>				trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));</Command>
+<Command>				xsDisableRule("BotGotStuck");</Command>
 <Command>			}</Command>
 <Command>			if (trCurrentPlayer() == p) {</Command>
 <Command>				trSoundPlayFN("market.wav", "1", -1, "","");</Command>
@@ -2547,6 +2570,10 @@
 <Command>		int p = 3 - trQuestVarGet("activePlayer");</Command>
 
 <Command><![CDATA[		Bot = (Multiplayer == false && p == 2);]]></Command>
+
+<Command>		if(Bot){</Command>
+<Command>			xsEnableRule("BotGotStuck");</Command>
+<Command>		}</Command>
 
 <Command>		trQuestVarSet("p"+p+"jobDoneHand", 0);</Command>
 <Command>		trQuestVarSet("p"+p+"jobDoneBoard", 0);</Command>
