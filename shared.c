@@ -1,3 +1,4 @@
+bool Multiplayer = false;
 
 bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
@@ -542,11 +543,11 @@ runImmediately
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
-	bool multiplayer = aiIsMultiplayer(); 	// nottud is smart
-	if(multiplayer && kbIsPlayerHuman(2) == false){
-		multiplayer = false; // or kick?
+	bool Multiplayer = aiIsMultiplayer(); 	// nottud is smart
+	if(Multiplayer && kbIsPlayerHuman(2) == false){
+		Multiplayer = false; // or kick?
 	}
-	if(multiplayer){
+	if(Multiplayer){
 		trChatSend(0, "Mode:Multiplayer");
 	} else {
 		trChatSend(0, "Mode:Singleplayer");

@@ -3,8 +3,9 @@ highFrequency
 active
 runImmediately
 {
-	for(x=3; >0) {
+	for(x=30; >0) {
 		for(p=2; >0) {
+
 			addCardToDeck(p, "Swordsman");
 			addCardToDeck(p, "Maceman");
 			addCardToDeck(p, "Skraeling");
@@ -21,6 +22,9 @@ runImmediately
 			addCardToDeck(p, "Archer Atlantean Hero");
 		}
 	}
+	
+	InitBot(BOT_PERSONALITY_DEFAULT);
+	
 	xsDisableRule("match_test");
 }
 
@@ -98,8 +102,12 @@ inactive
 			trQuestVarSet("p"+p+"done", 0);
 		}
 		trMessageSetText("Left click to choose cards to mulligan. Right click to finish.",-1);
-
-		trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);
+		
+		if(Multiplayer){
+			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
+		} else {
+			trQuestVarSet("p2done", 1);
+		}
 
 		xsEnableRule("match_02_mulligan");
 		xsDisableRule("match_01_mulliganStart");
@@ -110,7 +118,7 @@ rule match_02_mulligan
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || trTime() > cActivationTime + 20) {
+	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || (Multiplayer  && (trTime() > cActivationTime + 20))) {
 		xsEnableRule("match_03_replace");
 		xsDisableRule("match_02_mulligan");
 	} else {
@@ -198,6 +206,12 @@ inactive
 
 
 		int p = 3 - trQuestVarGet("activePlayer");
+		
+		if(Multiplayer == false && p == 2){
+			trQuestVarSet("botPhase", 0);
+			trQuestVarSet("botThinking", 0);
+			xsEnableRule("Bot1");
+		}
 
 		xsSetContextPlayer(p);
 		for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -228,8 +242,10 @@ inactive
 
 		trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 
-		trCounterAddTime("turnTimer", 91, 1, "Turn end", -1);
-		trCounterAddTime("mana", -1, -91, 
+		if(Multiplayer){
+			trCounterAddTime("turnTimer", 91, 1, "Turn end", -1);	
+		}
+		trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
 
 		if (trQuestVarGet("activePlayer") == 1) {
@@ -250,7 +266,7 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if (trCheckGPActive("rain", p) == true || trTime() > cActivationTime + 90) {
+	if (trCheckGPActive("rain", p) == true || (Multiplayer && (trTime() > cActivationTime + 90))) {
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
 		
 		trPlayerKillAllGodPowers(p);
