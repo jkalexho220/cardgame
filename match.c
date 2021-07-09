@@ -169,6 +169,7 @@ inactive
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
 			if (yGetVar("p"+p+"hand", "mulligan") == 1) {
+				addCardToDeck(p, kbGetProtoUnitName(1*yGetVar("p"+p+"hand", "proto")), yGetVar("p"+p+"hand", "spell"));
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 				trUnitChangeProtoUnit("Hero Death");
 			} else {
@@ -181,6 +182,7 @@ inactive
 			transferUnit("p"+p+"hand", "temp");
 		}
 		yClearDatabase("temp");
+		shuffleDeck(p);
 	}
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");

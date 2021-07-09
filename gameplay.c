@@ -150,6 +150,45 @@ void findTargets(int index = 0, string db = "") {
 	}
 }
 
+
+void lightning(int index = 0, int damage = 0, bool deadly = false) {
+	trQuestVarSetFromRand("rand", 1, 5, true);
+	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");
+	int p = yGetVarByIndex("allUnits", "player", index);
+	yClearDatabase("lightningTargets");
+	for (x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (yGetVar("allUnits", "player") == p) {
+			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
+			if ((trQuestVarGet("allUnitsIndex") == index) == false) {
+				yAddToDatabase("lightningTargets", "allUnitsIndex");
+			}
+		}
+	}
+	if (deadly) {
+		damage = -1;
+	}
+	// find lightning chain
+	int pop = -1;
+	int push = modularCounterNext("lightningPush");
+	trQuestVarSet("lightning" + push, index);
+	trQuestVarSet("lightning" + push + "damage", damage);
+	while ((pop == push) == false) {
+		pop = modularCounterNext("lightningPop");
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));
+		for (x=yGetDatabaseCount("lightningTargets"); >0) {
+			yDatabaseNext("lightningTargets");
+			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));
+			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {
+				push = modularCounterNext("lightningPush");
+				trQuestVarCopy("lightning" + push, "lightningTargets");
+				trQuestVarSet("lightning"+push+"damage", damage);
+				yRemoveFromDatabase("lightningTargets");
+			}
+		}
+	}
+}
+
 /*
 int attacker = index of attacking unit in the "allUnits" database
 int target = index of the target unit in the "allUnits" database
@@ -211,7 +250,10 @@ void processAttack(string db = "attacks") {
 		}
 		case ATTACK_DONE:
 		{
-			if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&
+			if (HasKeyword(LIGHTNING, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex))) {
+				lightning(targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex), 
+					HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)));
+			} else if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&
 				yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
 				ySetVarByIndex("allUnits", "health", targetIndex, 0);
 				damageUnit("allUnits", targetIndex, 1);
@@ -220,6 +262,7 @@ void processAttack(string db = "attacks") {
 				damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
 				deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
 			}
+		
 
 			/*
 			TODO: Special on-attack events go here. Need to figure out a good system.
@@ -299,6 +342,25 @@ active
 		processAttack("ambushAttacks");
 	} else if (yGetDatabaseCount("attacks") > 0) {
 		processAttack("attacks");
+	}
+	/*
+	Resolve lightning every 100 MS.
+	*/
+	if (trTimeMS() > trQuestVarGet("lightningNext") && 
+		(trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop")) == false) {
+		trQuestVarSet("lightningNext", trTimeMS() + 100);
+		int index = modularCounterNext("lightningActivate");
+		int targetIndex = trQuestVarGet("lightning"+index);
+		// If Deadly and target isn't a commander
+		if (trQuestVarGet("lightning"+index+"damage") == -1 &&
+			yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
+			ySetVarByIndex("allUnits", "health", targetIndex, 0);
+			damageUnit("allUnits", targetIndex, 1);
+			deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+		} else {
+			damageUnit("allUnits", targetIndex, trQuestVarGet("lightning"+index+"damage"));
+			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+		}
 	}
 }
 
@@ -566,8 +628,8 @@ inactive
 			kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 10) {
 			trQuestVarSet("moving", 1);
 		}
-	} else if (trQuestVarGet("moving") == 1 || trQuestVarGet("turnEnd") == 1) {
-		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9) {
+	} else if (trQuestVarGet("moving") == 1) {
+		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9 || trQuestVarGet("turnEnd") == 1) {
 			int p = trQuestVarGet("activePlayer");
 
 			trVectorSetUnitPos("start", "activeUnit");
@@ -685,7 +747,8 @@ rule gameplay_05_attackComplete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) || (trTime() > cActivationTime + 3)) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+		(trTime() > cActivationTime + 3)) {
 		int p = trQuestVarGet("activePlayer");
 
 		if (yGetDatabaseCount("reachable") > 0) {

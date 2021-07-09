@@ -263,7 +263,7 @@ runImmediately
 	        Proto                  Cost    Name       Attack|Health|Speed|Range     Keywords|Ability
 	*/
 	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
-	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1);
+	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(LIGHTNING));
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));
 	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);
