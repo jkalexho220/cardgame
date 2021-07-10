@@ -1,56 +1,5 @@
 
 /*
-Removes the currently selected unit in a search from
-the database. This is where we put all the special variables
-that need to be updated whenever a unit is removed.
-This is called only after a yDatabaseNext("allUnits").
-*/
-void removeUnit(string db = "allUnits") {
-	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "ability");
-	yRemoveUpdateVar(db, "cost");
-	yRemoveUpdateVar(db, "pos");
-	yRemoveUpdateVar(db, "health");
-	yRemoveUpdateVar(db, "attack");
-	yRemoveUpdateVar(db, "range");
-	yRemoveUpdateVar(db, "speed");
-	yRemoveUpdateVar(db, "proto");
-	yRemoveUpdateVar(db, "player");
-	yRemoveUpdateVar(db, "ready");
-	yRemoveUpdateVar(db, "keywords");
-	yRemoveUpdateVar(db, "tile");
-	yRemoveUpdateVar(db, "spell");
-	yRemoveUpdateVar(db, "action");
-	yRemoveUpdateVar(db, "attackEvent");
-	yRemoveUpdateVar(db, "deathEvent");
-}
-
-/*
-Transfers the unit at the current pointer in the 'from' database
-to the 'to' database.
-*/
-void transferUnit(string to = "", string from = "") {
-	yAddToDatabase(to, from);
-	yTransferUpdateString(to, from, "ability");
-	yTransferUpdateVar(to, from, "cost");
-	yTransferUpdateVar(to, from, "pos");
-	yTransferUpdateVar(to, from, "health");
-	yTransferUpdateVar(to, from, "attack");
-	yTransferUpdateVar(to, from, "range");
-	yTransferUpdateVar(to, from, "speed");
-	yTransferUpdateVar(to, from, "proto");
-	yTransferUpdateVar(to, from, "player");
-	yTransferUpdateVar(to, from, "ready");
-	yTransferUpdateVar(to, from, "keywords");
-	yTransferUpdateVar(to, from, "tile");
-	yTransferUpdateVar(to, from, "spell");
-	yTransferUpdateVar(to, from, "action");
-	yTransferUpdateVar(to, from, "attackEvent");
-	yTransferUpdateVar(to, from, "deathEvent");
-}
-
-
-/*
 Fischer-Yates shuffle
 */
 void shuffleDeck(int p = 0) {
@@ -88,10 +37,17 @@ void updateHandPlayable(int p = 0) {
 }
 
 void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
-	trQuestVarSet("proto", kbGetProtoUnitID(proto));
-	yAddToDatabase("p"+p+"deck", "proto");
-	yAddUpdateVar("p"+p+"deck", "spell", spell);
+	if (spell == 0) {
+		trQuestVarSet("proto", kbGetProtoUnitID(proto));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", 0);
+	} else {
+		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", spell);
+	}
 }
+
 
 
 /* 
@@ -103,19 +59,29 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
 	trUnitConvert(p);
-	trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+
+	yAddToDatabase("p"+p+"hand", "next");
+	if (spell == 0 || spell == SPELL_COMMANDER) {
+		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));
+		yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));
+		yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));
+		yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));
+		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));
+		yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
+		yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
+	} else {
+		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		proto = kbGetProtoUnitID("Statue of Lightning");
+	}
 	trUnitHighlight(3, true);
 
 
-	yAddToDatabase("p"+p+"hand", "next");
+	
 	yAddUpdateVar("p"+p+"hand", "proto", proto);
-	yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));
-	yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));
-	yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));
-	yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));
-	yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));
-	yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
-	yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
+	
+	
 
 	yAddUpdateVar("p"+p+"hand", "player", p);
 	yAddUpdateVar("p"+p+"hand", "spell", spell);
@@ -152,14 +118,18 @@ void drawCard(int p = 0) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
 				trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
+			} else {
+				trChatSend(0, "Drew a " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
 		}
-		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
+		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
 	} else {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("cantdothat.wav","1",-1,"","");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
 				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));
+			} else {
+				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
 		}
 	}

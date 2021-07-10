@@ -20,6 +20,11 @@ runImmediately
 			addCardToDeck(p, "Avenger");
 			*/
 			addCardToDeck(p, "Archer Atlantean Hero");
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
 		}
 	}
 	
@@ -177,6 +182,7 @@ inactive
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
 			if (yGetVar("p"+p+"hand", "mulligan") == 1) {
+				addCardToDeck(p, kbGetProtoUnitName(1*yGetVar("p"+p+"hand", "proto")), yGetVar("p"+p+"hand", "spell"));
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 				trUnitChangeProtoUnit("Hero Death");
 			} else {
@@ -189,6 +195,7 @@ inactive
 			transferUnit("p"+p+"hand", "temp");
 		}
 		yClearDatabase("temp");
+		shuffleDeck(p);
 	}
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");
@@ -199,7 +206,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) {
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) {
 
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");

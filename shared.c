@@ -560,6 +560,10 @@ runImmediately
 		}
 	}
 
+	modularCounterInit("lightningPop", 40);
+	modularCounterInit("lightningPush", 40);
+	modularCounterInit("lightningActivate", 40);
+
 
 	// Modify vision revealer pop count
 	trModifyProtounit("Vision Revealer", 1, 6, 9999);
