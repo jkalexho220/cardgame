@@ -9,11 +9,8 @@ Spells
 */
 const int SPELL_NONE = 0;
 const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
+const int SPELL_SPARK = 2;
 
-
-
-// Spell is also unused for regular minions. We will re-use it for battlecries instead
-const int PLAY_DRAW = 1;
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -43,7 +40,7 @@ string GetKeywordName(int bitPosition=0){
 		case LIGHTNING: return ("Lightning");
 		case REGENERATE: return ("Regenerate");
 		case DEADLY: return ("Deadly");
-		case ETHEREAL: return ("Ethereal");
+		case ETHEREAL: return ("Pathfinder");
 		case ARMORED: return ("Armored");
 		case WARD: return ("Ward");
 		case BEACON: return ("Beacon");

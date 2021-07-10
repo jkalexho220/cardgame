@@ -1,56 +1,5 @@
 
 /*
-Removes the currently selected unit in a search from
-the database. This is where we put all the special variables
-that need to be updated whenever a unit is removed.
-This is called only after a yDatabaseNext("allUnits").
-*/
-void removeUnit(string db = "allUnits") {
-	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "ability");
-	yRemoveUpdateVar(db, "cost");
-	yRemoveUpdateVar(db, "pos");
-	yRemoveUpdateVar(db, "health");
-	yRemoveUpdateVar(db, "attack");
-	yRemoveUpdateVar(db, "range");
-	yRemoveUpdateVar(db, "speed");
-	yRemoveUpdateVar(db, "proto");
-	yRemoveUpdateVar(db, "player");
-	yRemoveUpdateVar(db, "ready");
-	yRemoveUpdateVar(db, "keywords");
-	yRemoveUpdateVar(db, "tile");
-	yRemoveUpdateVar(db, "spell");
-	yRemoveUpdateVar(db, "action");
-	yRemoveUpdateVar(db, "attackEvent");
-	yRemoveUpdateVar(db, "deathEvent");
-}
-
-/*
-Transfers the unit at the current pointer in the 'from' database
-to the 'to' database.
-*/
-void transferUnit(string to = "", string from = "") {
-	yAddToDatabase(to, from);
-	yTransferUpdateString(to, from, "ability");
-	yTransferUpdateVar(to, from, "cost");
-	yTransferUpdateVar(to, from, "pos");
-	yTransferUpdateVar(to, from, "health");
-	yTransferUpdateVar(to, from, "attack");
-	yTransferUpdateVar(to, from, "range");
-	yTransferUpdateVar(to, from, "speed");
-	yTransferUpdateVar(to, from, "proto");
-	yTransferUpdateVar(to, from, "player");
-	yTransferUpdateVar(to, from, "ready");
-	yTransferUpdateVar(to, from, "keywords");
-	yTransferUpdateVar(to, from, "tile");
-	yTransferUpdateVar(to, from, "spell");
-	yTransferUpdateVar(to, from, "action");
-	yTransferUpdateVar(to, from, "attackEvent");
-	yTransferUpdateVar(to, from, "deathEvent");
-}
-
-
-/*
 Fischer-Yates shuffle
 */
 void shuffleDeck(int p = 0) {
