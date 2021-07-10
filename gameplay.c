@@ -328,33 +328,41 @@ inactive
 				}
 				if (unit > -1) {
 					if (trQuestVarGet("p"+p+"mana") >= yGetVarByIndex("p"+p+"hand", "cost", unit)) {
-						int tile = 0;
-						yClearDatabase("summonLocations");
-						if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {
-							for(x=zGetBankCount("tiles"); >0) {
-								zBankNext("tiles");
-								if (zGetVar("tiles", "occupied") == TILE_EMPTY) {
-									yAddToDatabase("summonLocations", "tiles");
+						// If it is a unit
+						if (yGetVarByIndex("p"+p+"hand", "spell", unit) == 0) {
+							int tile = 0;
+							yClearDatabase("summonLocations");
+							if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {
+								for(x=zGetBankCount("tiles"); >0) {
+									zBankNext("tiles");
+									if (zGetVar("tiles", "occupied") == TILE_EMPTY) {
+										yAddToDatabase("summonLocations", "tiles");
+									}
+								}
+							} else {
+								for(x=yGetDatabaseCount("allUnits"); >0) {
+									yDatabaseNext("allUnits");
+									if (yGetVar("allUnits", "player") == p && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {
+										tile = yGetVar("allUnits", "tile");
+										findAvailableTiles(tile, 1, "summonLocations");
+									}
 								}
 							}
-						} else {
-							for(x=yGetDatabaseCount("allUnits"); >0) {
-								yDatabaseNext("allUnits");
-								if (yGetVar("allUnits", "player") == p && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {
-									tile = yGetVar("allUnits", "tile");
-									findAvailableTiles(tile, 1, "summonLocations");
+							for (x=yGetDatabaseCount("summonLocations"); >0) {
+								tile = yDatabaseNext("summonLocations");
+								if (trCurrentPlayer() == p) {
+									highlightTile(tile, 3600);
 								}
 							}
-						}
-						for (x=yGetDatabaseCount("summonLocations"); >0) {
-							tile = yDatabaseNext("summonLocations");
-							if (trCurrentPlayer() == p) {
-								highlightTile(tile, 3600);
-							}
-						}
 
-						trQuestVarSet("summonUnitIndex", unit);
-						xsEnableRule("gameplay_10_summon");
+							trQuestVarSet("summonUnitIndex", unit);
+							xsEnableRule("gameplay_10_summon");
+						} else {
+							// If it is a spell
+							trQuestVarSet("selectedSpell", unit);
+							chooseSpell(1*yGetVarByIndex("p"+p+"hand", "spell", unit));
+						}
+						
 						xsDisableRule("gameplay_01_select");
 						highlightReady(0.1);
 					}
