@@ -543,7 +543,7 @@ runImmediately
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
-	bool Multiplayer = aiIsMultiplayer(); 	// nottud is smart
+	Multiplayer = aiIsMultiplayer(); 	// nottud is smart
 	if(Multiplayer && kbIsPlayerHuman(2) == false){
 		Multiplayer = false; // or kick?
 	}
