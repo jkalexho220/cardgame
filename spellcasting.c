@@ -11,7 +11,7 @@ const int CASTING_CANCEL = 2;
 
 void castReset() {
 	trQuestVarSet("castPush", 0);
-	trQuestVarSet("castPop", -1);
+	trQuestVarSet("castPop", 0);
 }
 
 /*
@@ -23,8 +23,8 @@ The spellcast_ set of triggers will process these requests one by one and store 
 in the quest vars.
 */
 void castAddUnit(string qv = "", int p = 0) {
-	int x = trQuestVarGet("castPush");
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
 
 	trQuestVarSet("cast"+x+"type", CAST_UNIT);
 	trQuestVarSet("cast"+x+"player", p);
@@ -36,8 +36,8 @@ qv = name of the quest var to store the selected tile
 ghost = true if ignore impassable terrain
 */
 void castAddTile(string qv = "", bool ghost = false) {
-	int x = trQuestVarGet("castPush");
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
 
 	trQuestVarSet("cast"+x+"type", CAST_TILE);
 	trStringQuestVarSet("cast"+x+"qv", qv);
@@ -54,8 +54,8 @@ attacker = name of quest var holding the index of the attacking unit. This will
 only highlight targets that are within range of the attacker.
 */
 void castAddTarget(string qv = "", string attacker = "") {
-	int x = trQuestVarGet("castPush");
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
 
 	trQuestVarSet("cast"+x+"type", CAST_TARGET);
 	trStringQuestVarSet("cast"+x+"start", attacker);
@@ -69,8 +69,8 @@ unit = if set to true, start becomes the name of the quest var holding the index
 in the allUnits database.
 */
 void castAddDirection(string qv = "", string start = "", bool unit = false) {
-	int x = trQuestVarGet("castPush");
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
 
 	trQuestVarSet("cast"+x+"type", CAST_DIRECTION);
 	if (unit) {
@@ -85,6 +85,28 @@ void castAddDirection(string qv = "", string start = "", bool unit = false) {
 void castStart() {
 	trQuestVarSet("castDone", CASTING_IN_PROGRESS);
 	xsEnableRule("spellcast_00_process");
+}
+
+void castEnd() {
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits", true);
+		removeIfDead("allUnits");
+	}
+	xsEnableRule("gameplay_01_select");
+	highlightReady(999999);
+
+	if (trQuestVarGet("selectedCard") >= 0) {
+		int p = trQuestVarGet("activePlayer");
+		trUnitSelectClear();
+		trUnitSelect(""+1*yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard")), true);
+		trUnitChangeProtoUnit("Hero Death");
+		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - yGetVarByIndex("p"+p+"hand", "cost", 1*trQuestVarGet("selectedCard")));
+		updateMana();
+		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
+		removeUnit("p"+p+"hand");
+
+		updateHandPlayable(p);
+	}
 }
 
 
@@ -102,17 +124,17 @@ inactive
 			case CAST_UNIT:
 			{
 				p = trQuestVarGet("cast"+x+"player");
-				trUnitSelectClear();
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (yGetVar("allUnits", "player") == p || p == 0) {
+					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {
+						trUnitSelectClear();
 						trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 						trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
 						yAddToDatabase("castTargets", "allUnitsIndex");
+						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+							trUnitHighlight(999999, false);
+						}
 					}
-				}
-				if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
-					trUnitHighlight(999999, false);
 				}
 			}
 			case CAST_TILE:
@@ -158,7 +180,7 @@ inactive
 					while(found) {
 						found = false;
 						// Travel down the line and highlight tiles
-						for(z=0; < zGetVar("tiles", "neighborCount", tile)) {
+						for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 							trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+z, tile)));
 							if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
 								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);
@@ -192,16 +214,19 @@ void spellcastClearHighlights(int x = 0) {
 	castTargets can be either a tile or the index of a unit in the allUnits database.
 	The behavior of this function differs based on type.
 	*/
-	if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+	if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {
 		if (trQuestVarGet("cast"+x+"type") >= CAST_TILE) {
 			for(z=yGetDatabaseCount("castTargets"); >0) {
 				yDatabaseNext("castTargets");
 				highlightTile(1*trQuestVarGet("castTargets"), 0.1);
 			}
 		} else {
-			trUnitSelectClear();
-			yDatabaseSelectAll("castTargets");
-			trUnitHighlight(0.1, false);
+			for (z=yGetDatabaseCount("castTargets"); >0) {
+				yDatabaseNext("castTargets");
+				trUnitSelectClear();
+				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")), true);
+				trUnitHighlight(0.1, false);
+			}
 		}
 	}
 	
@@ -227,14 +252,15 @@ inactive
 				bool selected = false;
 				for(z=yGetDatabaseCount("castTargets"); >0) {
 					yDatabaseNext("castTargets");
+					trQuestVarCopy("castTargetUnit", "castTargets");
 					/*
 					castTargets can be either a tile or the index of a unit in the allUnits database. If it is 
 					a unit index, we need to convert the index to the unit.
 					*/
 					if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
-						trQuestVarSet("castTargets", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));
+						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));
 					}
-					if (zDistanceToVectorSquared("castTargets", "p"+p+"clickPos") < 64) {
+					if (zDistanceToVectorSquared("castTargetUnit", "p"+p+"clickPos") < 8) {
 						trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");
 						selected = true;
 						break;
@@ -259,6 +285,8 @@ inactive
 				spellcastClearHighlights(x);
 				castReset();
 				trQuestVarSet("castDone", CASTING_CANCEL);
+				xsEnableRule("gameplay_01_select");
+				highlightReady(999999);
 				xsDisableRule("spellcast_01_select");
 			}
 		}
@@ -269,14 +297,19 @@ inactive
 /*
 Given an integer for a spell, prompt the player to select a target
 and get ready to cast the spell.
+card = the index of the card in hand that will be removed when the spell is cast. If -1, then no
+card is removed.
 */
-void chooseSpell(int spell = 0) {
+void chooseSpell(int spell = 0, int card = -1) {
 	trQuestVarSet("currentSpell", spell);
+	trQuestVarSet("selectedCard", card);
 	switch(spell)
 	{
 		case SPELL_SPARK:
 		{
-			trMessageSetText("Deal 1 damage to a unit.", -1);
+			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+				trMessageSetText("(1)Spark: Deal 1 damage to a unit.", -1);
+			}
 			castReset();
 			castAddUnit("spellTarget", 0);
 			castStart();
@@ -294,21 +327,20 @@ inactive
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
 		bool done = true;
+		trSoundPlayFN("godpower.wav","1",-1,"","");
 		switch(1*trQuestVarGet("currentSpell"))
 		{
 			case SPELL_SPARK:
 			{
 				damageUnit("allUnits", 1*trQuestVarGet("spellTarget"), 1);
 				deployAtTile(0, "Tartarian Gate flame", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("spellTarget")));
+				trMessageSetText("(1)Spark: Deal 1 damage to a unit.", -1);
 			}
 		}
 
 		if (done) {
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits", true);
-				removeIfDead("allUnits");
-			}
-			xsEnableRule("gameplay_01_select");
+			castEnd();
 		}
+		xsDisableRule("spell_cast");
 	}
 }

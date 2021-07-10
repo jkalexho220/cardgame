@@ -19,6 +19,11 @@ runImmediately
 			addCardToDeck(p, "Avenger");
 			*/
 			addCardToDeck(p, "Archer Atlantean Hero");
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
+			addCardToDeck(p, "none", SPELL_SPARK);
 		}
 	}
 	xsDisableRule("match_test");

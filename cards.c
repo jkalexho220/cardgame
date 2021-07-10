@@ -114,22 +114,27 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 
 	diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");
 	if (diff > 0) {
-		bonus = bonus + "ATK + " + diff;
+		bonus = bonus + " ATK + " + diff;
 	} else if (diff < 0) {
-		bonus = bonus + "ATK " + diff;
+		bonus = bonus + " ATK " + diff;
 	}
 
 	diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");
 	if (diff > 0) {
-		bonus = bonus + "SPD + " + diff;
+		bonus = bonus + " SPD + " + diff;
 	} else if (diff < 0) {
-		bonus = bonus + "SPD " + diff;
+		bonus = bonus + " SPD " + diff;
 	}
 
 	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");
 	trSetCounterDisplay(message);
 
 	xsSetContextPlayer(old);
+}
+
+void SpellSetup(string name = "", int cost = 0, int spell = 0) {
+	trStringQuestVarSet("spell_"+spell+"_name", name);
+	trQuestVarSet("spell_"+spell+"_cost", cost);
 }
 
 
@@ -259,22 +264,25 @@ runImmediately
 	/*
 	        Proto                  Cost    Name       Attack|Health|Speed|Range     Keywords|Ability
 	*/
-	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
-	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(LIGHTNING));
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
+	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));
 	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
-	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		4, 4, 2, 1);
+	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 1, 3, 1, Keyword(AMBUSH));
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
 	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
-
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0);
 	
-	
+	/*
+				Name 	Cost 	Spell
+	*/
+	SpellSetup("Spark", 1, SPELL_SPARK);
 	//Loading player collection
 	int cardIndex = 0;
 	for(i=0;<16){

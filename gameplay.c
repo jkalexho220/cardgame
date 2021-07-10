@@ -1,70 +1,6 @@
 
-const int ACTION_READY = 0;
-const int ACTION_MOVED = 1;
-const int ACTION_DONE = 2;
-const int ACTION_FURY = 3;
-
-const int CASTING_NORMAL = 0;
-const int CASTING_SUMMON = 1;
-const int CASTING_SPELL = 2;
-const int CASTING_WAIT = 3;
-
-const int ATTACK_START = 0;
-const int ATTACK_ANIMATE = 1;
-const int ATTACK_DONE = 2;
 
 
-const int EVENT_DRAW_CARD = 0;
-
-const int EVENT_COUNT = 1;
-
-
-void updateMana() {
-	int p = trQuestVarGet("activePlayer");
-	trCounterAbort("mana");
-	trCounterAddTime("mana", -1, -91, 
-			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
-}
-
-
-
-void lightning(int index = 0, int damage = 0, bool deadly = false) {
-	trQuestVarSetFromRand("rand", 1, 5, true);
-	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");
-	int p = yGetVarByIndex("allUnits", "player", index);
-	yClearDatabase("lightningTargets");
-	for (x=yGetDatabaseCount("allUnits"); >0) {
-		yDatabaseNext("allUnits");
-		if (yGetVar("allUnits", "player") == p) {
-			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
-			if ((trQuestVarGet("allUnitsIndex") == index) == false) {
-				yAddToDatabase("lightningTargets", "allUnitsIndex");
-			}
-		}
-	}
-	if (deadly) {
-		damage = -1;
-	}
-	// find lightning chain
-	int pop = -1;
-	int push = modularCounterNext("lightningPush");
-	trQuestVarSet("lightning" + push, index);
-	trQuestVarSet("lightning" + push + "damage", damage);
-	while ((pop == push) == false) {
-		pop = modularCounterNext("lightningPop");
-		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));
-		for (x=yGetDatabaseCount("lightningTargets"); >0) {
-			yDatabaseNext("lightningTargets");
-			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));
-			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {
-				push = modularCounterNext("lightningPush");
-				trQuestVarCopy("lightning" + push, "lightningTargets");
-				trQuestVarSet("lightning"+push+"damage", damage);
-				yRemoveFromDatabase("lightningTargets");
-			}
-		}
-	}
-}
 
 /*
 int attacker = index of attacking unit in the "allUnits" database
@@ -186,6 +122,8 @@ bool attackUnitAtCursor(int p = 0) {
 					int saveTile = yGetVarByIndex("allUnits", "tile", target);
 					teleportToTile("allUnits", saveTile);
 					teleportToTile("allUnits", guardTile, target);
+					ySetVar("allUnits", "tile", saveTile);
+					ySetVarByIndex("allUnits", "tile", target, guardTile);
 					target = yGetPointer("allUnits");
 					trQuestVarSet("targetUnit", trQuestVarGet("allUnits"));
 					break;
@@ -359,8 +297,7 @@ inactive
 							xsEnableRule("gameplay_10_summon");
 						} else {
 							// If it is a spell
-							trQuestVarSet("selectedSpell", unit);
-							chooseSpell(1*yGetVarByIndex("p"+p+"hand", "spell", unit));
+							chooseSpell(1*yGetVarByIndex("p"+p+"hand", "spell", unit), unit);
 						}
 						
 						xsDisableRule("gameplay_01_select");
@@ -648,6 +585,22 @@ inactive
 			yClearDatabase("targets");
 		}
 
+		if (trQuestVarGet("turnEnd") == 0) {
+			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&
+				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY &&
+				yGetVarByIndex("allUnits", "health", 1*trQuestVarGet("activeUnitIndex")) > 0) {
+				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_FURY);
+				xsEnableRule("gameplay_04_attack");
+				yClearDatabase("targets");
+				findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
+				yDatabaseSelectAll("targets");
+				trUnitHighlight(3600, false);
+			} else {
+				xsEnableRule("gameplay_01_select");
+				highlightReady(100);
+			}
+		}
+
 		yDatabasePointerDefault("allUnits");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits", true);
@@ -664,22 +617,6 @@ inactive
 				break;
 			}
 		}
-
-		if (trQuestVarGet("turnEnd") == 0) {
-			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&
-				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY) {
-				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_FURY);
-				xsEnableRule("gameplay_04_attack");
-				yClearDatabase("targets");
-				findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
-				yDatabaseSelectAll("targets");
-				trUnitHighlight(3600, false);
-			} else {
-				xsEnableRule("gameplay_01_select");
-				highlightReady(100);
-			}
-		}
-
 		
 		xsDisableRule("gameplay_05_attackComplete");
 	}

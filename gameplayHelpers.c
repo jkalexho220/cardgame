@@ -1,4 +1,28 @@
 
+const int ACTION_READY = 0;
+const int ACTION_MOVED = 1;
+const int ACTION_DONE = 2;
+const int ACTION_FURY = 3;
+
+
+const int ATTACK_START = 0;
+const int ATTACK_ANIMATE = 1;
+const int ATTACK_DONE = 2;
+
+
+const int EVENT_DRAW_CARD = 0;
+
+const int EVENT_COUNT = 1;
+
+void updateMana() {
+	int p = trQuestVarGet("activePlayer");
+	trCounterAbort("mana");
+	trCounterAddTime("mana", -1, -91, 
+			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
+}
+
+
+
 
 /*
 Removes the currently selected unit in a search from
@@ -169,9 +193,47 @@ void removeIfDead(string db = "", int index = -1) {
 		ySetPointer(db, index);
 	}
 	if (yGetVar(db, "health") <= 0) {
-		int tile = yGetVar("allUnits", "tile");
+		int tile = yGetVar(db, "tile");
 		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
 		trDamageUnitPercent(100);
 		removeUnit(db);
+	}
+}
+
+void lightning(int index = 0, int damage = 0, bool deadly = false) {
+	trQuestVarSetFromRand("rand", 1, 5, true);
+	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");
+	int p = yGetVarByIndex("allUnits", "player", index);
+	yClearDatabase("lightningTargets");
+	for (x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (yGetVar("allUnits", "player") == p) {
+			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
+			if ((trQuestVarGet("allUnitsIndex") == index) == false) {
+				yAddToDatabase("lightningTargets", "allUnitsIndex");
+			}
+		}
+	}
+	if (deadly) {
+		damage = -1;
+	}
+	// find lightning chain
+	int pop = -1;
+	int push = modularCounterNext("lightningPush");
+	trQuestVarSet("lightning" + push, index);
+	trQuestVarSet("lightning" + push + "damage", damage);
+	while ((pop == push) == false) {
+		pop = modularCounterNext("lightningPop");
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));
+		for (x=yGetDatabaseCount("lightningTargets"); >0) {
+			yDatabaseNext("lightningTargets");
+			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));
+			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {
+				push = modularCounterNext("lightningPush");
+				trQuestVarCopy("lightning" + push, "lightningTargets");
+				trQuestVarSet("lightning"+push+"damage", damage);
+				yRemoveFromDatabase("lightningTargets");
+			}
+		}
 	}
 }
