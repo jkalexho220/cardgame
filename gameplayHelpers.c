@@ -3,11 +3,12 @@ const int ACTION_READY = 0;
 const int ACTION_MOVED = 1;
 const int ACTION_DONE = 2;
 const int ACTION_FURY = 3;
-
+const int ACTION_STUNNED = 4;
 
 const int ATTACK_START = 0;
 const int ATTACK_ANIMATE = 1;
 const int ATTACK_DONE = 2;
+
 
 
 
@@ -46,6 +47,9 @@ void removeUnit(string db = "allUnits") {
 	yRemoveUpdateVar(db, "onPlay");
 	yRemoveUpdateVar(db, "onAttack");
 	yRemoveUpdateVar(db, "onDeath");
+	yRemoveUpdateVar(db, "stunTime");
+	yRemoveUpdateVar(db, "stunSFX");
+	yRemoveUpdateVar(db, "stunIndex");
 }
 
 /*
@@ -71,6 +75,9 @@ void transferUnit(string to = "", string from = "") {
 	yTransferUpdateVar(to, from, "onPlay");
 	yTransferUpdateVar(to, from, "onAttack");
 	yTransferUpdateVar(to, from, "onDeath");
+	yTransferUpdateVar(to, from, "stunTime");
+	yTransferUpdateVar(to, from, "stunSFX");
+	yTransferUpdateVar(to, from, "stunIndex");
 }
 
 
@@ -257,5 +264,76 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 	} else {
 		yAddUpdateVar(db, "phase", ATTACK_DONE);
 	}
-	
+}
+
+
+
+bool spyReady() {
+	return(trQuestVarGet("spyFind") == trQuestVarGet("spyFound"));
+}
+
+
+/*
+Casts spy on the currently selected unit. The spy will transform into the specified protounit.
+Returns the index of the spy eye in case the user wants to reference it later. The name of the
+spy eye will be set in the quest var "spyEye"+x, where x is the integer returned by this function.
+*/
+int spyEffect(string proto = "") {
+	int x = modularCounterNext("spyFind");
+	trQuestVarSet("spyEye"+x+"proto", kbGetProtoUnitID(proto));
+	trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
+	return(x);
+}
+
+rule spy_find
+highFrequency
+active
+{
+	if (spyReady() == false) {
+		while (yFindLatest("spyEye", "Spy Eye", 0) >= 0) {
+			int x = modularCounterNext("spyFound");
+			trQuestVarCopy("spyEye"+x, "spyEye");
+			trMutateSelected(1*trQuestVarGet("spyEye"+x+"proto"));
+			trQuestVarSet("spyTimeout", 0);
+		}
+		trQuestVarSet("spyTimeout", trQuestVarGet("spyTimeout") + 1);
+		if (trQuestVarGet("spyTimeout") >= 5) {
+			trQuestVarCopy("spyFound", "spyFind");
+		}
+	}
+}
+
+/*
+index = index of unit in the allUnits database.
+*/
+void stunUnit(int index = 0) {
+	if (yGetVarByIndex("allUnits", "health", index) > 0) {
+		ySetVarByIndex("allUnits", "stunTime", index, 2);
+		ySetVarByIndex("allUnits", "action", index, ACTION_STUNNED);
+		if (yGetVarByIndex("allUnits", "stunSFX", index) == 0) {
+			trUnitSelectClear();
+			trUnitSelect(""+1*yGetUnitAtIndex("allUnits", index), true);
+			ySetVarByIndex("allUnits", "stunIndex", index, spyEffect("Shockwave stun effect"));
+			xsEnableRule("spy_assign_new");
+		} else {
+			trUnitSelectClear();
+			trUnitSelect(""+1*yGetVarByIndex("allUnits", "stunSFX", index), true);
+			trMutateSelected(kbGetProtoUnitID("Shockwave stun effect"));
+		}
+	}
+}
+
+rule spy_assign_new
+highFrequency
+inactive
+{
+	if (spyReady())	{
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if ((yGetVar("allUnits", "stunSFX") == 0) && (yGetVar("allUnits", "stunIndex") > 0)) {
+				ySetVar("allUnits", "stunSFX", trQuestVarGet("spyEye"+1*yGetVar("allUnits", "stunIndex")));
+			}
+		}
+		xsDisableRule("spy_assign_new");
+	}
 }
