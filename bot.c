@@ -60,7 +60,7 @@ inactive
 				int maxCardCost = -1;
 				for(x=yGetDatabaseCount("p2hand"); >0) {
 					yDatabaseNext("p2hand");
-					if (yGetVar("p2hand", "cost") <= trQuestVarGet("p2mana")) {
+					if (yGetVar("p2hand", "cost") <= trQuestVarGet("p2mana") && yGetVar("p2hand", "spell") == 0) {
 						// Bot plays cast in desc order of their cost
 						int currentCardCost = yGetVar("p2hand", "cost");
 						// Bot loves Airdrop

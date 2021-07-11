@@ -268,20 +268,38 @@ inactive
 				}
 				if (selected) {
 					spellcastClearHighlights(x);
+					trQuestVarSet("p"+p+"click", 0);
 					xsEnableRule("spellcast_00_process");
 					xsDisableRule("spellcast_01_select");
 				} else {
 					/*
 					If the player selected another card in hand, we abort. Otherwise, we shame
 					the player for making such a rookie mistake.
+					We don't set click back to 0 if they selected another card in hand.
 					*/
-					if (trCurrentPlayer() == p) {
-						trSoundPlayFN("cantdothat.wav","1",-1,"","");
+					for(z=yGetDatabaseCount("p"+p+"hand"); >0) {
+						yDatabaseNext("p"+p+"hand");
+						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 2) {
+							spellcastClearHighlights(x);
+							castReset();
+							trQuestVarSet("castDone", CASTING_CANCEL);
+							xsEnableRule("gameplay_01_select");
+							highlightReady(999999);
+							xsDisableRule("spellcast_01_select");
+							break;
+						}
+					}
+					if (z == 0) {
+						trQuestVarSet("p"+p+"click", 0);
+						if (trCurrentPlayer() == p) {
+							trSoundPlayFN("cantdothat.wav","1",-1,"","");
+						}
 					}
 				}
 			}
 			case RIGHT_CLICK:
 			{
+				trQuestVarSet("p"+p+"click", 0);
 				spellcastClearHighlights(x);
 				castReset();
 				trQuestVarSet("castDone", CASTING_CANCEL);
@@ -290,7 +308,6 @@ inactive
 				xsDisableRule("spellcast_01_select");
 			}
 		}
-		trQuestVarSet("p"+p+"click", 0);
 	}
 }
 

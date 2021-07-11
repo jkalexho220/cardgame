@@ -5,7 +5,7 @@ runImmediately
 {
 	for(x=30; >0) {
 		for(p=2; >0) {
-
+			addCardToDeck(p, "Khopesh");
 			addCardToDeck(p, "Swordsman");
 			addCardToDeck(p, "Maceman");
 			addCardToDeck(p, "Skraeling");
@@ -20,11 +20,6 @@ runImmediately
 			addCardToDeck(p, "Avenger");
 			*/
 			addCardToDeck(p, "Archer Atlantean Hero");
-			addCardToDeck(p, "none", SPELL_SPARK);
-			addCardToDeck(p, "none", SPELL_SPARK);
-			addCardToDeck(p, "none", SPELL_SPARK);
-			addCardToDeck(p, "none", SPELL_SPARK);
-			addCardToDeck(p, "none", SPELL_SPARK);
 		}
 	}
 	

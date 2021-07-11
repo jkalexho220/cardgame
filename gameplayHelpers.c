@@ -10,9 +10,6 @@ const int ATTACK_ANIMATE = 1;
 const int ATTACK_DONE = 2;
 
 
-const int EVENT_DRAW_CARD = 0;
-
-const int EVENT_COUNT = 1;
 
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
@@ -46,8 +43,8 @@ void removeUnit(string db = "allUnits") {
 	yRemoveUpdateVar(db, "tile");
 	yRemoveUpdateVar(db, "spell");
 	yRemoveUpdateVar(db, "action");
-	yRemoveUpdateVar(db, "attackEvent");
-	yRemoveUpdateVar(db, "deathEvent");
+	yRemoveUpdateVar(db, "onAttack");
+	yRemoveUpdateVar(db, "onDeath");
 }
 
 /*
@@ -70,8 +67,8 @@ void transferUnit(string to = "", string from = "") {
 	yTransferUpdateVar(to, from, "tile");
 	yTransferUpdateVar(to, from, "spell");
 	yTransferUpdateVar(to, from, "action");
-	yTransferUpdateVar(to, from, "attackEvent");
-	yTransferUpdateVar(to, from, "deathEvent");
+	yTransferUpdateVar(to, from, "onAttack");
+	yTransferUpdateVar(to, from, "onDeath");
 }
 
 
@@ -236,4 +233,27 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 			}
 		}
 	}
+}
+
+
+/*
+int attacker = index of attacking unit in the "allUnits" database
+int target = index of the target unit in the "allUnits" database
+bool first = true if the unit has Ambush keyword and activates it.
+bool animate = does this attack need an animation?
+*/
+void startAttack(int attacker = 0, int target = 0, bool first = false, bool animate = true) {
+	string db = "attacks";
+	if (first) {
+		db = "ambushAttacks";
+	}
+	trQuestVarSet("temp", attacker);
+	yAddToDatabase(db, "temp");
+	yAddUpdateVar(db, "target", target);
+	if (animate) {
+		yAddUpdateVar(db, "phase", ATTACK_START);
+	} else {
+		yAddUpdateVar(db, "phase", ATTACK_DONE);
+	}
+	
 }

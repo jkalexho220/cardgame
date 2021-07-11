@@ -1,30 +1,6 @@
 
 
 
-
-/*
-int attacker = index of attacking unit in the "allUnits" database
-int target = index of the target unit in the "allUnits" database
-bool first = true if the unit has Ambush keyword and activates it.
-bool animate = does this attack need an animation?
-*/
-void startAttack(int attacker = 0, int target = 0, bool first = false, bool animate = true) {
-	string db = "attacks";
-	if (first) {
-		db = "ambushAttacks";
-	}
-	trQuestVarSet("temp", attacker);
-	yAddToDatabase(db, "temp");
-	yAddUpdateVar(db, "target", target);
-	if (animate) {
-		yAddUpdateVar(db, "phase", ATTACK_START);
-	} else {
-		yAddUpdateVar(db, "phase", ATTACK_DONE);
-	}
-	
-}
-
-
 void processAttack(string db = "attacks") {
 	int attackerIndex = yDatabaseNext(db);
 	int targetIndex = yGetVar(db, "target");
@@ -75,13 +51,18 @@ void processAttack(string db = "attacks") {
 				damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
 				deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
 			}
-		
-
 			/*
-			TODO: Special on-attack events go here. Need to figure out a good system.
-			Maybe use the HasKeyword() function but have Events instead of keywords.
-			But GetBit is super inefficient.
+			On-attack events.
 			*/
+			int n = xsPow(2, ATTACK_EVENT_COUNT - 1);
+			int events = yGetVarByIndex("allUnits", "OnAttack", attackerIndex);
+			for(x=ATTACK_EVENT_COUNT - 1; >=0) {
+				if (events >= n) {
+					OnAttack(attackerIndex, targetIndex, x);
+					events = events - n;
+				}
+				n = n / 2;
+			}
 
 			yRemoveFromDatabase(db);
 			yRemoveUpdateVar(db, "target");
@@ -551,13 +532,12 @@ inactive
 						trUnitHighlight(0.1, false);
 						yClearDatabase("targets");
 					}
+					trQuestVarSet("p"+p+"click", 0);
 					xsDisableRule("gameplay_04_attack");
 				}
 			}
 		}
 	}
-	
-	trQuestVarSet("p"+p+"click", 0);
 }
 
 
