@@ -43,6 +43,7 @@ void removeUnit(string db = "allUnits") {
 	yRemoveUpdateVar(db, "tile");
 	yRemoveUpdateVar(db, "spell");
 	yRemoveUpdateVar(db, "action");
+	yRemoveUpdateVar(db, "onPlay");
 	yRemoveUpdateVar(db, "onAttack");
 	yRemoveUpdateVar(db, "onDeath");
 }
@@ -67,6 +68,7 @@ void transferUnit(string to = "", string from = "") {
 	yTransferUpdateVar(to, from, "tile");
 	yTransferUpdateVar(to, from, "spell");
 	yTransferUpdateVar(to, from, "action");
+	yTransferUpdateVar(to, from, "onPlay");
 	yTransferUpdateVar(to, from, "onAttack");
 	yTransferUpdateVar(to, from, "onDeath");
 }

@@ -54,8 +54,8 @@ void processAttack(string db = "attacks") {
 			/*
 			On-attack events.
 			*/
-			int n = xsPow(2, ATTACK_EVENT_COUNT - 1);
-			int events = yGetVarByIndex("allUnits", "OnAttack", attackerIndex);
+			int n = 1*xsPow(2, ATTACK_EVENT_COUNT - 1);
+			int events = 1*yGetVarByIndex("allUnits", "OnAttack", attackerIndex);
 			for(x=ATTACK_EVENT_COUNT - 1; >=0) {
 				if (events >= n) {
 					OnAttack(attackerIndex, targetIndex, x);
@@ -658,6 +658,25 @@ inactive
 					} else {
 						yAddUpdateVar("allUnits", "action", ACTION_DONE);
 					}
+					updateMana();
+
+					// If the unit has an OnPlay effect
+					if (yGetVar("p"+p+"hand", "OnPlay") > 0) {
+						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);
+						int events = 1*yGetVar("p"+p+"hand", "OnPlay");
+						int latest = yGetDatabaseCount("allUnits") - 1;
+						for(x=PLAY_EVENT_COUNT - 1; >=0) {
+							if (events >= n) {
+								OnPlay(latest, x);
+								events = events - n;
+							}
+							n = n / 2;
+						}
+					} else {
+						xsEnableRule("gameplay_01_select");
+						highlightReady(100);
+					}
+
 					removeUnit("p"+p+"hand");
 
 					zSetVarByIndex("tiles", "occupied", tile, TILE_OCCUPIED);
@@ -671,10 +690,7 @@ inactive
 					}
 					yClearDatabase("summonLocations");
 
-					updateMana();
-
-					xsEnableRule("gameplay_01_select");
-					highlightReady(100);
+					
 					xsDisableRule("gameplay_10_summon");
 					trQuestVarSet("p"+p+"click", 0);
 				}

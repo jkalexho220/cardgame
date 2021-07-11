@@ -11,6 +11,7 @@ const int SPELL_NONE = 0;
 const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
 
 const int SPELL_SPARK = 2;
+const int SPELL_FOOD = 3;
 
 
 /*
@@ -28,9 +29,8 @@ const int PLAY_FOOD = 0;
 const int PLAY_GET_TRAP = 1;
 const int PLAY_GET_SPARK = 2;
 const int PLAY_DOUBLEBLADE = 3;
-const int PLAY_BEAR_TRAP = 4;
 
-const int PLAY_EVENT_COUNT = 5;
+const int PLAY_EVENT_COUNT = 4;
 
 
 /*
@@ -267,7 +267,14 @@ runImmediately
 		trForbidProtounit(p, "Oracle Hero");
 		trForbidProtounit(p, "Royal Guard Hero");
 		trForbidProtounit(p, "Swordsman Hero");
-		trForbidProtounit(p, "Trident Soldier Hero");					
+		trForbidProtounit(p, "Trident Soldier Hero");
+		trForbidProtounit(p, "Villager Atlantean Hero");
+		trForbidProtounit(p, "Settlement Level 1");
+		trForbidProtounit(p, "Guild");
+		trForbidProtounit(p, "Manor");
+		trForbidProtounit(p, "Dock");
+		trForbidProtounit(p, "Wall Connector");
+		trForbidProtounit(p, "Temple");
 	}
 
 	//Pick a card. Any card.
@@ -282,7 +289,7 @@ runImmediately
 	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
-	CardSetup("Skraeling", 				2, "Wolfpelt", 			1, 2, 2, 1);
+	CardSetup("Skraeling", 				2, "Trapper", 			1, 2, 2, 1);
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);
@@ -303,7 +310,7 @@ runImmediately
 	CardEvents("Slinger", Keyword(PLAY_GET_SPARK), 0, 0, "Play: Add a Spark to your hand.");
 	CardEvents("Avenger", Keyword(PLAY_DOUBLEBLADE), 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
 	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Petrobolos", Keyword(PLAY_BEAR_TRAP), Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
+	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	/*
 	Spells
 				Name 	Cost 	Spell

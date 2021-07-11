@@ -3,9 +3,10 @@ highFrequency
 active
 runImmediately
 {
-	for(x=30; >0) {
+	for(x=3; >0) {
 		for(p=2; >0) {
 			addCardToDeck(p, "Khopesh");
+			addCardToDeck(p, "Villager Atlantean");
 			addCardToDeck(p, "Swordsman");
 			addCardToDeck(p, "Maceman");
 			addCardToDeck(p, "Skraeling");
@@ -17,8 +18,8 @@ runImmediately
 			addCardToDeck(p, "Hero Greek Theseus");
 			/*
 			addCardToDeck(p, "Behemoth");
-			addCardToDeck(p, "Avenger");
 			*/
+			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Archer Atlantean Hero");
 		}
 	}
