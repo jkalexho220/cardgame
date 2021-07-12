@@ -1,4 +1,8 @@
-
+const int GAMEPLAY_SELECT = 0;
+const int GAMEPLAY_WORK = 1;
+const int GAMEPLAY_MOVING = 2;
+const int GAMEPLAY_SUMMONING = 3;
+const int GAMEPLAY_ATTACKING = 4;
 
 
 void processAttack(string db = "attacks") {
@@ -207,6 +211,7 @@ inactive
 		xsDisableRule("gameplay_01_select");
 		highlightReady(0.1);
 	} else {
+		trQuestVarSet("gameplayPhase", GAMEPLAY_SELECT);
 		int p = trQuestVarGet("activePlayer");
 		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
@@ -229,7 +234,6 @@ inactive
 					xsDisableRule("gameplay_01_select");
 					highlightReady(0.1);
 					xsEnableRule("gameplay_02_work");
-
 				}
 			} else {
 				// Check if player selected a card in hand.
@@ -246,6 +250,7 @@ inactive
 				}
 				if (unit > -1) {
 					if (trQuestVarGet("p"+p+"mana") >= yGetVarByIndex("p"+p+"hand", "cost", unit)) {
+						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
 						if (yGetVarByIndex("p"+p+"hand", "spell", unit) == 0) {
 							int tile = 0;
@@ -316,6 +321,7 @@ inactive
 			yClearDatabase("targets");
 		}
 	} else {
+		trQuestVarSet("gameplayPhase", GAMEPLAY_WORK);
 		int p = trQuestVarGet("activePlayer");
 		switch(1*trQuestVarGet("p"+p+"click"))
 		{
@@ -407,10 +413,12 @@ inactive
 						
 						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
 						trQuestVarSet("moving", 0);
+						trQuestVarSet("gameplayPhase", GAMEPLAY_MOVING);
 						xsEnableRule("gameplay_03_moveComplete");
 						xsDisableRule("gameplay_02_work");
 					}
 				} else {
+					trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);
 					xsDisableRule("gameplay_02_work");
 				}
 				trQuestVarSet("p"+p+"click", 0);
@@ -509,6 +517,7 @@ inactive
 			yClearDatabase("targets");
 		}
 	} else {
+		trQuestVarSet("gameplayPhase", GAMEPLAY_WORK);
 		int p = trQuestVarGet("activePlayer");
 		switch(1*trQuestVarGet("p"+p+"click"))
 		{
