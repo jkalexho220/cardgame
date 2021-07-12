@@ -69,6 +69,9 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 		yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));
 		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));
 		yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
+		yAddUpdateVar("p"+p+"hand", "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));
+		yAddUpdateVar("p"+p+"hand", "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
+		yAddUpdateVar("p"+p+"hand", "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
 		yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
