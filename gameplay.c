@@ -113,6 +113,7 @@ bool attackUnitAtCursor(int p = 0) {
 					break;
 				}
 			}
+			refreshGuardAll();
 
 			startAttack(a, target, HasKeyword(AMBUSH, 1*yGetVarByIndex("allUnits", "keywords", a)), true);
 
@@ -493,7 +494,7 @@ inactive
 			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
 
 			if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
-				tileGuard(1*trQuestVarGet("moveTile"), true);
+				refreshGuardAll();
 			}
 
 
@@ -601,6 +602,7 @@ inactive
 			yDatabaseNext("allUnits", true);
 			removeIfDead("allUnits");
 		}
+		refreshGuardAll();
 
 		/* 
 		Database has been modified after removing units.
@@ -671,7 +673,7 @@ inactive
 					if (HasKeyword(CHARGE, 1*yGetVar("p"+p+"hand", "keywords")) == true) {
 						yAddUpdateVar("allUnits", "action", ACTION_READY);
 					} else {
-						yAddUpdateVar("allUnits", "action", ACTION_DONE);
+						yAddUpdateVar("allUnits", "action", ACTION_SLEEPING);
 					}
 					updateMana();
 
