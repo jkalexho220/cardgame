@@ -145,14 +145,14 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 
 		diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");
 		if (diff > 0) {
-			bonus = bonus + " ATK + " + diff;
+			bonus = bonus + " ATK +" + diff;
 		} else if (diff < 0) {
 			bonus = bonus + " ATK " + diff;
 		}
 
 		diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");
 		if (diff > 0) {
-			bonus = bonus + " SPD + " + diff;
+			bonus = bonus + " SPD +" + diff;
 		} else if (diff < 0) {
 			bonus = bonus + " SPD " + diff;
 		}

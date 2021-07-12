@@ -3,7 +3,8 @@ const int ACTION_READY = 0;
 const int ACTION_MOVED = 1;
 const int ACTION_DONE = 2;
 const int ACTION_FURY = 3;
-const int ACTION_STUNNED = 4;
+const int ACTION_SLEEPING = 4;
+const int ACTION_STUNNED = 5;
 
 const int ATTACK_START = 0;
 const int ATTACK_ANIMATE = 1;
@@ -20,6 +21,14 @@ void updateMana() {
 }
 
 
+void refreshGuardAll() {
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
+			tileGuard(1*yGetVar("allUnits", "tile"), true);
+		}
+	}
+}
 
 
 /*

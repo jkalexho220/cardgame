@@ -110,6 +110,7 @@ void castEnd() {
 		yDatabaseNext("allUnits", true);
 		removeIfDead("allUnits");
 	}
+	refreshGuardAll();
 	xsEnableRule("gameplay_01_select");
 	highlightReady(999999);
 
@@ -165,7 +166,7 @@ inactive
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
 					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {
-						if ((yGetVar("allUnits", "action") >= ACTION_DONE) && (yGetVar("allUnits", "action") < ACTION_STUNNED)) {
+						if ((yGetVar("allUnits", "action") >= ACTION_DONE) && (yGetVar("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));

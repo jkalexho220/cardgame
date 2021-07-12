@@ -347,6 +347,7 @@ void yRemoveUpdateString(string db = "", string attr = "") {
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
 	trStringQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr, 
 		trStringQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));
+	trStringQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, " ");
 }
 
 void yRemoveUpdateVar(string db = "", string attr = "") {
@@ -571,6 +572,9 @@ runImmediately
 	// Modify vision revealer pop count
 	trModifyProtounit("Vision Revealer", 1, 6, 9999);
 	trModifyProtounit("Vision Revealer", 2, 6, 9999);
+
+	trModifyProtounit("Vision Revealer", 1, 2, -9999);
+	trModifyProtounit("Vision Revealer", 2, 2, -9999);
 	// Modify vision sfx hp
 	trModifyProtounit("Vision SFX", 1, 0, -9999);
 	trModifyProtounit("Vision SFX", 2, 0, -9999);
