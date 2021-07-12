@@ -110,16 +110,16 @@ inactive
 					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("summonLocations"), true);
 				}
 				
-				for (x=yGetDatabaseCount("summonLocations"); >0) {
+				for (x=trQuestVarGet("botRandom"); >0) {
 					yDatabaseNext("summonLocations");
-					// Bot summons a unit
-					if(trQuestVarGet("botRandom") == x){
-						trVectorSetUnitPos("botClickPos", "summonLocations");
-						// Bot Click Left
-						trQuestVarSet("botClick", LEFT_CLICK);
-						trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);
-					}
 				}
+				// Bot summons a unit
+				trVectorSetUnitPos("botClickPos", "summonLocations");
+				// Bot Click Left
+				trQuestVarSet("botClick", LEFT_CLICK);
+				trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);
+					
+				
 			}
 			
 			case BOT_PHASE_UNIT_CHOOSE:
@@ -174,16 +174,14 @@ inactive
 						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("botReachable"), true);
 					}
 				
-					for(x=yGetDatabaseCount("botReachable"); >0) {
+					for(x=trQuestVarGet("botRandom"); >0) {
 						yDatabaseNext("botReachable");
-						// Bot moves
-						if(trQuestVarGet("botRandom") == x){
-							trVectorSetUnitPos("botClickPos", "botReachable");
-							trVectorSetUnitPos("botMovePos", "botReachable");							
-							// Bot Click Right
-							trQuestVarSet("botClick", RIGHT_CLICK);
-						}
 					}
+					trVectorSetUnitPos("botClickPos", "botReachable");
+					trVectorSetUnitPos("botMovePos", "botReachable");							
+					// Bot Click Right
+					trQuestVarSet("botClick", RIGHT_CLICK);
+				
 				}
 				trQuestVarSet("botPhase", BOT_PHASE_UNIT_ATTACK);
 			}

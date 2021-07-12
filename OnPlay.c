@@ -40,6 +40,11 @@ void OnPlay(int unit = 0, int event = 0) {
 			}
 			trSoundPlayFN("sphinxspecialattack.wav","1",-1,"","");
 		}
+		case PLAY_LEGENDARY:
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
+		}
 	}
 	if (done) {
 		for(x=yGetDatabaseCount("allUnits"); >0) {

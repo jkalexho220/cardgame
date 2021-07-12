@@ -1,17 +1,21 @@
 
 const int CAST_UNIT = 0;
 const int CAST_TARGET = 1;
-const int CAST_TILE = 2;
-const int CAST_DIRECTION = 3;
+const int CAST_SING = 2;
 
-const int CASTING_IN_PROGRESS = 0;
-const int CASTING_DONE = 1;
-const int CASTING_CANCEL = 2;
+const int CAST_TILE = 10;
+const int CAST_DIRECTION = 11;
+
+const int CASTING_NOTHING = 0;
+const int CASTING_IN_PROGRESS = 1;
+const int CASTING_DONE = 2;
+const int CASTING_CANCEL = 3;
 
 
 void castReset() {
 	trQuestVarSet("castPush", 0);
 	trQuestVarSet("castPop", 0);
+	trQuestVarSet("castDone", CASTING_NOTHING);
 }
 
 /*
@@ -32,6 +36,15 @@ void castAddUnit(string qv = "", int p = 0, bool commander = true) {
 		trQuestVarSet("cast"+x+"commander", SPELL_NONE);
 	}
 	trQuestVarSet("cast"+x+"type", CAST_UNIT);
+	trQuestVarSet("cast"+x+"player", p);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+void castAddSing(string qv = "", int p = 0) {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	trQuestVarSet("cast"+x+"type", CAST_SING);
 	trQuestVarSet("cast"+x+"player", p);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 }
@@ -112,6 +125,7 @@ void castEnd() {
 
 		updateHandPlayable(p);
 	}
+	trQuestVarSet("castDone", CASTING_NOTHING);
 }
 
 
@@ -124,6 +138,7 @@ inactive
 		int x = trQuestVarGet("castPop");
 		int p = trQuestVarGet("activePlayer");
 		yClearDatabase("castTargets");
+		yClearDatabase("castTiles");
 		switch(1*trQuestVarGet("cast"+x+"type"))
 		{
 			case CAST_UNIT:
@@ -144,12 +159,30 @@ inactive
 					}
 				}
 			}
+			case CAST_SING:
+			{
+				p = trQuestVarGet("cast"+x+"player");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {
+						if ((yGetVar("allUnits", "action") >= ACTION_DONE) && (yGetVar("allUnits", "action") < ACTION_STUNNED)) {
+							trUnitSelectClear();
+							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
+							yAddToDatabase("castTargets", "allUnitsIndex");
+							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+								trUnitHighlight(999999, false);
+							}
+						}
+					}
+				}
+			}
 			case CAST_TILE:
 			{
 				for (z=zGetBankCount("tiles"); >0) {
 					zBankNext("tiles");
 					if (zGetVar("tiles", "terrain") * trQuestVarGet("cast"+x+"terrain") == 0) {
-						yAddToDatabase("castTargets", "tiles");
+						yAddToDatabase("castTiles", "tiles");
 						if (trCurrentPlayer() == p) {
 							highlightTile(1*trQuestVarGet("tiles"), 999999);
 						}
@@ -192,7 +225,7 @@ inactive
 							if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
 								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);
 								trQuestVarSet("currentTile", tile);
-								yAddToDatabase("castTargets", "currentTile");
+								yAddToDatabase("castTiles", "currentTile");
 								trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));
 								trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));
 								if (trCurrentPlayer() == p) {
@@ -257,20 +290,28 @@ inactive
 			case LEFT_CLICK:
 			{
 				bool selected = false;
-				for(z=yGetDatabaseCount("castTargets"); >0) {
-					yDatabaseNext("castTargets");
-					trQuestVarCopy("castTargetUnit", "castTargets");
-					/*
-					castTargets can be either a tile or the index of a unit in the allUnits database. If it is 
-					a unit index, we need to convert the index to the unit.
-					*/
-					if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
+				if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
+					for(z=yGetDatabaseCount("castTargets"); >0) {
+						yDatabaseNext("castTargets");
+						trQuestVarCopy("castTargetUnit", "castTargets");
+
 						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));
+						
+						if (zDistanceToVectorSquared("castTargetUnit", "p"+p+"clickPos") < 8) {
+							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");
+							selected = true;
+							break;
+						}
 					}
-					if (zDistanceToVectorSquared("castTargetUnit", "p"+p+"clickPos") < 8) {
-						trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");
-						selected = true;
-						break;
+				} else {
+					for(z=yGetDatabaseCount("castTiles"); >0) {
+						yDatabaseNext("castTiles");
+						
+						if (zDistanceToVectorSquared("castTiles", "p"+p+"clickPos") < 8) {
+							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTiles");
+							selected = true;
+							break;
+						}
 					}
 				}
 				if (selected) {
@@ -349,6 +390,16 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castStart();
 			xsEnableRule("spell_cast");
 		}
+		case SPELL_SING:
+		{
+			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+				trMessageSetText("(2)Windsong: Select an ally that has already acted. Grant it another action.", -1);
+			}
+			castReset();
+			castAddSing("spellTarget", 1*trQuestVarGet("activePlayer"));
+			castStart();
+			xsEnableRule("spell_cast");
+		}
 	}
 }
 
@@ -361,6 +412,7 @@ inactive
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
 		bool done = true;
+		int target = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		switch(1*trQuestVarGet("currentSpell"))
 		{
@@ -372,15 +424,23 @@ inactive
 			}
 			case SPELL_FOOD:
 			{
-				int target = 1*trQuestVarGet("spellTarget");
+				target = 1*trQuestVarGet("spellTarget");
 				ySetVarByIndex("allUnits", "attack", target, 1 + yGetVarByIndex("allUnits", "attack", target));
 				ySetVarByIndex("allUnits", "health", target, 1 + yGetVarByIndex("allUnits", "health", target));
-				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("spellTarget")));
+				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				trUnitSelectClear();
 				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", target), true);
 				spyEffect("Einheriar Boost SFX");
+			}
+			case SPELL_SING:
+			{
+				target = 1*trQuestVarGet("spellTarget");
+				ySetVarByIndex("allUnits", "action", target, ACTION_READY);
+				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));
+				trSoundPlayFN("restorationbirth.wav","1",-1,"","");
+				trMessageSetText("(2)Windsong: Select an ally that has already acted. Grant it another action.",-1);
 			}
 		}
 

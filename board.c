@@ -25,6 +25,18 @@ int deployAtTile(int p = 0, string proto = "", int tile = 0) {
 	return(next);
 }
 
+void tileGuard(int tile = 0, bool on = true) {
+	trUnitSelectClear();
+	for(x=zGetVarByIndex("tiles", "borderCount", tile) - 1; >=0) {
+		trUnitSelectByID(1*zGetVarByIndex("tiles", "border"+x, tile));
+	}
+	if (on) {
+		trSetSelectedScale(3.1, 0.1, 0.6);
+	} else {
+		trSetSelectedScale(3.1, 0.1, 0.2);
+	}
+}
+
 void setupBoard() {
 	unitTransform("Statue of Automaton Base", "Victory Marker");
 	
