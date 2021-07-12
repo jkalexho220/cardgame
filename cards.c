@@ -12,6 +12,7 @@ const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal
 
 const int SPELL_SPARK = 2;
 const int SPELL_FOOD = 3;
+const int SPELL_SING = 4;
 
 
 /*
@@ -19,8 +20,9 @@ OnAttack events (bit positions)
 */
 const int ATTACK_DRAW_CARD = 0;
 const int ATTACK_STUN_TARGET = 1;
+const int ATTACK_GET_WINDSONG = 2;
 
-const int ATTACK_EVENT_COUNT = 2;
+const int ATTACK_EVENT_COUNT = 3;
 
 /*
 OnPlay events (bit positions)
@@ -29,8 +31,9 @@ const int PLAY_FOOD = 0;
 const int PLAY_GET_TRAP = 1;
 const int PLAY_GET_SPARK = 2;
 const int PLAY_DOUBLEBLADE = 3;
+const int PLAY_LEGENDARY = 4;
 
-const int PLAY_EVENT_COUNT = 4;
+const int PLAY_EVENT_COUNT = 5;
 
 
 /*
@@ -48,9 +51,9 @@ const int ARMORED = 8;			// Unit regenerates to full health after combat
 const int WARD = 9;				// Unit is immune to spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
 const int AMBUSH = 11;			// When initiating combat, unit attacks first.
+const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.
 
-
-const int NUM_KEYWORDS = 12;
+const int NUM_KEYWORDS = 13;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -67,6 +70,7 @@ string GetKeywordName(int bitPosition=0){
 		case WARD: return ("Ward");
 		case BEACON: return ("Beacon");
 		case AMBUSH: return ("Ambush");
+		case FLEETING: return ("Fleeting");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -309,18 +313,20 @@ runImmediately
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnPlay | OnAttack | OnDeath | Description
 	*/
+	CardEvents("Hero Greek Jason", 0, Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Khopesh", 0, Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
 	CardEvents("Skraeling", Keyword(PLAY_GET_TRAP), 0, 0, "Play: Add a Bear Trap to your hand.");
 	CardEvents("Slinger", Keyword(PLAY_GET_SPARK), 0, 0, "Play: Add a Spark to your hand.");
 	CardEvents("Avenger", Keyword(PLAY_DOUBLEBLADE), 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
 	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
+	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
 	/*
 	Spells
 				Name 	Cost 	Spell
 	*/
 	SpellSetup("Spark", 1, SPELL_SPARK);
-
+	SpellSetup("Windsong", 2, SPELL_SING);
 
 
 

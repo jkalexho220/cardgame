@@ -395,6 +395,9 @@ inactive
 						/* setting old tile to unoccupied */
 						int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
 						zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+						if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
+							tileGuard(tile, false);
+						}
 
 						trVectorSetUnitPos("moveDestination", "moveTile");
 						trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
@@ -480,6 +483,10 @@ inactive
 
 			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));
 			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
+
+			if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
+				tileGuard(1*trQuestVarGet("moveTile"), true);
+			}
 
 
 			xsDisableRule("gameplay_03_moveComplete");

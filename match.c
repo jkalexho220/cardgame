@@ -292,6 +292,28 @@ inactive
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);
+
+		// Discard fleeting cards
+		int type = 0;
+		yDatabasePointerDefault("p"+p+"hand");
+		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
+			yDatabaseNext("p"+p+"hand");
+			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
+				trUnitChangeProtoUnit("Hero Death");
+				if (trCurrentPlayer() == p) {
+					if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
+						type = yGetVar("p"+p+"hand", "proto");
+						trChatSend(0, "Discarded a " + trStringQuestVarGet("card_" + type + "_name"));
+					} else {
+						type = yGetVar("p"+p+"hand", "spell");
+						trChatSend(0, "Discarded a " + trStringQuestVarGet("spell_" + type + "_name"));
+					}
+				}
+				removeUnit("p"+p+"hand");
+			}
+		}
 		trDelayedRuleActivation("turn_00_start");
 		xsDisableRule("turn_01_end");
 	}

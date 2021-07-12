@@ -88,6 +88,14 @@ void teleportToTile(string db = "", int tile = 0, int index = -1) {
 		index = yGetPointer(db);
 	}
 
+	if (HasKeyword(GUARD, 1*yGetVarByIndex(db, "keywords", index))) {
+		if (yGetVarByIndex(db, "tile", index) > 0) {
+			tileGuard(1*yGetVarByIndex(db, "tile", index), false);
+		}
+		tileGuard(tile, true);
+	}
+	
+
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(p);
@@ -202,6 +210,9 @@ void removeIfDead(string db = "", int index = -1) {
 		int tile = yGetVar(db, "tile");
 		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
 		trDamageUnitPercent(100);
+		if (HasKeyword(GUARD, 1*yGetVar(db, "keywords"))) {
+			tileGuard(tile, false);
+		}
 		removeUnit(db);
 	}
 }

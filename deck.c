@@ -53,7 +53,7 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 /* 
 This function should only be called if there is room in the hand!
 */
-void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
+void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
 	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
 	trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("p"+p+"deckx"),0,trQuestVarGet("p"+p+"deckz"),0,true);
 	trUnitSelectClear();
@@ -82,7 +82,9 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 	}
 	trUnitHighlight(3, true);
 
-
+	if (fleeting) {
+		yAddUpdateVar("p"+p+"hand", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
+	}
 	
 	yAddUpdateVar("p"+p+"hand", "proto", proto);
 	
