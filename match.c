@@ -90,8 +90,8 @@ rule match_01_mulliganStart
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1drawCards") == 0 && trQuestVarGet("p2drawCards") == 0) {
-		unitTransform("Spy Eye", "Hero Birth");
+	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
+		unitTransform("Spy Eye", "Healing SFX");
 		for(p=2; >0) {
 			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 				yDatabaseNext("p"+p+"hand");
@@ -220,7 +220,19 @@ inactive
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (yGetVar("allUnits", "player") == p) {
-				ySetVar("allUnits", "action", ACTION_READY);
+				if (yGetVar("allUnits", "stunTime") > 0) {
+					ySetVar("allUnits", "stunTime", yGetVar("allUnits", "stunTime") - 1);
+					if (yGetVar("allUnits", "stunTime") == 0) {
+						ySetVar("allUnits", "action", ACTION_READY);
+						trUnitSelectClear();
+						trUnitSelect(""+1*yGetVar("allUnits", "stunSFX"), true);
+						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
+					} else {
+						ySetVar("allUnits", "action", ACTION_STUNNED);
+					}
+				} else {
+					ySetVar("allUnits", "action", ACTION_READY);
+				}
 				if (HasKeyword(REGENERATE, 1*yGetVar("allUnits", "keywords"))) {
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
@@ -240,6 +252,7 @@ inactive
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
 		trQuestVarSet("activePlayer", p);
 		trQuestVarSet("p"+p+"click", 0);
+		highlightReady(100);
 
 		trTechGodPower(p, "rain", 1);
 

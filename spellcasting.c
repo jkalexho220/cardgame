@@ -378,6 +378,9 @@ inactive
 				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("spellTarget")));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
+				trUnitSelectClear();
+				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", target), true);
+				spyEffect("Einheriar Boost SFX");
 			}
 		}
 

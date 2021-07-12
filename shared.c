@@ -564,6 +564,9 @@ runImmediately
 	modularCounterInit("lightningPush", 40);
 	modularCounterInit("lightningActivate", 40);
 
+	modularCounterInit("spyFind", 40);
+	modularCounterInit("spyFound", 40);
+
 
 	// Modify vision revealer pop count
 	trModifyProtounit("Vision Revealer", 1, 6, 9999);

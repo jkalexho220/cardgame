@@ -8,7 +8,9 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_STUN_TARGET:
 		{
-			// TODO
+			stunUnit(target);
+			trQuestVarSetFromRand("sound", 1, 3, true);
+			trSoundPlayFN("crushmetal"+1*trQuestVarGet("sound")+".wav","1",-1,"","");
 		}
 	}
 }

@@ -63,6 +63,8 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0) {
 	yAddToDatabase("p"+p+"hand", "next");
 	if (spell == 0 || spell == SPELL_COMMANDER) {
 		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		yAddUpdateVar("p"+p+"hand", "stunIndex", 0);
+		yAddUpdateVar("p"+p+"hand", "stunSFX", 0);
 		yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));
 		yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));
 		yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));

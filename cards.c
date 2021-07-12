@@ -48,9 +48,9 @@ const int ARMORED = 8;			// Unit regenerates to full health after combat
 const int WARD = 9;				// Unit is immune to spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
 const int AMBUSH = 11;			// When initiating combat, unit attacks first.
-const int STUNNED = 12;			// The unit is stunned.
 
-const int NUM_KEYWORDS = 13;
+
+const int NUM_KEYWORDS = 12;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -98,8 +98,12 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	string message = "";
 	int proto = yGetVarByIndex(db, "proto", index);
 	int keywords = yGetVarByIndex(db, "keywords", index);
+	bool multiple = false;
+	if (yGetVarByIndex(db, "stunTime", index) > 0) {
+		dialog = "Stunned";
+		multiple = true;
+	}
 	if(keywords>0){
-		bool multiple = false;
 		int current = xsPow(2, NUM_KEYWORDS - 1);
 		for(k=NUM_KEYWORDS - 1; >=0){
 			if (keywords >= current) {
@@ -294,7 +298,7 @@ runImmediately
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);
 	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 1, 3, 1, Keyword(AMBUSH));
+	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
 	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));

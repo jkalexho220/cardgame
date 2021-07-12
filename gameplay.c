@@ -94,6 +94,7 @@ bool attackUnitAtCursor(int p = 0) {
 				yDatabaseNext("allUnits");
 				dist = zDistanceToVectorSquared("allUnits", "d2pos");
 				if (dist < 64 && dist > 9 &&
+					yGetVar("allUnits", "stunTime") == 0 &&
 					yGetVar("allUnits", "player") == 3 - p &&
 					HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
 					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
@@ -103,8 +104,6 @@ bool attackUnitAtCursor(int p = 0) {
 					int saveTile = yGetVarByIndex("allUnits", "tile", target);
 					teleportToTile("allUnits", saveTile);
 					teleportToTile("allUnits", guardTile, target);
-					ySetVar("allUnits", "tile", saveTile);
-					ySetVarByIndex("allUnits", "tile", target, guardTile);
 					target = yGetPointer("allUnits");
 					trQuestVarSet("targetUnit", trQuestVarGet("allUnits"));
 					break;
@@ -116,7 +115,7 @@ bool attackUnitAtCursor(int p = 0) {
 			// Counterattack
 			trQuestVarSet("targetUnitIndex", target);
 			range = xsPow(yGetVarByIndex("allUnits", "range", target) * 6 + 3, 2);
-			if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
+			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && (yGetVarByIndex("allUnits", "stunTime", target) == 0)) {
 				startAttack(target, a, false, true);
 			}
 
