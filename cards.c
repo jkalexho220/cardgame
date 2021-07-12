@@ -35,6 +35,16 @@ const int PLAY_LEGENDARY = 4;
 
 const int PLAY_EVENT_COUNT = 5;
 
+/*
+OnDeath events (bit positions)
+*/
+const int DEATH_DRAW_CARD = 0;
+const int DEATH_OPPONENT_DRAW_CARD = 1;
+const int DEATH_BOOM_SMALL = 2;
+const int DEATH_BOOM_MEDIUM = 3;
+const int DEATH_BOOM_BIG = 4;
+
+const int PLAY_EVENT_COUNT = 5;
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -308,6 +318,12 @@ runImmediately
 	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+	
+	//CardSetup("Scout",		2, "SameDay Courier", 	2, 1, 4, 1); 
+	//CardSetup("Prodromos",		3, "Pillaging Rider", 	2, 2, 3, 1); 
+	//CardSetup("Crowned Crane",		2, "Gunpoweder Chick", 	1, 2, 1, 1); 
+	//CardSetup("Hippo",		4, "Gunpoweder Hippo", 	2, 4, 1, 1); 
+	//CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); 
 
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
@@ -321,6 +337,11 @@ runImmediately
 	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
+	//CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");
+	//CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");
+	//CardEvents("Crowned Crane", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: 2 Damage in 1 Radius.");
+	//CardEvents("Hippo", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: 4 Damage in 1 Radius and 2 Damage in 2 Radius.");
+	//CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Damage in 1 Radius, 4 Damage in 2 Radius, 2 Damage in 3 Radius and make the tile Impassable.");
 	/*
 	Spells
 				Name 	Cost 	Spell

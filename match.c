@@ -21,6 +21,12 @@ runImmediately
 			*/
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Archer Atlantean Hero");
+			
+			//addCardToDeck(p, "Scout");
+			//addCardToDeck(p, "Prodromos");
+			//addCardToDeck(p, "Crowned Crane");
+			//addCardToDeck(p, "Hippo");
+			//addCardToDeck(p, "Hero Greek Chiron");
 		}
 	}
 	

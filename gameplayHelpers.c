@@ -222,6 +222,19 @@ void removeIfDead(string db = "", int index = -1) {
 		if (HasKeyword(GUARD, 1*yGetVar(db, "keywords"))) {
 			tileGuard(tile, false);
 		}
+		/*
+		On-attack events.
+		
+		int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
+		int events = 1*yGetVar(db, "OnDeath");
+		for(x=ATTACK_EVENT_COUNT - 1; >=0) {
+			if (events >= n) {
+				OnDeath(index, x);
+				events = events - n;
+			}
+		n = n / 2;
+		}
+		*/
 		removeUnit(db);
 	}
 }

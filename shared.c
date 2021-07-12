@@ -533,7 +533,10 @@ int ClearBit(int n=0, int p=0){
 	}
 	return (r);
 }
-
+/*
+// Declaration for gameplayHelpers
+void OnDeath(int unit = 0, int event = 0);
+*/
 rule initializeEverything
 highFrequency
 active
