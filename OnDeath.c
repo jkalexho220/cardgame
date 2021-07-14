@@ -13,8 +13,8 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_SMALL:
 		{
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
-			DeploySober("Meteor Impact Ground", "pos");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
@@ -29,9 +29,9 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_MEDIUM:
 		{
+			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
-			DeploySober("Meteor", "pos");
-			DeploySober("Meteor Impact Ground", "pos");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
@@ -39,7 +39,7 @@ bool OnDeath(int index = -1, int event = -1){
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);
 						checkAgain = true;
 						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
-					} else if (zDistanceToVectorSquared("allUnits", "pos") < 4096) {
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);
 						checkAgain = true;
 						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));
@@ -51,9 +51,9 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_BIG:
 		{
+			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
-			DeploySober("Meteor", "pos");
-			DeploySober("Meteor Impact Ground", "pos");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
@@ -61,11 +61,11 @@ bool OnDeath(int index = -1, int event = -1){
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 6);
 						checkAgain = true;
 						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
-					} else if (zDistanceToVectorSquared("allUnits", "pos") < 4096) {
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);
 						checkAgain = true;
 						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
-					} else if (zDistanceToVectorSquared("allUnits", "pos") < 262144) {
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 400) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);
 						checkAgain = true;
 						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));
@@ -88,6 +88,7 @@ bool OnDeath(int index = -1, int event = -1){
 }
 
 bool removeIfDead(string db = "", int index = -1) {
+	
 	bool checkAgain = false;
 	if (index >= 0) {
 		ySetPointer(db, index);
@@ -129,6 +130,7 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		bool finalCheck = true;
+		yDatabasePointerDefault("allUnits");
 		for(y=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if(removeIfDead("allUnits")){

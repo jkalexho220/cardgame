@@ -1446,7 +1446,7 @@
 <Command>	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));</Command>
 <Command>	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));</Command>
 
-<Command>	CardSetup("Scout",					2, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.</Command>
+<Command>	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.</Command>
 <Command>	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.</Command>
 <Command>	CardSetup("Ape of Set",				2, "Gunpoweder Ape", 	1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.</Command>
 <Command>	CardSetup("Hippo of Set",			4, "Gunpoweder Hippo", 	2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.</Command>
@@ -1975,8 +1975,8 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_SMALL:</Command>
 <Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
 <Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
-<Command>			DeploySober("Meteor Impact Ground", "pos");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
 <Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
@@ -1991,9 +1991,9 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_MEDIUM:</Command>
 <Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
 <Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
-<Command>			DeploySober("Meteor", "pos");</Command>
-<Command>			DeploySober("Meteor Impact Ground", "pos");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
 <Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
@@ -2001,7 +2001,7 @@
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);</Command>
 <Command>						checkAgain = true;</Command>
 <Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
-<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 4096) {]]></Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
 <Command>						checkAgain = true;</Command>
 <Command>						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));</Command>
@@ -2013,9 +2013,9 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_BIG:</Command>
 <Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
 <Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
-<Command>			DeploySober("Meteor", "pos");</Command>
-<Command>			DeploySober("Meteor Impact Ground", "pos");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
 <Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
@@ -2023,11 +2023,11 @@
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 6);</Command>
 <Command>						checkAgain = true;</Command>
 <Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
-<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 4096) {]]></Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);</Command>
 <Command>						checkAgain = true;</Command>
 <Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
-<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 262144) {]]></Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 400) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
 <Command>						checkAgain = true;</Command>
 <Command>						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));</Command>
@@ -2050,6 +2050,7 @@
 <Command>}</Command>
 
 <Command>bool removeIfDead(string db = "", int index = -1) {</Command>
+
 <Command>	bool checkAgain = false;</Command>
 <Command>	if (index >= 0) {</Command>
 <Command>		ySetPointer(db, index);</Command>
@@ -2057,6 +2058,7 @@
 <Command>		index = yGetPointer(db);</Command>
 <Command>	}</Command>
 <Command><![CDATA[	if (yGetVar(db, "health") <= 0) {]]></Command>
+<Command><![CDATA[		trChatSend(0, "debug:I am in removeIfDead if health <= 0");]]></Command>
 <Command>		int tile = yGetVar(db, "tile");</Command>
 <Command>		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
 <Command>		trDamageUnitPercent(100);</Command>
@@ -2087,7 +2089,9 @@
 <Command>inactive</Command>
 <Command>{</Command>
 <Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		trChatSend(0, "debug:I am in DelayedDeathCheck");</Command>
 <Command>		bool finalCheck = true;</Command>
+<Command>		yDatabasePointerDefault("allUnits");</Command>
 <Command>		for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>			yDatabaseNext("allUnits");</Command>
 <Command>			if(removeIfDead("allUnits")){</Command>
@@ -3580,19 +3584,6 @@
 <Command>{</Command>
 <Command>	for(x=3; >0) {</Command>
 <Command>		for(p=2; >0) {</Command>
-<Command>			addCardToDeck(p, "Khopesh");</Command>
-<Command>			addCardToDeck(p, "Villager Atlantean");</Command>
-<Command>			addCardToDeck(p, "Swordsman");</Command>
-<Command>			addCardToDeck(p, "Maceman");</Command>
-<Command>			addCardToDeck(p, "Skraeling");</Command>
-<Command>			addCardToDeck(p, "Slinger");</Command>
-<Command>			addCardToDeck(p, "Toxotes");</Command>
-<Command>			addCardToDeck(p, "Raiding Cavalry");</Command>
-<Command>			addCardToDeck(p, "Trident Soldier");</Command>
-<Command>			addCardToDeck(p, "Jarl");</Command>
-<Command>			addCardToDeck(p, "Hero Greek Ajax");</Command>
-<Command>			addCardToDeck(p, "Avenger");</Command>
-<Command>			addCardToDeck(p, "Archer Atlantean Hero");</Command>
 
 <Command>			addCardToDeck(p, "Scout");</Command>
 <Command>			addCardToDeck(p, "Prodromos");</Command>

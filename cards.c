@@ -320,12 +320,12 @@ runImmediately
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
 	
-	CardSetup("Scout",					2, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
+	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
 	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.
 	CardSetup("Ape of Set",				2, "Gunpoweder Ape", 	1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.
 	CardSetup("Hippo of Set",			4, "Gunpoweder Hippo", 	2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.
 	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.
-	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger thier Death effect.
+	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
@@ -344,7 +344,7 @@ runImmediately
 	CardEvents("Ape of Set", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
 	CardEvents("Hippo of Set", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");
 	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");
-	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger thier Death effect.");
+	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
 	/*
 	Spells
 				Name 	Cost 	Spell
