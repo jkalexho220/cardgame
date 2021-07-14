@@ -124,9 +124,9 @@ void drawCard(int p = 0) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
-				trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));
+				trChatSend(0, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));
 			} else {
-				trChatSend(0, "Drew a " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
+				trChatSend(0, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
 		}
 		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
@@ -134,9 +134,9 @@ void drawCard(int p = 0) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("cantdothat.wav","1",-1,"","");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
-				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));
+				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
 			} else {
-				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
+				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
 		}
 	}

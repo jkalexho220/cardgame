@@ -15,18 +15,19 @@ runImmediately
 			addCardToDeck(p, "Raiding Cavalry");
 			addCardToDeck(p, "Trident Soldier");
 			addCardToDeck(p, "Jarl");
-			addCardToDeck(p, "Hero Greek Theseus");
+			addCardToDeck(p, "Hero Greek Ajax");
 			/*
 			addCardToDeck(p, "Behemoth");
 			*/
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Archer Atlantean Hero");
 			
-			//addCardToDeck(p, "Scout");
-			//addCardToDeck(p, "Prodromos");
-			//addCardToDeck(p, "Crowned Crane");
-			//addCardToDeck(p, "Hippo");
-			//addCardToDeck(p, "Hero Greek Chiron");
+			addCardToDeck(p, "Scout");
+			addCardToDeck(p, "Prodromos");
+			addCardToDeck(p, "Ape of Set");
+			addCardToDeck(p, "Hippo of Set");
+			addCardToDeck(p, "Hero Greek Chiron");
+			addCardToDeck(p, "Hero Greek Theseus");
 		}
 	}
 	

@@ -533,10 +533,7 @@ int ClearBit(int n=0, int p=0){
 	}
 	return (r);
 }
-/*
-// Declaration for gameplayHelpers
-void OnDeath(int unit = 0, int event = 0);
-*/
+
 rule initializeEverything
 highFrequency
 active
@@ -601,4 +598,20 @@ runImmediately
 	trPlayerSetDiplomacy(1, 2, "Enemy");
 
 	xsDisableRule("initializeEverything");
+}
+
+
+rule PlsStopHardcodingCrapYouNoobs
+highFrequency
+active
+{
+   if ((trTime()-cActivationTime) >= 1){
+      trModifyProtounit("Hero Greek Jason", 1, 27, 4.0);
+      trModifyProtounit("Hero Greek Jason", 2, 27, 4.0);
+      trModifyProtounit("Hero Greek Ajax", 1, 27, 3.0);
+      trModifyProtounit("Hero Greek Ajax", 2, 27, 3.0);
+      trModifyProtounit("Hero Greek Theseus", 1, 27, 4.0);
+      trModifyProtounit("Hero Greek Theseus", 2, 27, 4.0);
+      xsDisableRule("PlsStopHardcodingCrapYouNoobs");
+   }
 }
