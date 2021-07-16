@@ -1,5 +1,6 @@
-bool OnDeath(int index = -1, int event = -1){
-	int p = yGetVarByIndex("allUnits", "player", index);
+bool OnDeath(int event = -1){
+	int savePointer = yGetPointer("allUnits");	
+	int p = yGetVar("allUnits", "player");
 	bool checkAgain = false;
 	switch(event)
 	{
@@ -13,11 +14,12 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_SMALL:
 		{
-			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));
+			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
+				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p
 					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);
 						checkAgain = true;
@@ -29,12 +31,13 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_MEDIUM:
 		{
-			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));
-			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
+			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));
+			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
+				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p
 					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);
 						checkAgain = true;
@@ -51,12 +54,14 @@ bool OnDeath(int index = -1, int event = -1){
 		}
 		case DEATH_BOOM_BIG:
 		{
-			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));
-			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));
+			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));
+			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
+			zSetVarByIndex("tiles", "occupied", 1*yGetVar("allUnits", "tile"), TILE_IMPASSABLE);
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));
+			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p
+				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p
 					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit("allUnits", 1*yGetPointer("allUnits"), 6);
 						checkAgain = true;
@@ -72,75 +77,55 @@ bool OnDeath(int index = -1, int event = -1){
 					}
 				}
 			}
-			zSetVarByIndex("tiles", "occupied", 1*yGetVarByIndex("allUnits", "tile", index), TILE_IMPASSABLE);
 			trSoundPlayFN("implodeexplode.wav","1",-1,"","");
 			trSoundPlayFN("meteorbighit.wav","1",-1,"","");
 			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
 		}
 	}
-	if(checkAgain){
-		xsEnableRule("DelayedDeathCheck");
-	} else {
-		xsEnableRule("gameplay_01_select");
-		highlightReady(100);
-	}
+	ySetPointer("allUnits", savePointer);
 	return (checkAgain);
 }
 
-bool removeIfDead(string db = "", int index = -1) {
-	
-	bool checkAgain = false;
-	if (index >= 0) {
-		ySetPointer(db, index);
-	} else {
-		index = yGetPointer(db);
-	}
-	if (yGetVar(db, "health") <= 0) {
-		int tile = yGetVar(db, "tile");
-		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
-		trDamageUnitPercent(100);
-		if (HasKeyword(GUARD, 1*yGetVar(db, "keywords"))) {
-			tileGuard(tile, false);
-		}
-		
-		/*
-		On-attack events.
-		*/
-		int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
-		int events = 1*yGetVar(db, "OnDeath");
-		for(x=DEATH_EVENT_COUNT - 1; >=0) {
-			if (events >= n) {		
-				if(OnDeath(index, x)){
-					checkAgain = true;
-				}
-				events = events - n;
-			}
-		n = n / 2;
-		}	
-
-		removeUnit(db);
-	}
-	return (checkAgain);
-}
-
-
-rule DelayedDeathCheck
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		bool finalCheck = true;
+void removeDeadUnits() {
+	int savePointer = yGetPointer("allUnits");
+	bool checkAgain = true;
+	while(checkAgain){
+		checkAgain = false;
 		yDatabasePointerDefault("allUnits");
 		for(y=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
-			if(removeIfDead("allUnits")){
-				finalCheck = false;
+			if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "OnDeath") > 0) {
+				/*
+				OnDeath events.
+				*/
+				int events = 1*yGetVar("allUnits", "OnDeath");
+				ySetVar("allUnits", "OnDeath", 0);	
+				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
+				for(x=DEATH_EVENT_COUNT - 1; >=0) {
+					if (events >= n) {							
+						if(OnDeath(x)){
+							checkAgain = true;
+						}
+						events = events - n;
+					}
+					n = n / 2;
+				}			
 			}
 		}
-		if(finalCheck){
-			xsEnableRule("gameplay_01_select");
-			highlightReady(100);
-		}
-		xsDisableRule("DelayedDeathCheck");
 	}
+	yDatabasePointerDefault("allUnits");
+	for(y=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "health") > -9000) {
+			int tile = yGetVar("allUnits", "tile");
+			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+			trDamageUnitPercent(100);
+			if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
+				tileGuard(tile, false);
+			}
+			ySetVar("allUnits", "health", -9999);	
+			removeUnit("allUnits");
+		}
+	}
+	ySetPointer("allUnits", savePointer);
 }

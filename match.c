@@ -25,8 +25,8 @@ runImmediately
 			*/
 			addCardToDeck(p, "Scout");
 			addCardToDeck(p, "Prodromos");
-			addCardToDeck(p, "Ape of Set");
-			addCardToDeck(p, "Hippo of Set");
+			addCardToDeck(p, "Promethean Small");
+			addCardToDeck(p, "Promethean");
 			addCardToDeck(p, "Hero Greek Chiron");
 			addCardToDeck(p, "Hero Greek Theseus");
 		}

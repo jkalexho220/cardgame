@@ -1448,10 +1448,10 @@
 
 <Command>	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.</Command>
 <Command>	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.</Command>
-<Command>	CardSetup("Ape of Set",				2, "Gunpoweder Ape", 	1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.</Command>
-<Command>	CardSetup("Hippo of Set",			4, "Gunpoweder Hippo", 	2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.</Command>
+<Command>	CardSetup("Promethean Small",		2, "Boom Goblin", 		1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.</Command>
+<Command>	CardSetup("Promethean",				4, "Boom Goblin Champ", 2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.</Command>
 <Command>	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.</Command>
-<Command>	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger thier Death effect.</Command>
+<Command>	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.</Command>
 
 <Command>	CardEvents("Hero Greek Jason", 0, Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");</Command>
 <Command>	CardEvents("Khopesh", 0, Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");</Command>
@@ -1463,10 +1463,10 @@
 <Command>	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);</Command>
 <Command>	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");</Command>
 <Command>	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");</Command>
-<Command>	CardEvents("Ape of Set", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");</Command>
-<Command>	CardEvents("Hippo of Set", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");</Command>
+<Command>	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");</Command>
+<Command>	CardEvents("Promethean", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");</Command>
 <Command>	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");</Command>
-<Command>	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger thier Death effect.");</Command>
+<Command>	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");</Command>
 <Command>	SpellSetup("Spark", 1, SPELL_SPARK);</Command>
 <Command>	SpellSetup("Windsong", 2, SPELL_SING);</Command>
 
@@ -1907,6 +1907,7 @@
 
 <Command>void drawCard(int p = 0) {</Command>
 <Command>	int proto = yDatabaseNext("p"+p+"deck");</Command>
+<Command>	trChatSend(0, "drawCard player:" + p + " proto:" + proto + " pname:" + kbGetProtoUnitName(proto));</Command>
 <Command><![CDATA[	if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
 <Command>		if (trCurrentPlayer() == p) {</Command>
 <Command>			trSoundPlayFN("ui\scroll.wav","1",-1,"","");</Command>
@@ -1960,8 +1961,9 @@
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
-<Command>bool OnDeath(int index = -1, int event = -1){</Command>
-<Command>	int p = yGetVarByIndex("allUnits", "player", index);</Command>
+<Command>bool OnDeath(int event = -1){</Command>
+<Command>	int savePointer = yGetPointer("allUnits");</Command>
+<Command>	int p = yGetVar("allUnits", "player");</Command>
 <Command>	bool checkAgain = false;</Command>
 <Command>	switch(event)</Command>
 <Command>	{</Command>
@@ -1975,11 +1977,12 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_SMALL:</Command>
 <Command>		{</Command>
-<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
-<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
-<Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
 <Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
 <Command>						checkAgain = true;</Command>
@@ -1991,12 +1994,13 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_MEDIUM:</Command>
 <Command>		{</Command>
-<Command>			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
-<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
-<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
-<Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
 <Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);</Command>
 <Command>						checkAgain = true;</Command>
@@ -2013,12 +2017,14 @@
 <Command>		}</Command>
 <Command>		case DEATH_BOOM_BIG:</Command>
 <Command>		{</Command>
-<Command>			deployAtTile(0, "Meteor", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
-<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVarByIndex("allUnits", "tile", index));</Command>
-<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", index)));</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			zSetVarByIndex("tiles", "occupied", 1*yGetVar("allUnits", "tile"), TILE_IMPASSABLE);</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
 <Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>				yDatabaseNext("allUnits");</Command>
-<Command>				if (yGetPointer("allUnits") != index) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
 <Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
 <Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 6);</Command>
 <Command>						checkAgain = true;</Command>
@@ -2034,76 +2040,54 @@
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>			}</Command>
-<Command>			zSetVarByIndex("tiles", "occupied", 1*yGetVarByIndex("allUnits", "tile", index), TILE_IMPASSABLE);</Command>
 <Command>			trSoundPlayFN("implodeexplode.wav","1",-1,"","");</Command>
 <Command>			trSoundPlayFN("meteorbighit.wav","1",-1,"","");</Command>
 <Command>			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");</Command>
 <Command>		}</Command>
 <Command>	}</Command>
-<Command>	if(checkAgain){</Command>
-<Command>		xsEnableRule("DelayedDeathCheck");</Command>
-<Command>	} else {</Command>
-<Command>		xsEnableRule("gameplay_01_select");</Command>
-<Command>		highlightReady(100);</Command>
-<Command>	}</Command>
+<Command>	ySetPointer("allUnits", savePointer);</Command>
 <Command>	return (checkAgain);</Command>
 <Command>}</Command>
 
-<Command>bool removeIfDead(string db = "", int index = -1) {</Command>
-
-<Command>	bool checkAgain = false;</Command>
-<Command>	if (index >= 0) {</Command>
-<Command>		ySetPointer(db, index);</Command>
-<Command>	} else {</Command>
-<Command>		index = yGetPointer(db);</Command>
-<Command>	}</Command>
-<Command><![CDATA[	if (yGetVar(db, "health") <= 0) {]]></Command>
-<Command><![CDATA[		trChatSend(0, "debug:I am in removeIfDead if health <= 0");]]></Command>
-<Command>		int tile = yGetVar(db, "tile");</Command>
-<Command>		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
-<Command>		trDamageUnitPercent(100);</Command>
-<Command>		if (HasKeyword(GUARD, 1*yGetVar(db, "keywords"))) {</Command>
-<Command>			tileGuard(tile, false);</Command>
-<Command>		}</Command>
-
-<Command>		int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);</Command>
-<Command>		int events = 1*yGetVar(db, "OnDeath");</Command>
-<Command>		for(x=DEATH_EVENT_COUNT - 1; >=0) {</Command>
-<Command>			if (events >= n) {</Command>
-<Command>				if(OnDeath(index, x)){</Command>
-<Command>					checkAgain = true;</Command>
-<Command>				}</Command>
-<Command>				events = events - n;</Command>
-<Command>			}</Command>
-<Command>		n = n / 2;</Command>
-<Command>		}</Command>
-
-<Command>		removeUnit(db);</Command>
-<Command>	}</Command>
-<Command>	return (checkAgain);</Command>
-<Command>}</Command>
-
-
-<Command>rule DelayedDeathCheck</Command>
-<Command>highFrequency</Command>
-<Command>inactive</Command>
-<Command>{</Command>
-<Command>	if ((trTime()-cActivationTime) > 0){</Command>
-<Command>		trChatSend(0, "debug:I am in DelayedDeathCheck");</Command>
-<Command>		bool finalCheck = true;</Command>
+<Command>void removeDeadUnits() {</Command>
+<Command>	int savePointer = yGetPointer("allUnits");</Command>
+<Command>	bool checkAgain = true;</Command>
+<Command>	while(checkAgain){</Command>
+<Command>		checkAgain = false;</Command>
 <Command>		yDatabasePointerDefault("allUnits");</Command>
 <Command>		for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>			yDatabaseNext("allUnits");</Command>
-<Command>			if(removeIfDead("allUnits")){</Command>
-<Command>				finalCheck = false;</Command>
+<Command><![CDATA[			if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "OnDeath") > 0) {]]></Command>
+<Command>				int events = 1*yGetVar("allUnits", "OnDeath");</Command>
+<Command>				ySetVar("allUnits", "OnDeath", 0);</Command>
+<Command>				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);</Command>
+<Command>				for(x=DEATH_EVENT_COUNT - 1; >=0) {</Command>
+<Command>					if (events >= n) {</Command>
+<Command>						if(OnDeath(x)){</Command>
+<Command>							checkAgain = true;</Command>
+<Command>						}</Command>
+<Command>						events = events - n;</Command>
+<Command>					}</Command>
+<Command>					n = n / 2;</Command>
+<Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
-<Command>		if(finalCheck){</Command>
-<Command>			xsEnableRule("gameplay_01_select");</Command>
-<Command>			highlightReady(100);</Command>
-<Command>		}</Command>
-<Command>		xsDisableRule("DelayedDeathCheck");</Command>
 <Command>	}</Command>
+<Command>	yDatabasePointerDefault("allUnits");</Command>
+<Command>	for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>		yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[		if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "health") > -9000) {]]></Command>
+<Command>			int tile = yGetVar("allUnits", "tile");</Command>
+<Command>			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
+<Command>			trDamageUnitPercent(100);</Command>
+<Command>			if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {</Command>
+<Command>				tileGuard(tile, false);</Command>
+<Command>			}</Command>
+<Command>			ySetVar("allUnits", "health", -9999);</Command>
+<Command>			removeUnit("allUnits");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	ySetPointer("allUnits", savePointer);</Command>
 <Command>}</Command>
 
 <Command>const int CAST_UNIT = 0;</Command>
@@ -2191,10 +2175,7 @@
 <Command>}</Command>
 
 <Command>void castEnd() {</Command>
-<Command>	for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>		yDatabaseNext("allUnits", true);</Command>
-<Command>		removeIfDead("allUnits");</Command>
-<Command>	}</Command>
+<Command>	removeDeadUnits();</Command>
 <Command>	refreshGuardAll();</Command>
 <Command>	xsEnableRule("gameplay_01_select");</Command>
 <Command>	highlightReady(999999);</Command>
@@ -2602,12 +2583,9 @@
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>	if (done) {</Command>
-<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>			yDatabaseNext("allUnits", true);</Command>
-<Command>			removeIfDead("allUnits");</Command>
-<Command>		}</Command>
+<Command>		removeDeadUnits();</Command>
 <Command>		xsEnableRule("gameplay_01_select");</Command>
-<Command>		highlightReady(100);</Command>
+<Command>		highlightReady(999999);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 <Command>const int GAMEPLAY_SELECT = 0;</Command>
@@ -3147,11 +3125,7 @@
 <Command>			}</Command>
 <Command>		}</Command>
 
-<Command>		yDatabasePointerDefault("allUnits");</Command>
-<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>			yDatabaseNext("allUnits", true);</Command>
-<Command>			removeIfDead("allUnits");</Command>
-<Command>		}</Command>
+<Command>		removeDeadUnits();</Command>
 <Command>		refreshGuardAll();</Command>
 
 <Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
@@ -3587,8 +3561,8 @@
 
 <Command>			addCardToDeck(p, "Scout");</Command>
 <Command>			addCardToDeck(p, "Prodromos");</Command>
-<Command>			addCardToDeck(p, "Ape of Set");</Command>
-<Command>			addCardToDeck(p, "Hippo of Set");</Command>
+<Command>			addCardToDeck(p, "Promethean Small");</Command>
+<Command>			addCardToDeck(p, "Promethean");</Command>
 <Command>			addCardToDeck(p, "Hero Greek Chiron");</Command>
 <Command>			addCardToDeck(p, "Hero Greek Theseus");</Command>
 <Command>		}</Command>

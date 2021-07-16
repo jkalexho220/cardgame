@@ -322,8 +322,8 @@ runImmediately
 	
 	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
 	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.
-	CardSetup("Ape of Set",				2, "Gunpoweder Ape", 	1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.
-	CardSetup("Hippo of Set",			4, "Gunpoweder Hippo", 	2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.
+	CardSetup("Promethean Small",		2, "Boom Goblin", 		1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.
+	CardSetup("Promethean",				4, "Boom Goblin Champ", 2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.
 	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	
@@ -341,8 +341,8 @@ runImmediately
 	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
 	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");
 	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");
-	CardEvents("Ape of Set", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
-	CardEvents("Hippo of Set", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");
+	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
+	CardEvents("Promethean", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");
 	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");
 	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
 	/*
