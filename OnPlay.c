@@ -5,17 +5,13 @@ void OnPlay(int unit = 0, int event = 0) {
 	{
 		case PLAY_GET_SPARK:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);
-				updateHandPlayable(p);
-			}
+			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);
+			updateHandPlayable(p);
 		}
 		case PLAY_GET_TRAP:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				addCardToHand(p, kbGetProtoUnitID("Petrobolos"));
-				updateHandPlayable(p);
-			}
+			addCardToHand(p, kbGetProtoUnitID("Petrobolos"));
+			updateHandPlayable(p);
 		}
 		case PLAY_FOOD:
 		{
