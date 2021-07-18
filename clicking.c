@@ -13,12 +13,16 @@ active
 			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Vision", 1);
+			ChatLogShow(1);
+			ChatLogShow(2);
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet"+p, "Animal Attractor", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
+			ChatLogShow(1);
+			ChatLogShow(2);
 		}
 	}
 }

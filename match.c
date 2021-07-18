@@ -5,7 +5,7 @@ runImmediately
 {
 	for(x=3; >0) {
 		for(p=2; >0) {
-			/*
+			
 			addCardToDeck(p, "Khopesh");
 			addCardToDeck(p, "Villager Atlantean");
 			addCardToDeck(p, "Swordsman");
@@ -291,6 +291,8 @@ inactive
 {
 	int p = trQuestVarGet("activePlayer");
 	if (trCheckGPActive("rain", p) == true || (Multiplayer && (trTime() > cActivationTime + 90))) {
+		ChatLogShow(1);
+		ChatLogShow(2);
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
 		
 		trPlayerKillAllGodPowers(p);
@@ -311,13 +313,14 @@ inactive
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
 				if (trCurrentPlayer() == p) {
-					if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
-						type = yGetVar("p"+p+"hand", "proto");
-						trChatSend(0, "Discarded a " + trStringQuestVarGet("card_" + type + "_name"));
-					} else {
-						type = yGetVar("p"+p+"hand", "spell");
-						trChatSend(0, "Discarded a " + trStringQuestVarGet("spell_" + type + "_name"));
-					}
+					trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+				}
+				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
+					type = yGetVar("p"+p+"hand", "proto");
+					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));
+				} else {
+					type = yGetVar("p"+p+"hand", "spell");
+					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
 				removeUnit("p"+p+"hand");
 			}
