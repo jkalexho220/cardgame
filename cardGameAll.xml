@@ -2565,17 +2565,13 @@
 <Command>	{</Command>
 <Command>		case PLAY_GET_SPARK:</Command>
 <Command>		{</Command>
-<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
-<Command>				addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);</Command>
-<Command>				updateHandPlayable(p);</Command>
-<Command>			}</Command>
+<Command>			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);</Command>
+<Command>			updateHandPlayable(p);</Command>
 <Command>		}</Command>
 <Command>		case PLAY_GET_TRAP:</Command>
 <Command>		{</Command>
-<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
-<Command>				addCardToHand(p, kbGetProtoUnitID("Petrobolos"));</Command>
-<Command>				updateHandPlayable(p);</Command>
-<Command>			}</Command>
+<Command>			addCardToHand(p, kbGetProtoUnitID("Petrobolos"));</Command>
+<Command>			updateHandPlayable(p);</Command>
 <Command>		}</Command>
 <Command>		case PLAY_FOOD:</Command>
 <Command>		{</Command>
@@ -3866,6 +3862,8 @@
 <Command>		ChatLogShow(1);</Command>
 <Command>		ChatLogShow(2);</Command>
 <Command>		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));</Command>
+<Command>		trQuestVarSet("p"+p+"mana", -1);</Command>
+<Command>		updateHandPlayable(p);</Command>
 
 <Command>		trPlayerKillAllGodPowers(p);</Command>
 <Command>		trTechGodPower(p, "vision", 1);</Command>
@@ -3881,6 +3879,8 @@
 <Command>		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"hand");</Command>
 <Command>			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));</Command>
 <Command>				trUnitSelectClear();</Command>
 <Command>				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);</Command>
 <Command>				trUnitChangeProtoUnit("Hero Death");</Command>

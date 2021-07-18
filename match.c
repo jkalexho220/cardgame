@@ -294,6 +294,8 @@ inactive
 		ChatLogShow(1);
 		ChatLogShow(2);
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
+		trQuestVarSet("p"+p+"mana", -1);
+		updateHandPlayable(p);
 		
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "vision", 1);
@@ -309,6 +311,8 @@ inactive
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {
+				trUnitSelectClear();
+				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
