@@ -315,7 +315,7 @@ inactive
 				fleeting = true;
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
-				trUnitChangeProtoUnit("Hero Death");
+				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
