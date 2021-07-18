@@ -306,19 +306,19 @@ inactive
 		trQuestVarSet("turnEnd", 1);
 
 		// Discard fleeting cards
+		bool fleeting = false;
 		int type = 0;
 		yDatabasePointerDefault("p"+p+"hand");
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {
+				fleeting = true;
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
+				trUnitChangeProtoUnit("Hero Death");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
-				if (trCurrentPlayer() == p) {
-					trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
-				}
 				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
 					type = yGetVar("p"+p+"hand", "proto");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));
@@ -328,6 +328,9 @@ inactive
 				}
 				removeUnit("p"+p+"hand");
 			}
+		}
+		if (fleeting && trCurrentPlayer() == p) {
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 		}
 		trDelayedRuleActivation("turn_00_start");
 		xsDisableRule("turn_01_end");

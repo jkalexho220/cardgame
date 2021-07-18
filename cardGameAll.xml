@@ -467,12 +467,8 @@
 <Command>	if (trCurrentPlayer() == p) {</Command>
 <Command>		trChatHistoryClear();</Command>
 <Command>	}</Command>
-<Command>	int x = peekModularCounterNext("chat" + p + "Log");</Command>
-<Command><![CDATA[	for(i=x;<11){]]></Command>
-<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));</Command>
-<Command>	}</Command>
-<Command><![CDATA[	for(i=1;<x){]]></Command>
-<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));</Command>
+<Command>	for (i = 10; >0) {</Command>
+<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
@@ -3874,19 +3870,19 @@
 <Command>		trQuestVarSet("turnEnd", 1);</Command>
 
 <Command>		// Discard fleeting cards</Command>
+<Command>		bool fleeting = false;</Command>
 <Command>		int type = 0;</Command>
 <Command>		yDatabasePointerDefault("p"+p+"hand");</Command>
 <Command>		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"hand");</Command>
 <Command>			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {</Command>
+<Command>				fleeting = true;</Command>
 <Command>				trUnitSelectClear();</Command>
 <Command>				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));</Command>
+<Command>				trUnitChangeProtoUnit("Hero Death");</Command>
 <Command>				trUnitSelectClear();</Command>
 <Command>				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);</Command>
 <Command>				trUnitChangeProtoUnit("Hero Death");</Command>
-<Command>				if (trCurrentPlayer() == p) {</Command>
-<Command>					trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");</Command>
-<Command>				}</Command>
 <Command>				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {</Command>
 <Command>					type = yGetVar("p"+p+"hand", "proto");</Command>
 <Command>					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));</Command>
@@ -3896,6 +3892,9 @@
 <Command>				}</Command>
 <Command>				removeUnit("p"+p+"hand");</Command>
 <Command>			}</Command>
+<Command>		}</Command>
+<Command><![CDATA[		if (fleeting && trCurrentPlayer() == p) {]]></Command>
+<Command>			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");</Command>
 <Command>		}</Command>
 <Command>		trDelayedRuleActivation("turn_00_start");</Command>
 <Command>		xsDisableRule("turn_01_end");</Command>

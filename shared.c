@@ -505,12 +505,8 @@ void ChatLogShow(int p = 1){
 	if (trCurrentPlayer() == p) {
 		trChatHistoryClear();
 	}
-	int x = peekModularCounterNext("chat" + p + "Log");
-	for(i=x;<11){
-		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));
-	}
-	for(i=1;<x){
-		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + i));
+	for (i = 10; >0) {
+		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
 	}
 }
 
