@@ -6,19 +6,23 @@ highFrequency
 active
 {
 	for (p=2; >0) {
-		if (trPlayerGetPopulation(p) > 9000) {
-			trUnitSelectClear();
-			yFindLatestReverse("vision"+p, "Vision Revealer", p);
-			trVectorSetUnitPos("p"+p+"clickPos", "vision"+p, true);
-			trQuestVarSet("p"+p+"click", RIGHT_CLICK);
-			trUnitDestroy();
-			trTechGodPower(p, "Vision", 1);
+		trUnitSelectClear();
+		if (trCheckGPActive("create gold", p) && yFindLatest("vision"+p, "Gold Mine Dwarven", 0) > 0) {
+			if (trQuestVarGet("p"+p+"mine") == 0) {
+				trQuestVarSet("p"+p+"mine", 1);
+				trVectorSetUnitPos("p"+p+"clickPos", "vision"+p, true);
+				trQuestVarSet("p"+p+"click", RIGHT_CLICK);
+				trUnitDestroy();
+				trTechGodPower(p, "create gold", 1);
+			}
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet"+p, "Animal Attractor", p);
 			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
+		} else if (trQuestVarGet("p"+p+"mine") == 1) {
+			trQuestVarSet("p"+p+"mine", 0);
 		}
 	}
 }
@@ -30,12 +34,12 @@ runImmediately
 {
 	trTechGodPower(1, "Animal magnetism", 1);
 	trTechGodPower(2, "Animal magnetism", 1);
-	trTechGodPower(1, "Vision", 1);
-	trTechGodPower(2, "Vision", 1);
-	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");
-	map("mouse2up", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
-	map("mouse2doubleup", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
-	map("mouse2doubleup", "game", "uiSetSpecialPower(220) uiSpecialPowerAtPointer");
-	map("space", "game", "uiSetSpecialPower(156) uiSpecialPowerAtPointer");
+	trTechGodPower(1, "create gold", 1);
+	trTechGodPower(2, "create gold", 1);
+	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");	// animal magnetism for left click
+	map("mouse2up", "game", "uiSetSpecialPower(84) uiSpecialPowerAtPointer");		// dwarven mine for right click
+	map("space", "game", "uiSetSpecialPower(156) uiSpecialPowerAtPointer");			// rain for space (look at hand)
+	map("enter", "game", "uiSetSpecialPower(235) uiSpecialPowerAtPointer");			// nidhogg for enter (end turn)
+
 	xsDisableRule("initializeClick");
 }
