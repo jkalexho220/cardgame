@@ -694,6 +694,8 @@ inactive
 						highlightReady(100);
 					}
 
+					ySetPointer("p"+p+"hand", 1*trQuestVarGet("summonUnitIndex"));
+
 					removeUnit("p"+p+"hand");
 
 					zSetVarByIndex("tiles", "occupied", tile, TILE_OCCUPIED);
