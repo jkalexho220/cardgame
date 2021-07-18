@@ -180,7 +180,7 @@ inactive
 						uiLookAtUnit(kbGetBlockID(""+1*trQuestVarGet("p"+p+"commander"), true));
 					}
 				}
-				ChatLogShow(p);
+				ChatLogShow();
 			}
 		} else if (trQuestVarGet("p"+p+"rain") == 1) {
 			trTechGodPower(p, "rain", 1);

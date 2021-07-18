@@ -501,12 +501,14 @@ void DeploySober(string p="", string v=""){
 /*
 Shows the Chat Log
 */
-void ChatLogShow(int p = 1){
-	if (trCurrentPlayer() == p) {
-		trChatHistoryClear();
-	}
-	for (i = 10; >0) {
-		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
+void ChatLogShow(){
+	trChatHistoryClear();
+	for(p=2; >0) {
+		if (trCurrentPlayer() == p) {
+			for (i = 10; >0) {
+				trChatSend(0, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
+			}
+		}
 	}
 }
 
@@ -515,7 +517,7 @@ Adds a new message in the Chat Log and shows it
 */
 void ChatLog(int p = 1, string message = ""){
 	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
-	ChatLogShow(p);
+	ChatLogShow();
 }
 
 /*

@@ -253,7 +253,7 @@ inactive
 		trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 
 		if(Multiplayer){
-			trCounterAddTime("turnTimer", 91, 1, "Turn end", -1);	
+			trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
 		}
 		trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
@@ -276,12 +276,11 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if ((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 90))) {
+	if ((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 120))) {
 		if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
 			trUnitDestroy();
 		}
-		ChatLogShow(1);
-		ChatLogShow(2);
+		ChatLogShow();
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
 		trQuestVarSet("p"+p+"mana", -1);
 		updateHandPlayable(p);
