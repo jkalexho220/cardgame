@@ -80,7 +80,7 @@ void processAttack(string db = "attacks") {
 If target of the right-click was an enemy within range, start an attack
 */
 bool attackUnitAtCursor(int p = 0) {
-	int target = findNearestUnit("p"+p+"clickPos", 8);
+	int target = findNearestUnit("p"+p+"clickPos", 9);
 	int a = trQuestVarGet("activeUnitIndex");
 
 	if (target == -1) {
@@ -169,16 +169,21 @@ highFrequency
 inactive
 {
 	for(p=2; >0) {
-		trUnitSelectClear();
-		trUnitSelectByID(1*trQuestVarGet("p"+p+"raven"));
-		if (trUnitIsSelected()) {
-			trQuestVarSet("cameraCut", 1 - trQuestVarGet("cameraCut"));
-			if (trQuestVarGet("cameraCut") == 1) {
-				uiLookAtUnit(1*trQuestVarGet("p"+p+"block"));
-			} else {
-				uiLookAtUnit(kbGetBlockID(""+1*trQuestVarGet("p"+p+"commander"), true));
+		if (trCheckGPActive("rain", p)) {
+			if (trQuestVarGet("p"+p+"rain") == 0) {
+				trQuestVarSet("p"+p+"rain", 1);
+				if (trCurrentPlayer() == p) {
+					trQuestVarSet("cameraCut", 1 - trQuestVarGet("cameraCut"));
+					if (trQuestVarGet("cameraCut") == 1) {
+						uiLookAtUnit(1*trQuestVarGet("p"+p+"block"));
+					} else {
+						uiLookAtUnit(kbGetBlockID(""+1*trQuestVarGet("p"+p+"commander"), true));
+					}
+				}
 			}
-			uiClearSelection();
+		} else if (trQuestVarGet("p"+p+"rain") == 1) {
+			trTechGodPower(p, "rain", 1);
+			trQuestVarSet("p"+p+"rain", 0);
 		}
 	}
 }

@@ -68,26 +68,9 @@ active
 	}
 
 	// Ravens
-
-	trUnitSelectClear();
-	trUnitSelectByID(870);
-	trMutateSelected(kbGetProtoUnitID("Raven"));
-	trSetSelectedScale(0,0,0);
-
-	trUnitSelectClear();
-	trUnitSelectByID(872);
-	trMutateSelected(kbGetProtoUnitID("Raven"));
-	trSetSelectedScale(0,0,0);
-
-	uiFindType("Raven");
-	uiCreateNumberGroup(1);
-
-	trQuestVarSet("p1raven", 870);
 	trQuestVarSet("p1block", 869);
-	trQuestVarSet("p2raven", 872);
 	trQuestVarSet("p2block", 871);
 	
-	uiClearSelection();
 
 	xsDisableRule("match_00_start");
 	xsEnableRule("match_01_mulliganStart");
@@ -100,6 +83,8 @@ inactive
 {
 	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
 		unitTransform("Spy Eye", "Healing SFX");
+		trTechGodPower(1, "nidhogg", 1);
+		trTechGodPower(2, "nidhogg", 1);
 		for(p=2; >0) {
 			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 				yDatabaseNext("p"+p+"hand");
@@ -134,39 +119,34 @@ inactive
 		int unit = -1;
 		for(p=2; >0) {
 			if (trQuestVarGet("p"+p+"done") == 0) {
-				switch(1*trQuestVarGet("p"+p+"click"))
-				{
-					case LEFT_CLICK:
-					{
-						unit = -1;
-						for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
-							yDatabaseNext("p"+p+"hand");
-							if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
-								unit = yGetPointer("p"+p+"hand");
-								break;
-							}
-						}
-						if (unit > -1) {
-							if (trCurrentPlayer() == p) {
-								displayCardKeywordsAndDescription("p"+p+"hand", unit);
-								trSoundPlayFN("ui\scroll.wav","1",-1,"","");
-							}
-							ySetPointer("p"+p+"hand", unit);
-							ySetVar("p"+p+"hand", "mulligan", 1 - yGetVar("p"+p+"hand", "mulligan"));
-							trUnitSelectClear();
-							trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
-							if (yGetVar("p"+p+"hand", "mulligan")  == 0) {
-								trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
-							} else {
-								trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-							}
+				if (trPlayerUnitCountSpecific(p, "Nidhogg") > 0) {
+					if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
+						trUnitDestroy();
+					}
+					trQuestVarSet("p"+p+"done", 1);
+				}
+				if (1*trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
+					unit = -1;
+					for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
+						yDatabaseNext("p"+p+"hand");
+						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
+							unit = yGetPointer("p"+p+"hand");
+							break;
 						}
 					}
-					case RIGHT_CLICK:
-					{
-						trQuestVarSet("p"+p+"done", 1);
+					if (unit > -1) {
 						if (trCurrentPlayer() == p) {
-							trSoundPlayFN("favordump.wav","1",-1,"","");
+							displayCardKeywordsAndDescription("p"+p+"hand", unit);
+							trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+						}
+						ySetPointer("p"+p+"hand", unit);
+						ySetVar("p"+p+"hand", "mulligan", 1 - yGetVar("p"+p+"hand", "mulligan"));
+						trUnitSelectClear();
+						trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
+						if (yGetVar("p"+p+"hand", "mulligan")  == 0) {
+							trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
+						} else {
+							trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 						}
 					}
 				}
@@ -182,6 +162,8 @@ inactive
 {
 	trCounterAbort("counter");
 	for(p=2; >0) {
+		trPlayerKillAllGodPowers(p);
+		trTechGodPower(p, "rain", 1);
 		updateHandPlayable(p);
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
@@ -217,6 +199,12 @@ inactive
 
 
 		int p = 3 - trQuestVarGet("activePlayer");
+
+		trPlayerKillAllGodPowers(p);
+		trTechGodPower(p, "create gold", 1);
+		trTechGodPower(p, "animal magnetism", 1);
+		trTechGodPower(p, "rain", 1);
+		trTechGodPower(p, "nidhogg", 1);
 		
 		if(Multiplayer == false && p == 2){
 			trQuestVarSet("botPhase", 0);
@@ -262,8 +250,6 @@ inactive
 		trQuestVarSet("p"+p+"click", 0);
 		highlightReady(100);
 
-		trTechGodPower(p, "rain", 1);
-
 		trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 
 		if(Multiplayer){
@@ -290,12 +276,14 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if (trCheckGPActive("rain", p) == true || (Multiplayer && (trTime() > cActivationTime + 90))) {
+	if ((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 90))) {
+		if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
+			trUnitDestroy();
+		}
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
 		
 		trPlayerKillAllGodPowers(p);
-		trTechGodPower(p, "vision", 1);
-		trTechGodPower(p, "animal magnetism", 1);
+		trTechGodPower(p, "rain", 1);
 		trCounterAbort("mana");
 		trCounterAbort("turnTimer");
 

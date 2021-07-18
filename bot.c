@@ -293,7 +293,7 @@ inactive
 			trQuestVarSet("p2click", trQuestVarGet("botClick"));
 		}
 		if(trQuestVarGet("botThinking") > 10){
-			trTechInvokeGodPower(2, "Rain", vector(0,0,0), vector(0,0,0));
+			trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
 		} else {
 			xsEnableRule("Bot1");
 		}
