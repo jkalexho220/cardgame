@@ -120,7 +120,6 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 
 void drawCard(int p = 0) {
 	int proto = yDatabaseNext("p"+p+"deck");
-	trChatSend(0, "drawCard player:" + p + " proto:" + proto + " pname:" + kbGetProtoUnitName(proto));
 	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");

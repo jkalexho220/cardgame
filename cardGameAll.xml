@@ -1907,7 +1907,6 @@
 
 <Command>void drawCard(int p = 0) {</Command>
 <Command>	int proto = yDatabaseNext("p"+p+"deck");</Command>
-<Command>	trChatSend(0, "drawCard player:" + p + " proto:" + proto + " pname:" + kbGetProtoUnitName(proto));</Command>
 <Command><![CDATA[	if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
 <Command>		if (trCurrentPlayer() == p) {</Command>
 <Command>			trSoundPlayFN("ui\scroll.wav","1",-1,"","");</Command>
@@ -2050,7 +2049,6 @@
 <Command>}</Command>
 
 <Command>void removeDeadUnits() {</Command>
-<Command>	int savePointer = yGetPointer("allUnits");</Command>
 <Command>	bool checkAgain = true;</Command>
 <Command>	while(checkAgain){</Command>
 <Command>		checkAgain = false;</Command>
@@ -2063,9 +2061,7 @@
 <Command>				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);</Command>
 <Command>				for(x=DEATH_EVENT_COUNT - 1; >=0) {</Command>
 <Command>					if (events >= n) {</Command>
-<Command>						if(OnDeath(x)){</Command>
-<Command>							checkAgain = true;</Command>
-<Command>						}</Command>
+<Command><![CDATA[						checkAgain = OnDeath(x) || checkAgain;]]></Command>
 <Command>						events = events - n;</Command>
 <Command>					}</Command>
 <Command>					n = n / 2;</Command>
@@ -2075,7 +2071,7 @@
 <Command>	}</Command>
 <Command>	yDatabasePointerDefault("allUnits");</Command>
 <Command>	for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>		yDatabaseNext("allUnits");</Command>
+<Command>		yDatabaseNext("allUnits", true);</Command>
 <Command><![CDATA[		if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "health") > -9000) {]]></Command>
 <Command>			int tile = yGetVar("allUnits", "tile");</Command>
 <Command>			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
@@ -2087,7 +2083,6 @@
 <Command>			removeUnit("allUnits");</Command>
 <Command>		}</Command>
 <Command>	}</Command>
-<Command>	ySetPointer("allUnits", savePointer);</Command>
 <Command>}</Command>
 
 <Command>const int CAST_UNIT = 0;</Command>

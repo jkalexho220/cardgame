@@ -87,7 +87,6 @@ bool OnDeath(int event = -1){
 }
 
 void removeDeadUnits() {
-	int savePointer = yGetPointer("allUnits");
 	bool checkAgain = true;
 	while(checkAgain){
 		checkAgain = false;
@@ -103,9 +102,7 @@ void removeDeadUnits() {
 				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
 				for(x=DEATH_EVENT_COUNT - 1; >=0) {
 					if (events >= n) {							
-						if(OnDeath(x)){
-							checkAgain = true;
-						}
+						checkAgain = OnDeath(x) || checkAgain;
 						events = events - n;
 					}
 					n = n / 2;
@@ -115,7 +112,7 @@ void removeDeadUnits() {
 	}
 	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
-		yDatabaseNext("allUnits");
+		yDatabaseNext("allUnits", true);
 		if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "health") > -9000) {
 			int tile = yGetVar("allUnits", "tile");
 			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
@@ -127,5 +124,4 @@ void removeDeadUnits() {
 			removeUnit("allUnits");
 		}
 	}
-	ySetPointer("allUnits", savePointer);
 }
