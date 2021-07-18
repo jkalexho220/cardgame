@@ -211,21 +211,6 @@ void damageUnit(string db = "", int index = 0, float dmg = 0) {
 	trDamageUnit(health - yGetVarByIndex(db, "health", index));
 }
 
-void removeIfDead(string db = "", int index = -1) {
-	if (index >= 0) {
-		ySetPointer(db, index);
-	}
-	if (yGetVar(db, "health") <= 0) {
-		int tile = yGetVar(db, "tile");
-		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
-		trDamageUnitPercent(100);
-		if (HasKeyword(GUARD, 1*yGetVar(db, "keywords"))) {
-			tileGuard(tile, false);
-		}
-		removeUnit(db);
-	}
-}
-
 void lightning(int index = 0, int damage = 0, bool deadly = false) {
 	trQuestVarSetFromRand("rand", 1, 5, true);
 	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");

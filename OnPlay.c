@@ -47,11 +47,8 @@ void OnPlay(int unit = 0, int event = 0) {
 		}
 	}
 	if (done) {
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits", true);
-			removeIfDead("allUnits");
-		}
+		removeDeadUnits();
 		xsEnableRule("gameplay_01_select");
-		highlightReady(100);
+		highlightReady(999999);
 	}
 }

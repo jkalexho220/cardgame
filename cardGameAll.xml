@@ -327,6 +327,7 @@
 <Command>	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");</Command>
 <Command>	trStringQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr,</Command>
 <Command>		trStringQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));</Command>
+<Command>	trStringQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, " ");</Command>
 <Command>}</Command>
 
 <Command>void yRemoveUpdateVar(string db = "", string attr = "") {</Command>
@@ -504,7 +505,7 @@
 <Command>    trSetObscuredUnits(false);</Command>
 <Command>	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos</Command>
 <Command>	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos</Command>
-<Command>	bool Multiplayer = aiIsMultiplayer(); 	// nottud is smart</Command>
+<Command>	Multiplayer = aiIsMultiplayer(); 	// nottud is smart</Command>
 <Command><![CDATA[	if(Multiplayer && kbIsPlayerHuman(2) == false){]]></Command>
 <Command>		Multiplayer = false; // or kick?</Command>
 <Command>	}</Command>
@@ -521,10 +522,20 @@
 <Command>		}</Command>
 <Command>	}</Command>
 
+<Command>	modularCounterInit("lightningPop", 40);</Command>
+<Command>	modularCounterInit("lightningPush", 40);</Command>
+<Command>	modularCounterInit("lightningActivate", 40);</Command>
+
+<Command>	modularCounterInit("spyFind", 40);</Command>
+<Command>	modularCounterInit("spyFound", 40);</Command>
+
 
 <Command>	// Modify vision revealer pop count</Command>
 <Command>	trModifyProtounit("Vision Revealer", 1, 6, 9999);</Command>
 <Command>	trModifyProtounit("Vision Revealer", 2, 6, 9999);</Command>
+
+<Command>	trModifyProtounit("Vision Revealer", 1, 2, -9999);</Command>
+<Command>	trModifyProtounit("Vision Revealer", 2, 2, -9999);</Command>
 <Command>	// Modify vision sfx hp</Command>
 <Command>	trModifyProtounit("Vision SFX", 1, 0, -9999);</Command>
 <Command>	trModifyProtounit("Vision SFX", 2, 0, -9999);</Command>
@@ -548,6 +559,22 @@
 <Command>	trPlayerSetDiplomacy(1, 2, "Enemy");</Command>
 
 <Command>	xsDisableRule("initializeEverything");</Command>
+<Command>}</Command>
+
+
+<Command>rule PlsStopHardcodingCrapYouNoobs</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>   if ((trTime()-cActivationTime) >= 1){</Command>
+<Command>      trModifyProtounit("Hero Greek Jason", 1, 27, 4.0);</Command>
+<Command>      trModifyProtounit("Hero Greek Jason", 2, 27, 4.0);</Command>
+<Command>      trModifyProtounit("Hero Greek Ajax", 1, 27, 3.0);</Command>
+<Command>      trModifyProtounit("Hero Greek Ajax", 2, 27, 3.0);</Command>
+<Command>      trModifyProtounit("Hero Greek Theseus", 1, 27, 4.0);</Command>
+<Command>      trModifyProtounit("Hero Greek Theseus", 2, 27, 4.0);</Command>
+<Command>      xsDisableRule("PlsStopHardcodingCrapYouNoobs");</Command>
+<Command>   }</Command>
 <Command>}</Command>
 
 <Command>const int TILE_EMPTY = 0;</Command>
@@ -575,6 +602,19 @@
 
 <Command>	return(next);</Command>
 <Command>}</Command>
+
+<Command>void tileGuard(int tile = 0, bool on = true) {</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	for(x=zGetVarByIndex("tiles", "borderCount", tile) - 1; >=0) {</Command>
+<Command>		trUnitSelectByID(1*zGetVarByIndex("tiles", "border"+x, tile));</Command>
+<Command>	}</Command>
+<Command>	if (on) {</Command>
+<Command>		trSetSelectedScale(3.1, 0.1, 0.6);</Command>
+<Command>	} else {</Command>
+<Command>		trSetSelectedScale(3.1, 0.1, 0.2);</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
 
 <Command>void setupBoard() {</Command>
 <Command>	unitTransform("Statue of Automaton Base", "Victory Marker");</Command>
@@ -1123,6 +1163,34 @@
 <Command>const int SPELL_NONE = 0;</Command>
 <Command>const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander</Command>
 
+<Command>const int SPELL_SPARK = 2;</Command>
+<Command>const int SPELL_FOOD = 3;</Command>
+<Command>const int SPELL_SING = 4;</Command>
+
+
+<Command>const int ATTACK_DRAW_CARD = 0;</Command>
+<Command>const int ATTACK_STUN_TARGET = 1;</Command>
+<Command>const int ATTACK_GET_WINDSONG = 2;</Command>
+<Command>const int ATTACK_BLOCK_DEATH = 3;</Command>
+
+<Command>const int ATTACK_EVENT_COUNT = 4;</Command>
+
+<Command>const int PLAY_FOOD = 0;</Command>
+<Command>const int PLAY_GET_TRAP = 1;</Command>
+<Command>const int PLAY_GET_SPARK = 2;</Command>
+<Command>const int PLAY_DOUBLEBLADE = 3;</Command>
+<Command>const int PLAY_LEGENDARY = 4;</Command>
+
+<Command>const int PLAY_EVENT_COUNT = 5;</Command>
+
+<Command>const int DEATH_DRAW_CARD = 0;</Command>
+<Command>const int DEATH_OPPONENT_DRAW_CARD = 1;</Command>
+<Command>const int DEATH_BOOM_SMALL = 2;</Command>
+<Command>const int DEATH_BOOM_MEDIUM = 3;</Command>
+<Command>const int DEATH_BOOM_BIG = 4;</Command>
+
+<Command>const int DEATH_EVENT_COUNT = 5;</Command>
+
 <Command>const int CHARGE = 0;			// Action is ready when summoned</Command>
 <Command>const int GUARD = 1;			// If an adjacent ally is attacked, swap spaces with it before combat occurs.</Command>
 <Command>const int AIRDROP = 2;			// Doesn't have to be summoned next to the commander.</Command>
@@ -1135,8 +1203,9 @@
 <Command>const int WARD = 9;				// Unit is immune to spells</Command>
 <Command>const int BEACON = 10;			// Allies can be summoned next to this unit.</Command>
 <Command>const int AMBUSH = 11;			// When initiating combat, unit attacks first.</Command>
+<Command>const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.</Command>
 
-<Command>const int NUM_KEYWORDS = 12;</Command>
+<Command>const int NUM_KEYWORDS = 13;</Command>
 
 
 <Command>string GetKeywordName(int bitPosition=0){</Command>
@@ -1148,11 +1217,12 @@
 <Command>		case LIGHTNING: return ("Lightning");</Command>
 <Command>		case REGENERATE: return ("Regenerate");</Command>
 <Command>		case DEADLY: return ("Deadly");</Command>
-<Command>		case ETHEREAL: return ("Ethereal");</Command>
+<Command>		case ETHEREAL: return ("Pathfinder");</Command>
 <Command>		case ARMORED: return ("Armored");</Command>
 <Command>		case WARD: return ("Ward");</Command>
 <Command>		case BEACON: return ("Beacon");</Command>
 <Command>		case AMBUSH: return ("Ambush");</Command>
+<Command>		case FLEETING: return ("Fleeting");</Command>
 <Command>	}</Command>
 <Command>	ThrowError("Invalid keyword id. Method: GetKeywordName");</Command>
 <Command>	return ("");</Command>
@@ -1168,41 +1238,88 @@
 <Command>}</Command>
 
 <Command>void displayCardKeywordsAndDescription(string db = "", int index = 0) {</Command>
+<Command>	string bonus = " ";</Command>
 <Command>	string dialog = "";</Command>
 <Command>	string message = "";</Command>
+<Command>	int proto = yGetVarByIndex(db, "proto", index);</Command>
 <Command>	int keywords = yGetVarByIndex(db, "keywords", index);</Command>
+<Command>	bool multiple = false;</Command>
+<Command>	if (yGetVarByIndex(db, "stunTime", index) > 0) {</Command>
+<Command>		dialog = "Stunned";</Command>
+<Command>		multiple = true;</Command>
+<Command>	}</Command>
 <Command>	if(keywords>0){</Command>
-<Command>		bool multiple = false;</Command>
-<Command><![CDATA[		for(k=0;<NUM_KEYWORDS){]]></Command>
-<Command>			if(GetBit(keywords, k)){</Command>
+<Command>		int current = xsPow(2, NUM_KEYWORDS - 1);</Command>
+<Command>		for(k=NUM_KEYWORDS - 1; >=0){</Command>
+<Command>			if (keywords >= current) {</Command>
 <Command>				if(multiple){</Command>
 <Command>					dialog = dialog + ", ";</Command>
 <Command>				}</Command>
 <Command>				multiple = true;</Command>
 <Command>				dialog = dialog + GetKeywordName(k);</Command>
+<Command>				keywords = keywords - current;</Command>
 <Command>			}</Command>
+<Command>			current = current / 2;</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>	message = yGetStringByIndex(db, "ability", index);</Command>
 
-<Command>	gadgetUnreal("DetailedHelpButton");</Command>
-<Command>	if(HasKeyword(ARMORED, keywords)){</Command>
-<Command>		gadgetUnreal("NormalArmorTextDisplay");</Command>
-<Command>	} else {</Command>
-<Command>		gadgetUnreal("unitStatPanel-stat-normalArmor");</Command>
-<Command>	}</Command>
-<Command>	if(HasKeyword(WARD, keywords)){</Command>
-<Command>		gadgetUnreal("PierceArmorTextDisplay");</Command>
-<Command>	} else {</Command>
-<Command>		gadgetUnreal("unitStatPanel-stat-pierceArmor");</Command>
+<Command>	int old = xsGetContextPlayer();</Command>
+<Command><![CDATA[	if (yGetVarByIndex(db, "spell", index) <= SPELL_COMMANDER) {]]></Command>
+<Command>		gadgetUnreal("DetailedHelpButton");</Command>
+<Command>		if(HasKeyword(ARMORED, keywords)){</Command>
+<Command>			gadgetUnreal("NormalArmorTextDisplay");</Command>
+<Command>		} else {</Command>
+<Command>			gadgetUnreal("unitStatPanel-stat-normalArmor");</Command>
+<Command>		}</Command>
+<Command>		if(HasKeyword(WARD, keywords)){</Command>
+<Command>			gadgetUnreal("PierceArmorTextDisplay");</Command>
+<Command>		} else {</Command>
+<Command>			gadgetUnreal("unitStatPanel-stat-pierceArmor");</Command>
+<Command>		}</Command>
+
+<Command>		xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));</Command>
+<Command>		int diff = 1*yGetVarByIndex(db, "health", index) - kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));</Command>
+<Command>		if (diff > 0) {</Command>
+<Command>			bonus = bonus + "HP +" + diff;</Command>
+<Command>		}</Command>
+
+<Command>		diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");</Command>
+<Command>		if (diff > 0) {</Command>
+<Command>			bonus = bonus + " ATK +" + diff;</Command>
+<Command><![CDATA[		} else if (diff < 0) {]]></Command>
+<Command>			bonus = bonus + " ATK " + diff;</Command>
+<Command>		}</Command>
+
+<Command>		diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");</Command>
+<Command>		if (diff > 0) {</Command>
+<Command>			bonus = bonus + " SPD +" + diff;</Command>
+<Command><![CDATA[		} else if (diff < 0) {]]></Command>
+<Command>			bonus = bonus + " SPD " + diff;</Command>
+<Command>		}</Command>
 <Command>	}</Command>
 
-<Command>	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");</Command>
+
+<Command>	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");</Command>
 <Command>	trSetCounterDisplay(message);</Command>
+
+<Command>	xsSetContextPlayer(old);</Command>
 <Command>}</Command>
 
+<Command>void SpellSetup(string name = "", int cost = 0, int spell = 0) {</Command>
+<Command>	trStringQuestVarSet("spell_"+spell+"_name", name);</Command>
+<Command>	trQuestVarSet("spell_"+spell+"_cost", cost);</Command>
+<Command>}</Command>
 
-<Command>void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, string ability=""){</Command>
+<Command>void CardEvents(string protoName = "", int onPlay = 0, int onAttack = 0, int onDeath = 0, string ability="") {</Command>
+<Command>	int proto = kbGetProtoUnitID(protoName);</Command>
+<Command>	trQuestVarSet("card_" + proto + "_OnPlay",onPlay);</Command>
+<Command>	trQuestVarSet("card_" + proto + "_OnAttack",onAttack);</Command>
+<Command>	trQuestVarSet("card_" + proto + "_OnDeath",onDeath);</Command>
+<Command>	trStringQuestVarSet("card_" + proto + "_Ability",ability);</Command>
+<Command>}</Command>
+
+<Command>void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0){</Command>
 <Command>	int proto = kbGetProtoUnitID(protoName);</Command>
 <Command><![CDATA[	if(proto<0){]]></Command>
 <Command>		ThrowError("That's not a unit. Method: CardSetup");</Command>
@@ -1216,6 +1333,7 @@
 <Command>	trQuestVarSet("card_" + proto + "_Speed",speed);</Command>
 <Command>	trQuestVarSet("card_" + proto + "_Range",range);</Command>
 <Command>	trQuestVarSet("card_" + proto + "_Keywords",keywords);</Command>
+
 <Command><![CDATA[	for(p=1;<cNumberPlayers){]]></Command>
 <Command>		trModifyProtounit(protoName, p, 16, 9999999999999999999.0);</Command>
 <Command>		trModifyProtounit(protoName, p, 16, -9999999999999999999.0);</Command>
@@ -1263,32 +1381,9 @@
 <Command>		// 0 LOS</Command>
 <Command>		trModifyProtounit(protoName, p, 2, 9999999999999999999.0);</Command>
 <Command>		trModifyProtounit(protoName, p, 2, -9999999999999999999.0);</Command>
-
-<Command>		trStringQuestVarSet("card_" + proto + "_Ability",ability);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
-
-<Command>void CardInstantiate(string protoName="", string vectorName=""){</Command>
-<Command>	int proto = kbGetProtoUnitID(protoName);</Command>
-<Command><![CDATA[	if(proto<0){]]></Command>
-<Command>		ThrowError("That's not a unit. Method: CardInstantiate");</Command>
-<Command>	}</Command>
-<Command>	int index = trQuestVarGet("cardUnitsIndex");</Command>
-<Command>	trQuestVarSet("cardUnits_" + index, trGetNextUnitScenarioNameNumber());</Command>
-<Command>	trStringQuestVarSet("cardUnits_" + index + "_Name",trStringQuestVarGet("card_" + proto + "_Name"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Cost",trQuestVarGet("card_" + proto + "_Cost"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Attack",trQuestVarGet("card_" + proto + "_Attack"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Health",trQuestVarGet("card_" + proto + "_Health"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Speed",trQuestVarGet("card_" + proto + "_Speed"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Range",trQuestVarGet("card_" + proto + "_Range"));</Command>
-<Command>	trQuestVarSet("cardUnits_" + index + "_Keywords",trQuestVarGet("card_" + proto + "_Keywords"));</Command>
-<Command>	trStringQuestVarSet("cardUnits_" + index + "_Ability",trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
-<Command>	trQuestVarSet("cardUnitsIndex", index + 1);</Command>
-
-<Command>	DeploySober(protoName,vectorName);</Command>
-<Command><![CDATA[	trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
-<Command>}</Command>
 
 <Command>void CardLoad(bool firstBit = false, bool secondBit = false, int index = 0){</Command>
 <Command>	int copies = 0;</Command>
@@ -1322,22 +1417,59 @@
 <Command>		trForbidProtounit(p, "Royal Guard Hero");</Command>
 <Command>		trForbidProtounit(p, "Swordsman Hero");</Command>
 <Command>		trForbidProtounit(p, "Trident Soldier Hero");</Command>
+<Command>		trForbidProtounit(p, "Villager Atlantean Hero");</Command>
+<Command>		trForbidProtounit(p, "Settlement Level 1");</Command>
+<Command>		trForbidProtounit(p, "Guild");</Command>
+<Command>		trForbidProtounit(p, "Manor");</Command>
+<Command>		trForbidProtounit(p, "Dock");</Command>
+<Command>		trForbidProtounit(p, "Wall Connector");</Command>
+<Command>		trForbidProtounit(p, "Temple");</Command>
 <Command>	}</Command>
 
 <Command>	//Pick a card. Any card.</Command>
-<Command>	CardSetup("Hero Greek Jason",		0, "phdorogres4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));</Command>
-<Command>	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1);</Command>
+<Command>	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0);</Command>
+<Command>	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));</Command>
+
+<Command>	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));</Command>
+<Command>	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));</Command>
+<Command>	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1);</Command>
 <Command>	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));</Command>
-<Command>	CardSetup("Skraeling", 				1, "Wolfpelt", 			1, 2, 2, 1, Keyword(CHARGE));</Command>
-<Command>	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);</Command>
+<Command>	CardSetup("Skraeling", 				2, "Trapper", 			1, 2, 2, 1);</Command>
+<Command>	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);</Command>
 <Command>	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);</Command>
-<Command>	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		4, 4, 2, 1);</Command>
-<Command>	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 1, 3, 1, Keyword(AMBUSH));</Command>
+<Command>	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);</Command>
+<Command>	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));</Command>
+<Command>	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));</Command>
 <Command>	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));</Command>
 <Command>	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));</Command>
 <Command>	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));</Command>
 <Command>	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));</Command>
 <Command>	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));</Command>
+
+<Command>	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.</Command>
+<Command>	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.</Command>
+<Command>	CardSetup("Promethean Small",		2, "Boom Goblin", 		1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.</Command>
+<Command>	CardSetup("Promethean",				4, "Boom Goblin Champ", 2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.</Command>
+<Command>	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.</Command>
+<Command>	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.</Command>
+
+<Command>	CardEvents("Hero Greek Jason", 0, Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");</Command>
+<Command>	CardEvents("Khopesh", 0, Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");</Command>
+<Command>	CardEvents("Skraeling", Keyword(PLAY_GET_TRAP), 0, 0, "Play: Add a Bear Trap to your hand.");</Command>
+<Command>	CardEvents("Slinger", Keyword(PLAY_GET_SPARK), 0, 0, "Play: Add a Spark to your hand.");</Command>
+<Command>	CardEvents("Avenger", Keyword(PLAY_DOUBLEBLADE), 0, 0, "Play: Deal 1 damage to all adjacent enemies.");</Command>
+<Command>	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");</Command>
+<Command>	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");</Command>
+<Command>	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);</Command>
+<Command>	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");</Command>
+<Command>	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");</Command>
+<Command>	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");</Command>
+<Command>	CardEvents("Promethean", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");</Command>
+<Command>	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");</Command>
+<Command>	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");</Command>
+<Command>	SpellSetup("Spark", 1, SPELL_SPARK);</Command>
+<Command>	SpellSetup("Windsong", 2, SPELL_SING);</Command>
+
 
 
 
@@ -1364,6 +1496,38 @@
 <Command>	xsDisableRule("initializeCards");</Command>
 <Command>}</Command>
 
+<Command>const int ACTION_READY = 0;</Command>
+<Command>const int ACTION_MOVED = 1;</Command>
+<Command>const int ACTION_DONE = 2;</Command>
+<Command>const int ACTION_FURY = 3;</Command>
+<Command>const int ACTION_SLEEPING = 4;</Command>
+<Command>const int ACTION_STUNNED = 5;</Command>
+
+<Command>const int ATTACK_START = 0;</Command>
+<Command>const int ATTACK_ANIMATE = 1;</Command>
+<Command>const int ATTACK_DONE = 2;</Command>
+
+
+
+
+<Command>void updateMana() {</Command>
+<Command>	int p = trQuestVarGet("activePlayer");</Command>
+<Command>	trCounterAbort("mana");</Command>
+<Command>	trCounterAddTime("mana", -1, -91,</Command>
+<Command><![CDATA[			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);]]></Command>
+<Command>}</Command>
+
+
+<Command>void refreshGuardAll() {</Command>
+<Command>	for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>		yDatabaseNext("allUnits");</Command>
+<Command>		if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {</Command>
+<Command>			tileGuard(1*yGetVar("allUnits", "tile"), true);</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+
 <Command>void removeUnit(string db = "allUnits") {</Command>
 <Command>	yRemoveFromDatabase(db);</Command>
 <Command>	yRemoveUpdateString(db, "ability");</Command>
@@ -1380,8 +1544,12 @@
 <Command>	yRemoveUpdateVar(db, "tile");</Command>
 <Command>	yRemoveUpdateVar(db, "spell");</Command>
 <Command>	yRemoveUpdateVar(db, "action");</Command>
-<Command>	yRemoveUpdateVar(db, "attackEvent");</Command>
-<Command>	yRemoveUpdateVar(db, "deathEvent");</Command>
+<Command>	yRemoveUpdateVar(db, "onPlay");</Command>
+<Command>	yRemoveUpdateVar(db, "onAttack");</Command>
+<Command>	yRemoveUpdateVar(db, "onDeath");</Command>
+<Command>	yRemoveUpdateVar(db, "stunTime");</Command>
+<Command>	yRemoveUpdateVar(db, "stunSFX");</Command>
+<Command>	yRemoveUpdateVar(db, "stunIndex");</Command>
 <Command>}</Command>
 
 <Command>void transferUnit(string to = "", string from = "") {</Command>
@@ -1400,174 +1568,14 @@
 <Command>	yTransferUpdateVar(to, from, "tile");</Command>
 <Command>	yTransferUpdateVar(to, from, "spell");</Command>
 <Command>	yTransferUpdateVar(to, from, "action");</Command>
-<Command>	yTransferUpdateVar(to, from, "attackEvent");</Command>
-<Command>	yTransferUpdateVar(to, from, "deathEvent");</Command>
+<Command>	yTransferUpdateVar(to, from, "onPlay");</Command>
+<Command>	yTransferUpdateVar(to, from, "onAttack");</Command>
+<Command>	yTransferUpdateVar(to, from, "onDeath");</Command>
+<Command>	yTransferUpdateVar(to, from, "stunTime");</Command>
+<Command>	yTransferUpdateVar(to, from, "stunSFX");</Command>
+<Command>	yTransferUpdateVar(to, from, "stunIndex");</Command>
 <Command>}</Command>
 
-
-<Command>void shuffleDeck(int p = 0) {</Command>
-<Command>	int i = 0;</Command>
-<Command>	for(x=yGetDatabaseCount("p"+p+"deck")-1; >=0) {</Command>
-<Command>		trQuestVarSetFromRand("pos", 0, x, true);</Command>
-<Command>		i = trQuestVarGet("pos");</Command>
-<Command>		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));</Command>
-<Command>		trQuestVarSet("tempSpell", yGetVarByIndex("p"+p+"deck", "spell", i));</Command>
-
-<Command>		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));</Command>
-<Command>		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));</Command>
-
-<Command>		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));</Command>
-<Command>		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));</Command>
-<Command>	}</Command>
-<Command>}</Command>
-<Command>void updateHandPlayable(int p = 0) {</Command>
-<Command>	for(x=zGetBankCount("p"+p+"handPos"); >0) {</Command>
-<Command>		zBankNext("p"+p+"handPos", true);</Command>
-<Command>		trMutateSelected(kbGetProtoUnitID("Victory Marker"));</Command>
-<Command>	}</Command>
-<Command>	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
-<Command>		yDatabaseNext("p"+p+"hand");</Command>
-<Command><![CDATA[		if (yGetVar("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {]]></Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));</Command>
-<Command>			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));</Command>
-<Command>		}</Command>
-<Command>	}</Command>
-<Command>}</Command>
-
-<Command>void addCardToDeck(int p = 0, string proto = "", int spell = 0) {</Command>
-<Command>	trQuestVarSet("proto", kbGetProtoUnitID(proto));</Command>
-<Command>	yAddToDatabase("p"+p+"deck", "proto");</Command>
-<Command>	yAddUpdateVar("p"+p+"deck", "spell", spell);</Command>
-<Command>}</Command>
-
-
-<Command>void addCardToHand(int p = 0, int proto = 0, int spell = 0) {</Command>
-<Command>	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());</Command>
-<Command>	trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("p"+p+"deckx"),0,trQuestVarGet("p"+p+"deckz"),0,true);</Command>
-<Command>	trUnitSelectClear();</Command>
-<Command>	trUnitSelect(""+1*trQuestVarGet("next"), true);</Command>
-<Command>	trUnitConvert(p);</Command>
-<Command><![CDATA[	trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
-<Command>	trUnitHighlight(3, true);</Command>
-
-
-<Command>	yAddToDatabase("p"+p+"hand", "next");</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "proto", proto);</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));</Command>
-<Command>	yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
-
-<Command>	yAddUpdateVar("p"+p+"hand", "player", p);</Command>
-<Command>	yAddUpdateVar("p"+p+"hand", "spell", spell);</Command>
-
-<Command>	// Find an empty position in the hand to place the unit.</Command>
-<Command>	for(x=zGetBankCount("p"+p+"handPos"); >0) {</Command>
-<Command>		if (trCountUnitsInArea(""+zBankNext("p"+p+"handPos"),p,"Unit",2) == 0) {</Command>
-<Command>			yAddUpdateVar("p"+p+"hand", "pos", trQuestVarGet("p"+p+"handPos"));</Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));</Command>
-<Command>			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));</Command>
-
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("next"), true);</Command>
-<Command>			trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"handPos"));</Command>
-
-<Command>			trUnitChangeProtoUnit(kbGetProtoUnitName(proto));</Command>
-
-
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));</Command>
-<Command>			trMutateSelected(kbGetProtoUnitID("Victory Marker"));</Command>
-
-<Command>			break;</Command>
-<Command>		}</Command>
-<Command>	}</Command>
-<Command>}</Command>
-
-
-<Command>void drawCard(int p = 0) {</Command>
-<Command>	int proto = yDatabaseNext("p"+p+"deck");</Command>
-<Command><![CDATA[	if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
-<Command>		if (trCurrentPlayer() == p) {</Command>
-<Command>			trSoundPlayFN("ui\scroll.wav","1",-1,"","");</Command>
-<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
-<Command>				trChatSend(0, "Drew a " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
-<Command>			}</Command>
-<Command>		}</Command>
-<Command>		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));</Command>
-<Command>	} else {</Command>
-<Command>		if (trCurrentPlayer() == p) {</Command>
-<Command>			trSoundPlayFN("cantdothat.wav","1",-1,"","");</Command>
-<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
-<Command>				trChatSend(0, "Hand full! Burned a " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
-<Command>			}</Command>
-<Command>		}</Command>
-<Command>	}</Command>
-<Command>	yRemoveFromDatabase("p"+p+"deck");</Command>
-<Command>	yRemoveUpdateVar("p"+p+"deck", "spell");</Command>
-
-<Command>	updateHandPlayable(p);</Command>
-<Command>}</Command>
-
-
-<Command>rule initializeHand</Command>
-<Command>highFrequency</Command>
-<Command>active</Command>
-<Command>{</Command>
-<Command>	zBankInit("p1handPos", 849, 10);</Command>
-<Command>	zBankInit("p2handPos", 859, 10);</Command>
-
-<Command>	trVectorQuestVarSet("p1deck", xsVectorSet(1,0,1));</Command>
-<Command>	trVectorQuestVarSet("p2deck", xsVectorSet(119,0,119));</Command>
-
-<Command>	xsDisableRule("initializeHand");</Command>
-<Command>}</Command>
-
-
-<Command>rule card_draw</Command>
-<Command>highFrequency</Command>
-<Command>active</Command>
-<Command>{</Command>
-<Command>	// We want to give the trCountUnitsInArea some time to update</Command>
-<Command>	for(p=2; >0) {</Command>
-<Command>		if (trQuestVarGet("p"+p+"drawCards") > 0) {</Command>
-<Command>			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);</Command>
-<Command>			drawCard(p);</Command>
-<Command>		}</Command>
-<Command>	}</Command>
-<Command>}</Command>
-
-<Command>const int ACTION_READY = 0;</Command>
-<Command>const int ACTION_MOVED = 1;</Command>
-<Command>const int ACTION_DONE = 2;</Command>
-<Command>const int ACTION_FURY = 3;</Command>
-
-<Command>const int CASTING_NORMAL = 0;</Command>
-<Command>const int CASTING_SUMMON = 1;</Command>
-<Command>const int CASTING_SPELL = 2;</Command>
-<Command>const int CASTING_WAIT = 3;</Command>
-
-<Command>const int ATTACK_START = 0;</Command>
-<Command>const int ATTACK_ANIMATE = 1;</Command>
-<Command>const int ATTACK_DONE = 2;</Command>
-
-
-<Command>const int EVENT_DRAW_CARD = 0;</Command>
-
-<Command>const int EVENT_COUNT = 1;</Command>
-
-
-<Command>void updateMana() {</Command>
-<Command>	int p = trQuestVarGet("activePlayer");</Command>
-<Command>	trCounterAbort("mana");</Command>
-<Command>	trCounterAddTime("mana", -1, -91,</Command>
-<Command><![CDATA[			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);]]></Command>
-<Command>}</Command>
 
 
 <Command>void teleportToTile(string db = "", int tile = 0, int index = -1) {</Command>
@@ -1575,6 +1583,14 @@
 <Command>	if (index == -1) {</Command>
 <Command>		index = yGetPointer(db);</Command>
 <Command>	}</Command>
+
+<Command>	if (HasKeyword(GUARD, 1*yGetVarByIndex(db, "keywords", index))) {</Command>
+<Command>		if (yGetVarByIndex(db, "tile", index) > 0) {</Command>
+<Command>			tileGuard(1*yGetVarByIndex(db, "tile", index), false);</Command>
+<Command>		}</Command>
+<Command>		tileGuard(tile, true);</Command>
+<Command>	}</Command>
+
 
 <Command>	trUnitSelectClear();</Command>
 <Command>	trUnitSelectByID(tile);</Command>
@@ -1596,26 +1612,6 @@
 <Command>}</Command>
 
 
-<Command>void damageUnit(string db = "", int index = 0, float dmg = 0) {</Command>
-<Command>	xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));</Command>
-<Command>	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));</Command>
-<Command>	ySetVarByIndex(db, "health", index, 1*yGetVarByIndex(db, "health", index) - dmg);</Command>
-<Command>	trUnitSelectClear();</Command>
-<Command>	trUnitSelect(""+1*yGetUnitAtIndex(db, index), true);</Command>
-<Command>	trDamageUnit(health - yGetVarByIndex(db, "health", index));</Command>
-<Command>}</Command>
-
-<Command>void removeIfDead(string db = "", int index = -1) {</Command>
-<Command>	if (index >= 0) {</Command>
-<Command>		ySetPointer(db, index);</Command>
-<Command>	}</Command>
-<Command><![CDATA[	if (yGetVar(db, "health") <= 0) {]]></Command>
-<Command>		int tile = yGetVar("allUnits", "tile");</Command>
-<Command>		zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
-<Command>		trDamageUnitPercent(100);</Command>
-<Command>		removeUnit(db);</Command>
-<Command>	}</Command>
-<Command>}</Command>
 
 
 <Command>int findNearestUnit(string qv = "", float radius = 1) {</Command>
@@ -1673,6 +1669,54 @@
 <Command>	}</Command>
 <Command>}</Command>
 
+<Command>void damageUnit(string db = "", int index = 0, float dmg = 0) {</Command>
+<Command>	xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));</Command>
+<Command>	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));</Command>
+<Command>	ySetVarByIndex(db, "health", index, 1*yGetVarByIndex(db, "health", index) - dmg);</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	trUnitSelect(""+1*yGetUnitAtIndex(db, index), true);</Command>
+<Command>	trDamageUnit(health - yGetVarByIndex(db, "health", index));</Command>
+<Command>}</Command>
+
+<Command>void lightning(int index = 0, int damage = 0, bool deadly = false) {</Command>
+<Command>	trQuestVarSetFromRand("rand", 1, 5, true);</Command>
+<Command>	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");</Command>
+<Command>	int p = yGetVarByIndex("allUnits", "player", index);</Command>
+<Command>	yClearDatabase("lightningTargets");</Command>
+<Command>	for (x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>		yDatabaseNext("allUnits");</Command>
+<Command>		if (yGetVar("allUnits", "player") == p) {</Command>
+<Command>			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));</Command>
+<Command>			if ((trQuestVarGet("allUnitsIndex") == index) == false) {</Command>
+<Command>				yAddToDatabase("lightningTargets", "allUnitsIndex");</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	if (deadly) {</Command>
+<Command>		damage = -1;</Command>
+<Command>	}</Command>
+<Command>	// find lightning chain</Command>
+<Command>	int pop = -1;</Command>
+<Command>	int push = modularCounterNext("lightningPush");</Command>
+<Command>	trQuestVarSet("lightning" + push, index);</Command>
+<Command>	trQuestVarSet("lightning" + push + "damage", damage);</Command>
+<Command>	while ((pop == push) == false) {</Command>
+<Command>		pop = modularCounterNext("lightningPop");</Command>
+<Command>		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));</Command>
+<Command>		for (x=yGetDatabaseCount("lightningTargets"); >0) {</Command>
+<Command>			yDatabaseNext("lightningTargets");</Command>
+<Command>			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));</Command>
+<Command><![CDATA[			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {]]></Command>
+<Command>				push = modularCounterNext("lightningPush");</Command>
+<Command>				trQuestVarCopy("lightning" + push, "lightningTargets");</Command>
+<Command>				trQuestVarSet("lightning"+push+"damage", damage);</Command>
+<Command>				yRemoveFromDatabase("lightningTargets");</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+
 <Command>void startAttack(int attacker = 0, int target = 0, bool first = false, bool animate = true) {</Command>
 <Command>	string db = "attacks";</Command>
 <Command>	if (first) {</Command>
@@ -1686,8 +1730,864 @@
 <Command>	} else {</Command>
 <Command>		yAddUpdateVar(db, "phase", ATTACK_DONE);</Command>
 <Command>	}</Command>
-
 <Command>}</Command>
+
+
+
+<Command>bool spyReady() {</Command>
+<Command>	return(trQuestVarGet("spyFind") == trQuestVarGet("spyFound"));</Command>
+<Command>}</Command>
+
+
+<Command>int spyEffect(string proto = "") {</Command>
+<Command>	int x = modularCounterNext("spyFind");</Command>
+<Command>	trQuestVarSet("spyEye"+x+"proto", kbGetProtoUnitID(proto));</Command>
+<Command>	trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));</Command>
+<Command>	return(x);</Command>
+<Command>}</Command>
+
+<Command>rule spy_find</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>	if (spyReady() == false) {</Command>
+<Command>		while (yFindLatest("spyEye", "Spy Eye", 0) >= 0) {</Command>
+<Command>			int x = modularCounterNext("spyFound");</Command>
+<Command>			trQuestVarCopy("spyEye"+x, "spyEye");</Command>
+<Command>			trMutateSelected(1*trQuestVarGet("spyEye"+x+"proto"));</Command>
+<Command>			trQuestVarSet("spyTimeout", 0);</Command>
+<Command>		}</Command>
+<Command>		trQuestVarSet("spyTimeout", trQuestVarGet("spyTimeout") + 1);</Command>
+<Command>		if (trQuestVarGet("spyTimeout") >= 5) {</Command>
+<Command>			trQuestVarCopy("spyFound", "spyFind");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void stunUnit(int index = 0) {</Command>
+<Command>	if (yGetVarByIndex("allUnits", "health", index) > 0) {</Command>
+<Command>		ySetVarByIndex("allUnits", "stunTime", index, 2);</Command>
+<Command>		ySetVarByIndex("allUnits", "action", index, ACTION_STUNNED);</Command>
+<Command>		if (yGetVarByIndex("allUnits", "stunSFX", index) == 0) {</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelect(""+1*yGetUnitAtIndex("allUnits", index), true);</Command>
+<Command>			ySetVarByIndex("allUnits", "stunIndex", index, spyEffect("Shockwave stun effect"));</Command>
+<Command>			xsEnableRule("spy_assign_new");</Command>
+<Command>		} else {</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelect(""+1*yGetVarByIndex("allUnits", "stunSFX", index), true);</Command>
+<Command>			trMutateSelected(kbGetProtoUnitID("Shockwave stun effect"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule spy_assign_new</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if (spyReady())	{</Command>
+<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>			yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[			if ((yGetVar("allUnits", "stunSFX") == 0) && (yGetVar("allUnits", "stunIndex") > 0)) {]]></Command>
+<Command>				ySetVar("allUnits", "stunSFX", trQuestVarGet("spyEye"+1*yGetVar("allUnits", "stunIndex")));</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		xsDisableRule("spy_assign_new");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void shuffleDeck(int p = 0) {</Command>
+<Command>	int i = 0;</Command>
+<Command>	for(x=yGetDatabaseCount("p"+p+"deck")-1; >=0) {</Command>
+<Command>		trQuestVarSetFromRand("pos", 0, x, true);</Command>
+<Command>		i = trQuestVarGet("pos");</Command>
+<Command>		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));</Command>
+<Command>		trQuestVarSet("tempSpell", yGetVarByIndex("p"+p+"deck", "spell", i));</Command>
+
+<Command>		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));</Command>
+<Command>		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));</Command>
+
+<Command>		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));</Command>
+<Command>		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>void updateHandPlayable(int p = 0) {</Command>
+<Command>	for(x=zGetBankCount("p"+p+"handPos"); >0) {</Command>
+<Command>		zBankNext("p"+p+"handPos", true);</Command>
+<Command>		trMutateSelected(kbGetProtoUnitID("Victory Marker"));</Command>
+<Command>	}</Command>
+<Command>	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
+<Command>		yDatabaseNext("p"+p+"hand");</Command>
+<Command><![CDATA[		if (yGetVar("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {]]></Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));</Command>
+<Command>			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void addCardToDeck(int p = 0, string proto = "", int spell = 0) {</Command>
+<Command>	if (spell == 0) {</Command>
+<Command>		trQuestVarSet("proto", kbGetProtoUnitID(proto));</Command>
+<Command>		yAddToDatabase("p"+p+"deck", "proto");</Command>
+<Command>		yAddUpdateVar("p"+p+"deck", "spell", 0);</Command>
+<Command>	} else {</Command>
+<Command>		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));</Command>
+<Command>		yAddToDatabase("p"+p+"deck", "proto");</Command>
+<Command>		yAddUpdateVar("p"+p+"deck", "spell", spell);</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+
+
+<Command>void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {</Command>
+<Command>	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());</Command>
+<Command>	trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("p"+p+"deckx"),0,trQuestVarGet("p"+p+"deckz"),0,true);</Command>
+<Command>	trUnitSelectClear();</Command>
+<Command>	trUnitSelect(""+1*trQuestVarGet("next"), true);</Command>
+<Command>	trUnitConvert(p);</Command>
+
+<Command>	yAddToDatabase("p"+p+"hand", "next");</Command>
+<Command><![CDATA[	if (spell == 0 || spell == SPELL_COMMANDER) {]]></Command>
+<Command><![CDATA[		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "stunIndex", 0);</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "stunSFX", 0);</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));</Command>
+<Command>		yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
+<Command>	} else {</Command>
+<Command>		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("spell_" + spell + "_Cost"));</Command>
+<Command>		proto = kbGetProtoUnitID("Statue of Lightning");</Command>
+<Command>	}</Command>
+<Command>	trUnitHighlight(3, true);</Command>
+
+<Command>	if (fleeting) {</Command>
+<Command>		yAddUpdateVar("p"+p+"hand", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));</Command>
+<Command>	}</Command>
+
+<Command>	yAddUpdateVar("p"+p+"hand", "proto", proto);</Command>
+
+
+
+<Command>	yAddUpdateVar("p"+p+"hand", "player", p);</Command>
+<Command>	yAddUpdateVar("p"+p+"hand", "spell", spell);</Command>
+
+<Command>	// Find an empty position in the hand to place the unit.</Command>
+<Command>	for(x=zGetBankCount("p"+p+"handPos"); >0) {</Command>
+<Command>		if (trCountUnitsInArea(""+zBankNext("p"+p+"handPos"),p,"Unit",2) == 0) {</Command>
+<Command>			yAddUpdateVar("p"+p+"hand", "pos", trQuestVarGet("p"+p+"handPos"));</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));</Command>
+<Command>			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));</Command>
+
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelect(""+1*trQuestVarGet("next"), true);</Command>
+<Command>			trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"handPos"));</Command>
+
+<Command>			trUnitChangeProtoUnit(kbGetProtoUnitName(proto));</Command>
+
+
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));</Command>
+<Command>			trMutateSelected(kbGetProtoUnitID("Victory Marker"));</Command>
+
+<Command>			break;</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+
+<Command>void drawCard(int p = 0) {</Command>
+<Command>	int proto = yDatabaseNext("p"+p+"deck");</Command>
+<Command><![CDATA[	if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
+<Command>		if (trCurrentPlayer() == p) {</Command>
+<Command>			trSoundPlayFN("ui\scroll.wav","1",-1,"","");</Command>
+<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
+<Command>				trChatSend(0, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
+<Command>			} else {</Command>
+<Command>				trChatSend(0, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));</Command>
+<Command>	} else {</Command>
+<Command>		if (trCurrentPlayer() == p) {</Command>
+<Command>			trSoundPlayFN("cantdothat.wav","1",-1,"","");</Command>
+<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
+<Command>				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
+<Command>			} else {</Command>
+<Command>				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	yRemoveFromDatabase("p"+p+"deck");</Command>
+<Command>	yRemoveUpdateVar("p"+p+"deck", "spell");</Command>
+
+<Command>	updateHandPlayable(p);</Command>
+<Command>}</Command>
+
+
+<Command>rule initializeHand</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>	zBankInit("p1handPos", 849, 10);</Command>
+<Command>	zBankInit("p2handPos", 859, 10);</Command>
+
+<Command>	trVectorQuestVarSet("p1deck", xsVectorSet(1,0,1));</Command>
+<Command>	trVectorQuestVarSet("p2deck", xsVectorSet(119,0,119));</Command>
+
+<Command>	xsDisableRule("initializeHand");</Command>
+<Command>}</Command>
+
+
+<Command>rule card_draw</Command>
+<Command>highFrequency</Command>
+<Command>active</Command>
+<Command>{</Command>
+<Command>	// We want to give the trCountUnitsInArea some time to update</Command>
+<Command>	for(p=2; >0) {</Command>
+<Command>		if (trQuestVarGet("p"+p+"drawCards") > 0) {</Command>
+<Command>			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);</Command>
+<Command>			drawCard(p);</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>bool OnDeath(int event = -1){</Command>
+<Command>	int savePointer = yGetPointer("allUnits");</Command>
+<Command>	int p = yGetVar("allUnits", "player");</Command>
+<Command>	bool checkAgain = false;</Command>
+<Command>	switch(event)</Command>
+<Command>	{</Command>
+<Command>		case DEATH_DRAW_CARD:</Command>
+<Command>		{</Command>
+<Command>			drawCard(p);</Command>
+<Command>		}</Command>
+<Command>		case DEATH_OPPONENT_DRAW_CARD:</Command>
+<Command>		{</Command>
+<Command>			drawCard(3-p);</Command>
+<Command>		}</Command>
+<Command>		case DEATH_BOOM_SMALL:</Command>
+<Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
+<Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>				yDatabaseNext("allUnits");</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			trSoundPlayFN("meteorsmallhit.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case DEATH_BOOM_MEDIUM:</Command>
+<Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
+<Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>				yDatabaseNext("allUnits");</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			trSoundPlayFN("meteorbighit.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case DEATH_BOOM_BIG:</Command>
+<Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>			zSetVarByIndex("tiles", "occupied", 1*yGetVar("allUnits", "tile"), TILE_IMPASSABLE);</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));</Command>
+<Command>			yDatabasePointerDefault("allUnits");</Command>
+<Command>			for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>				yDatabaseNext("allUnits");</Command>
+<Command>				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p</Command>
+<Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 6);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 196) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 4);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));</Command>
+<Command><![CDATA[					} else if (zDistanceToVectorSquared("allUnits", "pos") < 400) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);</Command>
+<Command>						checkAgain = true;</Command>
+<Command>						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			trSoundPlayFN("implodeexplode.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("meteorbighit.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	ySetPointer("allUnits", savePointer);</Command>
+<Command>	return (checkAgain);</Command>
+<Command>}</Command>
+
+<Command>void removeDeadUnits() {</Command>
+<Command>	bool checkAgain = true;</Command>
+<Command>	while(checkAgain){</Command>
+<Command>		checkAgain = false;</Command>
+<Command>		yDatabasePointerDefault("allUnits");</Command>
+<Command>		for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>			yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[			if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "OnDeath") > 0) {]]></Command>
+<Command>				int events = 1*yGetVar("allUnits", "OnDeath");</Command>
+<Command>				ySetVar("allUnits", "OnDeath", 0);</Command>
+<Command>				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);</Command>
+<Command>				for(x=DEATH_EVENT_COUNT - 1; >=0) {</Command>
+<Command>					if (events >= n) {</Command>
+<Command><![CDATA[						checkAgain = OnDeath(x) || checkAgain;]]></Command>
+<Command>						events = events - n;</Command>
+<Command>					}</Command>
+<Command>					n = n / 2;</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	yDatabasePointerDefault("allUnits");</Command>
+<Command>	for(y=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>		yDatabaseNext("allUnits", true);</Command>
+<Command><![CDATA[		if (yGetVar("allUnits", "health") <= 0 && yGetVar("allUnits", "health") > -9000) {]]></Command>
+<Command>			int tile = yGetVar("allUnits", "tile");</Command>
+<Command>			zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
+<Command>			trDamageUnitPercent(100);</Command>
+<Command>			if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {</Command>
+<Command>				tileGuard(tile, false);</Command>
+<Command>			}</Command>
+<Command>			ySetVar("allUnits", "health", -9999);</Command>
+<Command>			removeUnit("allUnits");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>const int CAST_UNIT = 0;</Command>
+<Command>const int CAST_TARGET = 1;</Command>
+<Command>const int CAST_SING = 2;</Command>
+
+<Command>const int CAST_TILE = 10;</Command>
+<Command>const int CAST_DIRECTION = 11;</Command>
+
+<Command>const int CASTING_NOTHING = 0;</Command>
+<Command>const int CASTING_IN_PROGRESS = 1;</Command>
+<Command>const int CASTING_DONE = 2;</Command>
+<Command>const int CASTING_CANCEL = 3;</Command>
+
+
+<Command>void castReset() {</Command>
+<Command>	trQuestVarSet("castPush", 0);</Command>
+<Command>	trQuestVarSet("castPop", 0);</Command>
+<Command>	trQuestVarSet("castDone", CASTING_NOTHING);</Command>
+<Command>}</Command>
+
+
+<Command>void castAddUnit(string qv = "", int p = 0, bool commander = true) {</Command>
+<Command>	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);</Command>
+<Command>	int x = trQuestVarGet("castPush");</Command>
+
+<Command>	if (commander) {</Command>
+<Command>		trQuestVarSet("cast"+x+"commander", SPELL_COMMANDER);</Command>
+<Command>	} else {</Command>
+<Command>		trQuestVarSet("cast"+x+"commander", SPELL_NONE);</Command>
+<Command>	}</Command>
+<Command>	trQuestVarSet("cast"+x+"type", CAST_UNIT);</Command>
+<Command>	trQuestVarSet("cast"+x+"player", p);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"qv", qv);</Command>
+<Command>}</Command>
+
+<Command>void castAddSing(string qv = "", int p = 0) {</Command>
+<Command>	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);</Command>
+<Command>	int x = trQuestVarGet("castPush");</Command>
+
+<Command>	trQuestVarSet("cast"+x+"type", CAST_SING);</Command>
+<Command>	trQuestVarSet("cast"+x+"player", p);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"qv", qv);</Command>
+<Command>}</Command>
+
+<Command>void castAddTile(string qv = "", bool ghost = false) {</Command>
+<Command>	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);</Command>
+<Command>	int x = trQuestVarGet("castPush");</Command>
+
+<Command>	trQuestVarSet("cast"+x+"type", CAST_TILE);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"qv", qv);</Command>
+<Command>	if (ghost) {</Command>
+<Command>		trQuestVarSet("cast"+x+"terrain", 0);</Command>
+<Command>	} else {</Command>
+<Command>		trQuestVarSet("cast"+x+"terrain", 1);</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void castAddTarget(string qv = "", string attacker = "") {</Command>
+<Command>	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);</Command>
+<Command>	int x = trQuestVarGet("castPush");</Command>
+
+<Command>	trQuestVarSet("cast"+x+"type", CAST_TARGET);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"start", attacker);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"qv", qv);</Command>
+<Command>}</Command>
+
+<Command>void castAddDirection(string qv = "", string start = "", bool unit = false) {</Command>
+<Command>	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);</Command>
+<Command>	int x = trQuestVarGet("castPush");</Command>
+
+<Command>	trQuestVarSet("cast"+x+"type", CAST_DIRECTION);</Command>
+<Command>	if (unit) {</Command>
+<Command>		trQuestVarSet("cast"+x+"unit", 1);</Command>
+<Command>	} else {</Command>
+<Command>		trQuestVarSet("cast"+x+"unit", 0);</Command>
+<Command>	}</Command>
+<Command>	trStringQuestVarSet("cast"+x+"qv", qv);</Command>
+<Command>	trStringQuestVarSet("cast"+x+"start", start);</Command>
+<Command>}</Command>
+
+<Command>void castStart() {</Command>
+<Command>	trQuestVarSet("castDone", CASTING_IN_PROGRESS);</Command>
+<Command>	xsEnableRule("spellcast_00_process");</Command>
+<Command>}</Command>
+
+<Command>void castEnd() {</Command>
+<Command>	removeDeadUnits();</Command>
+<Command>	refreshGuardAll();</Command>
+<Command>	xsEnableRule("gameplay_01_select");</Command>
+<Command>	highlightReady(999999);</Command>
+
+<Command>	if (trQuestVarGet("selectedCard") >= 0) {</Command>
+<Command>		int p = trQuestVarGet("activePlayer");</Command>
+<Command>		trUnitSelectClear();</Command>
+<Command>		trUnitSelect(""+1*yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard")), true);</Command>
+<Command>		trUnitChangeProtoUnit("Hero Death");</Command>
+<Command>		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - yGetVarByIndex("p"+p+"hand", "cost", 1*trQuestVarGet("selectedCard")));</Command>
+<Command>		updateMana();</Command>
+<Command>		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));</Command>
+<Command>		removeUnit("p"+p+"hand");</Command>
+
+<Command>		updateHandPlayable(p);</Command>
+<Command>	}</Command>
+<Command>	trQuestVarSet("castDone", CASTING_NOTHING);</Command>
+<Command>}</Command>
+
+
+<Command>rule spellcast_00_process</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command><![CDATA[	if (trQuestVarGet("castPop") < trQuestVarGet("castPush")) {]]></Command>
+<Command>		trQuestVarSet("castPop", trQuestVarGet("castPop") + 1);</Command>
+<Command>		int x = trQuestVarGet("castPop");</Command>
+<Command>		int p = trQuestVarGet("activePlayer");</Command>
+<Command>		yClearDatabase("castTargets");</Command>
+<Command>		yClearDatabase("castTiles");</Command>
+<Command>		switch(1*trQuestVarGet("cast"+x+"type"))</Command>
+<Command>		{</Command>
+<Command>			case CAST_UNIT:</Command>
+<Command>			{</Command>
+<Command>				p = trQuestVarGet("cast"+x+"player");</Command>
+<Command>				for(z=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>					yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {]]></Command>
+<Command><![CDATA[						if (yGetVar("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {]]></Command>
+<Command>							trUnitSelectClear();</Command>
+<Command>							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);</Command>
+<Command>							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));</Command>
+<Command>							yAddToDatabase("castTargets", "allUnitsIndex");</Command>
+<Command>							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {</Command>
+<Command>								trUnitHighlight(999999, false);</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case CAST_SING:</Command>
+<Command>			{</Command>
+<Command>				p = trQuestVarGet("cast"+x+"player");</Command>
+<Command>				for(z=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>					yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {]]></Command>
+<Command><![CDATA[						if ((yGetVar("allUnits", "action") >= ACTION_DONE) && (yGetVar("allUnits", "action") < ACTION_SLEEPING)) {]]></Command>
+<Command>							trUnitSelectClear();</Command>
+<Command>							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);</Command>
+<Command>							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));</Command>
+<Command>							yAddToDatabase("castTargets", "allUnitsIndex");</Command>
+<Command>							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {</Command>
+<Command>								trUnitHighlight(999999, false);</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case CAST_TILE:</Command>
+<Command>			{</Command>
+<Command>				for (z=zGetBankCount("tiles"); >0) {</Command>
+<Command>					zBankNext("tiles");</Command>
+<Command>					if (zGetVar("tiles", "terrain") * trQuestVarGet("cast"+x+"terrain") == 0) {</Command>
+<Command>						yAddToDatabase("castTiles", "tiles");</Command>
+<Command>						if (trCurrentPlayer() == p) {</Command>
+<Command>							highlightTile(1*trQuestVarGet("tiles"), 999999);</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case CAST_TARGET:</Command>
+<Command>			{</Command>
+<Command>				findTargets(1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start")), "castTargets");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				yDatabaseSelectAll("castTargets");</Command>
+<Command>				if (trCurrentPlayer() == p) {</Command>
+<Command>					trUnitHighlight(999999, false);</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case CAST_DIRECTION:</Command>
+<Command>			{</Command>
+<Command>				if (trQuestVarGet("cast"+x+"unit") == 1) {</Command>
+<Command>					trQuestVarSet("start", yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start"))));</Command>
+<Command>				} else {</Command>
+<Command>					trQuestVarSet("start", trQuestVarGet(trStringQuestVarGet("cast"+x+"start")));</Command>
+<Command>				}</Command>
+<Command>				float angle = 0.785398;</Command>
+<Command>				trVectorSetUnitPos("pos", "start");</Command>
+<Command>				bool found = true;</Command>
+<Command>				int tile = 0;</Command>
+<Command>				// For each direction...</Command>
+<Command>				for(d=6; >0) {</Command>
+<Command>					trVectorSetFromAngle("step", angle);</Command>
+<Command>					trVectorScale("step", 6.0);</Command>
+<Command>					trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));</Command>
+<Command>					trQuestVarSet("posz", trQuestVarGet("posx") + trQuestVarGet("stepz"));</Command>
+<Command>					tile = trQuestVarGet("start");</Command>
+<Command>					found = true;</Command>
+<Command>					while(found) {</Command>
+<Command>						found = false;</Command>
+<Command>						// Travel down the line and highlight tiles</Command>
+<Command><![CDATA[						for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {]]></Command>
+<Command>							trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+z, tile)));</Command>
+<Command><![CDATA[							if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {]]></Command>
+<Command>								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);</Command>
+<Command>								trQuestVarSet("currentTile", tile);</Command>
+<Command>								yAddToDatabase("castTiles", "currentTile");</Command>
+<Command>								trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));</Command>
+<Command>								trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));</Command>
+<Command>								if (trCurrentPlayer() == p) {</Command>
+<Command>									highlightTile(tile, 999999);</Command>
+<Command>								}</Command>
+<Command>								found = true;</Command>
+<Command>								break;</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>					angle = fModulo(6.283185, angle + 1.047197);</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		xsEnableRule("spellcast_01_select");</Command>
+<Command>	} else {</Command>
+<Command>		trQuestVarSet("castDone", CASTING_DONE);</Command>
+<Command>	}</Command>
+
+
+<Command>	xsDisableRule("spellcast_00_process");</Command>
+<Command>}</Command>
+
+<Command>void spellcastClearHighlights(int x = 0) {</Command>
+<Command>	if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {</Command>
+<Command>		if (trQuestVarGet("cast"+x+"type") >= CAST_TILE) {</Command>
+<Command>			for(z=yGetDatabaseCount("castTargets"); >0) {</Command>
+<Command>				yDatabaseNext("castTargets");</Command>
+<Command>				highlightTile(1*trQuestVarGet("castTargets"), 0.1);</Command>
+<Command>			}</Command>
+<Command>		} else {</Command>
+<Command>			for (z=yGetDatabaseCount("castTargets"); >0) {</Command>
+<Command>				yDatabaseNext("castTargets");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")), true);</Command>
+<Command>				trUnitHighlight(0.1, false);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+
+<Command>	yClearDatabase("castTargets");</Command>
+<Command>}</Command>
+
+
+<Command>rule spellcast_01_select</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	int p = trQuestVarGet("activePlayer");</Command>
+<Command>	int x = trQuestVarGet("castPop");</Command>
+<Command>	if (trQuestVarGet("turnEnd") == 1) {</Command>
+<Command>		spellcastClearHighlights(x);</Command>
+<Command>		castReset();</Command>
+<Command>		trQuestVarSet("castDone", CASTING_CANCEL);</Command>
+<Command>	} else {</Command>
+<Command>		switch(1*trQuestVarGet("p"+p+"click"))</Command>
+<Command>		{</Command>
+<Command>			case LEFT_CLICK:</Command>
+<Command>			{</Command>
+<Command>				bool selected = false;</Command>
+<Command><![CDATA[				if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {]]></Command>
+<Command>					for(z=yGetDatabaseCount("castTargets"); >0) {</Command>
+<Command>						yDatabaseNext("castTargets");</Command>
+<Command>						trQuestVarCopy("castTargetUnit", "castTargets");</Command>
+
+<Command>						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));</Command>
+
+<Command><![CDATA[						if (zDistanceToVectorSquared("castTargetUnit", "p"+p+"clickPos") < 8) {]]></Command>
+<Command>							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");</Command>
+<Command>							selected = true;</Command>
+<Command>							break;</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				} else {</Command>
+<Command>					for(z=yGetDatabaseCount("castTiles"); >0) {</Command>
+<Command>						yDatabaseNext("castTiles");</Command>
+
+<Command><![CDATA[						if (zDistanceToVectorSquared("castTiles", "p"+p+"clickPos") < 8) {]]></Command>
+<Command>							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTiles");</Command>
+<Command>							selected = true;</Command>
+<Command>							break;</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>				if (selected) {</Command>
+<Command>					spellcastClearHighlights(x);</Command>
+<Command>					trQuestVarSet("p"+p+"click", 0);</Command>
+<Command>					xsEnableRule("spellcast_00_process");</Command>
+<Command>					xsDisableRule("spellcast_01_select");</Command>
+<Command>				} else {</Command>
+<Command>					for(z=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
+<Command>						yDatabaseNext("p"+p+"hand");</Command>
+<Command><![CDATA[						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 2) {]]></Command>
+<Command>							spellcastClearHighlights(x);</Command>
+<Command>							castReset();</Command>
+<Command>							trQuestVarSet("castDone", CASTING_CANCEL);</Command>
+<Command>							xsEnableRule("gameplay_01_select");</Command>
+<Command>							highlightReady(999999);</Command>
+<Command>							xsDisableRule("spellcast_01_select");</Command>
+<Command>							break;</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>					if (z == 0) {</Command>
+<Command>						trQuestVarSet("p"+p+"click", 0);</Command>
+<Command>						if (trCurrentPlayer() == p) {</Command>
+<Command>							trSoundPlayFN("cantdothat.wav","1",-1,"","");</Command>
+<Command>						}</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case RIGHT_CLICK:</Command>
+<Command>			{</Command>
+<Command>				trQuestVarSet("p"+p+"click", 0);</Command>
+<Command>				spellcastClearHighlights(x);</Command>
+<Command>				castReset();</Command>
+<Command>				trQuestVarSet("castDone", CASTING_CANCEL);</Command>
+<Command>				xsEnableRule("gameplay_01_select");</Command>
+<Command>				highlightReady(999999);</Command>
+<Command>				xsDisableRule("spellcast_01_select");</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void chooseSpell(int spell = 0, int card = -1) {</Command>
+<Command>	trQuestVarSet("currentSpell", spell);</Command>
+<Command>	trQuestVarSet("selectedCard", card);</Command>
+<Command>	switch(spell)</Command>
+<Command>	{</Command>
+<Command>		case SPELL_SPARK:</Command>
+<Command>		{</Command>
+<Command>			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {</Command>
+<Command>				trMessageSetText("(1)Spark: Deal 1 damage to a unit.", -1);</Command>
+<Command>			}</Command>
+<Command>			castReset();</Command>
+<Command>			castAddUnit("spellTarget", 0);</Command>
+<Command>			castStart();</Command>
+<Command>			xsEnableRule("spell_cast");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_FOOD:</Command>
+<Command>		{</Command>
+<Command>			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {</Command>
+<Command>				trMessageSetText("Choose a unit to give +1 attack and health to.", -1);</Command>
+<Command>			}</Command>
+<Command>			castReset();</Command>
+<Command>			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);</Command>
+<Command>			castStart();</Command>
+<Command>			xsEnableRule("spell_cast");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_SING:</Command>
+<Command>		{</Command>
+<Command>			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {</Command>
+<Command>				trMessageSetText("(2)Windsong: Select an ally that has already acted. Grant it another action.", -1);</Command>
+<Command>			}</Command>
+<Command>			castReset();</Command>
+<Command>			castAddSing("spellTarget", 1*trQuestVarGet("activePlayer"));</Command>
+<Command>			castStart();</Command>
+<Command>			xsEnableRule("spell_cast");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+
+<Command>rule spell_cast</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if (trQuestVarGet("turnEnd") == 1) {</Command>
+<Command>		xsDisableRule("spell_cast");</Command>
+<Command>	} else if (trQuestVarGet("castDone") == CASTING_DONE) {</Command>
+<Command>		bool done = true;</Command>
+<Command>		int target = 0;</Command>
+<Command>		trSoundPlayFN("godpower.wav","1",-1,"","");</Command>
+<Command>		switch(1*trQuestVarGet("currentSpell"))</Command>
+<Command>		{</Command>
+<Command>			case SPELL_SPARK:</Command>
+<Command>			{</Command>
+<Command>				damageUnit("allUnits", 1*trQuestVarGet("spellTarget"), 1);</Command>
+<Command>				deployAtTile(0, "Tartarian Gate flame", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("spellTarget")));</Command>
+<Command>				trMessageSetText("(1)Spark: Deal 1 damage to a unit.", -1);</Command>
+<Command>			}</Command>
+<Command>			case SPELL_FOOD:</Command>
+<Command>			{</Command>
+<Command>				target = 1*trQuestVarGet("spellTarget");</Command>
+<Command>				ySetVarByIndex("allUnits", "attack", target, 1 + yGetVarByIndex("allUnits", "attack", target));</Command>
+<Command>				ySetVarByIndex("allUnits", "health", target, 1 + yGetVarByIndex("allUnits", "health", target));</Command>
+<Command>				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));</Command>
+<Command>				trSoundPlayFN("colossuseat.wav","1",-1,"","");</Command>
+<Command>				trSoundPlayFN("researchcomplete.wav","1",-1,"","");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", target), true);</Command>
+<Command>				spyEffect("Einheriar Boost SFX");</Command>
+<Command>			}</Command>
+<Command>			case SPELL_SING:</Command>
+<Command>			{</Command>
+<Command>				target = 1*trQuestVarGet("spellTarget");</Command>
+<Command>				ySetVarByIndex("allUnits", "action", target, ACTION_READY);</Command>
+<Command>				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));</Command>
+<Command>				trSoundPlayFN("restorationbirth.wav","1",-1,"","");</Command>
+<Command>				trMessageSetText("(2)Windsong: Select an ally that has already acted. Grant it another action.",-1);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+
+<Command>		if (done) {</Command>
+<Command>			castEnd();</Command>
+<Command>		}</Command>
+<Command>		xsDisableRule("spell_cast");</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>void OnAttack(int attacker = 0, int target = 0, int event = 0) {</Command>
+<Command>	int p = yGetVarByIndex("allUnits", "player", attacker);</Command>
+<Command>	switch(event)</Command>
+<Command>	{</Command>
+<Command>		case ATTACK_DRAW_CARD:</Command>
+<Command>		{</Command>
+<Command>			drawCard(p);</Command>
+<Command>		}</Command>
+<Command>		case ATTACK_STUN_TARGET:</Command>
+<Command>		{</Command>
+<Command>			stunUnit(target);</Command>
+<Command>			trQuestVarSetFromRand("sound", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("woodcrush"+1*trQuestVarGet("sound")+".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case ATTACK_GET_WINDSONG:</Command>
+<Command>		{</Command>
+<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
+<Command>				addCardToHand(p, 0, SPELL_SING, true);</Command>
+<Command>				updateHandPlayable(p);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		case ATTACK_BLOCK_DEATH:</Command>
+<Command>		{</Command>
+<Command><![CDATA[			if(yGetVarByIndex("allUnits", "health", target)<=0 && yGetVarByIndex("allUnits", "OnDeath", target)>0){]]></Command>
+<Command>				ySetVarByIndex("allUnits", "OnDeath", target, 0);</Command>
+<Command>				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", target)));</Command>
+<Command>				DeploySober("Olympus Temple SFX", "pos");</Command>
+<Command>				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>void OnPlay(int unit = 0, int event = 0) {</Command>
+<Command>	int p = yGetVarByIndex("allUnits", "player", unit);</Command>
+<Command>	bool done = true;</Command>
+<Command>	switch(event)</Command>
+<Command>	{</Command>
+<Command>		case PLAY_GET_SPARK:</Command>
+<Command>		{</Command>
+<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
+<Command>				addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);</Command>
+<Command>				updateHandPlayable(p);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		case PLAY_GET_TRAP:</Command>
+<Command>		{</Command>
+<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
+<Command>				addCardToHand(p, kbGetProtoUnitID("Petrobolos"));</Command>
+<Command>				updateHandPlayable(p);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		case PLAY_FOOD:</Command>
+<Command>		{</Command>
+<Command>			done = false;</Command>
+<Command>			chooseSpell(SPELL_FOOD);</Command>
+<Command>		}</Command>
+<Command>		case PLAY_DOUBLEBLADE:</Command>
+<Command>		{</Command>
+<Command>			trUnitSelectClear();</Command>
+<Command>			trUnitSelect(""+1*yGetUnitAtIndex("allUnits", unit), true);</Command>
+<Command>			trMutateSelected(kbGetProtoUnitID("Avenger"));</Command>
+<Command>			trUnitOverrideAnimation(39, 0, 0, 1, -1);</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", unit)));</Command>
+<Command>			for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>				yDatabaseNext("allUnits");</Command>
+<Command>				if (yGetVar("allUnits", "player") == 3 - p) {</Command>
+<Command><![CDATA[					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
+<Command>						damageUnit("allUnits", 1*yGetPointer("allUnits"), 1);</Command>
+<Command>						deployAtTile(0, "Lightning sparks", 1*yGetVar("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			trSoundPlayFN("sphinxspecialattack.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case PLAY_LEGENDARY:</Command>
+<Command>		{</Command>
+<Command>			trSoundPlayFN("herocreation.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("lightningbirth.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>	if (done) {</Command>
+<Command>		removeDeadUnits();</Command>
+<Command>		xsEnableRule("gameplay_01_select");</Command>
+<Command>		highlightReady(999999);</Command>
+<Command>	}</Command>
+<Command>}</Command>
+<Command>const int GAMEPLAY_SELECT = 0;</Command>
+<Command>const int GAMEPLAY_WORK = 1;</Command>
+<Command>const int GAMEPLAY_MOVING = 2;</Command>
+<Command>const int GAMEPLAY_SUMMONING = 3;</Command>
+<Command>const int GAMEPLAY_ATTACKING = 4;</Command>
 
 
 <Command>void processAttack(string db = "attacks") {</Command>
@@ -1728,7 +2628,10 @@
 <Command>		}</Command>
 <Command>		case ATTACK_DONE:</Command>
 <Command>		{</Command>
-<Command><![CDATA[			if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&]]></Command>
+<Command>			if (HasKeyword(LIGHTNING, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex))) {</Command>
+<Command>				lightning(targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex),</Command>
+<Command>					HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)));</Command>
+<Command><![CDATA[			} else if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&]]></Command>
 <Command>				yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {</Command>
 <Command>				ySetVarByIndex("allUnits", "health", targetIndex, 0);</Command>
 <Command>				damageUnit("allUnits", targetIndex, 1);</Command>
@@ -1737,7 +2640,15 @@
 <Command>				damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));</Command>
 <Command>				deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));</Command>
 <Command>			}</Command>
-
+<Command>			int n = 1*xsPow(2, ATTACK_EVENT_COUNT - 1);</Command>
+<Command>			int events = 1*yGetVarByIndex("allUnits", "OnAttack", attackerIndex);</Command>
+<Command>			for(x=ATTACK_EVENT_COUNT - 1; >=0) {</Command>
+<Command>				if (events >= n) {</Command>
+<Command>					OnAttack(attackerIndex, targetIndex, x);</Command>
+<Command>					events = events - n;</Command>
+<Command>				}</Command>
+<Command>				n = n / 2;</Command>
+<Command>			}</Command>
 
 <Command>			yRemoveFromDatabase(db);</Command>
 <Command>			yRemoveUpdateVar(db, "target");</Command>
@@ -1766,6 +2677,7 @@
 <Command>				yDatabaseNext("allUnits");</Command>
 <Command>				dist = zDistanceToVectorSquared("allUnits", "d2pos");</Command>
 <Command><![CDATA[				if (dist < 64 && dist > 9 &&]]></Command>
+<Command><![CDATA[					yGetVar("allUnits", "stunTime") == 0 &&]]></Command>
 <Command><![CDATA[					yGetVar("allUnits", "player") == 3 - p &&]]></Command>
 <Command>					HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {</Command>
 <Command>					trSoundPlayFN("bronzebirth.wav","1",-1,"","");</Command>
@@ -1780,13 +2692,14 @@
 <Command>					break;</Command>
 <Command>				}</Command>
 <Command>			}</Command>
+<Command>			refreshGuardAll();</Command>
 
 <Command>			startAttack(a, target, HasKeyword(AMBUSH, 1*yGetVarByIndex("allUnits", "keywords", a)), true);</Command>
 
 <Command>			// Counterattack</Command>
 <Command>			trQuestVarSet("targetUnitIndex", target);</Command>
 <Command>			range = xsPow(yGetVarByIndex("allUnits", "range", target) * 6 + 3, 2);</Command>
-<Command><![CDATA[			if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {]]></Command>
+<Command><![CDATA[			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && (yGetVarByIndex("allUnits", "stunTime", target) == 0)) {]]></Command>
 <Command>				startAttack(target, a, false, true);</Command>
 <Command>			}</Command>
 
@@ -1808,6 +2721,22 @@
 <Command>		processAttack("ambushAttacks");</Command>
 <Command>	} else if (yGetDatabaseCount("attacks") > 0) {</Command>
 <Command>		processAttack("attacks");</Command>
+<Command>	}</Command>
+<Command><![CDATA[	if (trTimeMS() > trQuestVarGet("lightningNext") &&]]></Command>
+<Command>		(trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop")) == false) {</Command>
+<Command>		trQuestVarSet("lightningNext", trTimeMS() + 100);</Command>
+<Command>		int index = modularCounterNext("lightningActivate");</Command>
+<Command>		int targetIndex = trQuestVarGet("lightning"+index);</Command>
+<Command>		// If Deadly and target isn't a commander</Command>
+<Command><![CDATA[		if (trQuestVarGet("lightning"+index+"damage") == -1 &&]]></Command>
+<Command>			yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {</Command>
+<Command>			ySetVarByIndex("allUnits", "health", targetIndex, 0);</Command>
+<Command>			damageUnit("allUnits", targetIndex, 1);</Command>
+<Command>			deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));</Command>
+<Command>		} else {</Command>
+<Command>			damageUnit("allUnits", targetIndex, trQuestVarGet("lightning"+index+"damage"));</Command>
+<Command>			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));</Command>
+<Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
@@ -1855,6 +2784,7 @@
 <Command>		xsDisableRule("gameplay_01_select");</Command>
 <Command>		highlightReady(0.1);</Command>
 <Command>	} else {</Command>
+<Command>		trQuestVarSet("gameplayPhase", GAMEPLAY_SELECT);</Command>
 <Command>		int p = trQuestVarGet("activePlayer");</Command>
 <Command>		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {</Command>
 <Command>			int unit = findNearestUnit("p"+p+"clickPos", 8);</Command>
@@ -1873,7 +2803,6 @@
 <Command>					xsDisableRule("gameplay_01_select");</Command>
 <Command>					highlightReady(0.1);</Command>
 <Command>					xsEnableRule("gameplay_02_work");</Command>
-
 <Command>				}</Command>
 <Command>			} else {</Command>
 <Command>				// Check if player selected a card in hand.</Command>
@@ -1890,33 +2819,41 @@
 <Command>				}</Command>
 <Command>				if (unit > -1) {</Command>
 <Command>					if (trQuestVarGet("p"+p+"mana") >= yGetVarByIndex("p"+p+"hand", "cost", unit)) {</Command>
-<Command>						int tile = 0;</Command>
-<Command>						yClearDatabase("summonLocations");</Command>
-<Command>						if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {</Command>
-<Command>							for(x=zGetBankCount("tiles"); >0) {</Command>
-<Command>								zBankNext("tiles");</Command>
-<Command>								if (zGetVar("tiles", "occupied") == TILE_EMPTY) {</Command>
-<Command>									yAddToDatabase("summonLocations", "tiles");</Command>
+<Command>						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);</Command>
+<Command>						// If it is a unit</Command>
+<Command>						if (yGetVarByIndex("p"+p+"hand", "spell", unit) == 0) {</Command>
+<Command>							int tile = 0;</Command>
+<Command>							yClearDatabase("summonLocations");</Command>
+<Command>							if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {</Command>
+<Command>								for(x=zGetBankCount("tiles"); >0) {</Command>
+<Command>									zBankNext("tiles");</Command>
+<Command>									if (zGetVar("tiles", "occupied") == TILE_EMPTY) {</Command>
+<Command>										yAddToDatabase("summonLocations", "tiles");</Command>
+<Command>									}</Command>
+<Command>								}</Command>
+<Command>							} else {</Command>
+<Command>								for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>									yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[									if (yGetVar("allUnits", "player") == p && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {]]></Command>
+<Command>										tile = yGetVar("allUnits", "tile");</Command>
+<Command>										findAvailableTiles(tile, 1, "summonLocations");</Command>
+<Command>									}</Command>
 <Command>								}</Command>
 <Command>							}</Command>
+<Command>							for (x=yGetDatabaseCount("summonLocations"); >0) {</Command>
+<Command>								tile = yDatabaseNext("summonLocations");</Command>
+<Command>								if (trCurrentPlayer() == p) {</Command>
+<Command>									highlightTile(tile, 3600);</Command>
+<Command>								}</Command>
+<Command>							}</Command>
+
+<Command>							trQuestVarSet("summonUnitIndex", unit);</Command>
+<Command>							xsEnableRule("gameplay_10_summon");</Command>
 <Command>						} else {</Command>
-<Command>							for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>								yDatabaseNext("allUnits");</Command>
-<Command><![CDATA[								if (yGetVar("allUnits", "player") == p && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {]]></Command>
-<Command>									tile = yGetVar("allUnits", "tile");</Command>
-<Command>									findAvailableTiles(tile, 1, "summonLocations");</Command>
-<Command>								}</Command>
-<Command>							}</Command>
-<Command>						}</Command>
-<Command>						for (x=yGetDatabaseCount("summonLocations"); >0) {</Command>
-<Command>							tile = yDatabaseNext("summonLocations");</Command>
-<Command>							if (trCurrentPlayer() == p) {</Command>
-<Command>								highlightTile(tile, 3600);</Command>
-<Command>							}</Command>
+<Command>							// If it is a spell</Command>
+<Command>							chooseSpell(1*yGetVarByIndex("p"+p+"hand", "spell", unit), unit);</Command>
 <Command>						}</Command>
 
-<Command>						trQuestVarSet("summonUnitIndex", unit);</Command>
-<Command>						xsEnableRule("gameplay_10_summon");</Command>
 <Command>						xsDisableRule("gameplay_01_select");</Command>
 <Command>						highlightReady(0.1);</Command>
 <Command>					}</Command>
@@ -1947,6 +2884,7 @@
 <Command>			yClearDatabase("targets");</Command>
 <Command>		}</Command>
 <Command>	} else {</Command>
+<Command>		trQuestVarSet("gameplayPhase", GAMEPLAY_WORK);</Command>
 <Command>		int p = trQuestVarGet("activePlayer");</Command>
 <Command>		switch(1*trQuestVarGet("p"+p+"click"))</Command>
 <Command>		{</Command>
@@ -2008,6 +2946,9 @@
 
 <Command>						int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));</Command>
 <Command>						zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));</Command>
+<Command>						if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {</Command>
+<Command>							tileGuard(tile, false);</Command>
+<Command>						}</Command>
 
 <Command>						trVectorSetUnitPos("moveDestination", "moveTile");</Command>
 <Command>						trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));</Command>
@@ -2017,10 +2958,12 @@
 
 <Command>						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);</Command>
 <Command>						trQuestVarSet("moving", 0);</Command>
+<Command>						trQuestVarSet("gameplayPhase", GAMEPLAY_MOVING);</Command>
 <Command>						xsEnableRule("gameplay_03_moveComplete");</Command>
 <Command>						xsDisableRule("gameplay_02_work");</Command>
 <Command>					}</Command>
 <Command>				} else {</Command>
+<Command>					trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);</Command>
 <Command>					xsDisableRule("gameplay_02_work");</Command>
 <Command>				}</Command>
 <Command>				trQuestVarSet("p"+p+"click", 0);</Command>
@@ -2039,8 +2982,8 @@
 <Command>			kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 10) {</Command>
 <Command>			trQuestVarSet("moving", 1);</Command>
 <Command>		}</Command>
-<Command><![CDATA[	} else if (trQuestVarGet("moving") == 1 || trQuestVarGet("turnEnd") == 1) {]]></Command>
-<Command>		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9) {</Command>
+<Command>	} else if (trQuestVarGet("moving") == 1) {</Command>
+<Command><![CDATA[		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9 || trQuestVarGet("turnEnd") == 1) {]]></Command>
 <Command>			int p = trQuestVarGet("activePlayer");</Command>
 
 <Command>			trVectorSetUnitPos("start", "activeUnit");</Command>
@@ -2086,6 +3029,10 @@
 <Command>			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));</Command>
 <Command>			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);</Command>
 
+<Command>			if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {</Command>
+<Command>				refreshGuardAll();</Command>
+<Command>			}</Command>
+
 
 <Command>			xsDisableRule("gameplay_03_moveComplete");</Command>
 <Command>		}</Command>
@@ -2104,6 +3051,7 @@
 <Command>			yClearDatabase("targets");</Command>
 <Command>		}</Command>
 <Command>	} else {</Command>
+<Command>		trQuestVarSet("gameplayPhase", GAMEPLAY_WORK);</Command>
 <Command>		int p = trQuestVarGet("activePlayer");</Command>
 <Command>		switch(1*trQuestVarGet("p"+p+"click"))</Command>
 <Command>		{</Command>
@@ -2127,13 +3075,12 @@
 <Command>						trUnitHighlight(0.1, false);</Command>
 <Command>						yClearDatabase("targets");</Command>
 <Command>					}</Command>
+<Command>					trQuestVarSet("p"+p+"click", 0);</Command>
 <Command>					xsDisableRule("gameplay_04_attack");</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
 <Command>	}</Command>
-
-<Command>	trQuestVarSet("p"+p+"click", 0);</Command>
 <Command>}</Command>
 
 
@@ -2141,7 +3088,8 @@
 <Command>highFrequency</Command>
 <Command>inactive</Command>
 <Command>{</Command>
-<Command><![CDATA[	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) || (trTime() > cActivationTime + 3)) {]]></Command>
+<Command><![CDATA[	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) ||]]></Command>
+<Command>		(trTime() > cActivationTime + 3)) {</Command>
 <Command>		int p = trQuestVarGet("activePlayer");</Command>
 
 <Command>		if (yGetDatabaseCount("reachable") > 0) {</Command>
@@ -2156,22 +3104,10 @@
 <Command>			yClearDatabase("targets");</Command>
 <Command>		}</Command>
 
-<Command>		yDatabasePointerDefault("allUnits");</Command>
-<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>			yDatabaseNext("allUnits", true);</Command>
-<Command>			removeIfDead("allUnits");</Command>
-<Command>		}</Command>
-
-<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>			if (trQuestVarGet("activeUnit") == yDatabaseNext("allUnits")) {</Command>
-<Command>				trQuestVarSet("activeUnitIndex", yGetPointer("allUnits"));</Command>
-<Command>				break;</Command>
-<Command>			}</Command>
-<Command>		}</Command>
-
 <Command>		if (trQuestVarGet("turnEnd") == 0) {</Command>
 <Command><![CDATA[			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&]]></Command>
-<Command><![CDATA[				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY) {]]></Command>
+<Command><![CDATA[				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY &&]]></Command>
+<Command>				yGetVarByIndex("allUnits", "health", 1*trQuestVarGet("activeUnitIndex")) > 0) {</Command>
 <Command>				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_FURY);</Command>
 <Command>				xsEnableRule("gameplay_04_attack");</Command>
 <Command>				yClearDatabase("targets");</Command>
@@ -2184,6 +3120,15 @@
 <Command>			}</Command>
 <Command>		}</Command>
 
+<Command>		removeDeadUnits();</Command>
+<Command>		refreshGuardAll();</Command>
+
+<Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>			if (trQuestVarGet("activeUnit") == yDatabaseNext("allUnits")) {</Command>
+<Command>				trQuestVarSet("activeUnitIndex", yGetPointer("allUnits"));</Command>
+<Command>				break;</Command>
+<Command>			}</Command>
+<Command>		}</Command>
 
 <Command>		xsDisableRule("gameplay_05_attackComplete");</Command>
 <Command>	}</Command>
@@ -2243,8 +3188,27 @@
 <Command>					if (HasKeyword(CHARGE, 1*yGetVar("p"+p+"hand", "keywords")) == true) {</Command>
 <Command>						yAddUpdateVar("allUnits", "action", ACTION_READY);</Command>
 <Command>					} else {</Command>
-<Command>						yAddUpdateVar("allUnits", "action", ACTION_DONE);</Command>
+<Command>						yAddUpdateVar("allUnits", "action", ACTION_SLEEPING);</Command>
 <Command>					}</Command>
+<Command>					updateMana();</Command>
+
+<Command>					// If the unit has an OnPlay effect</Command>
+<Command>					if (yGetVar("p"+p+"hand", "OnPlay") > 0) {</Command>
+<Command>						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);</Command>
+<Command>						int events = 1*yGetVar("p"+p+"hand", "OnPlay");</Command>
+<Command>						int latest = yGetDatabaseCount("allUnits") - 1;</Command>
+<Command>						for(x=PLAY_EVENT_COUNT - 1; >=0) {</Command>
+<Command>							if (events >= n) {</Command>
+<Command>								OnPlay(latest, x);</Command>
+<Command>								events = events - n;</Command>
+<Command>							}</Command>
+<Command>							n = n / 2;</Command>
+<Command>						}</Command>
+<Command>					} else {</Command>
+<Command>						xsEnableRule("gameplay_01_select");</Command>
+<Command>						highlightReady(100);</Command>
+<Command>					}</Command>
+
 <Command>					removeUnit("p"+p+"hand");</Command>
 
 <Command>					zSetVarByIndex("tiles", "occupied", tile, TILE_OCCUPIED);</Command>
@@ -2258,10 +3222,7 @@
 <Command>					}</Command>
 <Command>					yClearDatabase("summonLocations");</Command>
 
-<Command>					updateMana();</Command>
 
-<Command>					xsEnableRule("gameplay_01_select");</Command>
-<Command>					highlightReady(100);</Command>
 <Command>					xsDisableRule("gameplay_10_summon");</Command>
 <Command>					trQuestVarSet("p"+p+"click", 0);</Command>
 <Command>				}</Command>
@@ -2288,7 +3249,7 @@
 <Command>const int BOT_PHASE_UNIT_CHOOSE = 2;</Command>
 <Command>const int BOT_PHASE_UNIT_MOVE = 3;</Command>
 <Command>const int BOT_PHASE_UNIT_ATTACK = 4;</Command>
-
+<Command>const int BOT_PHASE_SPELL_PLAY = 5;</Command>
 
 <Command>const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks</Command>
 <Command>const int BOT_PERSONALITY_TRAINING = 1; // Doesn't move</Command>
@@ -2328,154 +3289,199 @@
 <Command>highFrequency</Command>
 <Command>inactive</Command>
 <Command>{</Command>
-<Command>	if ((trTime()-cActivationTime) >= 0){</Command>
+<Command>	if (true){</Command>
+<Command>		trQuestVarSet("botTimeNext", trTimeMS() + 300);</Command>
 <Command>		trQuestVarSet("botClick", -1);</Command>
 
 <Command><![CDATA[		if(trQuestVarGet("botNoMove") == 1 && trQuestVarGet("botNoAttack") == 1){]]></Command>
 <Command>			// End Turn</Command>
 <Command>			trQuestVarSet("botPhase", -1);</Command>
 <Command>			trQuestVarSet("botThinking", 47);</Command>
+<Command>		} else if (trQuestVarGet("castDone") == CASTING_IN_PROGRESS) {</Command>
+<Command>			trQuestVarSet("botPhase", BOT_PHASE_SPELL_PLAY);</Command>
 <Command>		}</Command>
+
 
 <Command>		switch(1*trQuestVarGet("botPhase"))</Command>
 <Command>		{</Command>
 <Command>			case BOT_PHASE_CARD_CHOOSE:</Command>
 <Command>			{</Command>
-<Command>				trQuestVarSet("botActiveKeywords", 0);</Command>
-<Command>				int maxCardCost = -1;</Command>
-<Command>				for(x=yGetDatabaseCount("p2hand"); >0) {</Command>
-<Command>					yDatabaseNext("p2hand");</Command>
-<Command><![CDATA[					if (yGetVar("p2hand", "cost") <= trQuestVarGet("p2mana")) {]]></Command>
-<Command>						// Bot plays cast in desc order of their cost</Command>
-<Command>						int currentCardCost = yGetVar("p2hand", "cost");</Command>
-<Command>						// Bot loves Airdrop</Command>
-<Command>						if(HasKeyword(AIRDROP, 1*yGetVar("p2hand", "keywords"))){</Command>
-<Command>							currentCardCost = currentCardCost + 9000;</Command>
-<Command>						}</Command>
-<Command>						if(currentCardCost > maxCardCost){</Command>
-<Command>							maxCardCost = currentCardCost;</Command>
-<Command>							trQuestVarSet("botActiveKeywords", 1*yGetVar("p2hand", "keywords"));</Command>
-<Command>							trVectorSetUnitPos("botClickPos", "p2hand");</Command>
+<Command>				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {</Command>
+<Command>					trQuestVarSet("botActiveKeywords", 0);</Command>
+<Command>					int maxCardCost = -1;</Command>
+<Command>					int spell = 0;</Command>
+<Command>					for(x=yGetDatabaseCount("p2hand"); >0) {</Command>
+<Command>						yDatabaseNext("p2hand");</Command>
+<Command><![CDATA[						if (yGetVar("p2hand", "cost") <= trQuestVarGet("p2mana")) {]]></Command>
+<Command>							// Bot plays cast in desc order of their cost</Command>
+<Command>							int currentCardCost = yGetVar("p2hand", "cost");</Command>
+<Command>							// Bot loves Airdrop</Command>
+<Command>							if(HasKeyword(AIRDROP, 1*yGetVar("p2hand", "keywords"))){</Command>
+<Command>								currentCardCost = currentCardCost + 9000;</Command>
+<Command>							}</Command>
+<Command>							if(currentCardCost > maxCardCost){</Command>
+<Command>								maxCardCost = currentCardCost;</Command>
+<Command>								trQuestVarSet("botActiveKeywords", 1*yGetVar("p2hand", "keywords"));</Command>
+<Command>								trVectorSetUnitPos("botClickPos", "p2hand");</Command>
+<Command>								spell = 1*yGetVar("p2hand", "spell");</Command>
+<Command>							}</Command>
 <Command>						}</Command>
 <Command>					}</Command>
-<Command>				}</Command>
-<Command>				if(maxCardCost > -1){</Command>
-<Command>					// Bot Click Left</Command>
-<Command>					trQuestVarSet("botClick", LEFT_CLICK);</Command>
-<Command>					trQuestVarSet("botPhase", BOT_PHASE_CARD_PLAY);</Command>
+<Command>					if(maxCardCost > -1){</Command>
+<Command>						// Bot Click Left</Command>
+<Command>						trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>						if (spell > 0) {</Command>
+<Command>							trQuestVarSet("botPhase", BOT_PHASE_SPELL_PLAY);</Command>
+<Command>						} else {</Command>
+<Command>							trQuestVarSet("botPhase", BOT_PHASE_CARD_PLAY);</Command>
+<Command>						}</Command>
+<Command>						trQuestVarSet("botSpellPop", 0);</Command>
+<Command>					} else {</Command>
+<Command>						trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);</Command>
+<Command>					}</Command>
 <Command>				} else {</Command>
+<Command>					// Wait until gameplay phase is GAMEPLAY_SELECT</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+
+<Command>			case BOT_PHASE_SPELL_PLAY:</Command>
+<Command>			{</Command>
+<Command>				if (trQuestVarGet("castDone") == CASTING_NOTHING) {</Command>
+<Command>					trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);</Command>
+<Command>				} else if (trQuestVarGet("castDone") == CASTING_CANCEL) {</Command>
 <Command>					trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);</Command>
+<Command>				} else if (trQuestVarGet("castPop") > trQuestVarGet("botSpellPop")) {</Command>
+<Command>					trQuestVarSet("botSpellPop", trQuestVarGet("castPop"));</Command>
+<Command>					if (yGetDatabaseCount("castTargets") > 0) {</Command>
+<Command>						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTargets"), true);</Command>
+<Command>						for(x=trQuestVarGet("botRandom"); >0) {</Command>
+<Command>							yDatabaseNext("castTargets");</Command>
+<Command>						}</Command>
+<Command>						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));</Command>
+<Command>						trVectorSetUnitPos("botClickPos", "castTargetUnit");</Command>
+<Command>						trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>					} else if (yGetDatabaseCount("castTiles") > 0) {</Command>
+<Command>						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTiles"), true);</Command>
+<Command>						for(x=trQuestVarGet("botRandom"); >0) {</Command>
+<Command>							yDatabaseNext("castTiles");</Command>
+<Command>						}</Command>
+<Command>						trVectorSetUnitPos("botClickPos", "castTiles");</Command>
+<Command>						trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>					} else {</Command>
+<Command>						trQuestVarSet("botClick", RIGHT_CLICK);</Command>
+<Command>					}</Command>
+<Command>				} else {</Command>
+<Command>					// Wait until spellcasting system is ready for selection</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 
 <Command>			case BOT_PHASE_CARD_PLAY:</Command>
 <Command>			{</Command>
-<Command>				yClearDatabase("summonLocations");</Command>
-<Command>				if (HasKeyword(AIRDROP, 1*trQuestVarGet("botActiveKeywords"))) {</Command>
-<Command>					for(x=zGetBankCount("tiles"); >0) {</Command>
-<Command>						zBankNext("tiles");</Command>
-<Command>						if (zGetVar("tiles", "occupied") == TILE_EMPTY) {</Command>
-<Command>							yAddToDatabase("summonLocations", "tiles");</Command>
-<Command>						}</Command>
+<Command>				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SUMMONING) {</Command>
+<Command>					// Bot tries to play a unit but there are no tiles where to summon it, skip playing cards</Command>
+<Command>					if(yGetDatabaseCount("summonLocations") == 0){</Command>
+<Command>						trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);</Command>
+<Command>						// Bot Click Right</Command>
+<Command>						trQuestVarSet("botClick", RIGHT_CLICK);</Command>
+<Command>					} else {</Command>
+<Command>						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("summonLocations"), true);</Command>
 <Command>					}</Command>
-<Command>				} else {</Command>
-<Command>					for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>						yDatabaseNext("allUnits");</Command>
-<Command><![CDATA[						if (yGetVar("allUnits", "player") == 2 && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {]]></Command>
-<Command>							findAvailableTiles(yGetVar("allUnits", "tile"), 1, "summonLocations");</Command>
-<Command>						}</Command>
-<Command>					}</Command>
-<Command>				}</Command>
-<Command>				// Bot tries to play a unit but there are no tiles where to summon it, skip playing cards</Command>
-<Command>				if(yGetDatabaseCount("summonLocations") == 0){</Command>
-<Command>					trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);</Command>
-<Command>					// Bot Click Right</Command>
-<Command>					trQuestVarSet("botClick", RIGHT_CLICK);</Command>
-<Command>				} else {</Command>
-<Command>					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("summonLocations"), true);</Command>
-<Command>				}</Command>
 
-<Command>				for (x=yGetDatabaseCount("summonLocations"); >0) {</Command>
-<Command>					yDatabaseNext("summonLocations");</Command>
-<Command>					// Bot summons a unit</Command>
-<Command>					if(trQuestVarGet("botRandom") == x){</Command>
-<Command>						trVectorSetUnitPos("botClickPos", "summonLocations");</Command>
-<Command>						// Bot Click Left</Command>
-<Command>						trQuestVarSet("botClick", LEFT_CLICK);</Command>
-<Command>						trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);</Command>
+<Command>					for (x=trQuestVarGet("botRandom"); >0) {</Command>
+<Command>						yDatabaseNext("summonLocations");</Command>
 <Command>					}</Command>
+<Command>					// Bot summons a unit</Command>
+<Command>					trVectorSetUnitPos("botClickPos", "summonLocations");</Command>
+<Command>					// Bot Click Left</Command>
+<Command>					trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>					trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);</Command>
+<Command>				} else {</Command>
+<Command>					// Wait until gameplay phase is GAMEPLAY_SUMMONING</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 
 <Command>			case BOT_PHASE_UNIT_CHOOSE:</Command>
 <Command>			{</Command>
-<Command>				trQuestVarSet("botActiveUnit", 0);</Command>
-<Command>				trQuestVarSet("botActiveIndex", -1);</Command>
-<Command>				trQuestVarSet("botActiveKeywords", 0);</Command>
-<Command>				trQuestVarSet("botActiveSpeed", 0);</Command>
-<Command>				trQuestVarSet("botActiveRange", 0);</Command>
-<Command>				trQuestVarSet("botActiveFury", 0);</Command>
-<Command>				int maxUnitCost = -1;</Command>
-<Command>				for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
-<Command>					yDatabaseNext("allUnits", true);</Command>
-<Command><![CDATA[					if (yGetVar("allUnits", "action") == ACTION_READY && yGetVar("allUnits", "player") == 2) {]]></Command>
-<Command>						int currentUnitCost = yGetVar("allUnits", "cost");</Command>
-<Command>						if(currentUnitCost > maxUnitCost){</Command>
-<Command>							maxUnitCost = currentUnitCost;</Command>
-<Command>							trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));</Command>
-<Command>							trQuestVarSet("botActiveIndex", yGetPointer("allUnits"));</Command>
-<Command>							trQuestVarSet("botActiveKeywords", 1*yGetVar("allUnits", "keywords"));</Command>
-<Command>							trQuestVarSet("botActiveSpeed", 1*yGetVar("allUnits", "speed"));</Command>
-<Command>							trQuestVarSet("botActiveRange", 1*yGetVar("allUnits", "range"));</Command>
-<Command>							if(HasKeyword(FURIOUS, 1*trQuestVarGet("botActiveKeywords"))){</Command>
-<Command>								trQuestVarSet("botActiveFury", 1);</Command>
+<Command>				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_WORK) {</Command>
+<Command>					trVectorQuestVarSet("botClickPos", xsVectorSet(110,0,110));</Command>
+<Command>					trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>				} else if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {</Command>
+<Command>					trQuestVarSet("botActiveUnit", 0);</Command>
+<Command>					trQuestVarSet("botActiveIndex", -1);</Command>
+<Command>					trQuestVarSet("botActiveKeywords", 0);</Command>
+<Command>					trQuestVarSet("botActiveSpeed", 0);</Command>
+<Command>					trQuestVarSet("botActiveRange", 0);</Command>
+<Command>					trQuestVarSet("botActiveFury", 0);</Command>
+<Command>					int maxUnitCost = -1;</Command>
+<Command>					for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>						yDatabaseNext("allUnits", true);</Command>
+<Command><![CDATA[						if (yGetVar("allUnits", "action") == ACTION_READY && yGetVar("allUnits", "player") == 2) {]]></Command>
+<Command>							int currentUnitCost = yGetVar("allUnits", "cost");</Command>
+<Command>							if(currentUnitCost > maxUnitCost){</Command>
+<Command>								maxUnitCost = currentUnitCost;</Command>
+<Command>								trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));</Command>
+<Command>								trQuestVarSet("botActiveIndex", yGetPointer("allUnits"));</Command>
+<Command>								trQuestVarSet("botActiveKeywords", 1*yGetVar("allUnits", "keywords"));</Command>
+<Command>								trQuestVarSet("botActiveSpeed", 1*yGetVar("allUnits", "speed"));</Command>
+<Command>								trQuestVarSet("botActiveRange", 1*yGetVar("allUnits", "range"));</Command>
+<Command>								if(HasKeyword(FURIOUS, 1*trQuestVarGet("botActiveKeywords"))){</Command>
+<Command>									trQuestVarSet("botActiveFury", 1);</Command>
+<Command>								}</Command>
+<Command>								trVectorSetUnitPos("botClickPos", "allUnits");</Command>
+<Command>								trVectorSetUnitPos("botMovePos", "allUnits");</Command>
 <Command>							}</Command>
-<Command>							trVectorSetUnitPos("botClickPos", "allUnits");</Command>
-<Command>							trVectorSetUnitPos("botMovePos", "allUnits");</Command>
 <Command>						}</Command>
 <Command>					}</Command>
-<Command>				}</Command>
-<Command>				if(maxUnitCost > -1){</Command>
-<Command>					// Bot Click Left</Command>
-<Command>					trQuestVarSet("botClick", LEFT_CLICK);</Command>
-<Command>					trQuestVarSet("botPhase", BOT_PHASE_UNIT_MOVE);</Command>
+<Command>					if(maxUnitCost > -1){</Command>
+<Command>						// Bot Click Left</Command>
+<Command>						trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>						trQuestVarSet("botPhase", BOT_PHASE_UNIT_MOVE);</Command>
+<Command>					} else {</Command>
+<Command>						// End Turn</Command>
+<Command>						trQuestVarSet("botClick", -1);</Command>
+<Command>						trQuestVarSet("botThinking", 47);</Command>
+<Command>					}</Command>
 <Command>				} else {</Command>
-<Command>					// End Turn</Command>
-<Command>					trQuestVarSet("botClick", -1);</Command>
-<Command>					trQuestVarSet("botThinking", 47);</Command>
+<Command>					// Wait until gameplayPhase is GAMEPLAY_SELECT</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 
 <Command>			case BOT_PHASE_UNIT_MOVE:</Command>
 <Command>			{</Command>
-<Command>				if(trQuestVarGet("botNoMove")==0){</Command>
-<Command>					yClearDatabase("botReachable");</Command>
-<Command>					trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("botActiveUnit"), true));</Command>
-<Command>					findAvailableTiles(findNearestTile("pos"), trQuestVarGet("botActiveSpeed"), "botReachable", HasKeyword(ETHEREAL, 1*trQuestVarGet("botActiveKeywords")));</Command>
-<Command>					if(yGetDatabaseCount("botReachable") == 0){</Command>
-<Command>						// Nowhere to move</Command>
-<Command>						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("botActiveIndex"), ACTION_DONE);</Command>
-<Command>					} else {</Command>
-<Command>						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("botReachable"), true);</Command>
-<Command>					}</Command>
-
-<Command>					for(x=yGetDatabaseCount("botReachable"); >0) {</Command>
-<Command>						yDatabaseNext("botReachable");</Command>
-<Command>						// Bot moves</Command>
-<Command>						if(trQuestVarGet("botRandom") == x){</Command>
+<Command>				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_WORK) {</Command>
+<Command>					if(trQuestVarGet("botNoMove")==0){</Command>
+<Command>						yClearDatabase("botReachable");</Command>
+<Command>						trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("botActiveUnit"), true));</Command>
+<Command>						findAvailableTiles(findNearestTile("pos"), trQuestVarGet("botActiveSpeed"), "botReachable", HasKeyword(ETHEREAL, 1*trQuestVarGet("botActiveKeywords")));</Command>
+<Command><![CDATA[						if((yGetDatabaseCount("botReachable") == 0) || (trQuestVarGet("botActiveSpeed") == 0)) {]]></Command>
+<Command>							// Nowhere to move</Command>
+<Command>							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("botActiveIndex"), ACTION_DONE);</Command>
+<Command>						} else {</Command>
+<Command>							trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("botReachable"), true);</Command>
+<Command>							for(x=trQuestVarGet("botRandom"); >0) {</Command>
+<Command>								yDatabaseNext("botReachable");</Command>
+<Command>							}</Command>
 <Command>							trVectorSetUnitPos("botClickPos", "botReachable");</Command>
 <Command>							trVectorSetUnitPos("botMovePos", "botReachable");</Command>
-<Command>							// Bot Click Right</Command>
 <Command>							trQuestVarSet("botClick", RIGHT_CLICK);</Command>
 <Command>						}</Command>
 <Command>					}</Command>
+<Command>					trQuestVarSet("botPhase", BOT_PHASE_UNIT_ATTACK);</Command>
+<Command>				} else {</Command>
+<Command>					// Wait until gameplayPhase is GAMEPLAY_WORK</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
 <Command>				}</Command>
-<Command>				trQuestVarSet("botPhase", BOT_PHASE_UNIT_ATTACK);</Command>
 <Command>			}</Command>
 
 <Command>			case BOT_PHASE_UNIT_ATTACK:</Command>
 <Command>			{</Command>
-<Command><![CDATA[				if(zDistanceToVectorSquared("botActiveUnit", "botMovePos") < 1 && (trTime() - trQuestVarGet("botAttackTimer")) > 3){]]></Command>
+<Command>				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {</Command>
+<Command>					trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);</Command>
+<Command>				} else if(trQuestVarGet("gameplayPhase") == GAMEPLAY_WORK){</Command>
 <Command>					if(trQuestVarGet("botNoAttack") == 0){</Command>
 <Command>						int maxTargetCost = -1;</Command>
 <Command>						float dist = xsPow(trQuestVarGet("botActiveRange") * 6 + 1, 2);</Command>
@@ -2499,6 +3505,8 @@
 <Command>							trQuestVarSet("botAttackTimer", trTime());</Command>
 <Command>						} else {</Command>
 <Command>							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("botActiveIndex"), ACTION_DONE);</Command>
+<Command>							trQuestVarSet("botClick", LEFT_CLICK);</Command>
+<Command>							trVectorQuestVarSet("botClickPos", xsVectorSet(110,0,110));</Command>
 <Command>						}</Command>
 <Command>					}</Command>
 <Command>					if(trQuestVarGet("botActiveFury") == 1){</Command>
@@ -2506,6 +3514,9 @@
 <Command>					} else {</Command>
 <Command>						trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);</Command>
 <Command>					}</Command>
+<Command>				} else {</Command>
+<Command>					// Wait until gameplayPhase is GAMEPLAY_WORK</Command>
+<Command>					trQuestVarSet("botClick", 0);</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
@@ -2519,7 +3530,7 @@
 <Command>highFrequency</Command>
 <Command>inactive</Command>
 <Command>{</Command>
-<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>	if (trTimeMS() > trQuestVarGet("botTimeNext")){</Command>
 <Command><![CDATA[		if(trQuestVarGet("botClick") < 0){]]></Command>
 <Command>			trQuestVarSet("botThinking", trQuestVarGet("botThinking") + 1);</Command>
 <Command>		} else {</Command>
@@ -2540,19 +3551,15 @@
 <Command>active</Command>
 <Command>runImmediately</Command>
 <Command>{</Command>
-<Command>	for(x=30; >0) {</Command>
+<Command>	for(x=3; >0) {</Command>
 <Command>		for(p=2; >0) {</Command>
 
-<Command>			addCardToDeck(p, "Swordsman");</Command>
-<Command>			addCardToDeck(p, "Maceman");</Command>
-<Command>			addCardToDeck(p, "Skraeling");</Command>
-<Command>			addCardToDeck(p, "Slinger");</Command>
-<Command>			addCardToDeck(p, "Toxotes");</Command>
-<Command>			addCardToDeck(p, "Raiding Cavalry");</Command>
-<Command>			addCardToDeck(p, "Trident Soldier");</Command>
-<Command>			addCardToDeck(p, "Jarl");</Command>
+<Command>			addCardToDeck(p, "Scout");</Command>
+<Command>			addCardToDeck(p, "Prodromos");</Command>
+<Command>			addCardToDeck(p, "Promethean Small");</Command>
+<Command>			addCardToDeck(p, "Promethean");</Command>
+<Command>			addCardToDeck(p, "Hero Greek Chiron");</Command>
 <Command>			addCardToDeck(p, "Hero Greek Theseus");</Command>
-<Command>			addCardToDeck(p, "Archer Atlantean Hero");</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 
@@ -2622,8 +3629,8 @@
 <Command>highFrequency</Command>
 <Command>inactive</Command>
 <Command>{</Command>
-<Command><![CDATA[	if (trQuestVarGet("p1drawCards") == 0 && trQuestVarGet("p2drawCards") == 0) {]]></Command>
-<Command>		unitTransform("Spy Eye", "Hero Birth");</Command>
+<Command>	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {</Command>
+<Command>		unitTransform("Spy Eye", "Healing SFX");</Command>
 <Command>		for(p=2; >0) {</Command>
 <Command>			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
 <Command>				yDatabaseNext("p"+p+"hand");</Command>
@@ -2710,6 +3717,7 @@
 <Command>		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"hand", true);</Command>
 <Command>			if (yGetVar("p"+p+"hand", "mulligan") == 1) {</Command>
+<Command>				addCardToDeck(p, kbGetProtoUnitName(1*yGetVar("p"+p+"hand", "proto")), yGetVar("p"+p+"hand", "spell"));</Command>
 <Command>				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);</Command>
 <Command>				trUnitChangeProtoUnit("Hero Death");</Command>
 <Command>			} else {</Command>
@@ -2722,6 +3730,7 @@
 <Command>			transferUnit("p"+p+"hand", "temp");</Command>
 <Command>		}</Command>
 <Command>		yClearDatabase("temp");</Command>
+<Command>		shuffleDeck(p);</Command>
 <Command>	}</Command>
 <Command>	trQuestVarSet("activePlayer", 2);</Command>
 <Command>	xsEnableRule("turn_00_start");</Command>
@@ -2732,7 +3741,7 @@
 <Command>highFrequency</Command>
 <Command>inactive</Command>
 <Command>{</Command>
-<Command>	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) {</Command>
+<Command>	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) {</Command>
 
 <Command>		trQuestVarSet("turnEnd", 0);</Command>
 <Command>		trSoundPlayFN("fanfare.wav","1",-1,"","");</Command>
@@ -2750,7 +3759,19 @@
 <Command>		for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
 <Command>			yDatabaseNext("allUnits");</Command>
 <Command>			if (yGetVar("allUnits", "player") == p) {</Command>
-<Command>				ySetVar("allUnits", "action", ACTION_READY);</Command>
+<Command>				if (yGetVar("allUnits", "stunTime") > 0) {</Command>
+<Command>					ySetVar("allUnits", "stunTime", yGetVar("allUnits", "stunTime") - 1);</Command>
+<Command>					if (yGetVar("allUnits", "stunTime") == 0) {</Command>
+<Command>						ySetVar("allUnits", "action", ACTION_READY);</Command>
+<Command>						trUnitSelectClear();</Command>
+<Command>						trUnitSelect(""+1*yGetVar("allUnits", "stunSFX"), true);</Command>
+<Command>						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));</Command>
+<Command>					} else {</Command>
+<Command>						ySetVar("allUnits", "action", ACTION_STUNNED);</Command>
+<Command>					}</Command>
+<Command>				} else {</Command>
+<Command>					ySetVar("allUnits", "action", ACTION_READY);</Command>
+<Command>				}</Command>
 <Command>				if (HasKeyword(REGENERATE, 1*yGetVar("allUnits", "keywords"))) {</Command>
 <Command>					trUnitSelectClear();</Command>
 <Command>					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);</Command>
@@ -2770,6 +3791,7 @@
 <Command>		trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));</Command>
 <Command>		trQuestVarSet("activePlayer", p);</Command>
 <Command>		trQuestVarSet("p"+p+"click", 0);</Command>
+<Command>		highlightReady(100);</Command>
 
 <Command>		trTechGodPower(p, "rain", 1);</Command>
 
@@ -2809,6 +3831,28 @@
 <Command>		trCounterAbort("turnTimer");</Command>
 
 <Command>		trQuestVarSet("turnEnd", 1);</Command>
+
+<Command>		// Discard fleeting cards</Command>
+<Command>		int type = 0;</Command>
+<Command>		yDatabasePointerDefault("p"+p+"hand");</Command>
+<Command>		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
+<Command>			yDatabaseNext("p"+p+"hand");</Command>
+<Command>			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);</Command>
+<Command>				trUnitChangeProtoUnit("Hero Death");</Command>
+<Command>				if (trCurrentPlayer() == p) {</Command>
+<Command>					if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {</Command>
+<Command>						type = yGetVar("p"+p+"hand", "proto");</Command>
+<Command>						trChatSend(0, "Discarded a " + trStringQuestVarGet("card_" + type + "_name"));</Command>
+<Command>					} else {</Command>
+<Command>						type = yGetVar("p"+p+"hand", "spell");</Command>
+<Command>						trChatSend(0, "Discarded a " + trStringQuestVarGet("spell_" + type + "_name"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>				removeUnit("p"+p+"hand");</Command>
+<Command>			}</Command>
+<Command>		}</Command>
 <Command>		trDelayedRuleActivation("turn_00_start");</Command>
 <Command>		xsDisableRule("turn_01_end");</Command>
 <Command>	}</Command>

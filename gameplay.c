@@ -597,11 +597,7 @@ inactive
 			}
 		}
 
-		yDatabasePointerDefault("allUnits");
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits", true);
-			removeIfDead("allUnits");
-		}
+		removeDeadUnits();
 		refreshGuardAll();
 
 		/* 

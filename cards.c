@@ -21,8 +21,9 @@ OnAttack events (bit positions)
 const int ATTACK_DRAW_CARD = 0;
 const int ATTACK_STUN_TARGET = 1;
 const int ATTACK_GET_WINDSONG = 2;
+const int ATTACK_BLOCK_DEATH = 3;
 
-const int ATTACK_EVENT_COUNT = 3;
+const int ATTACK_EVENT_COUNT = 4;
 
 /*
 OnPlay events (bit positions)
@@ -35,6 +36,16 @@ const int PLAY_LEGENDARY = 4;
 
 const int PLAY_EVENT_COUNT = 5;
 
+/*
+OnDeath events (bit positions)
+*/
+const int DEATH_DRAW_CARD = 0;
+const int DEATH_OPPONENT_DRAW_CARD = 1;
+const int DEATH_BOOM_SMALL = 2;
+const int DEATH_BOOM_MEDIUM = 3;
+const int DEATH_BOOM_BIG = 4;
+
+const int DEATH_EVENT_COUNT = 5;
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -301,14 +312,21 @@ runImmediately
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);
-	CardSetup("Hero Greek Theseus", 	3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
+	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
 	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
-
+	
+	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
+	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.
+	CardSetup("Promethean Small",		2, "Boom Goblin", 		1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.
+	CardSetup("Promethean",				4, "Boom Goblin Champ", 2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.
+	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.
+	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
+	
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnPlay | OnAttack | OnDeath | Description
@@ -321,6 +339,12 @@ runImmediately
 	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
+	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");
+	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");
+	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
+	CardEvents("Promethean", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");
+	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");
+	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
 	/*
 	Spells
 				Name 	Cost 	Spell

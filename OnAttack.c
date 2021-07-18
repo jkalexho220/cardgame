@@ -19,5 +19,14 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				updateHandPlayable(p);
 			}
 		}
+		case ATTACK_BLOCK_DEATH:
+		{
+			if(yGetVarByIndex("allUnits", "health", target)<=0 && yGetVarByIndex("allUnits", "OnDeath", target)>0){
+				ySetVarByIndex("allUnits", "OnDeath", target, 0);
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", target)));
+				DeploySober("Olympus Temple SFX", "pos");
+				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+			}
+		}
 	}
 }

@@ -106,10 +106,7 @@ void castStart() {
 }
 
 void castEnd() {
-	for(x=yGetDatabaseCount("allUnits"); >0) {
-		yDatabaseNext("allUnits", true);
-		removeIfDead("allUnits");
-	}
+	removeDeadUnits();
 	refreshGuardAll();
 	xsEnableRule("gameplay_01_select");
 	highlightReady(999999);
