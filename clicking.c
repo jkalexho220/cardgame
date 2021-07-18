@@ -14,6 +14,7 @@ active
 				trQuestVarSet("p"+p+"click", RIGHT_CLICK);
 				trUnitDestroy();
 				trTechGodPower(p, "create gold", 1);
+				ChatLogShow(p);
 			}
 		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {
 			yFindLatest("magnet"+p, "Animal Attractor", p);
@@ -21,9 +22,11 @@ active
 			trQuestVarSet("p"+p+"click", LEFT_CLICK);
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
+			ChatLogShow(p);
 		} else if (trQuestVarGet("p"+p+"mine") == 1) {
 			trQuestVarSet("p"+p+"mine", 0);
 		}
+
 	}
 }
 

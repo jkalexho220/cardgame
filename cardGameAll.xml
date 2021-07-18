@@ -463,6 +463,20 @@
 <Command>	trUnitTeleport(trVectorQuestVarGetX(v),trVectorQuestVarGetY(v),trVectorQuestVarGetZ(v));</Command>
 <Command>}</Command>
 
+<Command>void ChatLogShow(int p = 1){</Command>
+<Command>	if (trCurrentPlayer() == p) {</Command>
+<Command>		trChatHistoryClear();</Command>
+<Command>	}</Command>
+<Command>	for (i = 10; >0) {</Command>
+<Command>		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>void ChatLog(int p = 1, string message = ""){</Command>
+<Command>	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);</Command>
+<Command>	ChatLogShow(p);</Command>
+<Command>}</Command>
+
 <Command>bool GetBit(int n=0, int p=0){</Command>
 <Command><![CDATA[	for(i=0;<30){]]></Command>
 <Command>		if(i==p){</Command>
@@ -505,18 +519,24 @@
 <Command>    trSetObscuredUnits(false);</Command>
 <Command>	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos</Command>
 <Command>	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos</Command>
+
+<Command>	for(p=2; >0) {</Command>
+<Command>		modularCounterInit("chat" + p + "Log", 10);</Command>
+<Command>	}</Command>
+
 <Command>	Multiplayer = aiIsMultiplayer(); 	// nottud is smart</Command>
 <Command><![CDATA[	if(Multiplayer && kbIsPlayerHuman(2) == false){]]></Command>
 <Command>		Multiplayer = false; // or kick?</Command>
 <Command>	}</Command>
 <Command>	if(Multiplayer){</Command>
-<Command>		trChatSend(0, "Mode:Multiplayer");</Command>
+<Command>		ChatLog(1, "Mode:Multiplayer");</Command>
+<Command>		ChatLog(2, "Mode:Multiplayer");</Command>
 <Command>	} else {</Command>
-<Command>		trChatSend(0, "Mode:Singleplayer");</Command>
+<Command>		ChatLog(1, "Mode:Singleplayer");</Command>
 <Command>		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero</Command>
 <Command>		bool virgin = trGetScenarioUserData(0);</Command>
 <Command>		virgin = false; // testing</Command>
-<Command>		trChatSend(0, "Checking if played before...");</Command>
+<Command>		ChatLog(1, "Checking if played before...");</Command>
 <Command><![CDATA[		if(virgin && trQuestVarGet("chad") == 0){]]></Command>
 <Command>			xsEnableRule("CinPrologue00");</Command>
 <Command>		}</Command>
@@ -1128,12 +1148,16 @@
 <Command>			trQuestVarSet("p"+p+"click", RIGHT_CLICK);</Command>
 <Command>			trUnitDestroy();</Command>
 <Command>			trTechGodPower(p, "Vision", 1);</Command>
+<Command>			ChatLogShow(1);</Command>
+<Command>			ChatLogShow(2);</Command>
 <Command>		} else if (trPlayerUnitCountSpecific(p, "Animal Attractor") >= 1) {</Command>
 <Command>			yFindLatest("magnet"+p, "Animal Attractor", p);</Command>
 <Command>			trVectorSetUnitPos("p"+p+"clickPos", "magnet"+p, true);</Command>
 <Command>			trQuestVarSet("p"+p+"click", LEFT_CLICK);</Command>
 <Command>			trUnitDestroy();</Command>
 <Command>			trTechGodPower(p, "Animal magnetism", 1);</Command>
+<Command>			ChatLogShow(1);</Command>
+<Command>			ChatLogShow(2);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -1910,22 +1934,23 @@
 <Command><![CDATA[	if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
 <Command>		if (trCurrentPlayer() == p) {</Command>
 <Command>			trSoundPlayFN("ui\scroll.wav","1",-1,"","");</Command>
-<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
-<Command>				trChatSend(0, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
-<Command>			} else {</Command>
-<Command>				trChatSend(0, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
-<Command>			}</Command>
 <Command>		}</Command>
-<Command>		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));</Command>
+<Command>		if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
+<Command>			ChatLog(p, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
+<Command>		} else {</Command>
+<Command>			ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
+<Command>		}</Command>
+<Command>		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));</Command>
 <Command>	} else {</Command>
 <Command>		if (trCurrentPlayer() == p) {</Command>
 <Command>			trSoundPlayFN("cantdothat.wav","1",-1,"","");</Command>
-<Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
-<Command>				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
-<Command>			} else {</Command>
-<Command>				trChatSend(0, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
-<Command>			}</Command>
 <Command>		}</Command>
+<Command>		if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
+<Command>			ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));</Command>
+<Command>		} else {</Command>
+<Command>			ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));</Command>
+<Command>		}</Command>
+
 <Command>	}</Command>
 <Command>	yRemoveFromDatabase("p"+p+"deck");</Command>
 <Command>	yRemoveUpdateVar("p"+p+"deck", "spell");</Command>
@@ -2536,17 +2561,13 @@
 <Command>	{</Command>
 <Command>		case PLAY_GET_SPARK:</Command>
 <Command>		{</Command>
-<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
-<Command>				addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);</Command>
-<Command>				updateHandPlayable(p);</Command>
-<Command>			}</Command>
+<Command>			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);</Command>
+<Command>			updateHandPlayable(p);</Command>
 <Command>		}</Command>
 <Command>		case PLAY_GET_TRAP:</Command>
 <Command>		{</Command>
-<Command><![CDATA[			if (yGetDatabaseCount("p"+p+"hand") < 10) {]]></Command>
-<Command>				addCardToHand(p, kbGetProtoUnitID("Petrobolos"));</Command>
-<Command>				updateHandPlayable(p);</Command>
-<Command>			}</Command>
+<Command>			addCardToHand(p, kbGetProtoUnitID("Petrobolos"));</Command>
+<Command>			updateHandPlayable(p);</Command>
 <Command>		}</Command>
 <Command>		case PLAY_FOOD:</Command>
 <Command>		{</Command>
@@ -3554,6 +3575,18 @@
 <Command>	for(x=3; >0) {</Command>
 <Command>		for(p=2; >0) {</Command>
 
+<Command>			addCardToDeck(p, "Khopesh");</Command>
+<Command>			addCardToDeck(p, "Villager Atlantean");</Command>
+<Command>			addCardToDeck(p, "Swordsman");</Command>
+<Command>			addCardToDeck(p, "Maceman");</Command>
+<Command>			addCardToDeck(p, "Skraeling");</Command>
+<Command>			addCardToDeck(p, "Slinger");</Command>
+<Command>			addCardToDeck(p, "Toxotes");</Command>
+<Command>			addCardToDeck(p, "Raiding Cavalry");</Command>
+<Command>			addCardToDeck(p, "Trident Soldier");</Command>
+<Command>			addCardToDeck(p, "Jarl");</Command>
+<Command>			addCardToDeck(p, "Hero Greek Ajax");</Command>
+
 <Command>			addCardToDeck(p, "Scout");</Command>
 <Command>			addCardToDeck(p, "Prodromos");</Command>
 <Command>			addCardToDeck(p, "Promethean Small");</Command>
@@ -3822,7 +3855,11 @@
 <Command>{</Command>
 <Command>	int p = trQuestVarGet("activePlayer");</Command>
 <Command><![CDATA[	if (trCheckGPActive("rain", p) == true || (Multiplayer && (trTime() > cActivationTime + 90))) {]]></Command>
+<Command>		ChatLogShow(1);</Command>
+<Command>		ChatLogShow(2);</Command>
 <Command>		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));</Command>
+<Command>		trQuestVarSet("p"+p+"mana", -1);</Command>
+<Command>		updateHandPlayable(p);</Command>
 
 <Command>		trPlayerKillAllGodPowers(p);</Command>
 <Command>		trTechGodPower(p, "vision", 1);</Command>
@@ -3833,25 +3870,31 @@
 <Command>		trQuestVarSet("turnEnd", 1);</Command>
 
 <Command>		// Discard fleeting cards</Command>
+<Command>		bool fleeting = false;</Command>
 <Command>		int type = 0;</Command>
 <Command>		yDatabasePointerDefault("p"+p+"hand");</Command>
 <Command>		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"hand");</Command>
 <Command>			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {</Command>
+<Command>				fleeting = true;</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));</Command>
+<Command>				trUnitChangeProtoUnit("Hero Death");</Command>
 <Command>				trUnitSelectClear();</Command>
 <Command>				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);</Command>
 <Command>				trUnitChangeProtoUnit("Hero Death");</Command>
-<Command>				if (trCurrentPlayer() == p) {</Command>
-<Command>					if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {</Command>
-<Command>						type = yGetVar("p"+p+"hand", "proto");</Command>
-<Command>						trChatSend(0, "Discarded a " + trStringQuestVarGet("card_" + type + "_name"));</Command>
-<Command>					} else {</Command>
-<Command>						type = yGetVar("p"+p+"hand", "spell");</Command>
-<Command>						trChatSend(0, "Discarded a " + trStringQuestVarGet("spell_" + type + "_name"));</Command>
-<Command>					}</Command>
+<Command>				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {</Command>
+<Command>					type = yGetVar("p"+p+"hand", "proto");</Command>
+<Command>					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));</Command>
+<Command>				} else {</Command>
+<Command>					type = yGetVar("p"+p+"hand", "spell");</Command>
+<Command>					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));</Command>
 <Command>				}</Command>
 <Command>				removeUnit("p"+p+"hand");</Command>
 <Command>			}</Command>
+<Command>		}</Command>
+<Command><![CDATA[		if (fleeting && trCurrentPlayer() == p) {]]></Command>
+<Command>			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");</Command>
 <Command>		}</Command>
 <Command>		trDelayedRuleActivation("turn_00_start");</Command>
 <Command>		xsDisableRule("turn_01_end");</Command>

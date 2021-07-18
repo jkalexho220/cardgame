@@ -5,7 +5,7 @@ runImmediately
 {
 	for(x=3; >0) {
 		for(p=2; >0) {
-			/*
+			
 			addCardToDeck(p, "Khopesh");
 			addCardToDeck(p, "Villager Atlantean");
 			addCardToDeck(p, "Swordsman");
@@ -280,7 +280,11 @@ inactive
 		if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
 			trUnitDestroy();
 		}
+		ChatLogShow(1);
+		ChatLogShow(2);
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
+		trQuestVarSet("p"+p+"mana", -1);
+		updateHandPlayable(p);
 		
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "rain", 1);
@@ -290,25 +294,31 @@ inactive
 		trQuestVarSet("turnEnd", 1);
 
 		// Discard fleeting cards
+		bool fleeting = false;
 		int type = 0;
 		yDatabasePointerDefault("p"+p+"hand");
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {
+				fleeting = true;
+				trUnitSelectClear();
+				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
+				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
-				if (trCurrentPlayer() == p) {
-					if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
-						type = yGetVar("p"+p+"hand", "proto");
-						trChatSend(0, "Discarded a " + trStringQuestVarGet("card_" + type + "_name"));
-					} else {
-						type = yGetVar("p"+p+"hand", "spell");
-						trChatSend(0, "Discarded a " + trStringQuestVarGet("spell_" + type + "_name"));
-					}
+				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
+					type = yGetVar("p"+p+"hand", "proto");
+					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));
+				} else {
+					type = yGetVar("p"+p+"hand", "spell");
+					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
 				removeUnit("p"+p+"hand");
 			}
+		}
+		if (fleeting && trCurrentPlayer() == p) {
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 		}
 		trDelayedRuleActivation("turn_00_start");
 		xsDisableRule("turn_01_end");

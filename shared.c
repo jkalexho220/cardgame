@@ -499,6 +499,26 @@ void DeploySober(string p="", string v=""){
 }
 
 /*
+Shows the Chat Log
+*/
+void ChatLogShow(int p = 1){
+	if (trCurrentPlayer() == p) {
+		trChatHistoryClear();
+	}
+	for (i = 10; >0) {
+		trChatSendToPlayer(0, p, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
+	}
+}
+
+/*
+Adds a new message in the Chat Log and shows it
+*/
+void ChatLog(int p = 1, string message = ""){
+	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
+	ChatLogShow(p);
+}
+
+/*
 Bit functions
 n - number, p - position
 */
@@ -544,18 +564,24 @@ runImmediately
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
+	
+	for(p=2; >0) {
+		modularCounterInit("chat" + p + "Log", 10);
+	}
+	
 	Multiplayer = aiIsMultiplayer(); 	// nottud is smart
 	if(Multiplayer && kbIsPlayerHuman(2) == false){
 		Multiplayer = false; // or kick?
 	}
 	if(Multiplayer){
-		trChatSend(0, "Mode:Multiplayer");
+		ChatLog(1, "Mode:Multiplayer");
+		ChatLog(2, "Mode:Multiplayer");
 	} else {
-		trChatSend(0, "Mode:Singleplayer");
+		ChatLog(1, "Mode:Singleplayer");
 		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
 		bool virgin = trGetScenarioUserData(0); 
 		virgin = false; // testing
-		trChatSend(0, "Checking if played before...");
+		ChatLog(1, "Checking if played before...");
 		if(virgin && trQuestVarGet("chad") == 0){
 			xsEnableRule("CinPrologue00");
 		}
