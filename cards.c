@@ -396,6 +396,7 @@ runImmediately
 }
 
 void saveDeck() {
+	int id = 0;
 	for(x=yGetDatabaseCount("deck"); >0) {
 		id = yDatabaseNext("deck");
 		/*
