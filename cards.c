@@ -404,50 +404,58 @@ void saveDeck() {
 	}
 }
 
-int CardToProto(int card) {
+int CardToProto(int card = 0) {
 	return(trQuestVarGet("CardToProto"+card));
 }
 
-int CardToSpell(int card) {
+int CardToSpell(int card = 0) {
 	return(trQuestVarGet("CardToSpell"+card));
 }
 
-int ProtoToCard(int proto) {
+int ProtoToCard(int proto = 0) {
 	return(trQuestVarGet("ProtoToCard"+proto));
 }
 
-int SpellToCard(int spell) {
+int SpellToCard(int spell = 0) {
 	return(trQuestVarGet("SpellToCard"+spell));
 }
 
-int getCardCountCollection(int index) {
+int getCardCountCollection(int index = 0) {
 	return(1);
 }
 
-int getCardCountDeck(int index) {
+int getCardCountDeck(int index = 0) {
 	return(1);
 }
 
-void setCardCountCollection(int index, int count) {
-	// TODO
+void setCardCountCollection(int index = 0, int count = 0) {
+	/*
+	TODO
+	*/
 }
 
-void setCardCountDeck(int index, int count) {
-	// TODO
+void setCardCountDeck(int index = 0, int count = 0) {
+	/*
+	TODO
+	*/
 }
 
-void setDeckCommander(int commander) {
-	// TODO
+void setDeckCommander(int commander = 0) {
+	/*
+	TODO
+	*/
 }
 
 int getDeckCommander() {
 	return(0);
 }
 
-void setClassProgress(int class, int progress) {
-	// TODO
+void setClassProgress(int class = 0, int progress = 0) {
+	/*
+	TODO
+	*/
 }
 
-int getClassProgress(int class) {
+int getClassProgress(int class = 0) {
 	return(0);
 }
