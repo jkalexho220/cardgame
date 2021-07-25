@@ -1,6 +1,6 @@
 rule match_test
 highFrequency
-active
+inactive
 runImmediately
 {
 	for(x=3; >0) {

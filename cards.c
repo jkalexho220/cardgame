@@ -303,7 +303,10 @@ runImmediately
 		trForbidProtounit(p, "Maceman Hero");
 		trForbidProtounit(p, "Oracle Hero");
 		trForbidProtounit(p, "Royal Guard Hero");
-		trForbidProtounit(p, "Swordsman Hero");
+		/* 
+		need this for heroize deck importing 
+		trForbidProtounit(p, "Swordsman Hero"); 
+		*/
 		trForbidProtounit(p, "Trident Soldier Hero");
 		trForbidProtounit(p, "Villager Atlantean Hero");
 		trForbidProtounit(p, "Settlement Level 1");
