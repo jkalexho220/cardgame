@@ -3,6 +3,15 @@ void ThrowError(string message = "Zeno you made bug again!"){
 	trShowWinLose(message, "xpack\xtaunts\en\999 theme.mp3");
 }
 
+/*
+Classes
+*/
+const int CLASS_ADVENTURER = 0;
+const int CLASS_ARCANE = 1;
+const int CLASS_NAGA = 2;
+const int CLASS_CLOCKWORK = 3;
+const int CLASS_EVIL = 4;
+const int CLASS_SPACE = 5;
 
 /*
 Spells
@@ -179,6 +188,11 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 void SpellSetup(string name = "", int cost = 0, int spell = 0) {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
+
+	trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
+	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
+	trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
+	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 }
 
 void CardEvents(string protoName = "", int onPlay = 0, int onAttack = 0, int onDeath = 0, string ability="") {
@@ -194,8 +208,12 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
 	}	
-	trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
-	trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+
+	
+	trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
+	trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
+	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
+
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -374,15 +392,62 @@ runImmediately
 		}
 	}
 	
-	/*
-	//Deploy one of each card to playtest.
-	int cardsCount = trQuestVarGet("cardProtosIndex");
-	for(i=0;<cardsCount){
-		trQuestVarSetFromRand("random", 128, 296, true);
-		trVectorQuestVarSet("temp", kbGetBlockPosition(""+1*trQuestVarGet("random")));
-		CardInstantiate(kbGetProtoUnitName(trQuestVarGet("cardProtos_"+i)),"temp");
-	}
-	*/
-	
 	xsDisableRule("initializeCards");
+}
+
+void saveDeck() {
+	for(x=yGetDatabaseCount("deck"); >0) {
+		id = yDatabaseNext("deck");
+		/*
+		Bit manipulation stuff.
+		*/
+	}
+}
+
+int CardToProto(int card) {
+	return(trQuestVarGet("CardToProto"+card));
+}
+
+int CardToSpell(int card) {
+	return(trQuestVarGet("CardToSpell"+card));
+}
+
+int ProtoToCard(int proto) {
+	return(trQuestVarGet("ProtoToCard"+proto));
+}
+
+int SpellToCard(int spell) {
+	return(trQuestVarGet("SpellToCard"+spell));
+}
+
+int getCardCountCollection(int index) {
+	return(1);
+}
+
+int getCardCountDeck(int index) {
+	return(1);
+}
+
+void setCardCountCollection(int index, int count) {
+	// TODO
+}
+
+void setCardCountDeck(int index, int count) {
+	// TODO
+}
+
+void setDeckCommander(int commander) {
+	// TODO
+}
+
+int getDeckCommander() {
+	return(0);
+}
+
+void setClassProgress(int class, int progress) {
+	// TODO
+}
+
+int getClassProgress(int class) {
+	return(0);
 }
