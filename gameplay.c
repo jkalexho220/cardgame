@@ -194,14 +194,19 @@ rule gameplay_select_show_keywords
 highFrequency
 active
 {
-	yDatabaseNext("allUnits", true);
-	if (trUnitIsSelected()) {
-		displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
-	}
-	for(p=2; >0) {
-		yDatabaseNext("p"+p+"hand", true);
+	if (yGetDatabaseCount("allUnits") > 0) {
+		yDatabaseNext("allUnits", true);
 		if (trUnitIsSelected()) {
-			displayCardKeywordsAndDescription("p"+p+"hand", 1*yGetPointer("p"+p+"hand"));
+			displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
+		}
+	}
+	
+	for(p=2; >0) {
+		if (yGetDatabaseCount("p"+p+"hand") > 0) {
+			yDatabaseNext("p"+p+"hand", true);
+			if (trUnitIsSelected()) {
+				displayCardKeywordsAndDescription("p"+p+"hand", 1*yGetPointer("p"+p+"hand"));
+			}
 		}
 	}
 }

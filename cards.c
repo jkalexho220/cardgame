@@ -409,19 +409,19 @@ void saveDeck() {
 }
 
 int CardToProto(int card = 0) {
-	return(trQuestVarGet("CardToProto"+card));
+	return(1*trQuestVarGet("CardToProto"+card));
 }
 
 int CardToSpell(int card = 0) {
-	return(trQuestVarGet("CardToSpell"+card));
+	return(1*trQuestVarGet("CardToSpell"+card));
 }
 
 int ProtoToCard(int proto = 0) {
-	return(trQuestVarGet("ProtoToCard"+proto));
+	return(1*trQuestVarGet("ProtoToCard"+proto));
 }
 
 int SpellToCard(int spell = 0) {
-	return(trQuestVarGet("SpellToCard"+spell));
+	return(1*trQuestVarGet("SpellToCard"+spell));
 }
 
 int getCardCountCollection(int index = 0) {

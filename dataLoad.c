@@ -8,7 +8,7 @@ Slots 10-15 = collectible class cards in collection
 */
 
 void showProgress(int p = 0) {
-	trSoundPlayFN("default","1",-1,"Loading...:"+p,"icons\god power reverse time icons 64");
+	trSoundPlayFN("default","1",-1,""+100 * p / 22,"");
 }
 
 rule data_load_00
@@ -20,10 +20,8 @@ active
 	}
 
 	if (Multiplayer || true) {
-		
-		trLetterBox(true);
+		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
 		trUIFadeToColor(0,0,0,0,0,true);
-		
 		int bit = 0;
 		int data = 0;
 		for(x=0; < 6) {
@@ -230,6 +228,14 @@ inactive
 void loadCardsToDeck(int p = 1, int v = 0) {
 	int class = trQuestVarGet("p"+p+"class"+1*trQuestVarGet("classProgress"));
 	int offset = 30 * class + 3 * trQuestVarGet("loadProgress");
+	for(y = 0; <3) {
+		int count = zModulo(4, v);
+		for(x=count; >0) {
+			addCardToDeckByIndex(p,offset+y);
+		}
+		v = v / 4;
+	}
+	
 }
 
 rule data_load_06_detect_cards
@@ -242,6 +248,7 @@ inactive
 		showProgress(1*trQuestVarGet("progress"));
 		for(x=0; < 64) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
+				trChatSend(0, "value: " + x);
 				trUnitSelectClear();
 				trUnitSelectByID(x);
 				trMutateSelected(kbGetProtoUnitID("Swordsman"));

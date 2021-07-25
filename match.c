@@ -39,7 +39,7 @@ runImmediately
 
 rule match_00_start
 highFrequency
-active
+inactive
 {
 	trQuestVarSet("p1commander", trGetNextUnitScenarioNameNumber());
 	addCardToHand(1, kbGetProtoUnitID("Hero Greek Jason"), SPELL_COMMANDER);

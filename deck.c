@@ -48,6 +48,18 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 	}
 }
 
+void addCardToDeckByIndex(int p = 0, int card = 0) {
+	int spell = CardToSpell(card);
+	if (spell == 0) {
+		trQuestVarSet("proto", CardToProto(card));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", 0);
+	} else {
+		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", spell);
+	}	
+}
 
 
 /* 
