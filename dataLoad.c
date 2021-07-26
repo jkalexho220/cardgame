@@ -15,40 +15,52 @@ rule data_load_00
 highFrequency
 active
 {
+	trQuestVarSet("virgin", 0);
 	for(x=0; < 16) {
 		trQuestVarSet("data"+x, trGetScenarioUserData(x, "cg25.scx"));
+		trQuestVarSet("virgin", trQuestVarGet("virgin") + trQuestVarGet("data"+x));
+	}
+
+	int bit = 0;
+	int data = 0;
+	int card = 0;
+	for(x=0; < 6) {
+		data = 1*trQuestVarGet("data"+x);
+		bit = zModulo(2, data);
+		/*
+		Check if class is in deck
+		*/
+		if (bit == 1) {
+			data = data / 2;
+			bit = zModulo(2, data);
+			/*
+			Check if class is first or second
+			*/
+			if (bit == 1) {
+				trQuestVarSet("class2", x);
+			} else {
+				trQuestVarSet("class1", x);
+				data = data / 2;
+				bit = zModulo(2, data);
+				/*
+				Calculate commander
+				*/
+				trQuestVarSet("commander", 2*trQuestVarGet("class1") + bit);
+			}
+		}
+
+		data = 1*trQuestVarGet("data"+x);
+		data = data / 8;
+		card = 30 * x + 14; // card 15, one of the class legendaries
+		trQuestVarSet("card_"+card+"_count", zModulo(2, data));
+		data = data / 2;
+		trQuestVarSet("class"+x+"progress", data);
 	}
 
 	if (Multiplayer || true) {
 		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
 		trUIFadeToColor(0,0,0,0,0,true);
-		int bit = 0;
-		int data = 0;
-		for(x=0; < 6) {
-			data = 1*trQuestVarGet("data"+x);
-			bit = zModulo(2, data);
-			/*
-			Check if class is in deck
-			*/
-			if (bit == 1) {
-				data = data / 2;
-				bit = zModulo(2, data);
-				/*
-				Check if class is first or second
-				*/
-				if (bit == 1) {
-					trQuestVarSet("class2", x);
-				} else {
-					trQuestVarSet("class1", x);
-					data = data / 2;
-					bit = zModulo(2, data);
-					/*
-					Calculate commander
-					*/
-					trQuestVarSet("commander", 2*trQuestVarGet("class1") + bit);
-				}
-			}
-		}
+		
 		for(p=2; >0) {
 			trModifyProtounit("Swordsman Hero", p, 6, -100);	// population count
 			trModifyProtounit("Swordsman Hero", p, 16, -1000);	// cost gold
@@ -65,6 +77,65 @@ active
 
 		trBlockAllSounds(true);
 		xsEnableRule("data_load_01_ready");
+	} else {
+		/* 
+		Load player's collection 
+		*/
+		for(c=0; <6) {
+			data = 1*trQuestVarGet("data"+(c+10));
+			for(x=0; <15) {
+				card = 15 + x + 30 * c;
+				trQuestVarSet("card_"+card+"_count", zModulo(4, data));
+				data = data / 4;
+			}
+			// Starter cards
+			for (x=0; < 7 + trQuestVarGet("class"+c+"progress")) {
+				card = x + 30 * c;
+				trQuestVarSet("card_"+card+"_count", 3);
+			}
+		}
+		/*
+		Load player's deck
+		*/
+		c = 30 * trQuestVarGet("class1");
+		data = 1*trQuestVarGet("data6");
+		for(x=0;<15) {
+			card = c + x;
+			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			data = data / 4;
+			if (data == 0) {
+				break;
+			}
+		}
+		data = 1*trQuestVarGet("data7");
+		for(x=15;<30) {
+			card = c + x;
+			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			data = data / 4;
+			if (data == 0) {
+				break;
+			}
+		}
+
+		c = 30 * trQuestVarGet("class2");
+		data = 1*trQuestVarGet("data8");
+		for(x=0;<15) {
+			card = c + x;
+			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			data = data / 4;
+			if (data == 0) {
+				break;
+			}
+		}
+		data = 1*trQuestVarGet("data9");
+		for(x=15;<30) {
+			card = c + x;
+			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			data = data / 4;
+			if (data == 0) {
+				break;
+			}
+		}
 	}
 	xsDisableSelf();
 }
@@ -126,6 +197,10 @@ inactive
 			trQuestVarSet("p"+p+"class2", zModulo(6, c));
 			c = c / 6;
 			trQuestVarSet("p"+p+"class1", c);
+			trPlayerGrantResources(p, "food", -1000);
+			trPlayerGrantResources(p, "wood", -1000);
+			trPlayerGrantResources(p, "gold", -1000);
+			trPlayerGrantResources(p, "favor", -1000);
 		}
 		showProgress(1);
 		xsEnableRule("data_load_03_load_commanders");
@@ -179,6 +254,12 @@ inactive
 		}
 		showProgress(2);
 		xsDisableRule("data_load_04_detect_commanders");
+		for(p=2; >0) {
+			trPlayerGrantResources(p, "food", -1000);
+			trPlayerGrantResources(p, "wood", -1000);
+			trPlayerGrantResources(p, "gold", -1000);
+			trPlayerGrantResources(p, "favor", -1000);
+		}
 
 		/*
 		Deck data
@@ -235,7 +316,6 @@ void loadCardsToDeck(int p = 1, int v = 0) {
 		}
 		v = v / 4;
 	}
-	
 }
 
 rule data_load_06_detect_cards
@@ -244,6 +324,12 @@ inactive
 {
 	int r = trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero");
 	if (r == 1) {
+		for(p=2; >0) {
+			trPlayerGrantResources(p, "food", -1000);
+			trPlayerGrantResources(p, "wood", -1000);
+			trPlayerGrantResources(p, "gold", -1000);
+			trPlayerGrantResources(p, "favor", -1000);
+		}
 		trQuestVarSet("progress", 1 + trQuestVarGet("progress"));
 		showProgress(1*trQuestVarGet("progress"));
 		for(x=0; < 64) {

@@ -398,6 +398,7 @@ runImmediately
 	xsDisableRule("initializeCards");
 }
 
+
 void saveDeck() {
 	int id = 0;
 	for(x=yGetDatabaseCount("deck"); >0) {
@@ -425,11 +426,11 @@ int SpellToCard(int spell = 0) {
 }
 
 int getCardCountCollection(int index = 0) {
-	return(1);
+	return(1*trQuestVarGet("card_"+index+"_count"));
 }
 
 int getCardCountDeck(int index = 0) {
-	return(1);
+	return(1*trQuestVarGet("card_"+index+"_countInDeck"));
 }
 
 void setCardCountCollection(int index = 0, int count = 0) {
@@ -451,15 +452,17 @@ void setDeckCommander(int commander = 0) {
 }
 
 int getDeckCommander() {
-	return(0);
+	return(1*trQuestVarGet("commander"));
 }
 
 void setClassProgress(int class = 0, int progress = 0) {
-	/*
-	TODO
-	*/
+	int old = trQuestVarGet("class"+class+"progress");
+	trQuestVarSet("class"+class+"progress", progress);
+	old = old * 16;
+	int new = progress * 16;
+	trQuestVarSet("data"+class, trQuestVarGet("data"+class) - old + new);
 }
 
 int getClassProgress(int class = 0) {
-	return(0);
+	return(1*trQuestVarGet("class"+class+"progress"));
 }
