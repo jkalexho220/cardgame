@@ -605,9 +605,9 @@ runImmediately
 
 	// LOS
 	for(p=2; >0) {
-		trModifyProtounit("Dwarf", 1, 2, -20);
-		trModifyProtounit("Animal Attractor", 1, 2, -20);
-		trModifyProtounit("Nidhogg", 1, 2, -20);
+		trModifyProtounit("Dwarf", p, 2, -20);
+		trModifyProtounit("Animal Attractor", p, 2, -20);
+		trModifyProtounit("Nidhogg", p, 2, -20);
 
 	}
 
