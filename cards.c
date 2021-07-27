@@ -203,6 +203,10 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	trQuestVarSet("card_" + proto + "_Speed",speed);
 	trQuestVarSet("card_" + proto + "_Range",range);
 	trQuestVarSet("card_" + proto + "_Keywords",keywords);
+	if (HasKeyword(ETHEREAL, keywords)) {
+		trModifyProtounit(protoName, 1, 55, 4);
+		trModifyProtounit(protoName, 2, 55, 4);
+	}
 	
 	for(p=1;<cNumberPlayers){
 		trModifyProtounit(protoName, p, 16, 9999999999999999999.0);

@@ -603,6 +603,14 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 
+	// LOS
+	for(p=2; >0) {
+		trModifyProtounit("Dwarf", 1, 2, -20);
+		trModifyProtounit("Animal Attractor", 1, 2, -20);
+		trModifyProtounit("Nidhogg", 1, 2, -20);
+
+	}
+
 
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);
