@@ -307,7 +307,7 @@ runImmediately
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
-	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, true);
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
