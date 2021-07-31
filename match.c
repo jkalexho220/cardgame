@@ -17,12 +17,10 @@ runImmediately
 			addCardToDeck(p, "Trident Soldier");
 			addCardToDeck(p, "Jarl");
 			addCardToDeck(p, "Hero Greek Ajax");
-			/*
-			addCardToDeck(p, "Behemoth");
 			
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Archer Atlantean Hero");
-			*/
+			
 			addCardToDeck(p, "Hero Greek Theseus");
 		}
 	}

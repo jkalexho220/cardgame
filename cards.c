@@ -189,13 +189,15 @@ void CardEvents(string protoName = "", int onPlay = 0, int onAttack = 0, int onD
 	trStringQuestVarSet("card_" + proto + "_Ability",ability);
 }
 
-void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0){
+void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool commander = false){
 	int proto = kbGetProtoUnitID(protoName);
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
-	}	
-	trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
-	trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+	}
+	if (commander == false) {
+		trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
+		trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+	}
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -305,8 +307,8 @@ runImmediately
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
-	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0);
-	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, true);
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));

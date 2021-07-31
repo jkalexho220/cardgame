@@ -265,7 +265,7 @@ inactive
 							if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {
 								for(x=zGetBankCount("tiles"); >0) {
 									zBankNext("tiles");
-									if (zGetVar("tiles", "occupied") == TILE_EMPTY) {
+									if (zGetVar("tiles", "occupant") + zGetVar("tiles", "terrain") == TILE_EMPTY) {
 										yAddToDatabase("summonLocations", "tiles");
 									}
 								}
@@ -407,7 +407,7 @@ inactive
 
 						/* setting old tile to unoccupied */
 						int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
-						zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
+						zSetVarByIndex("tiles", "occupant", tile, 0);
 						if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
 							tileGuard(tile, false);
 						}
@@ -495,9 +495,8 @@ inactive
 				}
 			}
 			
-
-			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));
-			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
+			mSetVarByQV("allUnits", "tile", trQuestVarGet("moveTile"));
+			zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("moveTile"), 1*trQuestVarGet("allUnits"));
 
 			if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
 				refreshGuardAll();
