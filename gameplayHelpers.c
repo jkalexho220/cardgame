@@ -226,9 +226,15 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 		damage = -1;
 	}
 	// find lightning chain
-	int unit = 0;
+	for (x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		zSetVar("tiles", "searched", 0);
+	}
+	int unit = index;
+	zSetVarByIndex("tiles", "searched", 1*mGetVar(unit, "tile"), 1);
 	int tile = 0;
 	int pop = -1;
+	int neighbor = 0;
 	int push = modularCounterNext("lightningPush");
 	trQuestVarSet("lightning" + push, index);
 	trQuestVarSet("lightning" + push + "damage", damage);
@@ -238,7 +244,9 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 		tile = mGetVar(unit, "tile");
 
 		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
-			unit = zGetVarByIndex("tiles", "occupant", 1*zGetVarByIndex("tiles", "neighbor"+x, tile));
+			neighbor = 1*zGetVarByIndex("tiles", "neighbor"+x, tile);
+			zSetVarByIndex("tiles", "searched", neighbor, 1);
+			unit = zGetVarByIndex("tiles", "occupant", neighbor);
 			if (unit > 0) {
 				if (mGetVar(unit, "player") == 3 - p) {
 					push = modularCounterNext("lightningPush");
