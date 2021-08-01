@@ -21,10 +21,10 @@ void OnPlay(int unit = 0, int event = 0) {
 		case PLAY_DOUBLEBLADE:
 		{
 			trUnitSelectClear();
-			trUnitSelect(""+1*yGetUnitAtIndex("allUnits", unit), true);
+			trUnitSelect(""+unit, true);
 			trMutateSelected(kbGetProtoUnitID("Avenger"));
 			trUnitOverrideAnimation(39, 0, 0, 1, -1);
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", unit)));
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == 3 - p) {

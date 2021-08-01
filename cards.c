@@ -205,6 +205,8 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "player", p);
 	mSetVar(next, "spell", spell);
 
+	trMutateSelected(proto);
+
 	return(next);
 }
 

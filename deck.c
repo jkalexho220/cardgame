@@ -58,6 +58,9 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
 	
+	if (spell > SPELL_NONE) {
+		proto = kbGetProtoUnitID("Statue of Lightning");
+	}
 
 	yAddToDatabase("p"+p+"hand", "next");
 	

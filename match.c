@@ -37,6 +37,7 @@ active
 	trTechGodPower(0, "spy", 2);
 	for(p=2; >0) {
 		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, kbGetProtoUnitID("Hero Greek Jason")));
+		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
 
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
