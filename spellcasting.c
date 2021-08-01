@@ -138,6 +138,11 @@ inactive
 		int p = trQuestVarGet("activePlayer");
 		yClearDatabase("castTargets");
 		yClearDatabase("castTiles");
+		if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
+			trQuestVarSet("gameplayPhase", GAMEPLAY_SPELL_UNIT);
+		} else {
+			trQuestVarSet("gameplayPhase", GAMEPLAY_SPELL_TILE);
+		}
 		switch(1*trQuestVarGet("cast"+x+"type"))
 		{
 			case CAST_UNIT:

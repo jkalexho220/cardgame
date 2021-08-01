@@ -1,8 +1,4 @@
-const int GAMEPLAY_SELECT = 0;
-const int GAMEPLAY_WORK = 1;
-const int GAMEPLAY_MOVING = 2;
-const int GAMEPLAY_SUMMONING = 3;
-const int GAMEPLAY_ATTACKING = 4;
+
 
 
 void processAttack(string db = "attacks") {
@@ -681,7 +677,8 @@ inactive
 					}
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
-					removeUnit("p"+p+"hand");
+					yRemoveFromDatabase("p"+p+"hand");
+					yRemoveUpdateVar("p"+p+"hand", "pos");
 
 					zSetVarByIndex("tiles", "occupant", tile, unit);
 					updateHandPlayable(p);

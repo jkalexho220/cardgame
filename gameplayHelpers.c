@@ -1,3 +1,11 @@
+const int GAMEPLAY_SELECT = 0;
+const int GAMEPLAY_WORK = 1;
+const int GAMEPLAY_MOVING = 2;
+const int GAMEPLAY_SUMMONING = 3;
+const int GAMEPLAY_ATTACKING = 4;
+const int GAMEPLAY_SPELL_UNIT = 5;
+const int GAMEPLAY_SPELL_TILE = 6;
+
 
 const int ACTION_READY = 0;
 const int ACTION_MOVED = 1;
