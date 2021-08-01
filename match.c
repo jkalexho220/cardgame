@@ -117,7 +117,7 @@ inactive
 					}
 					if (unit > -1) {
 						if (trCurrentPlayer() == p) {
-							displayCardKeywordsAndDescription("p"+p+"hand", unit);
+							displayCardKeywordsAndDescription(yGetUnitAtIndex("p"+p+"hand", unit));
 							trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 						}
 						ySetPointer("p"+p+"hand", unit);

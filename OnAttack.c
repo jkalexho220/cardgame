@@ -1,5 +1,5 @@
 void OnAttack(int attacker = 0, int target = 0, int event = 0) {
-	int p = yGetVarByIndex("allUnits", "player", attacker);
+	int p = mGetVar(attacker, "player");
 	switch(event)
 	{
 		case ATTACK_DRAW_CARD:
@@ -23,7 +23,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		{
 			if(mGetVar(target, "health")<=0 && mGetVar(target, "OnDeath")>0){
 				mSetVar(target, "OnDeath", 0);
-				deployAtTile(0, "Olympus Temple SFX", mGetVar(target, "tile"));
+				deployAtTile(0, "Olympus Temple SFX", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 			}
 		}

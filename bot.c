@@ -112,8 +112,7 @@ inactive
 						for(x=trQuestVarGet("botRandom"); >0) {
 							yDatabaseNext("castTargets");
 						}
-						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));
-						trVectorSetUnitPos("botClickPos", "castTargetUnit");
+						trVectorSetUnitPos("botClickPos", "castTargets");
 						trQuestVarSet("botClick", LEFT_CLICK);
 					} else if (yGetDatabaseCount("castTiles") > 0) {
 						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTiles"), true);

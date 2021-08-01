@@ -213,36 +213,30 @@ void damageUnit(int index = 0, float dmg = 0) {
 void lightning(int index = 0, int damage = 0, bool deadly = false) {
 	trQuestVarSetFromRand("rand", 1, 5, true);
 	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");
-	int p = yGetVarByIndex("allUnits", "player", index);
-	yClearDatabase("lightningTargets");
-	for (x=yGetDatabaseCount("allUnits"); >0) {
-		yDatabaseNext("allUnits");
-		if (mGetVarByQV("allUnits", "player") == p) {
-			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
-			if ((trQuestVarGet("allUnitsIndex") == index) == false) {
-				yAddToDatabase("lightningTargets", "allUnitsIndex");
-			}
-		}
-	}
+	int p = mGetVar(index, "player");
 	if (deadly) {
 		damage = -1;
 	}
 	// find lightning chain
+	int unit = 0;
+	int tile = 0;
 	int pop = -1;
 	int push = modularCounterNext("lightningPush");
 	trQuestVarSet("lightning" + push, index);
 	trQuestVarSet("lightning" + push + "damage", damage);
 	while ((pop == push) == false) {
 		pop = modularCounterNext("lightningPop");
-		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));
-		for (x=yGetDatabaseCount("lightningTargets"); >0) {
-			yDatabaseNext("lightningTargets");
-			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));
-			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {
-				push = modularCounterNext("lightningPush");
-				trQuestVarCopy("lightning" + push, "lightningTargets");
-				trQuestVarSet("lightning"+push+"damage", damage);
-				yRemoveFromDatabase("lightningTargets");
+		unit = trQuestVarGet("lightning" + pop);
+		tile = mGetVar(unit, "tile");
+
+		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+			unit = zGetVarByIndex("tiles", "occupant", 1*zGetVarByIndex("tiles", "neighbor"+x, tile));
+			if (unit > 0) {
+				if (mGetVar(unit, "player") == 3 - p) {
+					push = modularCounterNext("lightningPush");
+					trQuestVarSet("lightning"+push, unit);
+					trQuestVarSet("lightning"+push+"damage", damage);
+				}
 			}
 		}
 	}
@@ -311,10 +305,10 @@ active
 index = index of unit in the allUnits database.
 */
 void stunUnit(int index = 0) {
-	if (mGetVar(index, "health", ) > 0) {
+	if (mGetVar(index, "health") > 0) {
 		mSetVar(index, "stunTime", 2);
 		mSetVar(index, "action", ACTION_STUNNED);
-		if (mSetVar(index, "stunSFX") == 0) {
+		if (mGetVar(index, "stunSFX") == 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+index, true);
 			mSetVar(index, "stunIndex", spyEffect("Shockwave stun effect"));

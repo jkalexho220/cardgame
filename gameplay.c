@@ -191,12 +191,12 @@ active
 {
 	yDatabaseNext("allUnits", true);
 	if (trUnitIsSelected()) {
-		displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
+		displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
 	}
 	for(p=2; >0) {
 		yDatabaseNext("p"+p+"hand", true);
 		if (trUnitIsSelected()) {
-			displayCardKeywordsAndDescription("p"+p+"hand", 1*yGetPointer("p"+p+"hand"));
+			displayCardKeywordsAndDescription(1*trQuestVarGet("p"+p+"hand"));
 		}
 	}
 }
@@ -288,6 +288,8 @@ inactive
 							// If it is a spell
 							chooseSpell(1*mGetVar(unit, "spell"), pointer);
 						}
+
+						trQuestVarSet("handPointer", pointer);
 						
 						xsDisableRule("gameplay_01_select");
 						highlightReady(0.1);
@@ -678,6 +680,7 @@ inactive
 						highlightReady(100);
 					}
 
+					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					removeUnit("p"+p+"hand");
 
 					zSetVarByIndex("tiles", "occupant", tile, unit);
