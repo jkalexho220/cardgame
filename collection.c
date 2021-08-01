@@ -1,20 +1,11 @@
 void CollectionCard(int index = 0, int x = 0, int z = 0) {
 	int count = getCardCountCollection(index);
 	count = 3; // Testing
-	if(count > 0){
+	for(i=0;<count){
 		trArmyDispatch("1,10", "Trident Soldier", 1, x - 2, 0, z, 180, true);
 		trArmySelect("1,10");
-		trUnitChangeName("Card");	
-	}
-	if(count > 1){
-		trArmyDispatch("1,10", "Trident Soldier", 1, x, 0, z, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Card");	
-	}
-	if(count > 2){
-		trArmyDispatch("1,10", "Trident Soldier", 1, x + 2, 0, z, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Card");	
+		trUnitChangeName("Card");
+		x = x + 2;
 	}
 }
 
