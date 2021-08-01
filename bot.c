@@ -66,18 +66,18 @@ inactive
 					int spell = 0;
 					for(x=yGetDatabaseCount("p2hand"); >0) {
 						yDatabaseNext("p2hand");
-						if (yGetVar("p2hand", "cost") <= trQuestVarGet("p2mana")) {
+						if (mGetVarByQV("p2hand", "cost") <= trQuestVarGet("p2mana")) {
 							// Bot plays cast in desc order of their cost
-							int currentCardCost = yGetVar("p2hand", "cost");
+							int currentCardCost = mGetVarByQV("p2hand", "cost");
 							// Bot loves Airdrop
-							if(HasKeyword(AIRDROP, 1*yGetVar("p2hand", "keywords"))){
+							if(HasKeyword(AIRDROP, 1*mGetVarByQV("p2hand", "keywords"))){
 								currentCardCost = currentCardCost + 9000;
 							}
 							if(currentCardCost > maxCardCost){
 								maxCardCost = currentCardCost;
-								trQuestVarSet("botActiveKeywords", 1*yGetVar("p2hand", "keywords"));
+								trQuestVarSet("botActiveKeywords", 1*mGetVarByQV("p2hand", "keywords"));
 								trVectorSetUnitPos("botClickPos", "p2hand");
-								spell = 1*yGetVar("p2hand", "spell");
+								spell = 1*mGetVarByQV("p2hand", "spell");
 							}	
 						}
 					}
@@ -172,15 +172,15 @@ inactive
 					int maxUnitCost = -1;
 					for(x=yGetDatabaseCount("allUnits"); >0) {
 						yDatabaseNext("allUnits", true);
-						if (yGetVar("allUnits", "action") == ACTION_READY && yGetVar("allUnits", "player") == 2) {
-							int currentUnitCost = yGetVar("allUnits", "cost");
+						if (mGetVarByQV("allUnits", "action") == ACTION_READY && mGetVarByQV("allUnits", "player") == 2) {
+							int currentUnitCost = mGetVarByQV("allUnits", "cost");
 							if(currentUnitCost > maxUnitCost){
 								maxUnitCost = currentUnitCost;
 								trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));
 								trQuestVarSet("botActiveIndex", yGetPointer("allUnits"));
-								trQuestVarSet("botActiveKeywords", 1*yGetVar("allUnits", "keywords"));
-								trQuestVarSet("botActiveSpeed", 1*yGetVar("allUnits", "speed"));
-								trQuestVarSet("botActiveRange", 1*yGetVar("allUnits", "range"));
+								trQuestVarSet("botActiveKeywords", 1*mGetVarByQV("allUnits", "keywords"));
+								trQuestVarSet("botActiveSpeed", 1*mGetVarByQV("allUnits", "speed"));
+								trQuestVarSet("botActiveRange", 1*mGetVarByQV("allUnits", "range"));
 								if(HasKeyword(FURIOUS, 1*trQuestVarGet("botActiveKeywords"))){
 									trQuestVarSet("botActiveFury", 1);
 								}					
@@ -213,7 +213,7 @@ inactive
 						findAvailableTiles(findNearestTile("pos"), trQuestVarGet("botActiveSpeed"), "botReachable", HasKeyword(ETHEREAL, 1*trQuestVarGet("botActiveKeywords")));
 						if((yGetDatabaseCount("botReachable") == 0) || (trQuestVarGet("botActiveSpeed") == 0)) {
 							// Nowhere to move
-							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("botActiveIndex"), ACTION_DONE);
+							mSetVar(1*trQuestVarGet("botActiveIndex"), "action", ACTION_DONE);
 						} else {
 							trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("botReachable"), true);
 							for(x=trQuestVarGet("botRandom"); >0) {
@@ -243,9 +243,9 @@ inactive
 
 						for(x=yGetDatabaseCount("allUnits"); >0) {
 							yDatabaseNext("allUnits");
-							if (yGetVar("allUnits", "player") == 1) {
+							if (mGetVarByQV("allUnits", "player") == 1) {
 								if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
-									int currentTargetCost = yGetVar("allUnits", "cost");
+									int currentTargetCost = mGetVarByQV("allUnits", "cost");
 									if(currentTargetCost > maxTargetCost){
 										maxTargetCost = currentTargetCost;
 										trVectorSetUnitPos("botClickPos", "allUnits");
@@ -258,7 +258,7 @@ inactive
 							trQuestVarSet("botClick", RIGHT_CLICK);
 							trQuestVarSet("botAttackTimer", trTime());
 						} else {
-							ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("botActiveIndex"), ACTION_DONE);
+							mSetVar(1*trQuestVarGet("botActiveIndex"), "action", ACTION_DONE);
 							trQuestVarSet("botClick", LEFT_CLICK);
 							trVectorQuestVarSet("botClickPos", xsVectorSet(110,0,110));
 						}

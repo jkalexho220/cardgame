@@ -1,5 +1,5 @@
 void OnPlay(int unit = 0, int event = 0) {
-	int p = yGetVarByIndex("allUnits", "player", unit);
+	int p = mGetVar(unit, "player");
 	bool done = true;
 	switch(event)
 	{
@@ -27,10 +27,10 @@ void OnPlay(int unit = 0, int event = 0) {
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", unit)));
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (yGetVar("allUnits", "player") == 3 - p) {
+				if (mGetVarByQV("allUnits", "player") == 3 - p) {
 					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
-						damageUnit("allUnits", 1*yGetPointer("allUnits"), 1);
-						deployAtTile(0, "Lightning sparks", 1*yGetVar("allUnits", "tile"));
+						damageUnit(1*trQuestVarGet("allUnits"), 1);
+						deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("allUnits", "tile"));
 					}
 				}
 			}

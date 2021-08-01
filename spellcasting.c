@@ -113,10 +113,11 @@ void castEnd() {
 
 	if (trQuestVarGet("selectedCard") >= 0) {
 		int p = trQuestVarGet("activePlayer");
+		int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		trUnitSelectClear();
-		trUnitSelect(""+1*yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard")), true);
+		trUnitSelect(""+unit, true);
 		trUnitChangeProtoUnit("Hero Death");
-		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - yGetVarByIndex("p"+p+"hand", "cost", 1*trQuestVarGet("selectedCard")));
+		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		removeUnit("p"+p+"hand");
@@ -144,12 +145,11 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {
-						if (yGetVar("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
+					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
-							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
-							yAddToDatabase("castTargets", "allUnitsIndex");
+							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
 							}
@@ -162,12 +162,11 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((yGetVar("allUnits", "player") == p) || (p == 0)) {
-						if ((yGetVar("allUnits", "action") >= ACTION_DONE) && (yGetVar("allUnits", "action") < ACTION_SLEEPING)) {
+					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
-							trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
-							yAddToDatabase("castTargets", "allUnitsIndex");
+							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
 							}
@@ -199,7 +198,7 @@ inactive
 			case CAST_DIRECTION:
 			{
 				if (trQuestVarGet("cast"+x+"unit") == 1) {
-					trQuestVarSet("start", yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start"))));
+					trQuestVarSet("start", mGetVar(1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start")), "tile"));
 				} else {
 					trQuestVarSet("start", trQuestVarGet(trStringQuestVarGet("cast"+x+"start")));
 				}
@@ -260,9 +259,7 @@ void spellcastClearHighlights(int x = 0) {
 			}
 		} else {
 			for (z=yGetDatabaseCount("castTargets"); >0) {
-				yDatabaseNext("castTargets");
-				trUnitSelectClear();
-				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")), true);
+				yDatabaseNext("castTargets", true);
 				trUnitHighlight(0.1, false);
 			}
 		}
@@ -291,11 +288,8 @@ inactive
 				if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
 					for(z=yGetDatabaseCount("castTargets"); >0) {
 						yDatabaseNext("castTargets");
-						trQuestVarCopy("castTargetUnit", "castTargets");
-
-						trQuestVarSet("castTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("castTargets")));
 						
-						if (zDistanceToVectorSquared("castTargetUnit", "p"+p+"clickPos") < 8) {
+						if (zDistanceToVectorSquared("castTargets", "p"+p+"clickPos") < 8) {
 							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");
 							selected = true;
 							break;
@@ -416,27 +410,27 @@ inactive
 		{
 			case SPELL_SPARK:
 			{
-				damageUnit("allUnits", 1*trQuestVarGet("spellTarget"), 1);
-				deployAtTile(0, "Tartarian Gate flame", 1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("spellTarget")));
+				damageUnit(1*trQuestVarGet("spellTarget"), 1);
+				deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("spellTarget", "tile"));
 				trMessageSetText("(1)Spark: Deal 1 damage to a unit.", -1);
 			}
 			case SPELL_FOOD:
 			{
 				target = 1*trQuestVarGet("spellTarget");
-				ySetVarByIndex("allUnits", "attack", target, 1 + yGetVarByIndex("allUnits", "attack", target));
-				ySetVarByIndex("allUnits", "health", target, 1 + yGetVarByIndex("allUnits", "health", target));
-				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));
+				mSetVar(target, "attack", 1 + mGetVar(target, "attack"));
+				mSetVar(target, "health", 1 + mGetVar(target, "health"));
+				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				trUnitSelectClear();
-				trUnitSelect(""+1*yGetUnitAtIndex("allUnits", target), true);
+				trUnitSelect(""+target, true);
 				spyEffect("Einheriar Boost SFX");
 			}
 			case SPELL_SING:
 			{
 				target = 1*trQuestVarGet("spellTarget");
-				ySetVarByIndex("allUnits", "action", target, ACTION_READY);
-				deployAtTile(0, "Hero Birth", 1*yGetVarByIndex("allUnits", "tile", target));
+				mSetVar(target, "action", ACTION_READY);
+				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("restorationbirth.wav","1",-1,"","");
 				trMessageSetText("(2)Windsong: Select an ally that has already acted. Grant it another action.",-1);
 			}

@@ -34,28 +34,16 @@ rule match_00_start
 highFrequency
 active
 {
-	trQuestVarSet("p1commander", trGetNextUnitScenarioNameNumber());
-	addCardToHand(1, kbGetProtoUnitID("Hero Greek Jason"), SPELL_COMMANDER);
-
-
-	trQuestVarSet("p2commander", trGetNextUnitScenarioNameNumber());
-	addCardToHand(2, kbGetProtoUnitID("Hero Greek Jason"), SPELL_COMMANDER);
-
 	trTechGodPower(0, "spy", 2);
 	for(p=2; >0) {
+		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, kbGetProtoUnitID("Hero Greek Jason")));
 
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
 		trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
 
-		yDatabaseNext("p"+p+"hand");
-		teleportToTile("p"+p+"hand", 1*trQuestVarGet("p"+p+"startTile"));
-		transferUnit("allUnits", "p"+p+"hand");
-		yClearDatabase("p"+p+"hand");
 		trQuestVarSet("p"+p+"drawCards", 4);
-
-
-		zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("p"+p+"startTile"), TILE_OCCUPIED);
+		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
 
 		shuffleDeck(p);
 	}
@@ -161,7 +149,7 @@ inactive
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
 			if (yGetVar("p"+p+"hand", "mulligan") == 1) {
-				addCardToDeck(p, kbGetProtoUnitName(1*yGetVar("p"+p+"hand", "proto")), yGetVar("p"+p+"hand", "spell"));
+				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("p"+p+"hand", "proto")), mGetVarByQV("p"+p+"hand", "spell"));
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 				trUnitChangeProtoUnit("Hero Death");
 			} else {
@@ -208,29 +196,29 @@ inactive
 		xsSetContextPlayer(p);
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
-			if (yGetVar("allUnits", "player") == p) {
-				if (yGetVar("allUnits", "stunTime") > 0) {
-					ySetVar("allUnits", "stunTime", yGetVar("allUnits", "stunTime") - 1);
-					if (yGetVar("allUnits", "stunTime") == 0) {
-						ySetVar("allUnits", "action", ACTION_READY);
+			if (mGetVarByQV("allUnits", "player") == p) {
+				if (mGetVarByQV("allUnits", "stunTime") > 0) {
+					mSetVarByQV("allUnits", "stunTime", mGetVarByQV("allUnits", "stunTime") - 1);
+					if (mGetVarByQV("allUnits", "stunTime") == 0) {
+						mSetVarByQV("allUnits", "action", ACTION_READY);
 						trUnitSelectClear();
-						trUnitSelect(""+1*yGetVar("allUnits", "stunSFX"), true);
+						trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
 						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
 					} else {
-						ySetVar("allUnits", "action", ACTION_STUNNED);
+						mSetVarByQV("allUnits", "action", ACTION_STUNNED);
 					}
 				} else {
-					ySetVar("allUnits", "action", ACTION_READY);
+					mSetVarByQV("allUnits", "action", ACTION_READY);
 				}
-				if (HasKeyword(REGENERATE, 1*yGetVar("allUnits", "keywords"))) {
+				if (HasKeyword(REGENERATE, 1*mGetVarByQV("allUnits", "keywords"))) {
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 					trDamageUnitPercent(-100);
 					ySetVar("allUnits", "health", 
-						xsMax(yGetVar("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
+						xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
 				}
 			} else {
-				ySetVar("allUnits", "action", ACTION_DONE);
+				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
 		}
 
@@ -291,7 +279,7 @@ inactive
 		yDatabasePointerDefault("p"+p+"hand");
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
-			if (HasKeyword(FLEETING, 1*yGetVar("p"+p+"hand", "keywords"))) {
+			if (HasKeyword(FLEETING, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
 				fleeting = true;
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
@@ -299,11 +287,11 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trUnitChangeProtoUnit("Hero Death");
-				if (yGetVar("p"+p+"hand", "spell") == SPELL_NONE) {
-					type = yGetVar("p"+p+"hand", "proto");
+				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
+					type = mGetVarByQV("p"+p+"hand", "proto");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + type + "_name"));
 				} else {
-					type = yGetVar("p"+p+"hand", "spell");
+					type = mGetVarByQV("p"+p+"hand", "spell");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
 				removeUnit("p"+p+"hand");

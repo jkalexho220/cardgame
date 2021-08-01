@@ -176,6 +176,38 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	xsSetContextPlayer(old);
 }
 
+int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
+	int next = trGetNextUnitScenarioNameNumber();
+	trArmyDispatch("1,10","Dwarf",1,119,0,1,0,true);
+	trUnitSelectClear();
+	trUnitSelect(""+next, true);
+	trUnitConvert(p);
+
+	if (spell == 0 || spell == SPELL_COMMANDER) {
+		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
+		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
+		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));
+		mSetVar(next, "range", trQuestVarGet("card_" + proto + "_Range"));
+		mSetVar(next, "cost", trQuestVarGet("card_" + proto + "_Cost"));
+		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
+		mSetVar(next, "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));
+		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
+		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
+	} else {
+		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		proto = kbGetProtoUnitID("Statue of Lightning");
+	}
+	
+	mSetVar(next, "proto", proto);
+	mSetVar(next, "player", p);
+	mSetVar(next, "spell", spell);
+
+	return(next);
+}
+
 void SpellSetup(string name = "", int cost = 0, int spell = 0) {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
