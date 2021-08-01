@@ -1,315 +1,458 @@
-void CollectionCard(int index = 0, int x = 0, int z = 0) {
-	int count = getCardCountCollection(index);
-	count = 3; // Testing
-	for(i=0;<count){
+void CollectionCommanderFirst(int class = 0, int x = 0, int z = 0){
+	switch(class)
+	{
+		case CLASS_ADVENTURER:
+		{
+			trArmyDispatch("1,10", "Hero Greek Jason", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("phdorogers4 (Commander)");
+		}
+		case CLASS_ARCANE:
+		{
+			trArmyDispatch("1,10", "Oracle Hero", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Nanodude (Commander)");
+		}
+		case CLASS_NAGA:
+		{
+			trArmyDispatch("1,10", "Royal Guard", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Out Reach (Commander)");
+		}
+		case CLASS_CLOCKWORK:
+		{
+			trArmyDispatch("1,10", "Hero Greek Polyphemus", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Roxas (Commander)");
+		}
+		case CLASS_EVIL:
+		{
+			trArmyDispatch("1,10", "Hoplite", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Zenophobia (Commander)");
+		}
+		case CLASS_SPACE:
+		{
+			trArmyDispatch("1,10", "Hero Greek Odysseus", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Nickonhawk (Commander");
+		}
+	}
+}
+
+void CollectionCommanderSecond(int class = 0, int x = 0, int z = 0){
+	switch(class)
+	{
+		case CLASS_ADVENTURER:
+		{
+			trArmyDispatch("1,10", "Hero Greek Heracles", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Venlesh (Commander)");
+		}
+		case CLASS_ARCANE:
+		{
+			trArmyDispatch("1,10", "Minotaur", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("nottud (Commander)");
+		}
+		case CLASS_NAGA:
+		{
+			trArmyDispatch("1,10", "Archer Atlantean Hero", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("scragins (Commander)");
+		}
+		case CLASS_CLOCKWORK:
+		{
+			trArmyDispatch("1,10", "Pharaoh of Osiris", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Yeebaagooon (Commander)");
+		}
+		case CLASS_EVIL:
+		{
+			trArmyDispatch("1,10", "Hero Greek Perseus", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("Aros (Commander)");
+		}
+		case CLASS_SPACE:
+		{
+			trArmyDispatch("1,10", "Caravan Atlantean", 1, x, 0, z, 180, true);	
+			trArmySelect("1,10");
+			trUnitChangeName("God (Commander)");
+		}
+	}
+}
+
+bool CollectionCardLegendary(int index = 0, int x = 0, int z = 0) {
+	if(getCardCountCollection(14) > -1){
+		trArmyDispatch("1,10", "Trident Soldier Hero", 1, x, 0, z, 180, true);
+		trArmySelect("1,10");
+		trUnitChangeName("Legendary Card");	
+		return (false);
+	}
+	if(getCardCountDeck(14) > -1){
+		trArmyDispatch("1,10", "Trident Soldier Hero", 1, x, 0, z + 44, 180, true);
+		trArmySelect("1,10");
+		trUnitChangeName("Legendary Card");	
+		return (true);
+	}
+}
+
+bool CollectionCard(int index = 0, int x = 0, int z = 0) {
+	int countCollection = getCardCountCollection(index);
+	countCollection = 3; // Testing
+	for(i=0;<countCollection){
 		trArmyDispatch("1,10", "Trident Soldier", 1, x - 2, 0, z, 180, true);
 		trArmySelect("1,10");
 		trUnitChangeName("Card");
 		x = x + 2;
 	}
+	x = x - 2 * countCollection;
+	int countDeck = getCardCountDeck(index);
+	countDeck = 3; // Testing
+	for(i=0;<countDeck){
+		trArmyDispatch("1,10", "Trident Soldier", 1, x - 2, 0, z + 44, 180, true);
+		trArmySelect("1,10");
+		trUnitChangeName("Card");
+		x = x + 2;
+	}
+	return (countDeck>0);
+}
+
+void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
+	int progress = getClassProgress(class);
+	progress = 8; // Testing
+	trQuestVarSet("progressClass" + class, progress);
+	int x = 0;
+	int z = 0;
+	if(progress > 0){
+		trPaintTerrain(10 * class, 0, 9 + 10 * class, 43, 0, 73, false); // CityTileWaterPool
+		trPaintTerrain(10 * class, 0, 8 + 10 * class, 20, terrainType, terrainSubType, false);
+		trPaintTerrain(10 * class, 22, 8 + 10 * class, 42, terrainType, terrainSubType, false);	
+		// Cards
+		int classIsInDeck = 0;
+		x = 3 + 20 * class; z = 37;
+		for(i=0;<30){
+			if(i==14){
+				if(CollectionCardLegendary(14,7 + 20 * class,35)){
+					classIsInDeck = 1;
+				}
+			} else if(i==29){
+				if(CollectionCardLegendary(29,11 + 20 * class,35)){
+					classIsInDeck = 1;
+				}
+			} else {
+				if(CollectionCard(i,x,z)){
+					classIsInDeck = 1;
+				}
+				z = z - 4;
+				if(i==9){
+					x = 9 + 20 * class; z = 31;
+				}
+				if(i==18){
+					x = 15 + 20 * class; z = 37;
+				}
+			}
+		}	
+		// Commanders
+		CollectionCommanderFirst(class, 3 + 20 * class, 41 + 44 * (1 - getDeckCommander()) * classIsInDeck);
+		if(progress > 7){
+			CollectionCommanderSecond(class, 15 + 20 * class, 41 + 44 * getDeckCommander() * classIsInDeck);
+		}
+		// Missions
+		x = 9 + 20 * class; z = 91;
+		for(i=1;<progress){
+			trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
+			trArmyDispatch("1,10", "UI Range Indicator Norse SFX", 1, x, 0, z, 180, true);
+			trArmySelect("1,10");
+			z = z + 4;
+		}
+		if(progress < 7){
+			trArmyDispatch("1,10", "Garrison Flag Sky Passage", 1, x, 0, z - 4, 180, true);
+		}
+	}
+}
+
+string GetMissionTitle(int class = 0, int mission = 0){
+	switch(class)
+	{
+		case CLASS_ADVENTURER:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("The Adventure Begins");	
+				}
+				case 2:
+				{
+					return ("The Plot Thickens");	
+				}
+				case 3:
+				{
+					return ("The Adventure Continues");	
+				}
+				case 4:
+				{
+					return ("The Plot Twists");	
+				}
+				case 5:
+				{
+					return ("The Adventure Continues Again");	
+				}
+				case 6:
+				{
+					return ("The Plot Twists Again");	
+				}
+				case 7:
+				{
+					return ("The Adventure Concludes");	
+				}
+			}
+		}
+		case CLASS_ARCANE:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("Letter From An Owl");	
+				}
+				case 2:
+				{
+					return ("Sparkling Gates");	
+				}
+				case 3:
+				{
+					return ("Palace Of Magic");	
+				}
+				case 4:
+				{
+					return ("Unusual Companions");	
+				}
+				case 5:
+				{
+					return ("Wizard Tournament");	
+				}
+				case 6:
+				{
+					return ("It's Not Over Yet");	
+				}
+				case 7:
+				{
+					return ("Power Of Magic");	
+				}
+			}
+		}
+		case CLASS_NAGA:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("Odd Catch");	
+				}
+				case 2:
+				{
+					return ("Storm Approaching");	
+				}
+				case 3:
+				{
+					return ("Roaring Waves");	
+				}
+				case 4:
+				{
+					return ("Dreaming Whirlpool");	
+				}
+				case 5:
+				{
+					return ("Go With The Flow");	
+				}
+				case 6:
+				{
+					return ("Empire Of Water");	
+				}
+				case 7:
+				{
+					return ("Return What Was Taken");	
+				}
+			}
+		}
+		case CLASS_CLOCKWORK:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("An Invention Like Any Other");	
+				}
+				case 2:
+				{
+					return ("Life");	
+				}
+				case 3:
+				{
+					return ("Junkyard Is To Be Explored");	
+				}
+				case 4:
+				{
+					return ("Creator");	
+				}
+				case 5:
+				{
+					return ("A Friend Like No Other");	
+				}
+				case 6:
+				{
+					return ("Accident");	
+				}
+				case 7:
+				{
+					return ("Memories Are To Be Remembered");	
+				}
+			}
+		}
+		case CLASS_EVIL:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("Nothing Left But Revenge");	
+				}
+				case 2:
+				{
+					return ("Eyes Behind The Veil");	
+				}
+				case 3:
+				{
+					return ("The Master Answered");	
+				}
+				case 4:
+				{
+					return ("Sky Melts Downwards");	
+				}
+				case 5:
+				{
+					return ("Air Turns To Formless Flesh");	
+				}
+				case 6:
+				{
+					return ("Moment Of Hesitation");	
+				}
+				case 7:
+				{
+					return ("Break Of Dawn");	
+				}
+			}
+		}
+		case CLASS_SPACE:
+		{
+			switch(mission)
+			{
+				case 1:
+				{
+					return ("It's Over And Yet");	
+				}
+				case 2:
+				{
+					return ("The Portal Guy");	
+				}
+				case 3:
+				{
+					return ("Secrets And Stars");	
+				}
+				case 4:
+				{
+					return ("Puzzle Box");	
+				}
+				case 5:
+				{
+					return ("It's Empty And Yet");	
+				}
+				case 6:
+				{
+					return ("Thank You");	
+				}
+				case 7:
+				{
+					return ("Goodbye");	
+				}
+			}
+		}
+	}
+	ThrowError("GetMissionTitle");
 }
 
 rule Collection
 highFrequency
 inactive
 {
+	xsEnableRule("CollectionClick");
+	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trChangeTerrainHeight(0, 0, 60, 60, 0, false);
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
-	int progressAdventurer = getClassProgress(CLASS_ADVENTURER);
-	progressAdventurer = 8; // Testing
-	int x = 0;
-	int z = 0;
-	if(progressAdventurer > 0){
-		trPaintTerrain(0, 0, 9, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(0, 0, 8, 19, 0, 65, false); // GreekRoadA
-		trPaintTerrain(0, 21, 8, 40, 0, 65, false); // GreekRoadA
-		// First Commander
-		trArmyDispatch("1,10", "Hero Greek Jason", 1, 3, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("phdorogers4 (Commander)");
-		if(progressAdventurer > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Hero Greek Heracles", 1, 15, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Venlesh (Commander)");
-		}
-		// Cards
-		x = 3; z = 35;
-		for(i=0;<27){
-			CollectionCard(i,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 9; z = 33;
-			}
-			if(i==17){
-				x = 15; z = 35;
-			}
-		}
-		if(getCardCountCollection(27) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 7, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 11, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 9; z = 87;
-		for(i=1;<=progressAdventurer){
-			trQuestVarSet("missionAdventurer"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Adventurer Mission "+i);
-			z = z + 4;
-		}
-	}
+
+	SetupClass(CLASS_ADVENTURER, 0, 65); // GreekRoadA
+	SetupClass(CLASS_ARCANE, 5, 2); // IceC
+	SetupClass(CLASS_NAGA, 3, 10); // coralB
+	SetupClass(CLASS_CLOCKWORK, 0, 71); // CityTileAtlantis
+	SetupClass(CLASS_EVIL, 0, 84); // Hadesbuildable1
+	SetupClass(CLASS_SPACE, 0, 52); // OlympusC
 	
-	int progressArcane = getClassProgress(CLASS_ARCANE);
-	progressArcane = 8; // Testing
-	if(progressArcane > 0){
-		trPaintTerrain(9, 0, 19, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(10, 0, 18, 19, 5, 2, false); // IceC
-		trPaintTerrain(10, 21, 18, 40, 5, 2, false); // IceC
-		// First Commander
-		trArmyDispatch("1,10", "Oracle Hero", 1, 23, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Nanodude (Commander)");
-		if(progressArcane > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Minotaur", 1, 35, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("nottud (Commander)");
-		}
-		// Cards
-		x = 23; z = 35;
-		for(i=0;<27){
-			CollectionCard(i+29,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 29; z = 33;
-			}
-			if(i==17){
-				x = 35; z = 35;
-			}
-		}
-		if(getCardCountCollection(27+29) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 27, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28+29) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 31, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 29; z = 87;
-		for(i=1;<8){
-			trQuestVarSet("missionArcane"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Arcane Mission "+i);
-			z = z + 4;
-		}
-	}
-		
-	int progressNaga = getClassProgress(CLASS_NAGA);
-	progressNaga = 8; // Testing
-	if(progressNaga > 0){
-		trPaintTerrain(19, 0, 29, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(20, 0, 28, 19, 3, 10, false); // coralB
-		trPaintTerrain(20, 21, 28, 40, 3, 10, false); // coralB
-		// First Commander
-		trArmyDispatch("1,10", "Royal Guard", 1, 43, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Out Reach (Commander)");
-		if(progressNaga > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Archer Atlantean Hero", 1, 55, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("scragins (Commander)");
-		}
-		// Cards
-		x = 43; z = 35;
-		for(i=0;<27){
-			CollectionCard(i+29*2,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 49; z = 33;
-			}
-			if(i==17){
-				x = 55; z = 35;
-			}
-		}
-		if(getCardCountCollection(27+29*2) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 47, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28+29*2) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 51, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 49; z = 87;
-		for(i=1;<8){
-			trQuestVarSet("missionNaga"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Naga Mission "+i);
-			z = z + 4;
-		}
-	}
-	
-	int progressClockwork = getClassProgress(CLASS_CLOCKWORK);
-	progressClockwork = 8; // Testing
-	if(progressClockwork > 0){
-		trPaintTerrain(29, 0, 39, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(30, 0, 38, 19, 0, 71, false); // CityTileAtlantis
-		trPaintTerrain(30, 21, 38, 40, 0, 71, false); // CityTileAtlantis
-		// First Commander
-		trArmyDispatch("1,10", "Hero Greek Polyphemus", 1, 63, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Roxas (Commander)");
-		if(progressClockwork > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Pharaoh of Osiris", 1, 75, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Yeebaagooon (Commander)");
-		}
-		// Cards
-		x = 63; z = 35;
-		for(i=0;<27){
-			CollectionCard(i+29*3,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 69; z = 33;
-			}
-			if(i==17){
-				x = 75; z = 35;
-			}
-		}
-		if(getCardCountCollection(27+29*3) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 67, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28+29*3) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 71, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 69; z = 87;
-		for(i=1;<8){
-			trQuestVarSet("missionClockwork"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Clockwork Mission "+i);
-			z = z + 4;
-		}
-	}
-	
-	int progressEvil = getClassProgress(CLASS_EVIL);
-	progressEvil = 8; // Testing
-	if(progressEvil > 0){
-		trPaintTerrain(39, 0, 49, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(40, 0, 48, 19, 0, 84, false); // Hadesbuildable1
-		trPaintTerrain(40, 21, 48, 40, 0, 84, false); // Hadesbuildable1
-		// First Commander
-		trArmyDispatch("1,10", "Hoplite", 1, 83, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Zenophobia (Commander)");
-		if(progressEvil > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Hero Greek Perseus", 1, 95, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Aros (Commander)");
-		}
-		// Cards
-		x = 83; z = 35;
-		for(i=0;<27){
-			CollectionCard(i+29*4,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 89; z = 33;
-			}
-			if(i==17){
-				x = 95; z = 35;
-			}
-		}
-		if(getCardCountCollection(27+29*4) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 87, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28+29*4) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 91, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 89; z = 87;
-		for(i=1;<8){
-			trQuestVarSet("missionEvil"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Evil Mission "+i);
-			z = z + 4;
-		}
-	}
-	
-	int progressSpace = getClassProgress(CLASS_SPACE);
-	progressSpace = 8; // Testing
-	if(progressSpace > 0){
-		trPaintTerrain(49, 0, 59, 41, 0, 73, false); // CityTileWaterPool
-		trPaintTerrain(50, 0, 58, 19, 0, 52, false); // OlympusC
-		trPaintTerrain(50, 21, 58, 40, 0, 52, false); // OlympusC
-		// First Commander
-		trArmyDispatch("1,10", "Hero Greek Odysseus", 1, 103, 0, 39, 180, true);
-		trArmySelect("1,10");
-		trUnitChangeName("Nickonhawk (Commander)");
-		if(progressSpace > 7){
-			// Second Commander
-			trArmyDispatch("1,10", "Caravan Atlantean", 1, 115, 0, 39, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("God (Commander)");
-		}
-		// Cards
-		x = 103; z = 35;
-		for(i=0;<27){
-			CollectionCard(i+29*5,x,z);
-			z = z - 4;
-			if(i==8){
-				x = 109; z = 33;
-			}
-			if(i==17){
-				x = 115; z = 35;
-			}
-		}
-		if(getCardCountCollection(27+29*5) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 107, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		if(getCardCountCollection(28+29*5) > -1){
-			trArmyDispatch("1,10", "Trident Soldier Hero", 1, 111, 0, 37, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Legendary Card");	
-		}
-		// Missions
-		x = 109; z = 87;
-		for(i=1;<8){
-			trQuestVarSet("missionSpace"+i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName("Space Mission "+i);
-			z = z + 4;
-		}
-	}
     xsDisableRule("Collection");
+}
+
+rule CollectionClick
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p1click") == LEFT_CLICK) {
+		trQuestVarSet("p1click", 0);
+		trCounterAbort("mission");
+		trCounterAbort("reward");
+		xsDisableRule("CollectionEnter");
+		trPlayerKillAllGodPowers(1);
+		trTechGodPower(1, "animal magnetism", 1);
+		for(class=0;<6){
+			for(i=1;<=xsMin(trQuestVarGet("progressClass" + class),7)){
+			if(zDistanceToVector("class" + class + "Mission" + i,"p1clickPos") < 2){
+				if(trQuestVarGet("progressClass" + class) == i){
+					trQuestVarSet("missionHardmode", 0);
+					trCounterAddTime("mission", -1, -9999999, GetMissionTitle(class,i));
+					trCounterAddTime("reward", -1, -9999999, "Reward: Class Pack");					
+				} else {
+					trQuestVarSet("missionHardmode", 1);
+					trCounterAddTime("mission", -1, -9999999, GetMissionTitle(class,i) + " (HARDMODE)");
+					trCounterAddTime("reward", -1, -9999999, "Reward: Random Pack");
+				}
+				trTechGodPower(1, "nidhogg", 1);
+				trQuestVarSet("missionSelection", i);
+				trQuestVarSet("missionClass", class);
+				xsEnableRule("CollectionEnter");
+				break;
+			}
+			}
+		}
+
+	}
+}
+
+rule CollectionEnter
+highFrequency
+inactive
+{
+	if (trPlayerUnitCountSpecific(1, "Nidhogg") > 0) {
+		if (yFindLatestReverse("nidhoggNext", "Nidhogg", 1) > 0) {
+			trUnitDestroy();
+			trPlayerKillAllGodPowers(1);
+			trCounterAbort("mission");
+			trCounterAbort("reward");
+			xsDisableRule("CollectionClick");
+			xsDisableRule("CollectionEnter");
+			ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
+		} else {
+			ThrowError();
+		}
+	}
 }
