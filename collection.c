@@ -35,7 +35,7 @@ void CollectionCommanderFirst(int class = 0, int x = 0, int z = 0){
 		{
 			trArmyDispatch("1,10", "Hero Greek Odysseus", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
-			trUnitChangeName("Nickonhawk (Commander");
+			trUnitChangeName("Nickonhawk (Commander)");
 		}
 	}
 }
@@ -131,13 +131,13 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		// Cards
 		int classIsInDeck = 0;
 		x = 3 + 20 * class; z = 37;
-		for(i=0;<30){
-			if(i==14){
-				if(CollectionCardLegendary(14,7 + 20 * class,35)){
+		for(i = 30 * class;<30 * (class + 1)){
+			if(i == 14 + 30 * class){
+				if(CollectionCardLegendary(i,7 + 20 * class,35)){
 					classIsInDeck = 1;
 				}
-			} else if(i==29){
-				if(CollectionCardLegendary(29,11 + 20 * class,35)){
+			} else if(i == 29 + 30 * class){
+				if(CollectionCardLegendary(i,11 + 20 * class,35)){
 					classIsInDeck = 1;
 				}
 			} else {
@@ -145,10 +145,10 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 					classIsInDeck = 1;
 				}
 				z = z - 4;
-				if(i==9){
+				if(i == 9 + 30 * class){
 					x = 9 + 20 * class; z = 31;
 				}
-				if(i==18){
+				if(i == 18 + 30 * class){
 					x = 15 + 20 * class; z = 37;
 				}
 			}
