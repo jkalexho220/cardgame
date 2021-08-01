@@ -331,7 +331,6 @@ highFrequency
 inactive
 {
    if ((trTime()-cActivationTime) >= 7){
-      trPaintTerrain(0, 0, 100, 100, 5, 4, false); //Black
 	  int next = trGetNextUnitScenarioNameNumber();
 	  for(i=trQuestVarGet("idsStart");<next){
 		  trUnitSelectClear();trUnitSelect(""+i);
@@ -339,5 +338,6 @@ inactive
 	  }
       trLetterBox(false);
       xsDisableRule("CinPrologue12");
+	  xsEnableRule("Collection");
    }
 }

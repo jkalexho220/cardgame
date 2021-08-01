@@ -176,9 +176,7 @@ void highlightTile(int tile = 0, float duration = 0.1) {
 }
 
 rule initializeBoard
-highFrequency
-active
-runImmediately
+inactive
 {
 	/*
 	Tile index increases outwards from the center.
@@ -203,10 +201,11 @@ runImmediately
 
 	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
 	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));
-
-	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") - 6);
-	trModifyProtounit("Revealer to Player", 1, 2, 6);
-	trModifyProtounit("Revealer to Player", 2, 2, 6);
+	
+	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") + 6);
 
 	xsDisableRule("initializeBoard");
+	xsEnableRule("match_00_start");
 }

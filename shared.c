@@ -578,14 +578,17 @@ runImmediately
 	if(Multiplayer){
 		ChatLog(1, "Mode:Multiplayer");
 		ChatLog(2, "Mode:Multiplayer");
+		xsEnableRule("initializeBoard");
 	} else {
 		ChatLog(1, "Mode:Singleplayer");
 		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
 		bool virgin = trGetScenarioUserData(0); 
 		virgin = false; // testing
 		ChatLog(1, "Checking if played before...");
-		if(virgin && trQuestVarGet("chad") == 0){
+		if(virgin){
 			xsEnableRule("CinPrologue00");
+		} else {
+			xsEnableRule("Collection");
 		}
 	}
 
@@ -602,7 +605,16 @@ runImmediately
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
-
+	
+	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer", 0, 2, 54);
+	trModifyProtounit("Revealer to Player", 1, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer to Player", 1, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 1, 2, 18);
+	trModifyProtounit("Revealer to Player", 2, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer to Player", 2, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 2, 2, 18);
 
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);
