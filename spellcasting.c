@@ -116,7 +116,7 @@ void castEnd() {
 		int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		trUnitSelectClear();
 		trUnitSelect(""+unit, true);
-		trUnitChangeProtoUnit("Hero Death");
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
