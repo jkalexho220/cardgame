@@ -88,7 +88,7 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 		pop = pop + 1;
 		tile = trQuestVarGet("search"+pop+"tile");
 		// Add it to the db if it is not occupied
-		if (zGetVarByIndex("tiles", "occupied", tile) < TILE_OCCUPIED) {
+		if (zGetVarByIndex("tiles", "occupant", tile) == 0) {
 			yAddToDatabase(db, "search"+pop+"tile");
 		}
 		// Search neighbors
@@ -98,7 +98,7 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 				if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
 					zSetVarByIndex("tiles", "searched", neighbor, 1);
 					// Add to fringe if it can be moved through.
-					if (zGetVarByIndex("tiles", "occupied", neighbor) == TILE_EMPTY || ghost) {
+					if ((zGetVarByIndex("tiles", "occupant", neighbor) + zGetVarByIndex("tiles", "terrain", neighbor) == 0) || ghost) {
 						push = push + 1;
 						trQuestVarSet("search"+push+"tile", neighbor);
 						trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
@@ -194,7 +194,6 @@ void paintTreesOnTile(int tile = 0) {
 	int x = 0;
 	int z = 0;
 	zSetVarByIndex("tiles", "terrain", tile, TILE_IMPASSABLE);
-	zSetVarByIndex("tiles", "occupied", tile, TILE_IMPASSABLE);
 	paintTile(tile, 0, 1*trQuestVarGet("treeTile"));
 	for(i=4; >0) {
 		trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));

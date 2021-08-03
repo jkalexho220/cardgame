@@ -1,3 +1,11 @@
+const int GAMEPLAY_SELECT = 0;
+const int GAMEPLAY_WORK = 1;
+const int GAMEPLAY_MOVING = 2;
+const int GAMEPLAY_SUMMONING = 3;
+const int GAMEPLAY_ATTACKING = 4;
+const int GAMEPLAY_SPELL_UNIT = 5;
+const int GAMEPLAY_SPELL_TILE = 6;
+
 
 const int ACTION_READY = 0;
 const int ACTION_MOVED = 1;
@@ -10,8 +18,8 @@ const int ATTACK_START = 0;
 const int ATTACK_ANIMATE = 1;
 const int ATTACK_DONE = 2;
 
-
-
+const int STATE_ALIVE = 0;
+const int STATE_DEAD = 1;
 
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
@@ -24,8 +32,8 @@ void updateMana() {
 void refreshGuardAll() {
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		if (HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
-			tileGuard(1*yGetVar("allUnits", "tile"), true);
+		if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+			tileGuard(1*mGetVarByQV("allUnits", "tile"), true);
 		}
 	}
 }
@@ -90,16 +98,12 @@ void transferUnit(string to = "", string from = "") {
 }
 
 
+void teleportToTile(int name = 0, int tile = 0) {
+	int p = mGetVar(name, "player");
 
-void teleportToTile(string db = "", int tile = 0, int index = -1) {
-	int p = yGetVar(db, "player");
-	if (index == -1) {
-		index = yGetPointer(db);
-	}
-
-	if (HasKeyword(GUARD, 1*yGetVarByIndex(db, "keywords", index))) {
-		if (yGetVarByIndex(db, "tile", index) > 0) {
-			tileGuard(1*yGetVarByIndex(db, "tile", index), false);
+	if (HasKeyword(GUARD, 1*mGetVar(name, "keywords"))) {
+		if (mGetVar(name, "tile") > 0) {
+			tileGuard(1*mGetVar(name, "tile"), false);
 		}
 		tileGuard(tile, true);
 	}
@@ -111,29 +115,33 @@ void teleportToTile(string db = "", int tile = 0, int index = -1) {
 	trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 	
 	trUnitSelectClear();
-	trUnitSelect(""+1*yGetUnitAtIndex(db, index), true);
+	trUnitSelect(""+name, true);
 	trMutateSelected(kbGetProtoUnitID("Dwarf"));
 	trImmediateUnitGarrison(""+tile);
-	trUnitChangeProtoUnit(kbGetProtoUnitName(1*yGetVarByIndex(db, "proto", index)));
+	trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(name, "proto")));
 
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(0);
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 
-	ySetVarByIndex(db, "tile", index, tile);
+	mSetVar(name, "tile", tile);
+	zSetVarByIndex("tiles", "occupant", tile, name);
 }
 
 
+int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
+	trQuestVarSet("next", CardInstantiate(p, proto, SPELL_NONE));
+	teleportToTile(1*trQuestVarGet("next"), tile);
+	yAddToDatabase("allUnits", "next");
+	return(1*trQuestVarGet("next"));
+}
 
 
 /*
-Given a QV vector name, find the name of the closest unit to it. 
-Returns the index of the unit in the 'allUnits' array. This index can 
-be used in yGetVarByIndex and ySetVarByIndex and yGetUnitAtIndex.
+Given a QV vector name, find the name of the closest unit to it.
 Returns -1 if none found.
-BEWARE: if this unit is removed from the database, the pointer will no longer
-point to it!
+radius is the squared value to be compared to
 */
 int findNearestUnit(string qv = "", float radius = 1) {
 	int id = 0;
@@ -143,7 +151,7 @@ int findNearestUnit(string qv = "", float radius = 1) {
 			removeUnit();
 		} else {
 			if (zDistanceToVectorSquared("allUnits", qv) < radius) {
-				return(yGetPointer("allUnits"));
+				return(1*trQuestVarGet("allUnits"));
 			}
 		}
 	}
@@ -154,14 +162,13 @@ int findNearestUnit(string qv = "", float radius = 1) {
 
 
 /*
-Given the index of a unit in the allUnits database, highlight
+Given the name of a unit in the allUnits database, highlight
 the tiles that are reachable by that unit.
 */
-void highlightReachable(int index = 0) {
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", index), true));
+void highlightReachable(int name = 0) {
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	int tile = findNearestTile("pos");
-	findAvailableTiles(tile, yGetVarByIndex("allUnits", "speed", index), 
-		"reachable", HasKeyword(ETHEREAL, 1*yGetVarByIndex("allUnits", "keywords", index)));
+	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")));
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
 		highlightTile(tile, 3600);
@@ -175,7 +182,7 @@ void highlightReady(float duration = 0.1) {
 	int p = trQuestVarGet("activePlayer");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
-		if (yGetVar("allUnits", "action") == ACTION_READY && yGetVar("allUnits", "player") == p) {
+		if ((mGetVarByQV("allUnits", "action") == ACTION_READY) && (mGetVarByQV("allUnits", "player") == p)) {
 			if (trCurrentPlayer() == p) {
 				trUnitHighlight(duration, false);
 			}
@@ -184,17 +191,17 @@ void highlightReady(float duration = 0.1) {
 }
 
 /*
-Given the index of a unit in the allUnits database, find
+Given the name of a unit in the allUnits database, find
 enemy units that can be attacked by the unit and add them to
 the database db.
 */
-void findTargets(int index = 0, string db = "") {
-	float dist = xsPow(yGetVarByIndex("allUnits", "range", index) * 6 + 1, 2);
-	int p = 3 - yGetVarByIndex("allUnits", "player", index);
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", index), true));
+void findTargets(int name = 0, string db = "") {
+	float dist = xsPow(mGetVar(name, "range") * 6 + 1, 2);
+	int p = 3 - mGetVar(name, "player");
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		if (yGetVar("allUnits", "player") == p) {
+		if (mGetVarByQV("allUnits", "player") == p) {
 			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
 				yAddToDatabase(db, "allUnits");
 			}
@@ -202,48 +209,50 @@ void findTargets(int index = 0, string db = "") {
 	}
 }
 
-void damageUnit(string db = "", int index = 0, float dmg = 0) {
-	xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));
-	ySetVarByIndex(db, "health", index, 1*yGetVarByIndex(db, "health", index) - dmg);
+void damageUnit(int index = 0, float dmg = 0) {
+	xsSetContextPlayer(1*mGetVar(index, "player"));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
 	trUnitSelectClear();
-	trUnitSelect(""+1*yGetUnitAtIndex(db, index), true);
-	trDamageUnit(health - yGetVarByIndex(db, "health", index));
+	trUnitSelect(""+index, true);
+	trDamageUnit(health - mGetVar(index, "health"));
 }
 
 void lightning(int index = 0, int damage = 0, bool deadly = false) {
 	trQuestVarSetFromRand("rand", 1, 5, true);
 	trSoundPlayFN("lightningstrike"+1*trQuestVarGet("rand")+".wav","1",-1,"","");
-	int p = yGetVarByIndex("allUnits", "player", index);
-	yClearDatabase("lightningTargets");
-	for (x=yGetDatabaseCount("allUnits"); >0) {
-		yDatabaseNext("allUnits");
-		if (yGetVar("allUnits", "player") == p) {
-			trQuestVarSet("allUnitsIndex", yGetPointer("allUnits"));
-			if ((trQuestVarGet("allUnitsIndex") == index) == false) {
-				yAddToDatabase("lightningTargets", "allUnitsIndex");
-			}
-		}
-	}
+	int p = mGetVar(index, "player");
 	if (deadly) {
 		damage = -1;
 	}
 	// find lightning chain
+	for (x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		zSetVar("tiles", "searched", 0);
+	}
+	int unit = index;
+	zSetVarByIndex("tiles", "searched", 1*mGetVar(unit, "tile"), 1);
+	int tile = 0;
 	int pop = -1;
+	int neighbor = 0;
 	int push = modularCounterNext("lightningPush");
 	trQuestVarSet("lightning" + push, index);
 	trQuestVarSet("lightning" + push + "damage", damage);
 	while ((pop == push) == false) {
 		pop = modularCounterNext("lightningPop");
-		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("lightning" + pop))));
-		for (x=yGetDatabaseCount("lightningTargets"); >0) {
-			yDatabaseNext("lightningTargets");
-			trQuestVarSet("lightningTargetUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("lightningTargets")));
-			if (zDistanceToVectorSquared("lightningTargetUnit", "pos") <= 64) {
-				push = modularCounterNext("lightningPush");
-				trQuestVarCopy("lightning" + push, "lightningTargets");
-				trQuestVarSet("lightning"+push+"damage", damage);
-				yRemoveFromDatabase("lightningTargets");
+		unit = trQuestVarGet("lightning" + pop);
+		tile = mGetVar(unit, "tile");
+
+		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+			neighbor = 1*zGetVarByIndex("tiles", "neighbor"+x, tile);
+			zSetVarByIndex("tiles", "searched", neighbor, 1);
+			unit = zGetVarByIndex("tiles", "occupant", neighbor);
+			if (unit > 0) {
+				if (mGetVar(unit, "player") == 3 - p) {
+					push = modularCounterNext("lightningPush");
+					trQuestVarSet("lightning"+push, unit);
+					trQuestVarSet("lightning"+push+"damage", damage);
+				}
 			}
 		}
 	}
@@ -312,17 +321,17 @@ active
 index = index of unit in the allUnits database.
 */
 void stunUnit(int index = 0) {
-	if (yGetVarByIndex("allUnits", "health", index) > 0) {
-		ySetVarByIndex("allUnits", "stunTime", index, 2);
-		ySetVarByIndex("allUnits", "action", index, ACTION_STUNNED);
-		if (yGetVarByIndex("allUnits", "stunSFX", index) == 0) {
+	if (mGetVar(index, "health") > 0) {
+		mSetVar(index, "stunTime", 2);
+		mSetVar(index, "action", ACTION_STUNNED);
+		if (mGetVar(index, "stunSFX") == 0) {
 			trUnitSelectClear();
-			trUnitSelect(""+1*yGetUnitAtIndex("allUnits", index), true);
-			ySetVarByIndex("allUnits", "stunIndex", index, spyEffect("Shockwave stun effect"));
+			trUnitSelect(""+index, true);
+			mSetVar(index, "stunIndex", spyEffect("Shockwave stun effect"));
 			xsEnableRule("spy_assign_new");
 		} else {
 			trUnitSelectClear();
-			trUnitSelect(""+1*yGetVarByIndex("allUnits", "stunSFX", index), true);
+			trUnitSelect(""+1*mGetVar(index, "stunSFX"), true);
 			trMutateSelected(kbGetProtoUnitID("Shockwave stun effect"));
 		}
 	}
@@ -335,10 +344,45 @@ inactive
 	if (spyReady())	{
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
-			if ((yGetVar("allUnits", "stunSFX") == 0) && (yGetVar("allUnits", "stunIndex") > 0)) {
-				ySetVar("allUnits", "stunSFX", trQuestVarGet("spyEye"+1*yGetVar("allUnits", "stunIndex")));
+			if ((mGetVarByQV("allUnits", "stunSFX") == 0) && (mGetVarByQV("allUnits", "stunIndex") > 0)) {
+				mSetVarByQV("allUnits", "stunSFX", trQuestVarGet("spyEye"+1*mGetVarByQV("allUnits", "stunIndex")));
 			}
 		}
 		xsDisableRule("spy_assign_new");
+	}
+}
+
+rule recycle_dead_cards
+highFrequency
+active
+{
+	int unit = zBankNext("allUnitsBank");
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	switch(1*zGetVar("allUnitsBank", "state"))
+	{
+		case STATE_ALIVE:
+		{
+			if (trUnitAlive() == false) {
+				zSetVar("allUnitsBank", "state", STATE_DEAD);
+				zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
+			}
+		}
+		case STATE_DEAD:
+		{
+			if (trTimeMS() > zGetVar("allUnitsBank", "next")) {
+				trDamageUnitPercent(-100);
+				trUnitChangeProtoUnit("Automaton");
+				trUnitSelectClear();
+				trUnitSelect(""+unit);
+				trDamageUnitPercent(-100);
+				trUnitChangeProtoUnit("Victory Marker");
+				trUnitSelectClear();
+				trUnitSelect(""+unit);
+				if (trUnitAlive() == true) {
+					zSetVar("allUnitsBank", "state", STATE_ALIVE);
+				}
+			}
+		}
 	}
 }

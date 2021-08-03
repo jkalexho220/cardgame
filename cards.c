@@ -104,17 +104,17 @@ bool HasKeyword(int key = 0, int keywords = 0) {
 }
 
 /*
-Given a card index in a given db array, print information
+Given a card name in a given db array, print information
 of the selected unit.
 */
-void displayCardKeywordsAndDescription(string db = "", int index = 0) {
+void displayCardKeywordsAndDescription(int name = 0) {
 	string bonus = " ";
 	string dialog = "";
 	string message = "";
-	int proto = yGetVarByIndex(db, "proto", index);
-	int keywords = yGetVarByIndex(db, "keywords", index);
+	int proto = mGetVar(name, "proto");
+	int keywords = mGetVar(name, "keywords");
 	bool multiple = false;
-	if (yGetVarByIndex(db, "stunTime", index) > 0) {
+	if (mGetVar(name, "stunTime") > 0) {
 		dialog = "Stunned";
 		multiple = true;
 	}
@@ -132,10 +132,10 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 			current = current / 2;
 		}
 	}
-	message = yGetStringByIndex(db, "ability", index);
+	message = mGetString(name, "ability");
 
 	int old = xsGetContextPlayer();
-	if (yGetVarByIndex(db, "spell", index) <= SPELL_COMMANDER) {
+	if (mGetVar(name, "spell") <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
 			gadgetUnreal("NormalArmorTextDisplay");			
@@ -148,20 +148,20 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
 
-		xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));
-		int diff = 1*yGetVarByIndex(db, "health", index) - kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));
+		xsSetContextPlayer(1*mGetVar(name, "player"));
+		int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
 		if (diff > 0) {
 			bonus = bonus + "HP +" + diff;
 		}
 
-		diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");
+		diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
 		if (diff > 0) {
 			bonus = bonus + " ATK +" + diff;
 		} else if (diff < 0) {
 			bonus = bonus + " ATK " + diff;
 		}
 
-		diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");
+		diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
 		if (diff > 0) {
 			bonus = bonus + " SPD +" + diff;
 		} else if (diff < 0) {
@@ -174,6 +174,38 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	trSetCounterDisplay(message);
 
 	xsSetContextPlayer(old);
+}
+
+int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
+	int next = zBankNext("p"+p+"unitBank");
+	trUnitSelectClear();
+	trUnitSelect(""+next, false);
+
+	if (spell == 0 || spell == SPELL_COMMANDER) {
+		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
+		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
+		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));
+		mSetVar(next, "range", trQuestVarGet("card_" + proto + "_Range"));
+		mSetVar(next, "cost", trQuestVarGet("card_" + proto + "_Cost"));
+		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
+		mSetVar(next, "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));
+		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
+		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
+	} else {
+		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		proto = kbGetProtoUnitID("Statue of Lightning");
+	}
+	
+	mSetVar(next, "proto", proto);
+	mSetVar(next, "player", p);
+	mSetVar(next, "spell", spell);
+
+	trMutateSelected(proto);
+
+	return(next);
 }
 
 void SpellSetup(string name = "", int cost = 0, int spell = 0) {
@@ -189,13 +221,15 @@ void CardEvents(string protoName = "", int onPlay = 0, int onAttack = 0, int onD
 	trStringQuestVarSet("card_" + proto + "_Ability",ability);
 }
 
-void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0){
+void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool commander = false){
 	int proto = kbGetProtoUnitID(protoName);
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
-	}	
-	trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
-	trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+	}
+	if (commander == false) {
+		trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
+		trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+	}
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -258,25 +292,6 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	}
 }
 
-
-void CardLoad(bool firstBit = false, bool secondBit = false, int index = 0){
-	int copies = 0;
-	if(firstBit){
-		if(secondBit){
-			copies = 3;
-		} else {
-			copies = 1;
-		}
-	} else {
-		if(secondBit){
-			copies = 2;
-		}
-	}
-	if(copies>0){
-		trChatSend(0, "Player has " + copies + " copies of " + trStringQuestVarGet("card_" + 1*trQuestVarGet("cardProtos_"+index) + "_Name"));
-	}
-}
-
 rule initializeCards
 highFrequency
 active
@@ -300,13 +315,17 @@ runImmediately
 		trForbidProtounit(p, "Temple");
 	}
 
+	zBankInit("p1unitBank", 0, 64);
+	zBankInit("p2unitBank", 64, 64);
+	zBankInit("allUnitsBank", 0, 128);
+
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
-	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0);
-	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));
@@ -355,28 +374,6 @@ runImmediately
 	*/
 	SpellSetup("Spark", 1, SPELL_SPARK);
 	SpellSetup("Windsong", 2, SPELL_SING);
-
-
-
-
-	//Loading player collection
-	int cardIndex = 0;
-	for(i=0;<16){
-		int n = trGetScenarioUserData(i);
-		CardLoad((n<0), (zModulo(2,n)==1), cardIndex);
-		n=n/2;
-		cardIndex = cardIndex + 1;
-		int j=1;
-		while(j<29){
-			bool firstBit = (zModulo(2,n)==1);
-			n=n/2;
-			bool secondBit = (zModulo(2,n)==1);
-			n=n/2;
-			CardLoad(firstBit, secondBit, cardIndex);
-			cardIndex = cardIndex + 1;
-			j=j+2;
-		}
-	}
 	
 	/*
 	//Deploy one of each card to playtest.
