@@ -49,7 +49,6 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 }
 
 
-
 /* 
 This function should only be called if there is room in the hand!
 */

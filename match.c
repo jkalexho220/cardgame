@@ -3,9 +3,8 @@ highFrequency
 active
 runImmediately
 {
-	for(x=3; >0) {
-		for(p=2; >0) {
-			
+	for(p=2; >0) {
+		for(x=3; >0) {
 			addCardToDeck(p, "Khopesh");
 			addCardToDeck(p, "Villager Atlantean");
 			addCardToDeck(p, "Swordsman");
@@ -17,12 +16,14 @@ runImmediately
 			addCardToDeck(p, "Trident Soldier");
 			addCardToDeck(p, "Jarl");
 			addCardToDeck(p, "Hero Greek Ajax");
+			addCardToDeck(p, "Huskarl");
+			addCardToDeck(p, "Peltast");
 			
 			addCardToDeck(p, "Avenger");
-			addCardToDeck(p, "Archer Atlantean Hero");
-			
 			addCardToDeck(p, "Hero Greek Theseus");
+			addCardToDeck(p, "", SPELL_BACKSTAB);
 		}
+		addCardToDeck(p, "Archer Atlantean Hero");
 	}
 	
 	InitBot(BOT_PERSONALITY_DEFAULT);

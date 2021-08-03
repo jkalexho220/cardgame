@@ -1,24 +1,25 @@
-void OnPlay(int unit = 0, int event = 0) {
+void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
+	int proto = mGetVar(unit, "proto");
 	bool done = true;
-	switch(event)
+	switch(proto)
 	{
-		case PLAY_GET_SPARK:
+		case kbGetProtoUnitID("Slinger"):
 		{
 			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);
 			updateHandPlayable(p);
 		}
-		case PLAY_GET_TRAP:
+		case kbGetProtoUnitID("Skraeling"):
 		{
 			addCardToHand(p, kbGetProtoUnitID("Petrobolos"));
 			updateHandPlayable(p);
 		}
-		case PLAY_FOOD:
+		case kbGetProtoUnitID("Villager Atlantean"):
 		{
 			done = false;
 			chooseSpell(SPELL_FOOD);
 		}
-		case PLAY_DOUBLEBLADE:
+		case kbGetProtoUnitID("Avenger"):
 		{
 			trUnitSelectClear();
 			trUnitSelect(""+unit, true);
@@ -36,10 +37,36 @@ void OnPlay(int unit = 0, int event = 0) {
 			}
 			trSoundPlayFN("sphinxspecialattack.wav","1",-1,"","");
 		}
-		case PLAY_LEGENDARY:
+		case kbGetProtoUnitID("Archer Atlantean Hero"):
 		{
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Peltast"):
+		{
+			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
+			updateHandPlayable(p);
+		}
+		case kbGetProtoUnitID("Huskarl"):
+		{
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (trQuestVarGet("allUnits") == unit) {
+					continue;
+				} else if ((mGetVarByQV("allUnits", "player") == p) && (mGetVarByQV("allUnits", "spell") == 0)) {
+					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						mSetVarByQV("allUnits", "health", 1 + mGetVarByQV("allUnits", "health"));
+						trUnitSelectClear();
+						trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+						spyEffect("Einheriar Boost SFX");
+					}
+				}
+			}
+			trSoundPlayFN("researchcomplete.wav","1",-1,"","");
+			trSoundPlayFN("battlecry3.wav","1",-1,"","");
 		}
 	}
 	if (done) {

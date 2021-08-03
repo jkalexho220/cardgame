@@ -225,7 +225,7 @@ inactive
 					highlightReachable(unit);
 
 					// highlight attackable enemies within range
-					findTargets(unit, "targets");
+					findTargets(unit, "targets", HasKeyword(HEALER, 1*mGetVar(unit, "keywords")));
 					yDatabaseSelectAll("targets");
 					trUnitHighlight(3600.0, false);
 
@@ -472,7 +472,7 @@ inactive
 			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 
 			if (trQuestVarGet("turnEnd") == 0) {
-				findTargets(1*trQuestVarGet("activeUnit"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				/*
 				If no targets found, we go back to gameplay_01_select
 				Otherwise, we go to gameplay_04_attack
@@ -587,7 +587,7 @@ inactive
 				mSetVarByQV("activeUnit", "action", ACTION_FURY);
 				xsEnableRule("gameplay_04_attack");
 				yClearDatabase("targets");
-				findTargets(1*trQuestVarGet("activeUnit"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				yDatabaseSelectAll("targets");
 				trUnitHighlight(3600, false);
 			} else {
@@ -661,14 +661,7 @@ inactive
 					updateMana();
 
 					// If the unit has an OnPlay effect
-					if (mGetVar(unit, "OnPlay") > 0) {
-						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);
-						int event = 1*mGetVar(unit, "OnPlay");
-						OnPlay(unit, event);
-					} else {
-						xsEnableRule("gameplay_01_select");
-						highlightReady(100);
-					}
+					OnPlay(unit);
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					yRemoveFromDatabase("p"+p+"hand");

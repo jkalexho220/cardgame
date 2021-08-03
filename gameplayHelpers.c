@@ -195,9 +195,12 @@ Given the name of a unit in the allUnits database, find
 enemy units that can be attacked by the unit and add them to
 the database db.
 */
-void findTargets(int name = 0, string db = "") {
+void findTargets(int name = 0, string db = "", bool healer = false) {
 	float dist = xsPow(mGetVar(name, "range") * 6 + 1, 2);
 	int p = 3 - mGetVar(name, "player");
+	if (healer) {
+		p = 3 - p;
+	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
