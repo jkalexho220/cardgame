@@ -322,43 +322,50 @@ runImmediately
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
+	/*
+	ADVENTURER
+	*/
 	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1);
-	
-	CardSetup("Skraeling", 				2, "Trapper", 			1, 2, 2, 1);
-	
+	CardSetup("Skraeling", 				2, "Trapper", 			2, 1, 2, 1);
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
-	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);
+	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1);
+	CardSetup("Peltast", 				3, "Forest Ranger", 	3, 1, 2, 2);
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
-	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
-	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
-	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
-	
-	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
-	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.
+	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
+	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ETHEREAL));
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
+	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
+
+	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+
+	SpellSetup("Windsong", 2, SPELL_SING);
 	
+	/*
+	ARCANE
+	*/
 
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
+
+	SpellSetup("Spark", 1, SPELL_SPARK);
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnPlay | OnAttack | OnDeath | Description
 	*/
 	CardEvents("Hero Greek Jason", 0, Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Khopesh", 0, Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", Keyword(PLAY_GET_TRAP), 0, 0, "Play: Add a Bear Trap to your hand.");
-	CardEvents("Slinger", Keyword(PLAY_GET_SPARK), 0, 0, "Play: Add a Spark to your hand.");
-	CardEvents("Avenger", Keyword(PLAY_DOUBLEBLADE), 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
-	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
+	CardEvents("Skraeling", PLAY_GET_TRAP, 0, 0, "Play: Add a Bear Trap to your hand.");
+	CardEvents("Slinger", PLAY_GET_SPARK, 0, 0, "Play: Add a Spark to your hand.");
+	CardEvents("Avenger", PLAY_DOUBLEBLADE, 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
+	CardEvents("Villager Atlantean", PLAY_FOOD, 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
-	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
+	CardEvents("Archer Atlantean Hero", PLAY_LEGENDARY, 0, 0);
 	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");
 	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");
 	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
@@ -369,8 +376,8 @@ runImmediately
 	Spells
 				Name 	Cost 	Spell
 	*/
-	SpellSetup("Spark", 1, SPELL_SPARK);
-	SpellSetup("Windsong", 2, SPELL_SING);
+	
+	
 	
 	/*
 	//Deploy one of each card to playtest.

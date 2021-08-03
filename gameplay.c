@@ -663,14 +663,8 @@ inactive
 					// If the unit has an OnPlay effect
 					if (mGetVar(unit, "OnPlay") > 0) {
 						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);
-						int events = 1*mGetVar(unit, "OnPlay");
-						for(x=PLAY_EVENT_COUNT - 1; >=0) {
-							if (events >= n) {
-								OnPlay(unit, x);
-								events = events - n;
-							}
-							n = n / 2;
-						}
+						int event = 1*mGetVar(unit, "OnPlay");
+						OnPlay(unit, event);
 					} else {
 						xsEnableRule("gameplay_01_select");
 						highlightReady(100);
