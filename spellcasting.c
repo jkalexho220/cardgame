@@ -584,6 +584,7 @@ inactive
 				trSoundPlayFN("specialist.wav","1",-1,"","");
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
 				trVectorSetUnitPos("pos", "spellTarget");
+				trQuestVarSet("spellTarget", checkGuard(1*trQuestVarGet("spellTarget")));
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					activeUnit = yDatabaseNext("allUnits");
 					if (mGetVar(activeUnit, "player") == p) {
@@ -608,9 +609,56 @@ inactive
 			}
 			case SPELL_WOLF:
 			{
+				battlecry = true;
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
 				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Wolf"));
 				mSetVar(activeUnit, "action", ACTION_SLEEPING);
+			}
+			case SPELL_VICTORY:
+			{
+				trSoundPlayFN("battlecry1.wav","1",-1,"","");
+				trSoundPlayFN("herocreation.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if ((mGetVarByQV("allUnits", "spell") == SPELL_NONE) &&
+						(mGetVarByQV("allUnits", "player") == p)) {
+						mSetVarByQV("allUnits", "victory", 1 + mGetVarByQV("allUnits", "victory"));
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						if ((mGetVarByQV("allUnits", "victory") == 1) &&
+							HasKeyword(AMBUSH, 1*mGetVarByQV("allUnits", "keywords"))) {
+							mSetVarByQV("allUnits", "victoryAmbush", 1);
+						}
+						mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), AMBUSH));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+			}
+			case SPELL_HEROIC:
+			{
+				trSoundPlayFN("herocreation.wav","1",-1,"","");
+				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
+				target = 1*trQuestVarGet("spellTarget");
+				mSetVar(target, "attack", 1 + mGetVar(target, "attack"));
+				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), FURIOUS));
+				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+			}
+			case SPELL_WHIRLWIND:
+			{
+				done = false;
+				deployAtTile(0, "Tremor", 1*mGetVarByQV("spellTarget", "tile"));
+				trQuestVarSet("spellNext", trTimeMS());
+				trQuestVarSet("spellEnd", trTimeMS() + 1000);
+				trSoundPlayFN("sphinxspecialattack.wav","1",-1,"","");
+				trSoundPlayFN("ui\thunder1.wav","1",-1,"","");
+				trQuestVarSet("spellAngle", 0);
+				for(x=3; >0) {
+					trQuestVarSet("proj"+x, deployAtTile(0, "Petosuchus Projectile", 1*mGetVarByQV("spellTarget", "tile")));
+					trUnitSelectClear();
+					trUnitSelect(""+1*trQuestVarGet("proj"+x), true);
+					trSetSelectedScale(6.0, 0, 10.0);
+					trUnitHighlight(2.0, false);
+				}
+				xsEnableRule("spell_whirlwind_sfx");
 			}
 		}
 
@@ -633,5 +681,41 @@ inactive
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");
+	}
+}
+
+rule spell_whirlwind_sfx
+highFrequency
+inactive
+{
+	int p = mGetVarByQV("spellTarget", "player");
+	if (trTimeMS() > trQuestVarGet("spellEnd")) {
+		for(x=3; >0) {
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("proj"+x), true);
+			trUnitChangeProtoUnit("Rocket");
+		}
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVarByQV("spellTarget", "tile")));
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (mGetVarByQV("allUnits", "player") == 3 - p) {
+				if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+					startAttack(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("allUnits"), false, false);
+				}
+			}
+		}
+		xsEnableRule("spell_attack_complete");
+		xsDisableRule("spell_whirlwind_sfx");
+	} else {
+		float diff = trTimeMS() - trQuestVarGet("spellNext");
+		trQuestVarSet("spellNext", trTimeMS());
+		trQuestVarSet("spellAngle", fModulo(6.283185, trQuestVarGet("spellAngle") + 0.009 * diff));
+		for(x=3; >0) {
+			trQuestVarSet("spellAngle", fModulo(6.283185, trQuestVarGet("spellAngle") + 2.094395));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("proj"+x), true);
+			trVectorSetFromAngle("dir", trQuestVarGet("spellAngle"));
+			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+		}
 	}
 }

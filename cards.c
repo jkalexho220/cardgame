@@ -344,7 +344,7 @@ runImmediately
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
-	CardSetup("Huskarl",			 	4, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
+	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
@@ -377,7 +377,7 @@ runImmediately
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", 0, 0, "Play: Summon a Loyal Wolf on an adjacent tile.");
+	CardEvents("Skraeling", 0, 0, "Play: Summon a 1|1 Loyal Wolf with Guard.");
 	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
 	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");

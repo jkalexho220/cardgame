@@ -21,7 +21,7 @@ runImmediately
 			
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Hero Greek Theseus");
-			addCardToDeck(p, "", SPELL_TEAMWORK);
+			addCardToDeck(p, "", SPELL_WHIRLWIND);
 		}
 		addCardToDeck(p, "Archer Atlantean Hero");
 	}
@@ -279,6 +279,18 @@ inactive
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);
+
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (mGetVarByQV("allUnits", "victory") > 0) {
+				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - mGetVarByQV("allUnits", "victory"));
+				mSetVarByQV("allUnits", "victory", 0);
+				if (mGetVarByQV("allUnits", "victoryAmbush") == 0) {
+					mSetVarByQV("allUnits", "keywords", ClearBit(1*mGetVarByQV("allUnits", "keywords"), AMBUSH));
+				}
+				mSetVarByQV("allUnits", "victoryAmbush", 0);
+			}
+		}
 
 		// Discard fleeting cards
 		bool fleeting = false;
