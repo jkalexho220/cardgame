@@ -350,16 +350,16 @@ runImmediately
 
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
 
-	SpellSetup("Windsong", 2, SPELL_SING, "(2)Windsong: Select an ally that has already acted. Grant it another action.");
-	SpellSetup("Explorer's Map", 2, SPELL_MAP, "(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
-	SpellSetup("Backstab", 1, SPELL_BACKSTAB, "(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
-	SpellSetup("Duel", 2, SPELL_DUEL, "(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
-	SpellSetup("Party Up!", 3, SPELL_PARTY_UP, "(3)Party Up!: Draw 3 cards that cost 1 mana.");
-	SpellSetup("Teamwork", 5, SPELL_TEAMWORK, "(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
-	SpellSetup("Defender's Glory", 3, SPELL_DEFENDER, "(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
-	SpellSetup("Song of Victory", 3, SPELL_VICTORY, "(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
-	SpellSetup("Whirlwind", 7, SPELL_WHIRLWIND, "(7)Whirlwind: A minion attacks all adjacent enemies.");
-	SpellSetup("Heroic Tales", 4, SPELL_HEROIC, "(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
+	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
+	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
+	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
+	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"(3)Party Up!: Draw 3 cards that cost 1 mana.");
+	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
+	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
+	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
+	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
+	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
 
 	
 	/*

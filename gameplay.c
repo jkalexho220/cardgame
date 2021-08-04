@@ -102,7 +102,6 @@ bool attackUnitAtCursor(int p = 0) {
 					teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
 					teleportToTile(target, guardTile);
 					target = 1*trQuestVarGet("allUnits");
-					trQuestVarSet("targetUnit", target);
 					break;
 				}
 			}
@@ -249,6 +248,11 @@ inactive
 					}
 				}
 				if (unit > -1) {
+					if (mGetVar(unit, "spell") > SPELL_NONE) {
+						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
+						}
+					}
 					if (trQuestVarGet("p"+p+"mana") >= mGetVar(unit, "cost")) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit

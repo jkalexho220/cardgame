@@ -286,9 +286,9 @@ void spellcastClearHighlights(int x = 0) {
 	*/
 	if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {
 		if (trQuestVarGet("cast"+x+"type") >= CAST_TILE) {
-			for(z=yGetDatabaseCount("castTargets"); >0) {
-				yDatabaseNext("castTargets");
-				highlightTile(1*trQuestVarGet("castTargets"), 0.1);
+			for(z=yGetDatabaseCount("castTiles"); >0) {
+				yDatabaseNext("castTiles");
+				highlightTile(1*trQuestVarGet("castTiles"), 0.1);
 			}
 		} else {
 			for (z=yGetDatabaseCount("castTargets"); >0) {
@@ -393,9 +393,6 @@ card is removed.
 void chooseSpell(int spell = 0, int card = -1) {
 	trQuestVarSet("currentSpell", spell);
 	trQuestVarSet("selectedCard", card);
-	if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
-		trMessageSetText(trStringQuestVarGet("spell_"+spell+"_description"), -1);
-	}
 	castReset();
 	switch(spell)
 	{
@@ -419,6 +416,35 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddBackstabUnit("spellTarget", 3 - trQuestVarGet("activePlayer"));
 		}
+		case SPELL_DUEL:
+		{
+			castAddUnit("allyTarget", 1*trQuestVarGet("activePlayer"), false);
+			castAddUnit("enemyTarget", 3 - trQuestVarGet("activePlayer"), false);
+		}
+		case SPELL_PARTY_UP:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_TEAMWORK:
+		{
+			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+		}
+		case SPELL_DEFENDER:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+		}
+		case SPELL_VICTORY:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_WHIRLWIND:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+		}
+		case SPELL_HEROIC:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -433,7 +459,11 @@ inactive
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
 		bool done = true;
+		int activeUnit = 0;
 		int target = 0;
+		int p = trQuestVarGet("activePlayer");
+		int proto = 0;
+		float dist = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		bool battlecry = false;
 		switch(1*trQuestVarGet("currentSpell"))
@@ -477,6 +507,66 @@ inactive
 				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), ETHEREAL));
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
 				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+			}
+			case SPELL_DUEL:
+			{
+				/*
+				insert sound here
+				*/
+				activeUnit = trQuestVarGet("allyTarget");
+				target = trQuestVarGet("enemyTarget");
+				trVectorSetUnitPos("d1pos", "allyTarget");
+				trVectorSetUnitPos("d2pos", "enemyTarget");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					dist = zDistanceToVectorSquared("allUnits", "d2pos");
+					if (dist < 64 && dist > 9 &&
+						mGetVarByQV("allUnits", "stunTime") == 0 &&
+						mGetVarByQV("allUnits", "player") == 3 - trQuestVarGet("activePlayer") &&
+						HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						trSoundPlayFN("bronzebirth.wav","1",-1,"","");
+						trSoundPlayFN("militarycreate.wav","1",-1,"","");
+						trUnitHighlight(2.0, true);
+						int guardTile = mGetVarByQV("allUnits", "tile");
+						int saveTile = mGetVar(target, "tile");
+						teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
+						teleportToTile(target, guardTile);
+						target = 1*trQuestVarGet("allUnits");
+						break;
+					}
+				}
+				refreshGuardAll();
+
+				startAttack(activeUnit, target, HasKeyword(AMBUSH, 1*mGetVar(activeUnit, "keywords")), true);
+				startAttack(target, activeUnit, false, true);
+			}
+			case SPELL_PARTY_UP:
+			{
+				trSoundPlayFN("godpower.wav","1",-1,"","");
+				trSoundPlayFN("militarycreate.wav","1",-1,"","");
+				target = 3;
+				yDatabasePointerDefault("p"+p+"deck");
+				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+					proto = yDatabaseNext("p"+p+"deck");
+					if (proto == kbGetProtoUnitID("Statue of Lightning")) {
+						proto = yGetVar("p"+p+"deck", "spell");
+						if (trQuestVarGet("spell_"+proto+"_cost") == 1) {
+							ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+							drawCard(p);
+							target = target - 1;
+							if (target == 0) {
+								break;
+							}
+						}
+					} else if (trQuestVarGet("card_"+proto+"_cost") == 1) {
+						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+						drawCard(p);
+						target = target - 1;
+						if (target == 0) {
+							break;
+						}
+					}
+				}
 			}
 		}
 

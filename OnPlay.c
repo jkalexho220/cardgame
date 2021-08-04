@@ -18,6 +18,9 @@ void OnPlay(int unit = 0) {
 		{
 			done = false;
 			chooseSpell(SPELL_FOOD);
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose an allied minion to grant +1 attack and health to.", -1);
+			}
 		}
 		case kbGetProtoUnitID("Avenger"):
 		{

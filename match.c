@@ -21,7 +21,7 @@ runImmediately
 			
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Hero Greek Theseus");
-			addCardToDeck(p, "", SPELL_BACKSTAB);
+			addCardToDeck(p, "", SPELL_PARTY_UP);
 		}
 		addCardToDeck(p, "Archer Atlantean Hero");
 	}
