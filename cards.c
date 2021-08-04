@@ -22,6 +22,7 @@ const int SPELL_DEFENDER = 10;
 const int SPELL_VICTORY = 11;
 const int SPELL_WHIRLWIND = 12;
 const int SPELL_HEROIC = 13;
+const int SPELL_WOLF = 14;
 
 
 /*
@@ -332,9 +333,9 @@ runImmediately
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
-	CardSetup("Skraeling", 				2, "Trapper", 			2, 1, 2, 1); // Play: Add a Bear Trap to your hand.
+	CardSetup("Skraeling", 				2, "Bear Hunter", 		2, 1, 2, 1); // Play: Summon a Loyal Wolf on an adjacent tile.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
 	CardSetup("Peltast", 				3, "Forest Ranger", 	3, 1, 2, 2); // Play: Add an Explorer's Map to your hand.
@@ -376,7 +377,7 @@ runImmediately
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", 0, 0, "Play: Add a Bear Trap to your hand.");
+	CardEvents("Skraeling", 0, 0, "Play: Summon a Loyal Wolf on an adjacent tile.");
 	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
 	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");

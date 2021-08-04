@@ -11,8 +11,11 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Skraeling"):
 		{
-			addCardToHand(p, kbGetProtoUnitID("Petrobolos"));
-			updateHandPlayable(p);
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose a tile to summon a Loyal Wolf.", -1);
+			}
+			trQuestVarSet("summonedUnit", unit);
+			chooseSpell(SPELL_WOLF);
 		}
 		case kbGetProtoUnitID("Villager Atlantean"):
 		{

@@ -83,7 +83,7 @@ bool attackUnitAtCursor(int p = 0) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
-		float range = xsPow(mGetVar(a, "range") * 6 + 3, 2);
+		float range = xsPow(mGetVar(a, "range") * 6 + 1, 2);
 		float dist = 0;
 		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates

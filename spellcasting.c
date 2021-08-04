@@ -5,7 +5,8 @@ const int CAST_SING = 2;
 const int CAST_BACKSTAB = 3;
 
 const int CAST_TILE = 10;
-const int CAST_DIRECTION = 11;
+const int CAST_ADJACENT_TILE = 11;
+const int CAST_DIRECTION = 12;
 
 const int CASTING_NOTHING = 0;
 const int CASTING_IN_PROGRESS = 1;
@@ -78,6 +79,20 @@ void castAddTile(string qv = "", bool ghost = false) {
 }
 
 /*
+qv = name of the quest var to store the selected tile
+src = name of quest var holding the unit at the center
+*/
+void castAddAdjacentTile(string qv = "", string src = "") {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_TILE);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+	trQuestVarSet("cast"+x+"unit", 1*trQuestVarGet(src));
+
+}
+
+/*
 qv = name of the quest var to store the selected unit
 attacker = name of quest var holding the index of the attacking unit. This will
 only highlight targets that are within range of the attacker.
@@ -147,6 +162,7 @@ inactive
 		trQuestVarSet("castPop", trQuestVarGet("castPop") + 1);
 		int x = trQuestVarGet("castPop");
 		int p = trQuestVarGet("activePlayer");
+		int tile = 0;
 		yClearDatabase("castTargets");
 		yClearDatabase("castTiles");
 		if (trQuestVarGet("cast"+x+"type") < CAST_TILE) {
@@ -219,6 +235,17 @@ inactive
 					}
 				}
 			}
+			case CAST_ADJACENT_TILE:
+			{
+				tile = mGetVarByQV("cast"+x+"unit", "tile");
+				findAvailableTiles(tile, 1, "castTiles", false);
+				for(z=yGetDatabaseCount("castTiles"); >0) {
+					yDatabaseNext("castTiles");
+					if (trCurrentPlayer() == p) {
+						highlightTile(1*trQuestVarGet("castTiles"), 999999);
+					}
+				}
+			}
 			case CAST_TARGET:
 			{
 				findTargets(1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start")), "castTargets");
@@ -238,7 +265,7 @@ inactive
 				float angle = 0.785398;
 				trVectorSetUnitPos("pos", "start");
 				bool found = true;
-				int tile = 0;
+				tile = 0;
 				// For each direction...
 				for(d=6; >0) {
 					trVectorSetFromAngle("step", angle);
@@ -445,6 +472,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
 		}
+		case SPELL_WOLF:
+		{
+			castAddAdjacentTile("spellTarget", "summonedUnit");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -502,28 +533,28 @@ inactive
 			}
 			case SPELL_MAP:
 			{
+				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
+				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 				target = 1*trQuestVarGet("spellTarget");
 				mSetVar(target, "speed", 1 + mGetVar(target, "speed"));
 				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), ETHEREAL));
-				trSoundPlayFN("vortexstart.wav","1",-1,"","");
 				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
 			}
 			case SPELL_DUEL:
 			{
-				/*
-				insert sound here
-				*/
+				trSoundPlayFN("specialist.wav","1",-1,"","");
 				activeUnit = trQuestVarGet("allyTarget");
 				target = trQuestVarGet("enemyTarget");
 				target = checkGuard(target);
 
 				startAttack(activeUnit, target, HasKeyword(AMBUSH, 1*mGetVar(activeUnit, "keywords")), true);
 				startAttack(target, activeUnit, false, true);
+				done = false;
+				xsEnableRule("spell_attack_complete");
 			}
 			case SPELL_PARTY_UP:
 			{
-				trSoundPlayFN("godpower.wav","1",-1,"","");
-				trSoundPlayFN("militarycreate.wav","1",-1,"","");
+				trSoundPlayFN("barracks.wav","1",-1,"","");
 				target = 3;
 				yDatabasePointerDefault("p"+p+"deck");
 				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
@@ -548,6 +579,38 @@ inactive
 					}
 				}
 			}
+			case SPELL_TEAMWORK:
+			{
+				trSoundPlayFN("specialist.wav","1",-1,"","");
+				trSoundPlayFN("battlecry2.wav","1",-1,"","");
+				trVectorSetUnitPos("pos", "spellTarget");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					activeUnit = yDatabaseNext("allUnits");
+					if (mGetVar(activeUnit, "player") == p) {
+						dist = zDistanceToVectorSquared("allUnits", "pos");
+						if (dist < xsPow(mGetVar(activeUnit, "range") * 6 + 1, 2)) {
+							startAttack(activeUnit, 1*trQuestVarGet("spellTarget"), false, true);
+						}
+					}
+				}
+				done = false;
+				xsEnableRule("spell_attack_complete");
+			}
+			case SPELL_DEFENDER:
+			{
+				trSoundPlayFN("fortress.wav","1",-1,"","");
+				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
+				target = 1*trQuestVarGet("spellTarget");
+				mSetVar(target, "health", 2 + mGetVar(target, "health"));
+				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), GUARD));
+				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+				refreshGuardAll();
+			}
+			case SPELL_WOLF:
+			{
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Wolf"));
+			}
 		}
 
 		if ((battlecry == false) && (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer"))) {
@@ -558,5 +621,16 @@ inactive
 			castEnd();
 		}
 		xsDisableRule("spell_cast");
+	}
+}
+
+rule spell_attack_complete
+highFrequency
+inactive
+{
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+		(trTime() > cActivationTime + 3)) {
+		castEnd();
+		xsDisableRule("spell_attack_complete");
 	}
 }
