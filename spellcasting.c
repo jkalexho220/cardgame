@@ -196,7 +196,7 @@ inactive
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
 					if (mGetVarByQV("allUnits", "player") == p) {
-						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 4) > 1) {
+						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 							yAddToDatabase("castTargets", "allUnits");
