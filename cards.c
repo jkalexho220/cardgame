@@ -179,11 +179,9 @@ void displayCardKeywordsAndDescription(int name = 0) {
 }
 
 int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
-	int next = trGetNextUnitScenarioNameNumber();
-	trArmyDispatch("1,10","Dwarf",1,119,0,1,0,true);
+	int next = zBankNext("p"+p+"unitBank");
 	trUnitSelectClear();
-	trUnitSelect(""+next, true);
-	trUnitConvert(p);
+	trUnitSelect(""+next, false);
 
 	if (spell == 0 || spell == SPELL_COMMANDER) {
 		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
@@ -317,6 +315,10 @@ runImmediately
 		trForbidProtounit(p, "Wall Connector");
 		trForbidProtounit(p, "Temple");
 	}
+
+	zBankInit("p1unitBank", 0, 64);
+	zBankInit("p2unitBank", 64, 64);
+	zBankInit("allUnitsBank", 0, 128);
 
 	//Pick a card. Any card.
 	/*

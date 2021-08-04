@@ -153,6 +153,11 @@ inactive
 			if (yGetVar("p"+p+"hand", "mulligan") == 1) {
 				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("p"+p+"hand", "proto")), mGetVarByQV("p"+p+"hand", "spell"));
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
+				trVectorSetUnitPos("pos", "p"+p+"hand");
+				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trUnitSelectClear();
+				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
 			} else {
 				transferUnit("temp", "p"+p+"hand");
@@ -282,12 +287,17 @@ inactive
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
+				trVectorSetUnitPos("pos", "p"+p+"hand");
 				fleeting = true;
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
+				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trUnitSelectClear();
+				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
 				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
 					type = mGetVarByQV("p"+p+"hand", "proto");
