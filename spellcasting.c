@@ -609,7 +609,8 @@ inactive
 			case SPELL_WOLF:
 			{
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
-				summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Wolf"));
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Wolf"));
+				mSetVar(activeUnit, "action", ACTION_SLEEPING);
 			}
 		}
 

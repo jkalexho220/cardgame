@@ -437,25 +437,8 @@ inactive
 
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(p);
-			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
-
-			int type = kbGetUnitBaseTypeID(1*trQuestVarGet("activeUnitID"));
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(kbGetProtoUnitID("Dwarf"));
-			trImmediateUnitGarrison(""+1*trQuestVarGet("moveTile"));
-			trUnitChangeProtoUnit("Dwarf");
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(type);
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(0);
-			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
 
 			if (trQuestVarGet("turnEnd") == 0) {
 				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));

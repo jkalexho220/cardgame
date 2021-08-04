@@ -118,7 +118,10 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trUnitSelect(""+name, true);
 	trMutateSelected(kbGetProtoUnitID("Dwarf"));
 	trImmediateUnitGarrison(""+tile);
-	trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(name, "proto")));
+	trUnitChangeProtoUnit("Victory Marker");
+	trUnitSelectClear();
+	trUnitSelect(""+name, true);
+	trMutateSelected(1*mGetVar(name, "proto"));
 
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
