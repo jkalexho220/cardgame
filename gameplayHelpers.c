@@ -261,6 +261,33 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 	}
 }
 
+/*
+Checks and activates guard for the targeted unit.
+*/
+int checkGuard(int target = 0) {
+	trVectorQuestVarSet("targetPos", kbGetBlockPosition(""+target, true));
+	float dist = 0;
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		dist = zDistanceToVectorSquared("allUnits", "targetPos");
+		if (dist < 64 && dist > 9 &&
+			mGetVarByQV("allUnits", "stunTime") == 0 &&
+			mGetVarByQV("allUnits", "player") == 3 - trQuestVarGet("activePlayer") &&
+			HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+			trSoundPlayFN("bronzebirth.wav","1",-1,"","");
+			trSoundPlayFN("militarycreate.wav","1",-1,"","");
+			trUnitHighlight(2.0, true);
+			int guardTile = mGetVarByQV("allUnits", "tile");
+			int saveTile = mGetVar(target, "tile");
+			teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
+			teleportToTile(target, guardTile);
+			target = 1*trQuestVarGet("allUnits");
+			break;
+		}
+	}
+	refreshGuardAll();
+	return(target);
+}
 
 /*
 int attacker = index of attacking unit in the "allUnits" database

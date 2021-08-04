@@ -87,25 +87,7 @@ bool attackUnitAtCursor(int p = 0) {
 		float dist = 0;
 		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits");
-				dist = zDistanceToVectorSquared("allUnits", "d2pos");
-				if (dist < 64 && dist > 9 &&
-					mGetVarByQV("allUnits", "stunTime") == 0 &&
-					mGetVarByQV("allUnits", "player") == 3 - p &&
-					HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
-					trSoundPlayFN("militarycreate.wav","1",-1,"","");
-					trUnitHighlight(2.0, true);
-					int guardTile = mGetVarByQV("allUnits", "tile");
-					int saveTile = mGetVar(target, "tile");
-					teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
-					teleportToTile(target, guardTile);
-					target = 1*trQuestVarGet("allUnits");
-					break;
-				}
-			}
-			refreshGuardAll();
+			target = checkGuard(target);
 
 			startAttack(a, target, HasKeyword(AMBUSH, 1*mGetVar(a, "keywords")), true);
 
