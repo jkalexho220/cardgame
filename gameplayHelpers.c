@@ -215,6 +215,16 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 	}
 }
 
+void healUnit(int index = 0, float heal = 0) {
+	xsSetContextPlayer(1*mGetVar(index, "player"));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	trUnitSelectClear();
+	trUnitSelect(""+index, true);
+	trDamageUnit(0 - heal);
+	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true)) - health;
+	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
+}
+
 void damageUnit(int index = 0, float dmg = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));

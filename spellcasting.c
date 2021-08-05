@@ -476,6 +476,15 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddAdjacentTile("spellTarget", "summonedUnit");
 		}
+		case SPELL_PING:
+		{
+			castAddUnit("spellTarget", 0);
+		}
+		case SPELL_FIRST_AID:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castAddAdjacentTile("tileTarget", "p"+1*trQuestVarGet("activePlayer")+"commander");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -559,7 +568,7 @@ inactive
 				yDatabasePointerDefault("p"+p+"deck");
 				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 					proto = yDatabaseNext("p"+p+"deck");
-					if (proto == kbGetProtoUnitID("Statue of Lightning")) {
+					if (yGetVar("p"+p+"deck", "spell") > 0) {
 						proto = yGetVar("p"+p+"deck", "spell");
 						if (trQuestVarGet("spell_"+proto+"_cost") == 1) {
 							ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
@@ -655,10 +664,24 @@ inactive
 					trQuestVarSet("proj"+x, deployAtTile(0, "Petosuchus Projectile", 1*mGetVarByQV("spellTarget", "tile")));
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("proj"+x), true);
-					trSetSelectedScale(6.0, 0, 10.0);
+					trSetSelectedScale(8.0, 0, 10.0);
 					trUnitHighlight(2.0, false);
 				}
 				xsEnableRule("spell_whirlwind_sfx");
+			}
+			case SPELL_PING:
+			{
+				trSoundPlayFN("cinematics\23_in\arrow1.mp3","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), 1);
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+				battlecry = true;
+			}
+			case SPELL_FIRST_AID:
+			{
+				trSoundPlayFN("villagercreate.wav","1",-1,"","");
+				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
+				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("tileTarget"));
+				healUnit(1*trQuestVarGet("spellTarget"), 2);
 			}
 		}
 
@@ -709,7 +732,7 @@ inactive
 	} else {
 		float diff = trTimeMS() - trQuestVarGet("spellNext");
 		trQuestVarSet("spellNext", trTimeMS());
-		trQuestVarSet("spellAngle", fModulo(6.283185, trQuestVarGet("spellAngle") + 0.009 * diff));
+		trQuestVarSet("spellAngle", fModulo(6.283185, trQuestVarGet("spellAngle") + 0.02 * diff));
 		for(x=3; >0) {
 			trQuestVarSet("spellAngle", fModulo(6.283185, trQuestVarGet("spellAngle") + 2.094395));
 			trUnitSelectClear();

@@ -48,10 +48,18 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Peltast"):
+		case kbGetProtoUnitID("Scout"):
 		{
 			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
 			updateHandPlayable(p);
+		}
+		case kbGetProtoUnitID("Peltast"):
+		{
+			done = false;
+			chooseSpell(SPELL_PING);
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose an enemy to deal 1 damage to.", -1);
+			}
 		}
 		case kbGetProtoUnitID("Huskarl"):
 		{
@@ -73,6 +81,22 @@ void OnPlay(int unit = 0) {
 			}
 			trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 			trSoundPlayFN("battlecry3.wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Nemean Lion"):
+		{
+			trUnitSelectClear();
+			trUnitSelect(""+unit, true);
+			trMutateSelected(kbGetProtoUnitID("Nemean Lion"));
+			trUnitOverrideAnimation(39, 0, 0, 1, -1);
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (mGetVarByQV("allUnits", "player") == 3 - p) {
+					if ((trQuestVarGet("p"+p+"manaflow") >= mGetVarByQV("allUnits", "cost")) &&
+						(mGetVarByQV("allUnits", "spell") == 0)) {
+						stunUnit(1*trQuestVarGet("allUnits"));
+					}
+				}
+			}
 		}
 	}
 	if (done) {

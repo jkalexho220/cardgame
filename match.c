@@ -18,12 +18,23 @@ runImmediately
 			addCardToDeck(p, "Hero Greek Ajax");
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
+			addCardToDeck(p, "Scout");
 			
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Hero Greek Theseus");
-			addCardToDeck(p, "", SPELL_WHIRLWIND);
+			addCardToDeck(p, "Mountain Giant");
+			addCardToDeck(p, "", SPELL_FIRST_AID);
 		}
+		addCardToDeck(p, "", SPELL_WHIRLWIND);
+		addCardToDeck(p, "", SPELL_BACKSTAB);
+		addCardToDeck(p, "", SPELL_DUEL);
+		addCardToDeck(p, "", SPELL_PARTY_UP);
+		addCardToDeck(p, "", SPELL_TEAMWORK);
+		addCardToDeck(p, "", SPELL_DEFENDER);
+		addCardToDeck(p, "", SPELL_VICTORY);
+		addCardToDeck(p, "", SPELL_HEROIC);
 		addCardToDeck(p, "Archer Atlantean Hero");
+		addCardToDeck(p, "Nemean Lion");
 	}
 	
 	InitBot(BOT_PERSONALITY_DEFAULT);

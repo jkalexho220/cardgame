@@ -23,6 +23,8 @@ const int SPELL_VICTORY = 11;
 const int SPELL_WHIRLWIND = 12;
 const int SPELL_HEROIC = 13;
 const int SPELL_WOLF = 14;
+const int SPELL_PING = 15;
+const int SPELL_FIRST_AID = 16;
 
 
 /*
@@ -223,12 +225,12 @@ void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string
 	trStringQuestVarSet("card_" + proto + "_Ability",ability);
 }
 
-void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool commander = false){
+void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool uncollectable = false){
 	int proto = kbGetProtoUnitID(protoName);
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
 	}
-	if (commander == false) {
+	if (uncollectable == false) {
 		trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
 		trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
 	}
@@ -326,43 +328,48 @@ runImmediately
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	/*
 	ADVENTURER
 	*/
-	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
+	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
-	CardSetup("Skraeling", 				2, "Bear Hunter", 		2, 1, 2, 1); // Play: Summon a Loyal Wolf on an adjacent tile.
+	CardSetup("Skraeling", 				3, "Bear Hunter", 		2, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
+	// 5 - 9
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
-	CardSetup("Peltast", 				3, "Forest Ranger", 	3, 1, 2, 2); // Play: Add an Explorer's Map to your hand.
+	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
 	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
+	// 10 - 14
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
+	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+	// 15 - 19
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
-
-	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
-
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
 	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
 	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
+	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"(3)Party Up!: Draw 3 cards that cost 1 mana.");
 	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
+	// 25 - 29
 	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
 	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
-
-	
+	CardSetup("Scout",					3, "Speedy Cartographer",2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
+	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"(1)First-Aid: Teleport an allied minion next to your Commander and restore 2 health to it.");
+	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
 	/*
 	ARCANE
 	*/
@@ -370,7 +377,7 @@ runImmediately
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 
-	SpellSetup("Spark", 1, SPELL_SPARK, "(1)Spark: Deal 1 damage to a unit.");
+	SpellSetup("Spark", 1, SPELL_SPARK, "(1)Spark: Deal 1 damage.");
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
@@ -380,11 +387,12 @@ runImmediately
 	CardEvents("Skraeling", 0, 0, "Play: Summon a 1|1 Loyal Wolf with Guard.");
 	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
 	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
 	CardEvents("Physician", Keyword(ATTACK_SING), 0, "When I heal an ally that has acted, grant them another action.");
-	CardEvents("Peltast", 0, 0, "Play: Add an Explorer's Map to your hand.");
+	CardEvents("Scout", 0, 0, "Play: Add an Explorer's Map to your hand.");
+	CardEvents("Peltast", 0, 0, "Play: Deal 1 damage.");
 	CardEvents("Huskarl", 0, 0, "Play: Grant adjacent allied minions +1 attack and health.");
+	CardEvents("Nemean Lion", 0, 0, "Play: Stun all enemy minions that cost {Manaflow} or less.");
 
 
 	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
