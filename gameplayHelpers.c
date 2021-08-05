@@ -118,7 +118,10 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trUnitSelect(""+name, true);
 	trMutateSelected(kbGetProtoUnitID("Dwarf"));
 	trImmediateUnitGarrison(""+tile);
-	trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(name, "proto")));
+	trUnitChangeProtoUnit("Victory Marker");
+	trUnitSelectClear();
+	trUnitSelect(""+name, true);
+	trMutateSelected(1*mGetVar(name, "proto"));
 
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
@@ -195,9 +198,12 @@ Given the name of a unit in the allUnits database, find
 enemy units that can be attacked by the unit and add them to
 the database db.
 */
-void findTargets(int name = 0, string db = "") {
+void findTargets(int name = 0, string db = "", bool healer = false) {
 	float dist = xsPow(mGetVar(name, "range") * 6 + 1, 2);
 	int p = 3 - mGetVar(name, "player");
+	if (healer) {
+		p = 3 - p;
+	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
@@ -207,6 +213,16 @@ void findTargets(int name = 0, string db = "") {
 			}
 		}
 	}
+}
+
+void healUnit(int index = 0, float heal = 0) {
+	xsSetContextPlayer(1*mGetVar(index, "player"));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	trUnitSelectClear();
+	trUnitSelect(""+index, true);
+	trDamageUnit(0 - heal);
+	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true)) - health;
+	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
 }
 
 void damageUnit(int index = 0, float dmg = 0) {
@@ -258,6 +274,33 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 	}
 }
 
+/*
+Checks and activates guard for the targeted unit.
+*/
+int checkGuard(int target = 0) {
+	trVectorQuestVarSet("targetPos", kbGetBlockPosition(""+target, true));
+	float dist = 0;
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		dist = zDistanceToVectorSquared("allUnits", "targetPos");
+		if (dist < 64 && dist > 9 &&
+			mGetVarByQV("allUnits", "stunTime") == 0 &&
+			mGetVarByQV("allUnits", "player") == 3 - trQuestVarGet("activePlayer") &&
+			HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+			trSoundPlayFN("bronzebirth.wav","1",-1,"","");
+			trSoundPlayFN("militarycreate.wav","1",-1,"","");
+			trUnitHighlight(2.0, true);
+			int guardTile = mGetVarByQV("allUnits", "tile");
+			int saveTile = mGetVar(target, "tile");
+			teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
+			teleportToTile(target, guardTile);
+			target = 1*trQuestVarGet("allUnits");
+			break;
+		}
+	}
+	refreshGuardAll();
+	return(target);
+}
 
 /*
 int attacker = index of attacking unit in the "allUnits" database

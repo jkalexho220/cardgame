@@ -83,30 +83,11 @@ bool attackUnitAtCursor(int p = 0) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
-		float range = xsPow(mGetVar(a, "range") * 6 + 3, 2);
+		float range = xsPow(mGetVar(a, "range") * 6 + 1, 2);
 		float dist = 0;
 		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits");
-				dist = zDistanceToVectorSquared("allUnits", "d2pos");
-				if (dist < 64 && dist > 9 &&
-					mGetVarByQV("allUnits", "stunTime") == 0 &&
-					mGetVarByQV("allUnits", "player") == 3 - p &&
-					HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
-					trSoundPlayFN("militarycreate.wav","1",-1,"","");
-					trUnitHighlight(2.0, true);
-					int guardTile = mGetVarByQV("allUnits", "tile");
-					int saveTile = mGetVar(target, "tile");
-					teleportToTile(1*trQuestVarGet("allUnits"), saveTile);
-					teleportToTile(target, guardTile);
-					target = 1*trQuestVarGet("allUnits");
-					trQuestVarSet("targetUnit", target);
-					break;
-				}
-			}
-			refreshGuardAll();
+			target = checkGuard(target);
 
 			startAttack(a, target, HasKeyword(AMBUSH, 1*mGetVar(a, "keywords")), true);
 
@@ -225,7 +206,7 @@ inactive
 					highlightReachable(unit);
 
 					// highlight attackable enemies within range
-					findTargets(unit, "targets");
+					findTargets(unit, "targets", HasKeyword(HEALER, 1*mGetVar(unit, "keywords")));
 					yDatabaseSelectAll("targets");
 					trUnitHighlight(3600.0, false);
 
@@ -249,6 +230,11 @@ inactive
 					}
 				}
 				if (unit > -1) {
+					if (mGetVar(unit, "spell") > SPELL_NONE) {
+						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
+						}
+					}
 					if (trQuestVarGet("p"+p+"mana") >= mGetVar(unit, "cost")) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
@@ -451,28 +437,11 @@ inactive
 
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(p);
-			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
-
-			int type = kbGetUnitBaseTypeID(1*trQuestVarGet("activeUnitID"));
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(kbGetProtoUnitID("Dwarf"));
-			trImmediateUnitGarrison(""+1*trQuestVarGet("moveTile"));
-			trUnitChangeProtoUnit("Dwarf");
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(type);
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(0);
-			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
 
 			if (trQuestVarGet("turnEnd") == 0) {
-				findTargets(1*trQuestVarGet("activeUnit"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				/*
 				If no targets found, we go back to gameplay_01_select
 				Otherwise, we go to gameplay_04_attack
@@ -587,7 +556,7 @@ inactive
 				mSetVarByQV("activeUnit", "action", ACTION_FURY);
 				xsEnableRule("gameplay_04_attack");
 				yClearDatabase("targets");
-				findTargets(1*trQuestVarGet("activeUnit"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				yDatabaseSelectAll("targets");
 				trUnitHighlight(3600, false);
 			} else {
@@ -661,20 +630,7 @@ inactive
 					updateMana();
 
 					// If the unit has an OnPlay effect
-					if (mGetVar(unit, "OnPlay") > 0) {
-						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);
-						int events = 1*mGetVar(unit, "OnPlay");
-						for(x=PLAY_EVENT_COUNT - 1; >=0) {
-							if (events >= n) {
-								OnPlay(unit, x);
-								events = events - n;
-							}
-							n = n / 2;
-						}
-					} else {
-						xsEnableRule("gameplay_01_select");
-						highlightReady(100);
-					}
+					OnPlay(unit);
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					yRemoveFromDatabase("p"+p+"hand");

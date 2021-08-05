@@ -3,9 +3,8 @@ highFrequency
 active
 runImmediately
 {
-	for(x=3; >0) {
-		for(p=2; >0) {
-			
+	for(p=2; >0) {
+		for(x=3; >0) {
 			addCardToDeck(p, "Khopesh");
 			addCardToDeck(p, "Villager Atlantean");
 			addCardToDeck(p, "Swordsman");
@@ -17,12 +16,25 @@ runImmediately
 			addCardToDeck(p, "Trident Soldier");
 			addCardToDeck(p, "Jarl");
 			addCardToDeck(p, "Hero Greek Ajax");
+			addCardToDeck(p, "Huskarl");
+			addCardToDeck(p, "Peltast");
+			addCardToDeck(p, "Scout");
 			
 			addCardToDeck(p, "Avenger");
-			addCardToDeck(p, "Archer Atlantean Hero");
-			
 			addCardToDeck(p, "Hero Greek Theseus");
+			addCardToDeck(p, "Mountain Giant");
+			addCardToDeck(p, "", SPELL_FIRST_AID);
 		}
+		addCardToDeck(p, "", SPELL_WHIRLWIND);
+		addCardToDeck(p, "", SPELL_BACKSTAB);
+		addCardToDeck(p, "", SPELL_DUEL);
+		addCardToDeck(p, "", SPELL_PARTY_UP);
+		addCardToDeck(p, "", SPELL_TEAMWORK);
+		addCardToDeck(p, "", SPELL_DEFENDER);
+		addCardToDeck(p, "", SPELL_VICTORY);
+		addCardToDeck(p, "", SPELL_HEROIC);
+		addCardToDeck(p, "Archer Atlantean Hero");
+		addCardToDeck(p, "Nemean Lion");
 	}
 	
 	InitBot(BOT_PERSONALITY_DEFAULT);
@@ -278,6 +290,18 @@ inactive
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);
+
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (mGetVarByQV("allUnits", "victory") > 0) {
+				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - mGetVarByQV("allUnits", "victory"));
+				mSetVarByQV("allUnits", "victory", 0);
+				if (mGetVarByQV("allUnits", "victoryAmbush") == 0) {
+					mSetVarByQV("allUnits", "keywords", ClearBit(1*mGetVarByQV("allUnits", "keywords"), AMBUSH));
+				}
+				mSetVarByQV("allUnits", "victoryAmbush", 0);
+			}
+		}
 
 		// Discard fleeting cards
 		bool fleeting = false;

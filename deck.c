@@ -49,7 +49,6 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 }
 
 
-
 /* 
 This function should only be called if there is room in the hand!
 */
@@ -106,7 +105,7 @@ void drawCard(int p = 0) {
 		} else {
 			ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 		}
-		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
+		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
 	} else {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("cantdothat.wav","1",-1,"","");
