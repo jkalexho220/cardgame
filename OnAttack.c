@@ -1,5 +1,5 @@
 void OnAttack(int attacker = 0, int target = 0, int event = 0) {
-	int p = yGetVarByIndex("allUnits", "player", attacker);
+	int p = mGetVar(attacker, "player");
 	switch(event)
 	{
 		case ATTACK_DRAW_CARD:
@@ -21,10 +21,9 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_BLOCK_DEATH:
 		{
-			if(yGetVarByIndex("allUnits", "health", target)<=0 && yGetVarByIndex("allUnits", "OnDeath", target)>0){
-				ySetVarByIndex("allUnits", "OnDeath", target, 0);
-				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetUnitAtIndex("allUnits", target)));
-				DeploySober("Olympus Temple SFX", "pos");
+			if(mGetVar(target, "health")<=0 && mGetVar(target, "OnDeath")>0){
+				mSetVar(target, "OnDeath", 0);
+				deployAtTile(0, "Olympus Temple SFX", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 			}
 		}

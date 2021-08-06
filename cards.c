@@ -22,6 +22,18 @@ const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal
 const int SPELL_SPARK = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
+const int SPELL_MAP = 5;
+const int SPELL_BACKSTAB = 6;
+const int SPELL_DUEL = 7;
+const int SPELL_PARTY_UP = 8;
+const int SPELL_TEAMWORK = 9;
+const int SPELL_DEFENDER = 10;
+const int SPELL_VICTORY = 11;
+const int SPELL_WHIRLWIND = 12;
+const int SPELL_HEROIC = 13;
+const int SPELL_WOLF = 14;
+const int SPELL_PING = 15;
+const int SPELL_FIRST_AID = 16;
 
 
 /*
@@ -31,19 +43,10 @@ const int ATTACK_DRAW_CARD = 0;
 const int ATTACK_STUN_TARGET = 1;
 const int ATTACK_GET_WINDSONG = 2;
 const int ATTACK_BLOCK_DEATH = 3;
+const int ATTACK_SING = 4;
 
-const int ATTACK_EVENT_COUNT = 4;
+const int ATTACK_EVENT_COUNT = 5;
 
-/*
-OnPlay events (bit positions)
-*/
-const int PLAY_FOOD = 0;
-const int PLAY_GET_TRAP = 1;
-const int PLAY_GET_SPARK = 2;
-const int PLAY_DOUBLEBLADE = 3;
-const int PLAY_LEGENDARY = 4;
-
-const int PLAY_EVENT_COUNT = 5;
 
 /*
 OnDeath events (bit positions)
@@ -65,15 +68,16 @@ const int AIRDROP = 2;			// Doesn't have to be summoned next to the commander.
 const int FURIOUS = 3;			// Two attacks each turn.
 const int LIGHTNING = 4;		// Attack will chain through connected enemies.
 const int REGENERATE = 5;		// Restores to full health at the start of your turn.
-const int DEADLY = 6;
+const int DEADLY = 6;			// I kill any minion that I damage.
 const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
 const int ARMORED = 8;			// Unit regenerates to full health after combat
 const int WARD = 9;				// Unit is immune to spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
 const int AMBUSH = 11;			// When initiating combat, unit attacks first.
 const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.
+const int HEALER = 13;			// Can't attack or counter-attack. Instead, unit can heal allies within range.
 
-const int NUM_KEYWORDS = 13;
+const int NUM_KEYWORDS = 14;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -91,6 +95,7 @@ string GetKeywordName(int bitPosition=0){
 		case BEACON: return ("Beacon");
 		case AMBUSH: return ("Ambush");
 		case FLEETING: return ("Fleeting");
+		case HEALER: return("Healer");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -113,17 +118,17 @@ bool HasKeyword(int key = 0, int keywords = 0) {
 }
 
 /*
-Given a card index in a given db array, print information
+Given a card name in a given db array, print information
 of the selected unit.
 */
-void displayCardKeywordsAndDescription(string db = "", int index = 0) {
+void displayCardKeywordsAndDescription(int name = 0) {
 	string bonus = " ";
 	string dialog = "";
 	string message = "";
-	int proto = yGetVarByIndex(db, "proto", index);
-	int keywords = yGetVarByIndex(db, "keywords", index);
+	int proto = mGetVar(name, "proto");
+	int keywords = mGetVar(name, "keywords");
 	bool multiple = false;
-	if (yGetVarByIndex(db, "stunTime", index) > 0) {
+	if (mGetVar(name, "stunTime") > 0) {
 		dialog = "Stunned";
 		multiple = true;
 	}
@@ -141,10 +146,10 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 			current = current / 2;
 		}
 	}
-	message = yGetStringByIndex(db, "ability", index);
+	message = mGetString(name, "ability");
 
 	int old = xsGetContextPlayer();
-	if (yGetVarByIndex(db, "spell", index) <= SPELL_COMMANDER) {
+	if (mGetVar(name, "spell") <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
 			gadgetUnreal("NormalArmorTextDisplay");			
@@ -157,20 +162,20 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
 
-		xsSetContextPlayer(1*yGetVarByIndex(db, "player", index));
-		int diff = 1*yGetVarByIndex(db, "health", index) - kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*yGetUnitAtIndex(db, index), true));
+		xsSetContextPlayer(1*mGetVar(name, "player"));
+		int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
 		if (diff > 0) {
 			bonus = bonus + "HP +" + diff;
 		}
 
-		diff = yGetVarByIndex(db, "attack", index) - trQuestVarGet("card_" + proto + "_Attack");
+		diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
 		if (diff > 0) {
 			bonus = bonus + " ATK +" + diff;
 		} else if (diff < 0) {
 			bonus = bonus + " ATK " + diff;
 		}
 
-		diff = yGetVarByIndex(db, "speed", index) - trQuestVarGet("card_" + proto + "_Speed");
+		diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
 		if (diff > 0) {
 			bonus = bonus + " SPD +" + diff;
 		} else if (diff < 0) {
@@ -185,9 +190,41 @@ void displayCardKeywordsAndDescription(string db = "", int index = 0) {
 	xsSetContextPlayer(old);
 }
 
-void SpellSetup(string name = "", int cost = 0, int spell = 0) {
+int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
+	int next = zBankNext("p"+p+"unitBank");
+	trUnitSelectClear();
+	trUnitSelect(""+next, false);
+
+	if (spell == 0 || spell == SPELL_COMMANDER) {
+		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
+		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
+		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));
+		mSetVar(next, "range", trQuestVarGet("card_" + proto + "_Range"));
+		mSetVar(next, "cost", trQuestVarGet("card_" + proto + "_Cost"));
+		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
+		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
+		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
+	} else {
+		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		proto = kbGetProtoUnitID("Statue of Lightning");
+	}
+	
+	mSetVar(next, "proto", proto);
+	mSetVar(next, "player", p);
+	mSetVar(next, "spell", spell);
+
+	trMutateSelected(proto);
+
+	return(next);
+}
+
+void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "") {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
+	trStringQuestVarSet("spell_"+spell+"_description", desc);
 
 	trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
 	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
@@ -195,25 +232,24 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0) {
 	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 }
 
-void CardEvents(string protoName = "", int onPlay = 0, int onAttack = 0, int onDeath = 0, string ability="") {
+void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string ability="") {
 	int proto = kbGetProtoUnitID(protoName);
-	trQuestVarSet("card_" + proto + "_OnPlay",onPlay);
 	trQuestVarSet("card_" + proto + "_OnAttack",onAttack);
 	trQuestVarSet("card_" + proto + "_OnDeath",onDeath);
 	trStringQuestVarSet("card_" + proto + "_Ability",ability);
 }
 
-void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0){
+void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool uncollectable = false){
 	int proto = kbGetProtoUnitID(protoName);
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
-	}	
+	}
 
-	
-	trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
-	trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
-	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
-
+	if (uncollectable == false) {
+		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
+		trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
+		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
+	}
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -221,6 +257,10 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	trQuestVarSet("card_" + proto + "_Speed",speed);
 	trQuestVarSet("card_" + proto + "_Range",range);
 	trQuestVarSet("card_" + proto + "_Keywords",keywords);
+	if (HasKeyword(ETHEREAL, keywords)) {
+		trModifyProtounit(protoName, 1, 55, 4);
+		trModifyProtounit(protoName, 2, 55, 4);
+	}
 	
 	for(p=1;<cNumberPlayers){
 		trModifyProtounit(protoName, p, 16, 9999999999999999999.0);
@@ -272,25 +312,6 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	}
 }
 
-
-void CardLoad(bool firstBit = false, bool secondBit = false, int index = 0){
-	int copies = 0;
-	if(firstBit){
-		if(secondBit){
-			copies = 3;
-		} else {
-			copies = 1;
-		}
-	} else {
-		if(secondBit){
-			copies = 2;
-		}
-	}
-	if(copies>0){
-		trChatSend(0, "Player has " + copies + " copies of " + trStringQuestVarGet("card_" + 1*trQuestVarGet("cardProtos_"+index) + "_Name"));
-	}
-}
-
 rule initializeCards
 highFrequency
 active
@@ -317,83 +338,89 @@ runImmediately
 		trForbidProtounit(p, "Temple");
 	}
 
+	zBankInit("p1unitBank", 0, 64);
+	zBankInit("p2unitBank", 64, 64);
+	zBankInit("allUnitsBank", 0, 128);
+
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
 	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
-	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0);
-	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL));
+	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
+	/*
+	ADVENTURER
+	*/
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
+	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Petrobolos",				1, "Bear Trap",			1, 1, 0, 1, Keyword(AIRDROP) + Keyword(GUARD));
-	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1);
-	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
-	CardSetup("Skraeling", 				2, "Trapper", 			1, 2, 2, 1);
-	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
+	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
+	CardSetup("Skraeling", 				3, "Bear Hunter", 		2, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
-	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 3, 2, 1);
+	// 5 - 9
+	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
+	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
+	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
-	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 7, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY));
-	CardSetup("Behemoth", 				5, "Behemoth", 			2, 4, 1, 1, Keyword(ARMORED));
-	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
-	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				4, 2, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
-	
-	CardSetup("Scout",					1, "Sameday Courier", 	2, 1, 4, 1); // Death: Opponent draws a card.
-	CardSetup("Prodromos",				3, "Loot'n Horse", 		2, 2, 3, 1); // Death: Draw a card.
-	CardSetup("Promethean Small",		2, "Boom Goblin", 		1, 2, 1, 1); // Death: Deal 2 Damage in 1 Range.
-	CardSetup("Promethean",				4, "Boom Goblin Champ", 2, 4, 1, 1); // Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.
-	CardSetup("Hero Greek Chiron",		8, "Donut", 			3, 6, 3, 2); // Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.
+	// 10 - 14
+	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
+	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
+	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
-	
+	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+	// 15 - 19
+	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
+	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
+	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
+	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
+	// 20 - 24
+	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
+	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"(3)Party Up!: Draw 3 cards that cost 1 mana.");
+	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
+	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
+	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
+	// 25 - 29
+	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
+	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
+	CardSetup("Scout",					3, "Speedy Cartographer",2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
+	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"(1)First-Aid: Teleport an allied minion next to your Commander and restore 2 health to it.");
+	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
+	/*
+	ARCANE
+	*/
+
+	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
+	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
+
+	SpellSetup("Spark", 1, SPELL_SPARK, "(1)Spark: Deal 1 damage.");
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
-		Proto | OnPlay | OnAttack | OnDeath | Description
+		Proto | OnAttack | OnDeath | Description
 	*/
-	CardEvents("Hero Greek Jason", 0, Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
-	CardEvents("Khopesh", 0, Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", Keyword(PLAY_GET_TRAP), 0, 0, "Play: Add a Bear Trap to your hand.");
-	CardEvents("Slinger", Keyword(PLAY_GET_SPARK), 0, 0, "Play: Add a Spark to your hand.");
-	CardEvents("Avenger", Keyword(PLAY_DOUBLEBLADE), 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
-	CardEvents("Villager Atlantean", Keyword(PLAY_FOOD), 0, 0, "Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Petrobolos", 0, Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
-	CardEvents("Archer Atlantean Hero", Keyword(PLAY_LEGENDARY), 0, 0);
-	CardEvents("Scout", 0, 0, Keyword(DEATH_OPPONENT_DRAW_CARD), "Death: Opponent draws a card.");
-	CardEvents("Prodromos", 0, 0, Keyword(DEATH_DRAW_CARD), "Death: Draw a card.");
-	CardEvents("Promethean Small", 0, 0, Keyword(DEATH_BOOM_SMALL), "Death: Deal 2 Damage in 1 Range.");
-	CardEvents("Promethean", 0, 0, Keyword(DEATH_BOOM_MEDIUM), "Death: Deal 4 Damage in 1 Range and 2 Damage in 2 Range.");
-	CardEvents("Hero Greek Chiron", 0, 0, Keyword(DEATH_BOOM_BIG), "Death: 6 Dmg 1 Rng, 4 Dmg 2 Rng, 2 Dmg 3 Rng and make tile Impassable.");
-	CardEvents("Hero Greek Theseus", 0, Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
+	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
+	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
+	CardEvents("Skraeling", 0, 0, "Play: Summon a 1|1 Loyal Wolf with Guard.");
+	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
+	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
+	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
+	CardEvents("Physician", Keyword(ATTACK_SING), 0, "When I heal an ally that has acted, grant them another action.");
+	CardEvents("Scout", 0, 0, "Play: Add an Explorer's Map to your hand.");
+	CardEvents("Peltast", 0, 0, "Play: Deal 1 damage.");
+	CardEvents("Huskarl", 0, 0, "Play: Grant adjacent allied minions +1 attack and health.");
+	CardEvents("Nemean Lion", 0, 0, "Play: Stun all enemy minions that cost {Manaflow} or less.");
+
+
+	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
 	/*
 	Spells
 				Name 	Cost 	Spell
 	*/
-	SpellSetup("Spark", 1, SPELL_SPARK);
-	SpellSetup("Windsong", 2, SPELL_SING);
-
-
-
-
-	//Loading player collection
-	int cardIndex = 0;
-	for(i=0;<16){
-		int n = trGetScenarioUserData(i);
-		CardLoad((n<0), (zModulo(2,n)==1), cardIndex);
-		n=n/2;
-		cardIndex = cardIndex + 1;
-		int j=1;
-		while(j<29){
-			bool firstBit = (zModulo(2,n)==1);
-			n=n/2;
-			bool secondBit = (zModulo(2,n)==1);
-			n=n/2;
-			CardLoad(firstBit, secondBit, cardIndex);
-			cardIndex = cardIndex + 1;
-			j=j+2;
-		}
-	}
+	
+	
 	
 	xsDisableRule("initializeCards");
 }

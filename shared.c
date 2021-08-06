@@ -280,6 +280,38 @@ int yGetDatabaseCount(string db = "") {
 	return(trQuestVarGet("zdatalite" + db + "count"));
 }
 
+void mSetVar(int name = 0, string var = "", float val = 0) {
+	trQuestVarSet("unit"+name+""+var, val);
+}
+
+void mSetVarByQV(string qv = "", string var = "", float val = 0) {
+	mSetVar(1*trQuestVarGet(qv), var, val);
+}
+
+void mSetString(int name = 0, string var = "", string val = "") {
+	trStringQuestVarSet("unit"+name+""+var, val);
+}
+
+void mSetStringByQV(string qv = "", string var = "", string val = "") {
+	mSetString(1*trQuestVarGet(qv), var, val);
+}
+
+float mGetVar(int name = 0, string var = "") {
+	return(trQuestVarGet("unit" + name + "" + var));
+}
+
+float mGetVarByQV(string qv = "", string var = "") {
+	return(mGetVar(1*trQuestVarGet(qv), var));
+}
+
+string mGetString(int name = 0, string var = "") {
+	return(trStringQuestVarGet("unit"+name+""+var));
+}
+
+string mGetStringByQV(string qv = "", string var = "") {
+	return(mGetString(1*trQuestVarGet(qv), var));
+}
+
 /*
 Gets the next unit in the database 'db'. Variables are associated with the
 database index rather than the value.
@@ -602,6 +634,14 @@ runImmediately
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
+
+	// LOS
+	for(p=2; >0) {
+		trModifyProtounit("Dwarf", p, 2, -20);
+		trModifyProtounit("Animal Attractor", p, 2, -20);
+		trModifyProtounit("Nidhogg", p, 2, -20);
+
+	}
 
 
 	// Disable god powers

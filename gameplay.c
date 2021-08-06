@@ -1,27 +1,21 @@
-const int GAMEPLAY_SELECT = 0;
-const int GAMEPLAY_WORK = 1;
-const int GAMEPLAY_MOVING = 2;
-const int GAMEPLAY_SUMMONING = 3;
-const int GAMEPLAY_ATTACKING = 4;
+
 
 
 void processAttack(string db = "attacks") {
-	int attackerIndex = yDatabaseNext(db);
-	int targetIndex = yGetVar(db, "target");
-	int attackerUnit = yGetUnitAtIndex("allUnits", attackerIndex);
-	int targetUnit = yGetUnitAtIndex("allUnits", targetIndex);
-	int attackerID = kbGetBlockID(""+attackerUnit);
+	int attacker = yDatabaseNext(db);
+	int target = yGetVar(db, "target");
+	int attackerID = kbGetBlockID(""+attacker);
 	switch(1*yGetVar(db, "phase"))
 	{
 		case ATTACK_START:
 		{
-			if (yGetVarByIndex("allUnits", "health", attackerIndex) > 0) {
-				trVectorQuestVarSet("d1pos", kbGetBlockPosition(""+attackerUnit, true));
-				trVectorQuestVarSet("d2pos", kbGetBlockPosition(""+targetUnit, true));
+			if (mGetVar(attacker, "health") > 0) {
+				trVectorQuestVarSet("d1pos", kbGetBlockPosition(""+attacker, true));
+				trVectorQuestVarSet("d2pos", kbGetBlockPosition(""+target, true));
 				trUnitSelectClear();
-				trUnitSelect(""+attackerUnit, true);
+				trUnitSelect(""+attacker, true);
 				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-				if (yGetVarByIndex("allUnits", "range", attackerIndex) == 1) {
+				if (mGetVar(attacker, "range") == 1) {
 					trUnitOverrideAnimation(1,0,0,1,-1);
 				} else {
 					trUnitOverrideAnimation(12,0,0,1,-1);
@@ -43,26 +37,25 @@ void processAttack(string db = "attacks") {
 		}
 		case ATTACK_DONE:
 		{
-			if (HasKeyword(LIGHTNING, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex))) {
-				lightning(targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex), 
-					HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)));
-			} else if (HasKeyword(DEADLY, 1*yGetVarByIndex("allUnits", "keywords", attackerIndex)) &&
-				yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
-				ySetVarByIndex("allUnits", "health", targetIndex, 0);
-				damageUnit("allUnits", targetIndex, 1);
-				deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			if (HasKeyword(LIGHTNING, 1*mGetVar(attacker, "keywords"))) {
+				lightning(target, mGetVar(attacker, "attack"), HasKeyword(DEADLY, 1*mGetVar(attacker, "keywords")));
+			} else if (HasKeyword(DEADLY, 1*mGetVar(attacker, "keywords")) &&
+				mGetVar(target, "spell") == SPELL_NONE) {
+				mSetVar(target, "health", 0);
+				damageUnit(target, 1);
+				deployAtTile(0, "Lampades Blood", 1*mGetVar(target, "tile"));
 			} else {
-				damageUnit("allUnits", targetIndex, yGetVarByIndex("allUnits", "attack", attackerIndex));
-				deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+				damageUnit(target, mGetVar(attacker, "attack"));
+				deployAtTile(0, "Lightning sparks", 1*mGetVar(target, "tile"));
 			}
 			/*
 			On-attack events.
 			*/
 			int n = 1*xsPow(2, ATTACK_EVENT_COUNT - 1);
-			int events = 1*yGetVarByIndex("allUnits", "OnAttack", attackerIndex);
+			int events = 1*mGetVar(attacker, "OnAttack");
 			for(x=ATTACK_EVENT_COUNT - 1; >=0) {
 				if (events >= n) {
-					OnAttack(attackerIndex, targetIndex, x);
+					OnAttack(attacker, target, x);
 					events = events - n;
 				}
 				n = n / 2;
@@ -81,51 +74,30 @@ If target of the right-click was an enemy within range, start an attack
 */
 bool attackUnitAtCursor(int p = 0) {
 	int target = findNearestUnit("p"+p+"clickPos", 9);
-	int a = trQuestVarGet("activeUnitIndex");
+	int a = trQuestVarGet("activeUnit");
 
 	if (target == -1) {
 		return(false);
 	}
-	if (yGetVarByIndex("allUnits", "player", target) == 3 - p) {
-		trQuestVarSet("targetUnit", yGetUnitAtIndex("allUnits", target));
+	if (mGetVar(target, "player") == 3 - p) {
+		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
-		float range = xsPow(yGetVarByIndex("allUnits", "range", a) * 6 + 3, 2);
+		float range = xsPow(mGetVar(a, "range") * 6 + 1, 2);
 		float dist = 0;
 		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits");
-				dist = zDistanceToVectorSquared("allUnits", "d2pos");
-				if (dist < 64 && dist > 9 &&
-					yGetVar("allUnits", "stunTime") == 0 &&
-					yGetVar("allUnits", "player") == 3 - p &&
-					HasKeyword(GUARD, 1*yGetVar("allUnits", "keywords"))) {
-					trSoundPlayFN("bronzebirth.wav","1",-1,"","");
-					trSoundPlayFN("militarycreate.wav","1",-1,"","");
-					trUnitHighlight(2.0, true);
-					int guardTile = yGetVar("allUnits", "tile");
-					int saveTile = yGetVarByIndex("allUnits", "tile", target);
-					teleportToTile("allUnits", saveTile);
-					teleportToTile("allUnits", guardTile, target);
-					target = yGetPointer("allUnits");
-					trQuestVarSet("targetUnit", trQuestVarGet("allUnits"));
-					break;
-				}
-			}
-			refreshGuardAll();
+			target = checkGuard(target);
 
-			startAttack(a, target, HasKeyword(AMBUSH, 1*yGetVarByIndex("allUnits", "keywords", a)), true);
+			startAttack(a, target, HasKeyword(AMBUSH, 1*mGetVar(a, "keywords")), true);
 
 			// Counterattack
-			trQuestVarSet("targetUnitIndex", target);
-			range = xsPow(yGetVarByIndex("allUnits", "range", target) * 6 + 3, 2);
-			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && (yGetVarByIndex("allUnits", "stunTime", target) == 0)) {
+			range = xsPow(mGetVar(target, "range") * 6 + 3, 2);
+			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && (mGetVar(target, "stunTime") == 0)) {
 				startAttack(target, a, false, true);
 			}
 
-			ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), 
-				xsMax(ACTION_DONE, yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"))));
+			mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
 			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
 		}
@@ -155,10 +127,10 @@ active
 		if (trQuestVarGet("lightning"+index+"damage") == -1 &&
 			yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
 			ySetVarByIndex("allUnits", "health", targetIndex, 0);
-			damageUnit("allUnits", targetIndex, 1);
+			damageUnit(targetIndex, 1);
 			deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
 		} else {
-			damageUnit("allUnits", targetIndex, trQuestVarGet("lightning"+index+"damage"));
+			damageUnit(targetIndex, trQuestVarGet("lightning"+index+"damage"));
 			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
 		}
 	}
@@ -194,19 +166,15 @@ rule gameplay_select_show_keywords
 highFrequency
 active
 {
-	if (yGetDatabaseCount("allUnits") > 0) {
-		yDatabaseNext("allUnits", true);
-		if (trUnitIsSelected()) {
-			displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
-		}
+	yDatabaseNext("allUnits", true);
+	if (trUnitIsSelected()) {
+		displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
 	}
 	
 	for(p=2; >0) {
-		if (yGetDatabaseCount("p"+p+"hand") > 0) {
-			yDatabaseNext("p"+p+"hand", true);
-			if (trUnitIsSelected()) {
-				displayCardKeywordsAndDescription("p"+p+"hand", 1*yGetPointer("p"+p+"hand"));
-			}
+		yDatabaseNext("p"+p+"hand", true);
+		if (trUnitIsSelected()) {
+			displayCardKeywordsAndDescription(1*trQuestVarGet("p"+p+"hand"));
 		}
 	}
 }
@@ -227,19 +195,19 @@ inactive
 		int p = trQuestVarGet("activePlayer");
 		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
-			trQuestVarSet("activeUnitIndex", unit);
+			trQuestVarSet("activeUnit", unit);
 			if (unit > -1) {
 				
 				/*
 				If the player owns the selected unit and and the unit hasn't moved yet,
 				then highlight locations that it can move to and proceed to gameplay_02_work.
 				*/
-				if (yGetVarByIndex("allUnits", "player", unit) == p &&
-					yGetVarByIndex("allUnits", "action", unit) == ACTION_READY) {
+				if (mGetVar(unit, "player") == p &&
+					mGetVar(unit, "action") == ACTION_READY) {
 					highlightReachable(unit);
 
 					// highlight attackable enemies within range
-					findTargets(unit, "targets");
+					findTargets(unit, "targets", HasKeyword(HEALER, 1*mGetVar(unit, "keywords")));
 					yDatabaseSelectAll("targets");
 					trUnitHighlight(3600.0, false);
 
@@ -250,6 +218,7 @@ inactive
 			} else {
 				// Check if player selected a card in hand.
 				unit = -1;
+				int pointer = 0;
 				float closestDistance = 9.0;
 				float currentDistance = 0;
 				for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
@@ -257,28 +226,34 @@ inactive
 					currentDistance = zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos");
 					if (currentDistance < closestDistance) {
 						closestDistance = currentDistance;
-						unit = yGetPointer("p"+p+"hand");
+						unit = trQuestVarGet("p"+p+"hand");
+						pointer = yGetPointer("p"+p+"hand");
 					}
 				}
 				if (unit > -1) {
-					if (trQuestVarGet("p"+p+"mana") >= yGetVarByIndex("p"+p+"hand", "cost", unit)) {
+					if (mGetVar(unit, "spell") > SPELL_NONE) {
+						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
+						}
+					}
+					if (trQuestVarGet("p"+p+"mana") >= mGetVar(unit, "cost")) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
-						if (yGetVarByIndex("p"+p+"hand", "spell", unit) == 0) {
+						if (mGetVar(unit, "spell") == 0) {
 							int tile = 0;
 							yClearDatabase("summonLocations");
-							if (HasKeyword(AIRDROP, 1*yGetVarByIndex("p"+p+"hand", "keywords", unit))) {
+							if (HasKeyword(AIRDROP, 1*mGetVar(unit, "keywords"))) {
 								for(x=zGetBankCount("tiles"); >0) {
 									zBankNext("tiles");
-									if (zGetVar("tiles", "occupied") == TILE_EMPTY) {
+									if (zGetVar("tiles", "occupant") + zGetVar("tiles", "terrain") == TILE_EMPTY) {
 										yAddToDatabase("summonLocations", "tiles");
 									}
 								}
 							} else {
 								for(x=yGetDatabaseCount("allUnits"); >0) {
 									yDatabaseNext("allUnits");
-									if (yGetVar("allUnits", "player") == p && HasKeyword(BEACON, 1*yGetVar("allUnits", "keywords"))) {
-										tile = yGetVar("allUnits", "tile");
+									if (mGetVarByQV("allUnits", "player") == p && HasKeyword(BEACON, 1*mGetVarByQV("allUnits", "keywords"))) {
+										tile = mGetVarByQV("allUnits", "tile");
 										findAvailableTiles(tile, 1, "summonLocations");
 									}
 								}
@@ -290,12 +265,14 @@ inactive
 								}
 							}
 
-							trQuestVarSet("summonUnitIndex", unit);
+							trQuestVarSet("summonUnit", unit);
 							xsEnableRule("gameplay_10_summon");
 						} else {
 							// If it is a spell
-							chooseSpell(1*yGetVarByIndex("p"+p+"hand", "spell", unit), unit);
+							chooseSpell(1*mGetVar(unit, "spell"), pointer);
 						}
+
+						trQuestVarSet("handPointer", pointer);
 						
 						xsDisableRule("gameplay_01_select");
 						highlightReady(0.1);
@@ -342,7 +319,7 @@ inactive
 				/*
 				Deselect previously selected unit
 				*/
-				if (trQuestVarGet("activeUnitIndex") > -1) {
+				if (trQuestVarGet("activeUnit") > -1) {
 					// Clear previously highlighted tiles.
 					if (yGetDatabaseCount("reachable") > 0) {
 						for(x=yGetDatabaseCount("reachable"); >0) {
@@ -358,8 +335,8 @@ inactive
 						trUnitHighlight(0.1, false);
 						yClearDatabase("targets");
 					}
-					if (yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) == ACTION_MOVED) {
-						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+					if (mGetVarByQV("activeUnit", "action") == ACTION_MOVED) {
+						mSetVarByQV("activeUnit", "action", ACTION_DONE);
 					}
 
 					xsDisableRule("gameplay_02_work");
@@ -375,8 +352,7 @@ inactive
 			}
 			case RIGHT_CLICK:
 			{
-				int unit = trQuestVarGet("activeUnitIndex");
-				trQuestVarSet("activeUnit", yGetUnitAtIndex("allUnits", 1*trQuestVarGet("activeUnitIndex")));
+				int unit = trQuestVarGet("activeUnit");
 				/*
 				First check if player wants unit to attack something in range 
 				without moving it.
@@ -411,9 +387,9 @@ inactive
 						}
 
 						/* setting old tile to unoccupied */
-						int tile = yGetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"));
-						zSetVarByIndex("tiles", "occupied", tile, xsMax(TILE_EMPTY, zGetVarByIndex("tiles", "terrain", tile)));
-						if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
+						int tile = mGetVarByQV("activeUnit", "tile");
+						zSetVarByIndex("tiles", "occupant", tile, 0);
+						if (HasKeyword(GUARD, 1*mGetVarByQV("activeUnit", "keywords"))) {
 							tileGuard(tile, false);
 						}
 
@@ -423,7 +399,7 @@ inactive
 						trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 						trUnitMoveToVector("moveDestination");
 						
-						ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
+						mSetVarByQV("activeUnit", "action", ACTION_MOVED);
 						trQuestVarSet("moving", 0);
 						trQuestVarSet("gameplayPhase", GAMEPLAY_MOVING);
 						xsEnableRule("gameplay_03_moveComplete");
@@ -462,28 +438,11 @@ inactive
 
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(p);
-			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
-
-			int type = kbGetUnitBaseTypeID(1*trQuestVarGet("activeUnitID"));
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(kbGetProtoUnitID("Dwarf"));
-			trImmediateUnitGarrison(""+1*trQuestVarGet("moveTile"));
-			trUnitChangeProtoUnit("Dwarf");
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
-			trMutateSelected(type);
-
-			trUnitSelectClear();
-			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trUnitConvert(0);
-			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
 
 			if (trQuestVarGet("turnEnd") == 0) {
-				findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				/*
 				If no targets found, we go back to gameplay_01_select
 				Otherwise, we go to gameplay_04_attack
@@ -491,20 +450,19 @@ inactive
 				if (yGetDatabaseCount("targets") == 0) {
 					xsEnableRule("gameplay_01_select");
 					highlightReady(100);
-					ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+					mSetVarByQV("activeUnit", "action", ACTION_DONE);
 				} else {
 					xsEnableRule("gameplay_04_attack");
-					ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_MOVED);
+					mSetVarByQV("activeUnit", "action", ACTION_MOVED);
 					yDatabaseSelectAll("targets");
 					trUnitHighlight(3600, false);
 				}
 			}
 			
+			mSetVarByQV("activeUnit", "tile", trQuestVarGet("moveTile"));
+			zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("moveTile"), 1*trQuestVarGet("activeUnit"));
 
-			ySetVarByIndex("allUnits", "tile", 1*trQuestVarGet("activeUnitIndex"), trQuestVarGet("moveTile"));
-			zSetVarByIndex("tiles", "occupied", 1*trQuestVarGet("moveTile"), TILE_OCCUPIED);
-
-			if (HasKeyword(GUARD, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex")))) {
+			if (HasKeyword(GUARD, 1*mGetVarByQV("activeUnit", "keywords"))) {
 				refreshGuardAll();
 			}
 
@@ -535,7 +493,7 @@ inactive
 		{
 			case LEFT_CLICK:
 			{
-				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_DONE);
+				mSetVarByQV("activeUnit", "action", ACTION_DONE);
 				/*
 				Clear previously highlighted target enemies
 				*/
@@ -593,13 +551,13 @@ inactive
 		}
 
 		if (trQuestVarGet("turnEnd") == 0) {
-			if (HasKeyword(FURIOUS, 1*yGetVarByIndex("allUnits", "keywords", 1*trQuestVarGet("activeUnitIndex"))) &&
-				yGetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex")) < ACTION_FURY &&
-				yGetVarByIndex("allUnits", "health", 1*trQuestVarGet("activeUnitIndex")) > 0) {
-				ySetVarByIndex("allUnits", "action", 1*trQuestVarGet("activeUnitIndex"), ACTION_FURY);
+			if (HasKeyword(FURIOUS, 1*mGetVarByQV("activeUnit", "keywords")) &&
+				mGetVarByQV("activeUnit", "action") < ACTION_FURY &&
+				mGetVarByQV("activeUnit", "health") > 0) {
+				mSetVarByQV("activeUnit", "action", ACTION_FURY);
 				xsEnableRule("gameplay_04_attack");
 				yClearDatabase("targets");
-				findTargets(1*trQuestVarGet("activeUnitIndex"), "targets");
+				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				yDatabaseSelectAll("targets");
 				trUnitHighlight(3600, false);
 			} else {
@@ -610,17 +568,6 @@ inactive
 
 		removeDeadUnits();
 		refreshGuardAll();
-
-		/* 
-		Database has been modified after removing units.
-		If active unit has furious, we need to update the activeUnitIndex
-		*/
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			if (trQuestVarGet("activeUnit") == yDatabaseNext("allUnits")) {
-				trQuestVarSet("activeUnitIndex", yGetPointer("allUnits"));
-				break;
-			}
-		}
 		
 		xsDisableRule("gameplay_05_attackComplete");
 	}
@@ -668,42 +615,29 @@ inactive
 					xsDisableRule("gameplay_10_summon");
 					// We don't set the player click to 0 in case this click was used to select another unit in hand.
 				} else {
-					ySetPointer("p"+p+"hand", 1*trQuestVarGet("summonUnitIndex"));
-					int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("summonUnitIndex"));
+					int unit = trQuestVarGet("summonUnit");
+					yAddToDatabase("allUnits", "summonUnit");
 					
-					teleportToTile("p"+p+"hand", tile, 1*trQuestVarGet("summonUnitIndex"));
+					teleportToTile(unit, tile);
 
-					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - yGetVar("p"+p+"hand", "cost"));
+					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 
-					transferUnit("allUnits", "p"+p+"hand");
-					if (HasKeyword(CHARGE, 1*yGetVar("p"+p+"hand", "keywords")) == true) {
-						yAddUpdateVar("allUnits", "action", ACTION_READY);
+					if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords")) == true) {
+						mSetVar(unit, "action", ACTION_READY);
 					} else {
-						yAddUpdateVar("allUnits", "action", ACTION_SLEEPING);
+						mSetVar(unit, "action", ACTION_SLEEPING);
 					}
 					updateMana();
 
 					// If the unit has an OnPlay effect
-					if (yGetVar("p"+p+"hand", "OnPlay") > 0) {
-						int n = 1*xsPow(2, PLAY_EVENT_COUNT - 1);
-						int events = 1*yGetVar("p"+p+"hand", "OnPlay");
-						int latest = yGetDatabaseCount("allUnits") - 1;
-						for(x=PLAY_EVENT_COUNT - 1; >=0) {
-							if (events >= n) {
-								OnPlay(latest, x);
-								events = events - n;
-							}
-							n = n / 2;
-						}
-					} else {
-						xsEnableRule("gameplay_01_select");
-						highlightReady(100);
-					}
+					OnPlay(unit);
 
-					removeUnit("p"+p+"hand");
+					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
+					yRemoveFromDatabase("p"+p+"hand");
+					yRemoveUpdateVar("p"+p+"hand", "pos");
 
-					zSetVarByIndex("tiles", "occupied", tile, TILE_OCCUPIED);
+					zSetVarByIndex("tiles", "occupant", tile, unit);
 					updateHandPlayable(p);
 
 					for (x=yGetDatabaseCount("summonLocations"); >0) {
