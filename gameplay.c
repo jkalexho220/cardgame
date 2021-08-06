@@ -93,7 +93,9 @@ bool attackUnitAtCursor(int p = 0) {
 
 			// Counterattack
 			range = xsPow(mGetVar(target, "range") * 6 + 3, 2);
-			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && (mGetVar(target, "stunTime") == 0)) {
+			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && 
+				(mGetVar(target, "stunTime") == 0) &&
+				(HasKeyword(HEALER, 1*mGetVar(target, "keywords")) == false)) {
 				startAttack(target, a, false, true);
 			}
 
@@ -101,6 +103,22 @@ bool attackUnitAtCursor(int p = 0) {
 			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
 		}
+	} else if (HasKeyword(HEALER, 1*mGetVar(a, "keywords"))) {
+		trQuestVarSet("targetUnit", target);
+		trUnitSelectClear();
+		trUnitSelect(""+a, true);
+		trVectorSetUnitPos("d1pos", "activeUnit");
+		trVectorSetUnitPos("d2pos", "targetUnit");
+		trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+		trUnitOverrideAnimation(50, 0, 0, 1, -1);
+		healUnit(target, mGetVar(a, "attack"));
+		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
+			if (mGetVar(target, "action") < ACTION_SLEEPING) {
+				mSetVar(target, "action", ACTION_READY);
+			}
+		}
+		xsEnableRule("gameplay_05_attackComplete");
+		return(true);
 	}
 
 	return(false);
@@ -648,6 +666,8 @@ inactive
 					}
 					yClearDatabase("summonLocations");
 
+					string name = trStringQuestVarGet("card_"+1*kbGetUnitBaseTypeID(kbGetBlockID(""+unit))+"_name");
+					ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> summoned a " + name);
 					
 					xsDisableRule("gameplay_10_summon");
 					trQuestVarSet("p"+p+"click", 0);

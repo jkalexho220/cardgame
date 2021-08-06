@@ -548,7 +548,12 @@ void ChatLogShow(){
 Adds a new message in the Chat Log and shows it
 */
 void ChatLog(int p = 1, string message = ""){
-	trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
+	if (p == 0) {
+		trStringQuestVarSet("chat1Log" + modularCounterNext("chat1Log"), message);
+		trStringQuestVarSet("chat2Log" + modularCounterNext("chat2Log"), message);
+	} else {
+		trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
+	}
 	ChatLogShow();
 }
 

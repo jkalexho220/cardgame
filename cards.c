@@ -357,12 +357,12 @@ runImmediately
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
-	CardSetup("Skraeling", 				3, "Bear Hunter", 		2, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
+	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	// 5 - 9
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
 	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
-	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
+	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14

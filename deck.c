@@ -103,6 +103,12 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 			break;
 		}
 	}
+	if (spell > SPELL_NONE) {
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("next"), true);
+		float scale = xsSqrt(trQuestVarGet("spell_"+spell+"_cost")) * 0.5;
+		trSetSelectedScale(0.75, scale, 0.75);
+	}
 }
 
 

@@ -19,6 +19,7 @@ runImmediately
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
 			addCardToDeck(p, "Scout");
+			addCardToDeck(p, "Physician");
 			
 			addCardToDeck(p, "Avenger");
 			addCardToDeck(p, "Hero Greek Theseus");
