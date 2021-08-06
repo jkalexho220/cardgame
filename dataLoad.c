@@ -1,5 +1,13 @@
 /*
-Slots 0-5 = progress and metadata for each class
+Slots 0-5 = progress and metadata for each class and cards 7-14
+1 bit = class in deck?
+1 bit = class is first or second (0 = first class)
+1 bit = selected commander
+3 bits for progress on storyline
+3 x 7 bits = collectible commons 7-13 in collection
+1 bit = collectible legendary in collection
+
+
 
 Slots 6-7 = cards from class 1 in current deck
 Slots 8-9 = cards from class 2 in current deck
@@ -7,7 +15,95 @@ Slots 8-9 = cards from class 2 in current deck
 Slots 10-15 = collectible class cards in collection
 */
 
-void showProgress(int p = 0) {
+
+/*
+This function assumes the following:
+- the quest vars named "class1" and "class2" are properly set.
+- the "commander" quest var is properly set.
+- there are only two classes in the "deck" database
+*/
+void dataSave() {
+	int id = 0;
+	int card = 0;
+	for(x=0; <180) {
+		setCardCountDeck(x, 0);
+	}
+	for(x=yGetDatabaseCount("deck"); >0) {
+		id = kbGetBlockID(""+1*yDatabaseNext("deck"), true);
+		if (yGetVar("deck", "spell") == SPELL_NONE) {
+			card = ProtoToCard(kbGetUnitBaseTypeID(id));
+		} else {
+			card = SpellToCard(1*yGetVar("deck", "spell"));
+		}
+		setCardCountDeck(card, 1 + getCardCountDeck(card));
+	}
+	int c = trQuestVarGet("class1");
+	int data = 0;
+	int power = 1;
+	for(x=0; <15) {
+		card = x + 30 * c;
+		data = data + power * getCardCountDeck(card);
+		power = power * 4;
+	}
+	trQuestVarSet("data6", data);
+	data = 0;
+	power = 1;
+	for(x=15; <30) {
+		card = x + 30 * c;
+		data = data + power * getCardCountDeck(card);
+		power = power * 4;
+	}
+	trQuestVarSet("data7", data);
+
+	c = trQuestVarGet("class2");
+	data = 0;
+	power = 1;
+	for(x=0; <15) {
+		card = x + 30 * c;
+		data = data + power * getCardCountDeck(card);
+		power = power * 4;
+	}
+	trQuestVarSet("data8", data);
+	data = 0;
+	power = 1;
+	for(x=15; <30) {
+		card = x + 30 * c;
+		data = data + power * getCardCountDeck(card);
+		power = power * 4;
+	}
+	trQuestVarSet("data9", data);
+
+	/*
+	Saving collection and class progress data
+	*/
+	for(c=0; <6) {
+		data = 0;
+		if (trQuestVarGet("class2") == c) {
+			data = data + 1; // set the first bit
+		} else if (trQuestVarGet("class1") == c) {
+			data = data + 3; // set the first 2 bits
+			data = data + 4 * (1 * trQuestVarGet("commander") - 2 * c); // set the commander bit
+		}
+		data = data + 8 * trQuestVarGet("class"+c+"progress"); // progress is bits 3-5
+
+		power = 64; // skip first 6 bits to add collectible cards
+		for(x=7; <15) {
+			card = x + 30 * c;
+			data = data + power * trQuestVarGet("card_"+card+"_count");
+		}
+		trQuestVarSet("data"+c, data);
+
+		data = 0;
+		power = 1;
+		for(x=15; < 30) {
+			card = x + 30 * c;
+			data = data + power * trQuestVarGet("card_"+card+"_count");
+		}
+		trQuestVarSet("data"+(c+10), data);
+	}
+}
+
+void showLoadProgress(int p = 0) {
 	trSoundPlayFN("default","1",-1,""+100 * p / 22,"");
 }
 
@@ -51,10 +147,7 @@ active
 
 		data = 1*trQuestVarGet("data"+x);
 		data = data / 8;
-		card = 30 * x + 14; // card 15, one of the class legendaries
-		trQuestVarSet("card_"+card+"_count", zModulo(2, data));
-		data = data / 2;
-		trQuestVarSet("class"+x+"progress", data);
+		trQuestVarSet("class"+x+"progress", zModulo(8, data));
 	}
 
 	if (Multiplayer || true) {
@@ -82,16 +175,25 @@ active
 		Load player's collection 
 		*/
 		for(c=0; <6) {
-			data = 1*trQuestVarGet("data"+(c+10));
-			for(x=0; <15) {
-				card = 15 + x + 30 * c;
+			// Starter cards 0-6
+			for (x=0; < 7) {
+				card = x + 30 * c;
+				trQuestVarSet("card_"+card+"_count", 3);
+			}
+			// Cards 7-14
+			data = 1*trQuestVarGet("data"+c);
+			data = data / 64; // skip first 6 bits
+			for(x=7; <15) {
+				card = x + 30 * c;
 				trQuestVarSet("card_"+card+"_count", zModulo(4, data));
 				data = data / 4;
 			}
-			// Starter cards
-			for (x=0; < 7 + trQuestVarGet("class"+c+"progress")) {
+			// Cards 15-29
+			data = 1*trQuestVarGet("data"+(c+10));
+			for(x=15; <30) {
 				card = x + 30 * c;
-				trQuestVarSet("card_"+card+"_count", 3);
+				trQuestVarSet("card_"+card+"_count", zModulo(4, data));
+				data = data / 4;
 			}
 		}
 		/*
@@ -202,7 +304,7 @@ inactive
 			trPlayerGrantResources(p, "gold", -1000);
 			trPlayerGrantResources(p, "favor", -1000);
 		}
-		showProgress(1);
+		showLoadProgress(1);
 		xsEnableRule("data_load_03_load_commanders");
 		xsEnableRule("data_load_04_detect_commanders");
 		xsDisableSelf();
@@ -252,7 +354,7 @@ inactive
 				break;
 			}
 		}
-		showProgress(2);
+		showLoadProgress(2);
 		xsDisableRule("data_load_04_detect_commanders");
 		for(p=2; >0) {
 			trPlayerGrantResources(p, "food", -1000);
@@ -331,7 +433,7 @@ inactive
 			trPlayerGrantResources(p, "favor", -1000);
 		}
 		trQuestVarSet("progress", 1 + trQuestVarGet("progress"));
-		showProgress(1*trQuestVarGet("progress"));
+		showLoadProgress(1*trQuestVarGet("progress"));
 		for(x=0; < 64) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
 				trChatSend(0, "value: " + x);

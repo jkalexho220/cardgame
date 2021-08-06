@@ -398,15 +398,14 @@ runImmediately
 	xsDisableRule("initializeCards");
 }
 
-
+int getCardClass(int index = 0) {
+	return(1*xsFloor(index / 30));
+}
+/*
+we don't need this function. Just call dataSave() in dataLoad.c;
+*/
 void saveDeck() {
-	int id = 0;
-	for(x=yGetDatabaseCount("deck"); >0) {
-		id = yDatabaseNext("deck");
-		/*
-		Bit manipulation stuff.
-		*/
-	}
+	
 }
 
 int CardToProto(int card = 0) {
@@ -426,7 +425,7 @@ int SpellToCard(int spell = 0) {
 }
 
 int getCardCountCollection(int index = 0) {
-	return(1*trQuestVarGet("card_"+index+"_count"));
+	return(1*trQuestVarGet("card_"+index+"_count") - trQuestVarGet("card_"+index+"_countInDeck"));
 }
 
 int getCardCountDeck(int index = 0) {
@@ -434,21 +433,15 @@ int getCardCountDeck(int index = 0) {
 }
 
 void setCardCountCollection(int index = 0, int count = 0) {
-	/*
-	TODO
-	*/
+	trQuestVarSet("card_"+index+"_count", count);
 }
 
 void setCardCountDeck(int index = 0, int count = 0) {
-	/*
-	TODO
-	*/
+	trQuestVarSet("card_"+index+"_countInDeck", count);
 }
 
 void setDeckCommander(int commander = 0) {
-	/*
-	TODO
-	*/
+	trQuestVarSet("commander", commander);
 }
 
 int getDeckCommander() {
@@ -456,13 +449,10 @@ int getDeckCommander() {
 }
 
 void setClassProgress(int class = 0, int progress = 0) {
-	int old = trQuestVarGet("class"+class+"progress");
 	trQuestVarSet("class"+class+"progress", progress);
-	old = old * 16;
-	int new = progress * 16;
-	trQuestVarSet("data"+class, trQuestVarGet("data"+class) - old + new);
 }
 
 int getClassProgress(int class = 0) {
 	return(1*trQuestVarGet("class"+class+"progress"));
 }
+
