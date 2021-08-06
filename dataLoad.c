@@ -90,6 +90,7 @@ void dataSave() {
 		for(x=7; <15) {
 			card = x + 30 * c;
 			data = data + power * trQuestVarGet("card_"+card+"_count");
+			power = power * 4;
 		}
 		trQuestVarSet("data"+c, data);
 
@@ -98,6 +99,7 @@ void dataSave() {
 		for(x=15; < 30) {
 			card = x + 30 * c;
 			data = data + power * trQuestVarGet("card_"+card+"_count");
+			power = power * 4;
 		}
 		trQuestVarSet("data"+(c+10), data);
 	}
