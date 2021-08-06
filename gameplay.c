@@ -648,7 +648,7 @@ inactive
 					yClearDatabase("summonLocations");
 
 					string name = trStringQuestVarGet("card_"+1*kbGetUnitBaseTypeID(kbGetBlockID(""+unit))+"_name");
-					ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> summoned " + name);
+					ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> summoned a " + name);
 					
 					xsDisableRule("gameplay_10_summon");
 					trQuestVarSet("p"+p+"click", 0);
