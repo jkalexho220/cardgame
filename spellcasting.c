@@ -685,8 +685,11 @@ inactive
 			}
 		}
 
-		if ((battlecry == false) && (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer"))) {
-			trMessageSetText(trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_description"), -1);
+		if (battlecry == false) {
+			if (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer")) {
+				trMessageSetText(trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_description"), -1);
+			}
+			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> cast " + trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_name"));
 		}
 
 		if (done) {
