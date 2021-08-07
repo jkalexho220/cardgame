@@ -14,6 +14,7 @@ runImmediately
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
 			addCardToDeck(p, "Oracle Scout");
+			// addCardToDeck(p, "Phoenix From Egg");
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
