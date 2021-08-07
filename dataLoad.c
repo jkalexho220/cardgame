@@ -111,7 +111,7 @@ void showLoadProgress(int p = 0) {
 
 rule data_load_00
 highFrequency
-active
+inactive
 {
 	trQuestVarSet("virgin", 0);
 	for(x=0; < 16) {
@@ -152,7 +152,7 @@ active
 		trQuestVarSet("class"+x+"progress", zModulo(8, data));
 	}
 
-	if (Multiplayer || true) {
+	if (Multiplayer) {
 		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
 		trUIFadeToColor(0,0,0,0,0,true);
 		
@@ -169,10 +169,17 @@ active
 			trUnitSelectByID(x);
 			trMutateSelected(m);
 		}
-
+		xsEnableRule("initializeBoard");
 		trBlockAllSounds(true);
 		xsEnableRule("data_load_01_ready");
 	} else {
+		ChatLog(1, "Mode:Singleplayer");
+		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
+		if(trGetScenarioUserData(0) == 0){
+			xsEnableRule("CinPrologue00");
+		} else {
+			xsEnableRule("Collection");
+		}
 		/* 
 		Load player's collection 
 		*/

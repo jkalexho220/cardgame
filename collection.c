@@ -15,25 +15,12 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
 		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
-		yAddUpdateVar("allUnits", "stunIndex", 0);
-		yAddUpdateVar("allUnits", "stunSFX", 0);
-		yAddUpdateVar("allUnits", "attack", trQuestVarGet("card_" + proto + "_Attack"));
-		yAddUpdateVar("allUnits", "health", trQuestVarGet("card_" + proto + "_Health"));
-		yAddUpdateVar("allUnits", "speed", trQuestVarGet("card_" + proto + "_Speed"));
-		yAddUpdateVar("allUnits", "range", trQuestVarGet("card_" + proto + "_Range"));
-		yAddUpdateVar("allUnits", "cost", trQuestVarGet("card_" + proto + "_Cost"));
-		yAddUpdateVar("allUnits", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
-		yAddUpdateVar("allUnits", "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));
-		yAddUpdateVar("allUnits", "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
-		yAddUpdateVar("allUnits", "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
-		yAddUpdateString("allUnits", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
-		yAddUpdateVar("allUnits", "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		yAddUpdateVar("allUnits", "spell", spell);
 		proto = kbGetProtoUnitID("Statue of Lightning");
 	}
 	trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
-	trUnitHighlight(3, true);
 	
 	yAddUpdateVar("allUnits", "proto", proto);
 
@@ -138,6 +125,7 @@ void CollectionCommanderSecond(int class = 0, int x = 0, int z = 0){
 }
 
 bool CollectionCardLegendary(int index = 0, int x = 0, int z = 0) {
+	/*
 	if(getCardCountCollection(index) > 0){
 		CollectionDeploy(index, x, z);
 		return (false);
@@ -146,9 +134,12 @@ bool CollectionCardLegendary(int index = 0, int x = 0, int z = 0) {
 		CollectionDeploy(index, x, z + 44);
 		return (true);
 	}
+	*/
+	return(true);
 }
 
 bool CollectionCard(int index = 0, int x = 0, int z = 0) {
+	
 	int countCollection = getCardCountCollection(index);
 	for(i=0;<countCollection){
 		CollectionDeploy(index, x, z);
@@ -385,6 +376,7 @@ int SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		trPaintTerrain(10 * class, 0, 8 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(10 * class, 22, 8 + 10 * class, 42, terrainType, terrainSubType, false);	
 		// Cards
+		
 		x = 1 + 20 * class; z = 37;
 		for(i = 30 * class;<30 * (class + 1)){
 			if(i == 14 + 30 * class){
@@ -408,6 +400,7 @@ int SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 				}
 			}
 		}	
+		
 		z = 41;
 		// Commanders
 		if(getDeckCommander() ==  (2 * class)){
@@ -447,7 +440,6 @@ highFrequency
 inactive
 {
 	trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
-	xsDisableRule("gameplay_select_show_keywords");
 	xsEnableRule("CollectionClick");
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
@@ -456,13 +448,15 @@ inactive
 
 	yClearDatabase("allUnits");	
 	trQuestVarSet("classesInDeck", 0);
-	int cardsInDeck = 0;	
+	int cardsInDeck = 0;
+	
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_ADVENTURER, 0, 65); // GreekRoadA
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_ARCANE, 5, 2); // IceC
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_NAGA, 3, 10); // coralB
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_CLOCKWORK, 0, 71); // CityTileAtlantis
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_EVIL, 0, 84); // Hadesbuildable1
 	cardsInDeck = cardsInDeck + SetupClass(CLASS_SPACE, 0, 52); // OlympusC
+	
 	
 	if(cardsInDeck > 40){
 		ThrowError("More than 40 cards in deck!");
@@ -497,20 +491,22 @@ rule CollectionSelect
 highFrequency
 inactive
 {
-	yDatabaseNext("allUnits", true);
+	int id = yDatabaseNext("allUnits", true);
 	if (trUnitIsSelected()) {
 		xsDisableRule("CollectionSelect");
 		trVectorSetUnitPos("temp","allUnits");
 		if(trVectorQuestVarGetZ("temp") < 90){
-			displayCardKeywordsAndDescription("allUnits", 1*yGetPointer("allUnits"));
+			// this is a data leak. will need a very similar function that is based on protounit instead of name.
+			// displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
 			xsEnableRule("CollectionEnter");
 			trTechGodPower(1, "nidhogg", 1);
 			trQuestVarSet("collectionSelection", trQuestVarGet("allUnits"));
 			if(1*yGetVar("allUnits", "spell") == 0){
-				trQuestVarSet("collectionCard", ProtoToCard(yGetVar("allUnits", "proto")));
+				trQuestVarSet("collectionCard", ProtoToCard(kbGetUnitBaseTypeID(id)));
 			} else {
 				trQuestVarSet("collectionCard", SpellToCard(yGetVar("allUnits", "spell")));
 			}
+			displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
 
 			if(trVectorQuestVarGetZ("temp") < 44){
 				trCounterAddTime("tooltip", -1, -9999999, "(Press ENTER to add to deck)");
@@ -566,7 +562,7 @@ inactive
 				xsDisableRule("CollectionClick");
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
 				unitTransform("Victory Marker", "Statue of Automaton Base");
-				//dataSave
+				dataSave();
 			} else {
 				trTechGodPower(1, "animal magnetism", 1);
 				trVectorSetUnitPos("temp","collectionSelection");

@@ -182,7 +182,7 @@ inactive
 
 rule gameplay_select_show_keywords
 highFrequency
-active
+inactive
 {
 	yDatabaseNext("allUnits", true);
 	if (trUnitIsSelected()) {

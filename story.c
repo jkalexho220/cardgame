@@ -6,7 +6,7 @@ void CleanBoard(){
 	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
-		trUnitDestroy();
+		trDamageUnitPercent(100);
 	}
 	yClearDatabase("allUnits");
 }
@@ -36,7 +36,7 @@ inactive
 		CleanBoard();
 		setClassProgress(CLASS_ADVENTURER, 1);
 		setClassProgress(CLASS_ARCANE, 1);
-		//dataSave
+		dataSave();
 		xsDisableRule("MissionTutorialEnd");
 		xsEnableRule("Collection");
    }

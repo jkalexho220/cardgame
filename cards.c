@@ -118,6 +118,53 @@ bool HasKeyword(int key = 0, int keywords = 0) {
 }
 
 /*
+Given a card proto or spell
+*/
+void displayCardDetails(int proto = 0, int spell = 0) {
+	string dialog = "";
+	string message = "";
+	int keywords = trQuestVarGet("card_"+proto+"_keywords");
+	if (spell > 1) {
+		keywords = trQuestVarGet("spell_"+spell+"_keywords");
+		trMessageSetText(trStringQuestVarGet("spell_"+spell+"_description"), -1);
+	}
+	bool multiple = false;
+	if(keywords>0){
+		int current = xsPow(2, NUM_KEYWORDS - 1);
+		for(k=NUM_KEYWORDS - 1; >=0){
+			if (keywords >= current) {
+				if(multiple){
+					dialog = dialog + ", ";
+				}
+				multiple = true;
+				dialog = dialog + GetKeywordName(k);
+				keywords = keywords - current;
+			}
+			current = current / 2;
+		}
+	}
+	message = trStringQuestVarGet("card_"+proto+"_ability");
+
+	if (spell <= SPELL_COMMANDER) {
+		gadgetUnreal("DetailedHelpButton");
+		if(HasKeyword(ARMORED, keywords)){
+			gadgetUnreal("NormalArmorTextDisplay");			
+		} else {
+			gadgetUnreal("unitStatPanel-stat-normalArmor");
+		}
+		if(HasKeyword(WARD, keywords)){
+			gadgetUnreal("PierceArmorTextDisplay");			
+		} else {
+			gadgetUnreal("unitStatPanel-stat-pierceArmor");
+		}
+	}
+
+	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
+	trSetCounterDisplay(message);
+
+}
+
+/*
 Given a card name in a given db array, print information
 of the selected unit.
 */
@@ -355,7 +402,7 @@ runImmediately
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
 	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);

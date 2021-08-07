@@ -612,19 +612,7 @@ runImmediately
 	if(Multiplayer && kbIsPlayerHuman(2) == false){
 		Multiplayer = false; // or kick?
 	}
-	if(Multiplayer){
-		ChatLog(1, "Mode:Multiplayer");
-		ChatLog(2, "Mode:Multiplayer");
-		xsEnableRule("initializeBoard");
-	} else {
-		ChatLog(1, "Mode:Singleplayer");
-		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
-		if(trGetScenarioUserData(0) == 0){
-			xsEnableRule("CinPrologue00");
-		} else {
-			xsEnableRule("Collection");
-		}
-	}
+	xsEnableRule("data_load_00");
 
 	modularCounterInit("lightningPop", 40);
 	modularCounterInit("lightningPush", 40);
