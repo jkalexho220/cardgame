@@ -26,6 +26,10 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") - 1);
 		}
+		case DEATH_EGG:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix Egg");
+		}
 		/*
 		case DEATH_BOOM_SMALL:
 		{
@@ -91,7 +95,10 @@ void removeDeadUnits() {
 		}
 	}
 
-	// summon units from deathrattles
+	/* 
+	summon units from deathrattles on a first-come-first-served basis
+	If multiple summons conflict on the same tile, the first one gets it.
+	*/
 	int pop = 0;
 	int unit = 0;
 	while ((trQuestVarGet("deathSummonPush") == trQuestVarGet("deathSummonPop")) == false) {

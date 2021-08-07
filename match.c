@@ -226,6 +226,15 @@ inactive
 					ySetVar("allUnits", "health", 
 						xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
 				}
+				// Start of turn effects
+				switch(1*mGetVarByQV("allUnits", "proto"))
+				{
+					case kbGetProtoUnitID("Phoenix Egg"):
+					{
+						damageUnit(1*trQuestVarGet("allUnits"), mGetVarByQV("allUnits", "health"));
+						deathSummonQueue(1*mGetVarByQV("allUnits", "tile"), p, "Phoenix From Egg");
+					}
+				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
@@ -253,6 +262,7 @@ inactive
 		} else {
 			trOverlayTextColour(255,0,0);
 		}
+		removeDeadUnits();
 
 		xsEnableRule("gameplay_01_select");
 		xsEnableRule("turn_01_end");
