@@ -208,4 +208,10 @@ inactive
 
 	xsDisableRule("initializeBoard");
 	xsEnableRule("match_00_start");
+	
+	if (trCurrentPlayer() == 1) {
+		trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
+	} else {
+		trCameraCut(vector(27.838341,112.294716,27.838341),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
+	}
 }

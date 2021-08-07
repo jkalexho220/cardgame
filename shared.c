@@ -582,10 +582,7 @@ runImmediately
 	} else {
 		ChatLog(1, "Mode:Singleplayer");
 		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
-		bool virgin = trGetScenarioUserData(0); 
-		virgin = false; // testing
-		ChatLog(1, "Checking if played before...");
-		if(virgin){
+		if(trGetScenarioUserData(0) == 0){
 			xsEnableRule("CinPrologue00");
 		} else {
 			xsEnableRule("Collection");

@@ -1,4 +1,4 @@
-void CollectionDeploy(int card = 0, int x = 0, int z = 0){
+void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander = false){
 	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
 	trArmyDispatch("1,10","Dwarf",1,x,0,z,180,true);
 	trUnitSelectClear();
@@ -7,6 +7,12 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0){
 	yAddToDatabase("allUnits", "next");
 	int proto = CardToProto(card);
 	int spell = CardToSpell(card);
+	
+	if(cardIsCommander){
+		proto = card;
+		spell = SPELL_COMMANDER;
+	}
+	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
 		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
 		yAddUpdateVar("allUnits", "stunIndex", 0);
@@ -43,36 +49,42 @@ void CollectionCommanderFirst(int class = 0, int x = 0, int z = 0){
 			trArmyDispatch("1,10", "Hero Greek Jason", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("phdorogers4 (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hero Greek Jason"), x, z, true);
 		}
 		case CLASS_ARCANE:
 		{
 			trArmyDispatch("1,10", "Oracle Hero", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Nanodude (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Oracle Hero"), x, z, true);
 		}
 		case CLASS_NAGA:
 		{
 			trArmyDispatch("1,10", "Royal Guard", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Out Reach (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Royal Guard"), x, z, true);
 		}
 		case CLASS_CLOCKWORK:
 		{
 			trArmyDispatch("1,10", "Hero Greek Polyphemus", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Roxas (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hero Greek Polyphemus"), x, z, true);
 		}
 		case CLASS_EVIL:
 		{
 			trArmyDispatch("1,10", "Hoplite", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Zenophobia (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hoplite"), x, z, true);
 		}
 		case CLASS_SPACE:
 		{
 			trArmyDispatch("1,10", "Hero Greek Odysseus", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Nickonhawk (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hero Greek Odysseus"), x, z, true);
 		}
 	}
 }
@@ -85,36 +97,42 @@ void CollectionCommanderSecond(int class = 0, int x = 0, int z = 0){
 			trArmyDispatch("1,10", "Hero Greek Heracles", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Venlesh (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hero Greek Heracles"), x, z, true);
 		}
 		case CLASS_ARCANE:
 		{
 			trArmyDispatch("1,10", "Minotaur", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("nottud (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Minotaur"), x, z, true);
 		}
 		case CLASS_NAGA:
 		{
 			trArmyDispatch("1,10", "Archer Atlantean Hero", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("scragins (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Archer Atlantean Hero"), x, z, true);
 		}
 		case CLASS_CLOCKWORK:
 		{
 			trArmyDispatch("1,10", "Pharaoh of Osiris", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Yeebaagooon (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Pharaoh of Osiris"), x, z, true);
 		}
 		case CLASS_EVIL:
 		{
 			trArmyDispatch("1,10", "Hero Greek Perseus", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("Aros (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Hero Greek Perseus"), x, z, true);
 		}
 		case CLASS_SPACE:
 		{
 			trArmyDispatch("1,10", "Caravan Atlantean", 1, x, 0, z, 180, true);	
 			trArmySelect("1,10");
 			trUnitChangeName("God (Commander)");
+			//CollectionDeploy(kbGetProtoUnitID("Caravan Atlantean"), x, z, true);
 		}
 	}
 }
@@ -356,9 +374,10 @@ string GetMissionTitle(int class = 0, int mission = 0){
 	ThrowError("GetMissionTitle");
 }
 
-void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
+int SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	int progress = getClassProgress(class);
 	trQuestVarSet("progressClass" + class, progress);
+	int cardsInDeck = 0;
 	int x = 0;
 	int z = 0;
 	if(progress > 0){
@@ -366,20 +385,19 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		trPaintTerrain(10 * class, 0, 8 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(10 * class, 22, 8 + 10 * class, 42, terrainType, terrainSubType, false);	
 		// Cards
-		int classIsInDeck = 0;
 		x = 1 + 20 * class; z = 37;
 		for(i = 30 * class;<30 * (class + 1)){
 			if(i == 14 + 30 * class){
 				if(CollectionCardLegendary(i,7 + 20 * class,35)){
-					classIsInDeck = 1;
+					cardsInDeck = cardsInDeck + 1;
 				}
 			} else if(i == 29 + 30 * class){
 				if(CollectionCardLegendary(i,11 + 20 * class,35)){
-					classIsInDeck = 1;
+					cardsInDeck = cardsInDeck + 1;
 				}
 			} else {
 				if(CollectionCard(i,x,z)){
-					classIsInDeck = 1;
+					cardsInDeck = cardsInDeck + 1;
 				}
 				z = z - 4;
 				if(i == 9 + 30 * class){
@@ -417,13 +435,18 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		if(progress < 7){
 			trArmyDispatch("1,10", "Garrison Flag Sky Passage", 1, x, 0, z - 4, 180, true);
 		}
-	}
+		if(cardsInDeck > 0){
+			trQuestVarSet("classesInDeck", trQuestVarGet("classesInDeck") + 1);
+		}
+	}	
+	return (cardsInDeck);
 }
 
 rule Collection
 highFrequency
 inactive
 {
+	trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
 	xsDisableRule("gameplay_select_show_keywords");
 	xsEnableRule("CollectionClick");
 	trSetFogAndBlackmap(false, false);
@@ -431,14 +454,23 @@ inactive
 	trChangeTerrainHeight(0, 0, 60, 60, 0, false);
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 
-	yClearDatabase("allUnits");
-
-	SetupClass(CLASS_ADVENTURER, 0, 65); // GreekRoadA
-	SetupClass(CLASS_ARCANE, 5, 2); // IceC
-	SetupClass(CLASS_NAGA, 3, 10); // coralB
-	SetupClass(CLASS_CLOCKWORK, 0, 71); // CityTileAtlantis
-	SetupClass(CLASS_EVIL, 0, 84); // Hadesbuildable1
-	SetupClass(CLASS_SPACE, 0, 52); // OlympusC
+	yClearDatabase("allUnits");	
+	trQuestVarSet("classesInDeck", 0);
+	int cardsInDeck = 0;	
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_ADVENTURER, 0, 65); // GreekRoadA
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_ARCANE, 5, 2); // IceC
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_NAGA, 3, 10); // coralB
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_CLOCKWORK, 0, 71); // CityTileAtlantis
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_EVIL, 0, 84); // Hadesbuildable1
+	cardsInDeck = cardsInDeck + SetupClass(CLASS_SPACE, 0, 52); // OlympusC
+	
+	if(cardsInDeck > 40){
+		ThrowError("More than 40 cards in deck!");
+	}
+	
+	if(trQuestVarGet("classesInDeck") > 2){
+		ThrowError("More than 2 classes in deck!");
+	}
 	
     xsDisableRule("Collection");
 }
@@ -533,6 +565,8 @@ inactive
 				trCounterAbort("reward");
 				xsDisableRule("CollectionClick");
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
+				unitTransform("Victory Marker", "Statue of Automaton Base");
+				//dataSave
 			} else {
 				trTechGodPower(1, "animal magnetism", 1);
 				trVectorSetUnitPos("temp","collectionSelection");
@@ -542,13 +576,13 @@ inactive
 				if(trVectorQuestVarGetZ("temp") < 44){
 					trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
 					setCardCountDeck(card, getCardCountDeck(card) + 1);
-					setCardCountCollection(card, getCardCountCollection(card) - 1);
-					ChatLog(1, "Added to deck: " + kbGetProtoUnitName(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("collectionSelection")))));
+					//setCardCountCollection(card, getCardCountCollection(card) - 1);
+					ChatLog(1, "Card added to deck");
 				} else {
 					trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
 					setCardCountDeck(card, getCardCountDeck(card) - 1);
-					setCardCountCollection(card, getCardCountCollection(card) + 1);
-					ChatLog(1, "Removed from deck: " + kbGetProtoUnitName(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("collectionSelection")))));
+					//setCardCountCollection(card, getCardCountCollection(card) + 1);
+					ChatLog(1, "Card removed from deck");
 				}
 			}
 		} else {

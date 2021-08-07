@@ -52,6 +52,7 @@ inactive
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 	trPaintTerrain(30, 30, 60, 60, 0, 9, false); //GaiaCreepASnow
     trPaintTerrain(0, 30, 30, 60, 0, 5, false); //CliffGreekB
+	unitTransform("Statue of Automaton Base","Victory Marker");
     trLetterBox(true);
     trSoundPlayDialog("default", "1", -1, false, " :It was a fine day for Rogers.", "");
     trUIFadeToColor(0,0,0,1000,1000,false);
@@ -338,6 +339,7 @@ inactive
 	  }
       trLetterBox(false);
       xsDisableRule("CinPrologue12");
-	  xsEnableRule("Collection");
+	  unitTransform("Victory Marker", "Statue of Automaton Base");
+	  xsEnableRule("MissionTutorialBegin");
    }
 }
