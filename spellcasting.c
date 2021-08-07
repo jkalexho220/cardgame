@@ -143,7 +143,7 @@ void castEnd() {
 		trUnitSelectClear();
 		trUnitSelect(""+unit, true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
+		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost") + trQuestVarGet("p"+p+"spellDiscount"));
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		removeUnit("p"+p+"hand");

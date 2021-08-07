@@ -82,6 +82,7 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 	int pop = -1;
 	int tile = 0;
 	int neighbor = 0;
+	int occupant = 0;
 	trQuestVarSet("search"+push+"tile", id);
 	trQuestVarSet("search"+push+"distance", distance);
 	while (pop < push) {
@@ -102,6 +103,14 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 						push = push + 1;
 						trQuestVarSet("search"+push+"tile", neighbor);
 						trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
+					} else if (zGetVarByIndex("tiles", "occupant", neighbor) > 0 && zGetVarByIndex("tiles", "terrain", neighbor) == TILE_EMPTY) {
+						// we can move through flying units
+						occupant = zGetVarByIndex("tiles", "occupant", neighbor);
+						if (HasKeyword(FLYING, 1*mGetVar(occupant, "keywords"))) {
+							push = push + 1;
+							trQuestVarSet("search"+push+"tile", neighbor);
+							trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
+						}
 					}
 				}
 			}

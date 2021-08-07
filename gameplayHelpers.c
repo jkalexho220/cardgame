@@ -171,7 +171,8 @@ the tiles that are reachable by that unit.
 void highlightReachable(int name = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	int tile = findNearestTile("pos");
-	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")));
+	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", 
+		(HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")) || HasKeyword(FLYING, 1*mGetVar(name, "keywords"))));
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
 		highlightTile(tile, 3600);

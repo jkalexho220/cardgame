@@ -235,6 +235,7 @@ inactive
 			} else {
 				// Check if player selected a card in hand.
 				unit = -1;
+				int cost = 0;
 				int pointer = 0;
 				float closestDistance = 9.0;
 				float currentDistance = 0;
@@ -253,7 +254,11 @@ inactive
 							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
 						}
 					}
-					if (trQuestVarGet("p"+p+"mana") >= mGetVar(unit, "cost")) {
+					cost = mGetVar(unit, "cost");
+					if (mGetVar(unit, "spell") > 0) {
+						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+					}
+					if (trQuestVarGet("p"+p+"mana") >= cost) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
 						if (mGetVar(unit, "spell") == 0) {
