@@ -633,6 +633,9 @@ runImmediately
 	modularCounterInit("spyFind", 40);
 	modularCounterInit("spyFound", 40);
 
+	modularCounterInit("deathSummonPush", 20);
+	modularCounterInit("deathSummonPop", 20);
+
 
 	trModifyProtounit("Gold Mine Dwarven", 1, 55, 4);
 	trModifyProtounit("Gold Mine Dwarven", 2, 55, 4);

@@ -1,3 +1,10 @@
+bool deathSummonQueue(int tile = 0, int p = 0, string proto = 0) {
+	int push = modularCounterNext("deathSummonPush");
+	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
+	trQuestVarSet("deathSummon"+push+"player", p);
+	trQuestVarSet("deathSummon"+push+"tile", tile);
+}
+
 bool OnDeath(int event = -1, int unit = 0){
 	int p = mGetVar(unit, "player");
 	bool checkAgain = false;
@@ -80,7 +87,24 @@ void removeDeadUnits() {
 				tileGuard(tile, false);
 			}
 			mSetVarByQV("allUnits", "health", -9999);	
-			removeUnit("allUnits");
+			yRemoveFromDatabase("allUnits");
+		}
+	}
+
+	// summon units from deathrattles
+	int pop = 0;
+	int unit = 0;
+	while ((trQuestVarGet("deathSummonPush") == trQuestVarGet("deathSummonPop")) == false) {
+		pop = modularCounterNext("deathSummonPop");
+		if (zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("deathSummon"+pop+"tile")) == 0) {
+			unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"), 
+				1*trQuestVarGet("deathSummon"+pop+"player"), 
+				1*trQuestVarGet("deathSummon"+pop+"proto"));
+			if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords"))) {
+				mSetVar(unit, "action", ACTION_READY);
+			} else {
+				mSetVar(unit, "action", ACTION_SLEEPING);
+			}
 		}
 	}
 }

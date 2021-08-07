@@ -47,26 +47,6 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "ability");
-	yRemoveUpdateVar(db, "cost");
-	yRemoveUpdateVar(db, "pos");
-	yRemoveUpdateVar(db, "health");
-	yRemoveUpdateVar(db, "attack");
-	yRemoveUpdateVar(db, "range");
-	yRemoveUpdateVar(db, "speed");
-	yRemoveUpdateVar(db, "proto");
-	yRemoveUpdateVar(db, "player");
-	yRemoveUpdateVar(db, "ready");
-	yRemoveUpdateVar(db, "keywords");
-	yRemoveUpdateVar(db, "tile");
-	yRemoveUpdateVar(db, "spell");
-	yRemoveUpdateVar(db, "action");
-	yRemoveUpdateVar(db, "onPlay");
-	yRemoveUpdateVar(db, "onAttack");
-	yRemoveUpdateVar(db, "onDeath");
-	yRemoveUpdateVar(db, "stunTime");
-	yRemoveUpdateVar(db, "stunSFX");
-	yRemoveUpdateVar(db, "stunIndex");
 }
 
 /*
