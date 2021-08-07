@@ -28,7 +28,7 @@ void updateHandPlayable(int p = 0) {
 	}
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
-		if (yGetVar("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
+		if (mGetVarByQV("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
@@ -48,50 +48,38 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 	}
 }
 
-
+void addCardToDeckByIndex(int p = 0, int card = 0) {
+	int spell = CardToSpell(card);
+	if (spell == 0) {
+		trQuestVarSet("proto", CardToProto(card));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", 0);
+	} else {
+		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", spell);
+	}	
+}
 
 /* 
 This function should only be called if there is room in the hand!
 */
 void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
-	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
-	trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("p"+p+"deckx"),0,trQuestVarGet("p"+p+"deckz"),0,true);
+	trQuestVarSet("next", CardInstantiate(p, proto, spell));
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
-	trUnitConvert(p);
-
-	yAddToDatabase("p"+p+"hand", "next");
-	if (spell == 0 || spell == SPELL_COMMANDER) {
-		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
-		yAddUpdateVar("p"+p+"hand", "stunIndex", 0);
-		yAddUpdateVar("p"+p+"hand", "stunSFX", 0);
-		yAddUpdateVar("p"+p+"hand", "attack", trQuestVarGet("card_" + proto + "_Attack"));
-		yAddUpdateVar("p"+p+"hand", "health", trQuestVarGet("card_" + proto + "_Health"));
-		yAddUpdateVar("p"+p+"hand", "speed", trQuestVarGet("card_" + proto + "_Speed"));
-		yAddUpdateVar("p"+p+"hand", "range", trQuestVarGet("card_" + proto + "_Range"));
-		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("card_" + proto + "_Cost"));
-		yAddUpdateVar("p"+p+"hand", "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
-		yAddUpdateVar("p"+p+"hand", "onPlay", trQuestVarGet("card_" + proto + "_OnPlay"));
-		yAddUpdateVar("p"+p+"hand", "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
-		yAddUpdateVar("p"+p+"hand", "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
-		yAddUpdateString("p"+p+"hand", "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
-	} else {
-		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
-		yAddUpdateVar("p"+p+"hand", "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+	
+	if (spell > SPELL_NONE) {
 		proto = kbGetProtoUnitID("Statue of Lightning");
 	}
+
+	yAddToDatabase("p"+p+"hand", "next");
+	
 	trUnitHighlight(3, true);
 
 	if (fleeting) {
-		yAddUpdateVar("p"+p+"hand", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
+		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
 	}
-	
-	yAddUpdateVar("p"+p+"hand", "proto", proto);
-	
-	
-
-	yAddUpdateVar("p"+p+"hand", "player", p);
-	yAddUpdateVar("p"+p+"hand", "spell", spell);
 
 	// Find an empty position in the hand to place the unit.
 	for(x=zGetBankCount("p"+p+"handPos"); >0) {
@@ -115,6 +103,12 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 			break;
 		}
 	}
+	if (spell > SPELL_NONE) {
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("next"), true);
+		float scale = xsSqrt(trQuestVarGet("spell_"+spell+"_cost")) * 0.5;
+		trSetSelectedScale(0.75, scale, 0.75);
+	}
 }
 
 
@@ -129,7 +123,7 @@ void drawCard(int p = 0) {
 		} else {
 			ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 		}
-		addCardToHand(p, proto, yGetVar("p"+p+"deck", "spell"));
+		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
 	} else {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("cantdothat.wav","1",-1,"","");
