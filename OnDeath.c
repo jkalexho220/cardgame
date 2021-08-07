@@ -1,4 +1,4 @@
-bool deathSummonQueue(int tile = 0, int p = 0, string proto = 0) {
+bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
 	int push = modularCounterNext("deathSummonPush");
 	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
 	trQuestVarSet("deathSummon"+push+"player", p);

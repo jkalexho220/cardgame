@@ -466,9 +466,9 @@ runImmediately
 	ARCANE
 	*/
 	// Created cards
-	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS));
-	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1); // stuns its targets.
-	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
+	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS), true);
+	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1, 0, true); // stuns its targets.
+	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0, 0, true); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
 	
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
