@@ -103,6 +103,10 @@ void dataSave() {
 		}
 		trQuestVarSet("data"+(c+10), data);
 	}
+
+	for(x=0; <16) {
+		trSetCurrentScenarioUserData(x, 1*trQuestVarGet("data"+x));
+	}
 }
 
 void showLoadProgress(int p = 0) {
