@@ -31,7 +31,7 @@ const int SPELL_EXPLOSION = 18;
 const int SPELL_RUNE_OF_FLAME = 19;
 const int SPELL_RUNE_OF_ICE = 20;
 const int SPELL_FIRE_AND_ICE = 21;
-const int SPELL_DOUBLEBOLT = 22;
+const int SPELL_DOUBLEBLAST = 22;
 const int SPELL_ELECTROSURGE = 23;
 const int SPELL_CLASS_TIME = 24;
 
@@ -73,7 +73,7 @@ const int REGENERATE = 5;		// Restores to full health at the start of your turn.
 const int DEADLY = 6;			// I kill any minion that I damage.
 const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
 const int ARMORED = 8;			// Unit regenerates to full health after combat
-const int WARD = 9;				// Unit is immune to spells
+const int WARD = 9;				// Unit cannot be targeted by enemy spells
 const int BEACON = 10;			// Allies can be summoned next to this unit.
 const int AMBUSH = 11;			// When initiating combat, unit attacks first.
 const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.
@@ -402,7 +402,7 @@ runImmediately
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
 	CardSetup("Priest",					3, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 35-39
-	CardSetup("Oracle Scout",			4, "Magic Teacher",		2, 2, 2, 2); // Your spells deal +1 damage.
+	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
@@ -410,12 +410,14 @@ runImmediately
 	// 40-44
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
-	SpellSetup("Doublebolt",			2, SPELL_DOUBLEBOLT,	"(2)Doublebolt: Deal 1 damage to two enemies.");
+	SpellSetup("Doubleblast",			2, SPELL_DOUBLEBLAST,	"(2)Doubleblast: Deal 1 damage to two enemies.");
 	SpellSetup("Electrosurge",			5, SPELL_ELECTROSURGE,	"(5)Electrosurge: Deal 2 damage with Lightning.");
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
 	// 45-49
 
+	// 50-54
 
+	// 55-59
 
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
@@ -436,7 +438,7 @@ runImmediately
 	CardEvents("Swordsman Hero", 0, 0, "After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
 	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), "Your spells cost 1 less.");
-	CardEvents("Oracle Scout", Keyword(ATTACK_ANIMATE_ORACLE), Keyword(DEATH_SPELL_DAMAGE), "Your spells deal +1 damage.");
+	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), "Your spells deal +1 damage.");
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Phoenix Egg", 0, 0, "At the start of your turn, destroy me to summon a Fading Lightwing.");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), "Death: Summon a Reviving Egg on my tile.");

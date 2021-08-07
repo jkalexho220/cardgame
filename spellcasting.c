@@ -7,6 +7,7 @@ const int CAST_BACKSTAB = 3;
 const int CAST_TILE = 10;
 const int CAST_ADJACENT_TILE = 11;
 const int CAST_DIRECTION = 12;
+const int CAST_SUMMON_LOCATIONS = 13;
 
 const int CASTING_NOTHING = 0;
 const int CASTING_IN_PROGRESS = 1;
@@ -177,7 +178,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
@@ -211,7 +214,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (mGetVarByQV("allUnits", "player") == p) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
@@ -232,6 +237,16 @@ inactive
 						if (trCurrentPlayer() == p) {
 							highlightTile(1*trQuestVarGet("tiles"), 999999);
 						}
+					}
+				}
+			}
+			case CAST_SUMMON_LOCATIONS:
+			{
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == p && HasKeyword(BEACON, 1*mGetVarByQV("allUnits", "keywords"))) {
+						tile = mGetVarByQV("allUnits", "tile");
+						findAvailableTiles(tile, 1, "castTiles");
 					}
 				}
 			}
@@ -498,6 +513,15 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", true);
 		}
+		case SPELL_DOUBLEBLAST:
+		{
+			castAddUnit("spellTarget1", 3 - trQuestVarGet("activePlayer"), true);
+			castAddUnit("spellTarget2", 3 - trQuestVarGet("activePlayer"), true);
+		}
+		case SPELL_ELECTROSURGE:
+		{
+			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), true);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -741,6 +765,27 @@ inactive
 						}
 					}
 				}
+			}
+			case SPELL_DOUBLEBLAST:
+			{
+				trSoundPlayFN("fireball fall 2.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget1"), 1 + trQuestVarGet("p"+p+"spellDamage"));
+				damageUnit(1*trQuestVarGet("spellTarget2"), 1 + trQuestVarGet("p"+p+"spellDamage"));
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget1", "tile")), true);
+				trDamageUnitPercent(100);
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget2", "tile")), true);
+				trDamageUnitPercent(100);
+			}
+			case SPELL_ELECTROSURGE:
+			{
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
+				trTechInvokeGodPower(0, "bolt", xsVectorSet(0,0,0), xsVectorSet(0,0,0));
+				lightning(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"), false);
+				done = false;
+				xsEnableRule("spell_attack_complete");
 			}
 		}
 

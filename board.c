@@ -37,6 +37,7 @@ int deployAtTile(int p = 0, string proto = "", int tile = 0) {
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	trUnitSelectClear();
 
 	return(next);
 }

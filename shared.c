@@ -640,6 +640,10 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 
+	trModifyProtounit("Bolt Strike", 0, 27, -10000);
+	trModifyProtounit("Bolt Strike", 0, 28, -10000);
+	trModifyProtounit("Bolt Strike", 0, 29, -10000);
+
 	// LOS
 	for(p=2; >0) {
 		trModifyProtounit("Dwarf", p, 2, -20);

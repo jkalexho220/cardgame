@@ -14,13 +14,11 @@ runImmediately
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
 			addCardToDeck(p, "Oracle Scout");
-			addCardToDeck(p, "Physician");
-			
-			addCardToDeck(p, "Avenger");
-			addCardToDeck(p, "Mountain Giant");
-			addCardToDeck(p, "", SPELL_SNIPE);
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_EXPLOSION);
+			addCardToDeck(p, "", SPELL_CLASS_TIME);
+			addCardToDeck(p, "", SPELL_CLASS_TIME);
+			addCardToDeck(p, "", SPELL_ELECTROSURGE);
+			addCardToDeck(p, "", SPELL_DOUBLEBLAST);
 		}
 		addCardToDeck(p, "", SPELL_WHIRLWIND);
 		addCardToDeck(p, "Archer Atlantean Hero");

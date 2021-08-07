@@ -144,13 +144,13 @@ active
 		int targetIndex = trQuestVarGet("lightning"+index);
 		// If Deadly and target isn't a commander
 		if (trQuestVarGet("lightning"+index+"damage") == -1 &&
-			yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
-			ySetVarByIndex("allUnits", "health", targetIndex, 0);
+			mGetVar(targetIndex, "spell") == SPELL_NONE) {
+			mSetVar(targetIndex, "health", 0);
 			damageUnit(targetIndex, 1);
-			deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			deployAtTile(0, "Lampades Blood", 1*mGetVar(targetIndex, "tile"));
 		} else {
 			damageUnit(targetIndex, trQuestVarGet("lightning"+index+"damage"));
-			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			deployAtTile(0, "Lightning sparks", 1*mGetVar(targetIndex, "tile"));
 		}
 	}
 }
