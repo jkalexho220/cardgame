@@ -621,6 +621,9 @@ runImmediately
 	modularCounterInit("spyFind", 40);
 	modularCounterInit("spyFound", 40);
 
+	modularCounterInit("deathSummonPush", 20);
+	modularCounterInit("deathSummonPop", 20);
+
 
 	trModifyProtounit("Gold Mine Dwarven", 1, 55, 4);
 	trModifyProtounit("Gold Mine Dwarven", 2, 55, 4);
@@ -637,6 +640,10 @@ runImmediately
 	trModifyProtounit("Revealer to Player", 2, 2, 9999999999999999999.0);
 	trModifyProtounit("Revealer to Player", 2, 2, -9999999999999999999.0);	
 	trModifyProtounit("Revealer to Player", 2, 2, 18);
+
+	trModifyProtounit("Bolt Strike", 0, 27, -10000);
+	trModifyProtounit("Bolt Strike", 0, 28, -10000);
+	trModifyProtounit("Bolt Strike", 0, 29, -10000);
 
 	// LOS
 	for(p=2; >0) {

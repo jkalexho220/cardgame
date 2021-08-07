@@ -26,9 +26,17 @@ void updateHandPlayable(int p = 0) {
 		zBankNext("p"+p+"handPos", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
+	int cost = 0;
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
-		if (mGetVarByQV("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
+		cost = mGetVarByQV("p"+p+"hand", "cost");
+		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+		}
+		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
+			cost = cost - trQuestVarGet("p"+p+"manaflow");
+		}
+		if (cost <= trQuestVarGet("p"+p+"mana")) {
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));

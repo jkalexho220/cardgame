@@ -6,34 +6,24 @@ runImmediately
 	for(p=2; >0) {
 		for(x=3; >0) {
 			addCardToDeck(p, "Khopesh");
-			addCardToDeck(p, "Villager Atlantean");
-			addCardToDeck(p, "Swordsman");
+			addCardToDeck(p, "Javelin Cavalry Hero");
+			addCardToDeck(p, "Priest");
 			addCardToDeck(p, "Maceman");
 			addCardToDeck(p, "Skraeling");
 			addCardToDeck(p, "Slinger");
-			addCardToDeck(p, "Toxotes");
-			addCardToDeck(p, "Raiding Cavalry");
-			addCardToDeck(p, "Trident Soldier");
-			addCardToDeck(p, "Jarl");
-			addCardToDeck(p, "Hero Greek Ajax");
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
-			addCardToDeck(p, "Scout");
-			addCardToDeck(p, "Physician");
-			
-			addCardToDeck(p, "Avenger");
-			addCardToDeck(p, "Hero Greek Theseus");
-			addCardToDeck(p, "Mountain Giant");
-			addCardToDeck(p, "", SPELL_FIRST_AID);
+			addCardToDeck(p, "Oracle Scout");
+			addCardToDeck(p, "", SPELL_CLASS_TIME);
+			addCardToDeck(p, "", SPELL_CLASS_TIME);
+			addCardToDeck(p, "", SPELL_CLASS_TIME);
+			addCardToDeck(p, "", SPELL_ELECTROSURGE);
+			addCardToDeck(p, "", SPELL_DOUBLEBLAST);
+			addCardToDeck(p, "", SPELL_FIRE_AND_ICE);
+			addCardToDeck(p, "", SPELL_RUNE_OF_FLAME);
+			addCardToDeck(p, "", SPELL_RUNE_OF_ICE);
 		}
 		addCardToDeck(p, "", SPELL_WHIRLWIND);
-		addCardToDeck(p, "", SPELL_BACKSTAB);
-		addCardToDeck(p, "", SPELL_DUEL);
-		addCardToDeck(p, "", SPELL_PARTY_UP);
-		addCardToDeck(p, "", SPELL_TEAMWORK);
-		addCardToDeck(p, "", SPELL_DEFENDER);
-		addCardToDeck(p, "", SPELL_VICTORY);
-		addCardToDeck(p, "", SPELL_HEROIC);
 		addCardToDeck(p, "Archer Atlantean Hero");
 		addCardToDeck(p, "Nemean Lion");
 	}
@@ -236,6 +226,15 @@ inactive
 					ySetVar("allUnits", "health", 
 						xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
 				}
+				// Start of turn effects
+				switch(1*mGetVarByQV("allUnits", "proto"))
+				{
+					case kbGetProtoUnitID("Phoenix Egg"):
+					{
+						damageUnit(1*trQuestVarGet("allUnits"), mGetVarByQV("allUnits", "health"));
+						deathSummonQueue(1*mGetVarByQV("allUnits", "tile"), p, "Phoenix From Egg");
+					}
+				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
@@ -263,6 +262,7 @@ inactive
 		} else {
 			trOverlayTextColour(255,0,0);
 		}
+		removeDeadUnits();
 
 		xsEnableRule("gameplay_01_select");
 		xsEnableRule("turn_01_end");
@@ -292,6 +292,9 @@ inactive
 
 		trQuestVarSet("turnEnd", 1);
 
+		/*
+		End of turn effects
+		*/
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (mGetVarByQV("allUnits", "victory") > 0) {
@@ -302,7 +305,12 @@ inactive
 				}
 				mSetVarByQV("allUnits", "victoryAmbush", 0);
 			}
+			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords"))) {
+				damageUnit(1*trQuestVarGet("allUnits"), 1);
+			}
 		}
+
+		removeDeadUnits();
 
 		// Discard fleeting cards
 		bool fleeting = false;
