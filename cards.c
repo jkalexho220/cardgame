@@ -80,8 +80,9 @@ const int FLEETING = 12; 		// The card is discarded from hand at the end of the 
 const int HEALER = 13;			// Can't attack or counter-attack. Instead, unit can heal allies within range.
 const int DECAY = 14;			// Takes 1 damage at the end of your turn.
 const int FLYING = 15;			// Can move through units and difficult terrain. Other units can move through it. Can only be attacked by enemies with Range >1
+const int OVERFLOW = 16;		// Cost is reduced by your Manaflow.
 
-const int NUM_KEYWORDS = 15;
+const int NUM_KEYWORDS = 17;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -100,6 +101,9 @@ string GetKeywordName(int bitPosition=0){
 		case AMBUSH: return ("Ambush");
 		case FLEETING: return ("Fleeting");
 		case HEALER: return("Healer");
+		case DECAY: return("Decay");
+		case FLYING: return("Flying");
+		case OVERFLOW: return("Overflow");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -213,6 +217,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	} else {
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
 		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
+		mSetVar(next, "keywords", trQuestVarGet("spell_"+spell+"_keywords"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 	}
 	
@@ -225,10 +230,11 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	return(next);
 }
 
-void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "") {
+void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "", int keywords = 0) {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
 	trStringQuestVarSet("spell_"+spell+"_description", desc);
+	trQuestVarSet("spell_"+spell+"_keywords", keywords);
 }
 
 void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string ability="") {
@@ -363,7 +369,7 @@ runImmediately
 	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
-	// 10 - 14
+	// 10 - 14 (LEGENDARY at 19)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
@@ -381,7 +387,7 @@ runImmediately
 	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
-	// 25 - 29
+	// 25 - 29 (LEGENDARY at 29)
 	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
 	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
 	CardSetup("Scout",					3, "Speedy Cartographer",2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
@@ -400,24 +406,24 @@ runImmediately
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
-	CardSetup("Priest",					3, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
+	CardSetup("Priest",					4, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 35-39
 	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
 	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
-	// 40-44
+	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
 	SpellSetup("Doubleblast",			2, SPELL_DOUBLEBLAST,	"(2)Doubleblast: Deal 1 damage to two enemies.");
 	SpellSetup("Electrosurge",			5, SPELL_ELECTROSURGE,	"(5)Electrosurge: Deal 2 damage with Lightning.");
-	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
+	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", Keyword(OVERFLOW));
 	// 45-49
-
+	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
 	// 50-54
 
-	// 55-59
+	// 55-59 (LEGENDARY at 59)
 
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description

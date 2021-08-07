@@ -19,6 +19,9 @@ runImmediately
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
 			addCardToDeck(p, "", SPELL_ELECTROSURGE);
 			addCardToDeck(p, "", SPELL_DOUBLEBLAST);
+			addCardToDeck(p, "", SPELL_FIRE_AND_ICE);
+			addCardToDeck(p, "", SPELL_RUNE_OF_FLAME);
+			addCardToDeck(p, "", SPELL_RUNE_OF_ICE);
 		}
 		addCardToDeck(p, "", SPELL_WHIRLWIND);
 		addCardToDeck(p, "Archer Atlantean Hero");

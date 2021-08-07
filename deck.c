@@ -33,6 +33,9 @@ void updateHandPlayable(int p = 0) {
 		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
 			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
 		}
+		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
+			cost = cost - trQuestVarGet("p"+p+"manaflow");
+		}
 		if (cost <= trQuestVarGet("p"+p+"mana")) {
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));

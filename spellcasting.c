@@ -81,6 +81,17 @@ void castAddTile(string qv = "", bool ghost = false) {
 
 /*
 qv = name of the quest var to store the selected tile
+*/
+void castAddSummonLocations(string qv = "") {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	trQuestVarSet("cast"+x+"type", CAST_SUMMON_LOCATIONS);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+/*
+qv = name of the quest var to store the selected tile
 src = name of quest var holding the unit at the center
 */
 void castAddAdjacentTile(string qv = "", string src = "") {
@@ -145,6 +156,9 @@ void castEnd() {
 		trUnitSelect(""+unit, true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost") + trQuestVarGet("p"+p+"spellDiscount"));
+		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
+			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + xsMin(mGetVar(unit, "cost"), trQuestVarGet("p"+p+"manaflow")));
+		}
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		removeUnit("p"+p+"hand");
@@ -247,6 +261,12 @@ inactive
 					if (mGetVarByQV("allUnits", "player") == p && HasKeyword(BEACON, 1*mGetVarByQV("allUnits", "keywords"))) {
 						tile = mGetVarByQV("allUnits", "tile");
 						findAvailableTiles(tile, 1, "castTiles");
+					}
+				}
+				for(x=yGetDatabaseCount("castTiles"); >0) {
+					yDatabaseNext("castTiles");
+					if (trCurrentPlayer() == p) {
+						highlightTile(1*trQuestVarGet("casttiles"), 999999);
 					}
 				}
 			}
@@ -522,6 +542,19 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), true);
 		}
+		case SPELL_RUNE_OF_FLAME:
+		{
+			castAddSummonLocations("spellTarget");
+		}
+		case SPELL_RUNE_OF_ICE:
+		{
+			castAddSummonLocations("spellTarget");
+		}
+		case SPELL_FIRE_AND_ICE:
+		{
+			castAddSummonLocations("spellTargetFire");
+			castAddSummonLocations("spellTargetIce");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -535,6 +568,7 @@ inactive
 	if (trQuestVarGet("turnEnd") == 1) {
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
+		xsDisableRule("spell_cast");
 		bool done = true;
 		int activeUnit = 0;
 		int target = 0;
@@ -601,29 +635,7 @@ inactive
 			case SPELL_PARTY_UP:
 			{
 				trSoundPlayFN("barracks.wav","1",-1,"","");
-				target = 3;
-				yDatabasePointerDefault("p"+p+"deck");
-				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
-					proto = yDatabaseNext("p"+p+"deck");
-					if (yGetVar("p"+p+"deck", "spell") > 0) {
-						proto = yGetVar("p"+p+"deck", "spell");
-						if (trQuestVarGet("spell_"+proto+"_cost") == 1) {
-							ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
-							drawCard(p);
-							target = target - 1;
-							if (target == 0) {
-								break;
-							}
-						}
-					} else if (trQuestVarGet("card_"+proto+"_cost") == 1) {
-						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
-						drawCard(p);
-						target = target - 1;
-						if (target == 0) {
-							break;
-						}
-					}
-				}
+				xsEnableRule("spell_party_up_active");
 			}
 			case SPELL_TEAMWORK:
 			{
@@ -724,24 +736,7 @@ inactive
 			{
 				trSoundPlayFN("temple.wav","1",-1,"","");
 				trSoundPlayFN("gaiasparkle1.wav","1",-1,"","");
-				yDatabasePointerDefault("p"+p+"deck");
-				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
-					yDatabaseNext("p"+p+"deck");
-					if (yGetVar("p"+p+"deck", "spell") > 0) {
-						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
-						drawCard(p);
-						break;
-					}
-				}
-				yDatabasePointerDefault("p"+p+"deck");
-				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
-					yDatabaseNext("p"+p+"deck");
-					if (yGetVar("p"+p+"deck", "spell") == 0) {
-						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
-						drawCard(p);
-						break;
-					}
-				}
+				xsEnableRule("spell_class_time_activate");
 			}
 			case SPELL_SNIPE:
 			{
@@ -787,6 +782,42 @@ inactive
 				done = false;
 				xsEnableRule("spell_attack_complete");
 			}
+			case SPELL_RUNE_OF_FLAME:
+			{
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Fire Giant"));
+				mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				trSoundPlayFN("fireball fall 1.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("p"+p+"commander"),6 + trQuestVarGet("p"+p+"spellDamage"));
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("p"+p+"commander", "tile")), true);
+				trDamageUnitPercent(100);
+			}
+			case SPELL_RUNE_OF_ICE:
+			{
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Frost Giant"));
+				mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				trSoundPlayFN("frostgiantattack.wav","1",-1,"","");
+				stunUnit(1*trQuestVarGet("p"+p+"commander"));
+			}
+			case SPELL_FIRE_AND_ICE:
+			{
+				if (trQuestVarGet("spellTargetFire") == trQuestVarGet("spellTargetIce")) {
+					if (trCurrentPlayer() == p) {
+						trSoundPlayFN("cantdothat.wav","1",-1,"","");
+					}
+					done = false;
+					battlecry = true;
+					chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
+				} else {
+					trSoundPlayFN("mythcreate.wav","1",-1,"","");
+					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Frost Giant"));
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetFire"), p, kbGetProtoUnitID("Fire Giant"));
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				}
+			}
 		}
 
 		if (battlecry == false) {
@@ -799,7 +830,68 @@ inactive
 		if (done) {
 			castEnd();
 		}
-		xsDisableRule("spell_cast");
+	}
+}
+
+rule spell_party_up_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		int proto = 0;
+		int target = 3;
+		yDatabasePointerDefault("p"+p+"deck");
+		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+			proto = yDatabaseNext("p"+p+"deck");
+			if (yGetVar("p"+p+"deck", "spell") > 0) {
+				proto = yGetVar("p"+p+"deck", "spell");
+				if (trQuestVarGet("spell_"+proto+"_cost") == 1) {
+					ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+					drawCard(p);
+					target = target - 1;
+					if (target == 0) {
+						break;
+					}
+				}
+			} else if (trQuestVarGet("card_"+proto+"_cost") == 1) {
+				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				drawCard(p);
+				target = target - 1;
+				if (target == 0) {
+					break;
+				}
+			}
+		}
+		xsDisableRule("spell_party_up_activate");
+	}
+}
+
+rule spell_class_time_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		yDatabasePointerDefault("p"+p+"deck");
+		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+			yDatabaseNext("p"+p+"deck");
+			if (yGetVar("p"+p+"deck", "spell") > 0) {
+				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				drawCard(p);
+				break;
+			}
+		}
+		yDatabasePointerDefault("p"+p+"deck");
+		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+			yDatabaseNext("p"+p+"deck");
+			if (yGetVar("p"+p+"deck", "spell") == 0) {
+				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				drawCard(p);
+				break;
+			}
+		}
+		xsDisableRule("spell_class_time_activate");
 	}
 }
 

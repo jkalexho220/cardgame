@@ -118,7 +118,7 @@ bool attackUnitAtCursor(int p = 0) {
 			}
 		}
 		mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
-		xsEnableRule("gameplay_01_select");
+		xsEnableRule("gameplay_05_attackComplete");
 		return(true);
 	}
 
@@ -258,6 +258,9 @@ inactive
 					cost = mGetVar(unit, "cost");
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+					}
+					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
+						cost = cost - trQuestVarGet("p"+p+"manaflow");
 					}
 					if (trQuestVarGet("p"+p+"mana") >= cost) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
@@ -644,6 +647,9 @@ inactive
 					teleportToTile(unit, tile);
 
 					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
+					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
+						trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + xsMin(mGetVar(unit, "cost"), trQuestVarGet("p"+p+"manaflow")));
+					}
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 
 					if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords")) == true) {
