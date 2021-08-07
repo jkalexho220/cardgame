@@ -11,6 +11,14 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			drawCard(3-p);
 		}
+		case DEATH_SPELL_DISCOUNT:
+		{
+			trQuestVarSet("p"+p+"spellDiscount", trQuestVarGet("p"+p+"spellDiscount") - 1);
+		}
+		case DEATH_SPELL_DAMAGE:
+		{
+			trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") - 1);
+		}
 		/*
 		case DEATH_BOOM_SMALL:
 		{

@@ -485,6 +485,19 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
 			castAddAdjacentTile("tileTarget", "p"+1*trQuestVarGet("activePlayer")+"commander");
 		}
+		case SPELL_CLASS_TIME:
+		{
+			castAddTile("spellTile", true);
+		}
+		case SPELL_SNIPE:
+		{
+			castAddUnit("spellShooter", 1*trQuestVarGet("activePlayer"), true);
+			castAddTarget("spellTarget", "spellShooter");
+		}
+		case SPELL_EXPLOSION:
+		{
+			castAddTile("spellTarget", true);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -510,12 +523,12 @@ inactive
 		{
 			case SPELL_SPARK:
 			{
-				damageUnit(1*trQuestVarGet("spellTarget"), 1);
+				damageUnit(1*trQuestVarGet("spellTarget"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 				deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("spellTarget", "tile"));
 			}
 			case SPELL_BACKSTAB:
 			{
-				damageUnit(1*trQuestVarGet("spellTarget"), 2);
+				damageUnit(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"));
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
 				trSoundPlayFN("tributereceived.wav","1",-1,"","");
@@ -683,6 +696,52 @@ inactive
 				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("tileTarget"));
 				healUnit(1*trQuestVarGet("spellTarget"), 2);
 			}
+			case SPELL_CLASS_TIME:
+			{
+				trSoundPlayFN("temple.wav","1",-1,"","");
+				trSoundPlayFN("gaiasparkle1.wav","1",-1,"","");
+				yDatabasePointerDefault("p"+p+"deck");
+				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+					yDatabaseNext("p"+p+"deck");
+					if (yGetVar("p"+p+"deck", "spell") > 0) {
+						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+						drawCard(p);
+						break;
+					}
+				}
+				yDatabasePointerDefault("p"+p+"deck");
+				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+					yDatabaseNext("p"+p+"deck");
+					if (yGetVar("p"+p+"deck", "spell") == 0) {
+						ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+						drawCard(p);
+						break;
+					}
+				}
+			}
+			case SPELL_SNIPE:
+			{
+				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
+				mSetVarByQV("spellshooter", "attack", mGetVarByQV("spellshooter", "attack") + mGetVarByQV("spellshooter", "range"));
+				startAttack(1*trQuestVarGet("spellshooter"), 1*trQuestVarGet("spelltarget"), false, true);
+				done = false;
+				xsEnableRule("spell_snipe_complete");
+			}
+			case SPELL_EXPLOSION:
+			{
+				trSoundPlayFN("ui\thunder5.wav","1",-1,"","");
+				trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
+				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("spelltarget"));
+				trVectorSetUnitPos("pos", "spellTarget");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == 3 - p) {
+						if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+							damageUnit(1*trQuestVarGet("allUnits"), 1 + trQuestVarGet("p"+p+"spellDamage"));
+						}
+					}
+				}
+			}
 		}
 
 		if (battlecry == false) {
@@ -707,6 +766,20 @@ inactive
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");
+	}
+}
+
+rule spell_snipe_complete
+highFrequency
+inactive
+{
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+		(trTime() > cActivationTime + 3)) {
+		int tile = mGetVarByQV("spelltarget", "tile");
+		deployAtTile(0, "Arkantos God Out", tile);
+		mSetVarByQV("spellshooter", "attack", mGetVarByQV("spellshooter", "attack") - mGetVarByQV("spellshooter", "range"));
+		castEnd();
+		xsDisableRule("spell_snipe_complete");
 	}
 }
 

@@ -117,7 +117,8 @@ bool attackUnitAtCursor(int p = 0) {
 				mSetVar(target, "action", ACTION_READY);
 			}
 		}
-		xsEnableRule("gameplay_05_attackComplete");
+		mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
+		xsEnableRule("gameplay_01_select");
 		return(true);
 	}
 

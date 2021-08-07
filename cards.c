@@ -44,8 +44,9 @@ const int ATTACK_STUN_TARGET = 1;
 const int ATTACK_GET_WINDSONG = 2;
 const int ATTACK_BLOCK_DEATH = 3;
 const int ATTACK_SING = 4;
+const int ATTACK_ANIMATE_ORACLE = 5;
 
-const int ATTACK_EVENT_COUNT = 5;
+const int ATTACK_EVENT_COUNT = 6;
 
 
 /*
@@ -55,8 +56,10 @@ const int DEATH_DRAW_CARD = 0;
 const int DEATH_OPPONENT_DRAW_CARD = 1;
 const int DEATH_BOOM_SMALL = 2;
 const int DEATH_EGG = 3;
+const int DEATH_SPELL_DAMAGE = 4;
+const int DEATH_SPELL_DISCOUNT = 5;
 
-const int DEATH_EVENT_COUNT = 4;
+const int DEATH_EVENT_COUNT = 6;
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -345,6 +348,7 @@ runImmediately
 	/*
 	ADVENTURER
 	*/
+	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	// 0 - 4
@@ -390,6 +394,7 @@ runImmediately
 	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS));
 	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1); // stuns its targets.
 	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
+	
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
@@ -397,7 +402,7 @@ runImmediately
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
 	CardSetup("Priest",					3, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 35-39
-	CardSetup("Oracle",					4, "Magic Teacher",		2, 2, 2, 2); // Your spells deal +1 damage.
+	CardSetup("Oracle Scout",			4, "Magic Teacher",		2, 2, 2, 2); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
@@ -430,8 +435,8 @@ runImmediately
 
 	CardEvents("Swordsman Hero", 0, 0, "After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
-	CardEvents("Priest", 0, 0, "Your spells cost 1 less.");
-	CardEvents("Oracle", 0, 0, "Your spells deal +1 damage.");
+	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), "Your spells cost 1 less.");
+	CardEvents("Oracle Scout", Keyword(ATTACK_ANIMATE_ORACLE), Keyword(DEATH_SPELL_DAMAGE), "Your spells deal +1 damage.");
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Phoenix Egg", 0, 0, "At the start of your turn, destroy me to summon a Fading Lightwing.");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), "Death: Summon a Reviving Egg on my tile.");
