@@ -73,7 +73,7 @@ const int REGENERATE = 5;		// Restores to full health at the start of your turn.
 const int DEADLY = 6;			// I kill any minion that I damage.
 const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
 const int ARMORED = 8;			// Unit regenerates to full health after combat
-const int WARD = 9;				// Unit cannot be targeted by enemy spells
+const int WARD = 9;				// Unit cannot be targeted by spells or play effects
 const int BEACON = 10;			// Allies can be summoned next to this unit.
 const int AMBUSH = 11;			// When initiating combat, unit attacks first.
 const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.
@@ -365,7 +365,7 @@ runImmediately
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	// 5 - 9
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
-	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
+	CardSetup("Peltast", 				3, "Elven Ranger",	 	2, 1, 2, 2); // Play: Deal 1 damage.
 	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
@@ -373,8 +373,8 @@ runImmediately
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
-	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
-	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
+	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
 	// 15 - 19
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
@@ -390,7 +390,7 @@ runImmediately
 	// 25 - 29 (LEGENDARY at 29)
 	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
 	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
-	CardSetup("Scout",					3, "Speedy Cartographer",2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
+	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"(1)First-Aid: Teleport an allied minion next to your Commander and restore 2 health to it.");
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
 	/*
@@ -406,9 +406,9 @@ runImmediately
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
-	CardSetup("Priest",					4, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
+	CardSetup("Priest",					4, "Magic Teacher",		2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 35-39
-	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
+	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 1, 0); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
@@ -416,11 +416,15 @@ runImmediately
 	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
-	SpellSetup("Doubleblast",			2, SPELL_DOUBLEBLAST,	"(2)Doubleblast: Deal 1 damage to two enemies.");
-	SpellSetup("Electrosurge",			5, SPELL_ELECTROSURGE,	"(5)Electrosurge: Deal 2 damage with Lightning.");
-	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", Keyword(OVERFLOW));
+	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"(4)Doubleblast: Deal 1 damage to two enemies. Draw a card.");
+	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.");
+	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD));
 	// 45-49
+	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
+	
+
+
 	// 50-54
 
 	// 55-59 (LEGENDARY at 59)
@@ -448,6 +452,7 @@ runImmediately
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
 	CardEvents("Phoenix Egg", 0, 0, "At the start of your turn, destroy me to summon a Fading Lightwing.");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), "Death: Summon a Reviving Egg on my tile.");
+	CardEvents("Hero Greek Bellerophon", 0, 0, "After you cast a spell, grant me another action if I have already acted.");
 	/*
 	Spells
 				Name 	Cost 	Spell

@@ -772,6 +772,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget2", "tile")), true);
 				trDamageUnitPercent(100);
+				trQuestVarSet("p"+p+"drawCards", 1);
 			}
 			case SPELL_ELECTROSURGE:
 			{
@@ -863,6 +864,7 @@ inactive
 				}
 			}
 		}
+		updateHandPlayable(p);
 		xsDisableRule("spell_party_up_activate");
 	}
 }
@@ -891,6 +893,7 @@ inactive
 				break;
 			}
 		}
+		updateHandPlayable(p);
 		xsDisableRule("spell_class_time_activate");
 	}
 }
