@@ -119,7 +119,7 @@ inactive
 {
 	trQuestVarSet("virgin", 0);
 	for(x=0; < 16) {
-		trQuestVarSet("data"+x, trGetScenarioUserData(x, "cg25.scx"));
+		trQuestVarSet("data"+x, trGetScenarioUserData(x, "!HeavenGames.scx"));
 		trQuestVarSet("virgin", trQuestVarGet("virgin") + trQuestVarGet("data"+x));
 	}
 
@@ -156,9 +156,9 @@ inactive
 		trQuestVarSet("class"+x+"progress", zModulo(8, data));
 	}
 
-	if (Multiplayer) {
+	if (Multiplayer || true) {
 		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
-		trUIFadeToColor(0,0,0,0,0,true);
+		// trUIFadeToColor(0,0,0,0,0,true);
 		
 		for(p=2; >0) {
 			trModifyProtounit("Swordsman Hero", p, 6, -100);	// population count
@@ -168,12 +168,12 @@ inactive
 			trModifyProtounit("Swordsman Hero", p, 19, -1000);	// cost favor
 		}
 		int m = kbGetProtoUnitID("Swordsman");
-		for(x=127; >=0) {
+		for(x=0; < 128) {
 			trUnitSelectClear();
 			trUnitSelectByID(x);
 			trMutateSelected(m);
 		}
-		xsEnableRule("initializeBoard");
+		
 		trBlockAllSounds(true);
 		xsEnableRule("data_load_01_ready");
 	} else {
@@ -259,7 +259,7 @@ rule data_load_01_ready
 highFrequency
 inactive
 {
-	if (trPlayerUnitCountSpecific(1, "Swordsman") + trPlayerUnitCountSpecific(2, "Swordsman") > 64) {
+	if (trPlayerUnitCountSpecific(1, "Swordsman") + trPlayerUnitCountSpecific(2, "Swordsman") == 128) {
 		xsEnableRule("data_load_01_load_classes");
 		xsEnableRule("data_load_02_detect_classes");
 		xsDisableSelf();
@@ -274,10 +274,16 @@ inactive
 	if (trCurrentPlayer() == 2) {
 		c = c + 64;
 	}
+	trChatSend(0, "Class data: " + c);
 	trUnitSelectClear();
 	trUnitSelectByID(c);
-	while(trUnitIsSelected() == false) {
-		uiFindType("Swordsman");
+	for(i=64; >0) {
+		if (trUnitIsSelected() == false) {
+			uiFindType("Swordsman");
+		} else {
+			trChatSend(0, "Found!");
+			break;
+		}
 	}
 	uiTransformSelectedUnit("Swordsman Hero");
 	xsDisableSelf();
@@ -287,7 +293,7 @@ rule data_load_02_detect_classes
 highFrequency
 inactive
 {
-	if (trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero") == 1) {
+	if (trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero") == 2) {
 		for(x=0; < 64) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
 				trQuestVarSet("p1classes", x);
@@ -334,12 +340,20 @@ inactive
 		if (p == 2) {
 			c = c + 64;
 		}
+		trChatSend(0, "Commander data: " + c);
 		trUnitSelectClear();
 		trUnitSelectByID(c);
-		while(trUnitIsSelected() == false) {
-			uiFindType("Swordsman");
+		for(i=64; >0) {
+			if (trUnitIsSelected() == false) {
+				uiFindType("Swordsman");
+			} else {
+				trChatSend(0, "Found!");
+				break;
+			}
 		}
-		uiTransformSelectedUnit("Swordsman Hero");
+		if (trUnitIsOwnedBy(trCurrentPlayer())) {
+			uiTransformSelectedUnit("Swordsman Hero");
+		}
 		xsDisableSelf();
 	}
 }
@@ -348,7 +362,7 @@ rule data_load_04_detect_commanders
 highFrequency
 inactive
 {
-	if (trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero") == 1) {
+	if (trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero") == 2) {
 		for(x=0; < 12) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
 				trQuestVarSet("p1commanderType", x);
@@ -399,7 +413,8 @@ inactive
 {
 	int p = trCurrentPlayer();
 	if ((trQuestVarGet("loadNext") == 1) && 
-		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0)) {
+		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0) &&
+		trTime() >= trQuestVarGet("derp") + trCurrentPlayer()) {
 		trQuestVarSet("loadNext", 0);
 		int c = trQuestVarGet("classProgress");
 		int d = 0;
@@ -411,10 +426,16 @@ inactive
 		if (p == 2) {
 			x = x + 64;
 		}
+		trChatSend(0, "deckDataC"+c+"D"+d+" value: " + x);
 		trUnitSelectClear();
 		trUnitSelectByID(x);
-		while(trUnitIsSelected() == false) {
-			uiFindType("Swordsman");
+		for(i=64; >0) {
+			if (trUnitIsSelected() == false) {
+				uiFindType("Swordsman");
+			} else {
+				trChatSend(0, "Found!");
+				break;
+			}
 		}
 		uiTransformSelectedUnit("Swordsman Hero");
 		trQuestVarSet("deckDataC"+c+"D"+d, data / 64);
@@ -438,7 +459,8 @@ highFrequency
 inactive
 {
 	int r = trPlayerUnitCountSpecific(1, "Swordsman Hero") + trPlayerUnitCountSpecific(2, "Swordsman Hero");
-	if (r == 1) {
+	if (r == 2) {
+		trQuestVarSet("derp", trTime());
 		for(p=2; >0) {
 			trPlayerGrantResources(p, "food", -1000);
 			trPlayerGrantResources(p, "wood", -1000);
@@ -449,7 +471,7 @@ inactive
 		showLoadProgress(1*trQuestVarGet("progress"));
 		for(x=0; < 64) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
-				trChatSend(0, "value: " + x);
+				trChatSend(0, "value1: " + x);
 				trUnitSelectClear();
 				trUnitSelectByID(x);
 				trMutateSelected(kbGetProtoUnitID("Swordsman"));
@@ -459,6 +481,7 @@ inactive
 		}
 		for(x=64; < 128) {
 			if (kbGetUnitBaseTypeID(x) == kbGetProtoUnitID("Swordsman Hero")) {
+				trChatSend(0, "value2: " + x);
 				trUnitSelectClear();
 				trUnitSelectByID(x);
 				trMutateSelected(kbGetProtoUnitID("Swordsman"));
@@ -490,4 +513,5 @@ inactive
 	trUnblockAllSounds();
 	trSoundPlayFN("favordump.wav","1",-1,"","");
 	xsDisableRule("data_load_07_done");
+	// xsEnableRule("initializeBoard");
 }
