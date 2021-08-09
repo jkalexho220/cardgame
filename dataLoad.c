@@ -156,9 +156,9 @@ inactive
 		trQuestVarSet("class"+x+"progress", zModulo(8, data));
 	}
 
-	if (Multiplayer || true) {
+	if (Multiplayer) {
 		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
-		// trUIFadeToColor(0,0,0,0,0,true);
+		trUIFadeToColor(0,0,0,0,0,true);
 		
 		for(p=2; >0) {
 			trModifyProtounit("Swordsman Hero", p, 6, -100);	// population count
@@ -512,5 +512,5 @@ inactive
 	trUnblockAllSounds();
 	trSoundPlayFN("favordump.wav","1",-1,"","");
 	xsDisableRule("data_load_07_done");
-	// xsEnableRule("initializeBoard");
+	xsEnableRule("initializeBoard");
 }
