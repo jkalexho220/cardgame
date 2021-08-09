@@ -413,8 +413,7 @@ inactive
 {
 	int p = trCurrentPlayer();
 	if ((trQuestVarGet("loadNext") == 1) && 
-		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0) &&
-		trTime() >= trQuestVarGet("derp") + trCurrentPlayer()) {
+		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0)) {
 		trQuestVarSet("loadNext", 0);
 		int c = trQuestVarGet("classProgress");
 		int d = 0;
