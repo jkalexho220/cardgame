@@ -55,23 +55,29 @@ void dataSave() {
 	}
 	trQuestVarSet("data7", data);
 
-	c = trQuestVarGet("class2");
-	data = 0;
-	power = 1;
-	for(x=0; <15) {
-		card = x + 30 * c;
-		data = data + power * getCardCountDeck(card);
-		power = power * 4;
+	if (trQuestVarGet("class1") == trQuestVarGet("class2")) {
+		trQuestVarSet("data8", 0);
+		trQuestVarSet("data9", 0);
+	} else {
+		c = trQuestVarGet("class2");
+		data = 0;
+		power = 1;
+		for(x=0; <15) {
+			card = x + 30 * c;
+			data = data + power * getCardCountDeck(card);
+			power = power * 4;
+		}
+		trQuestVarSet("data8", data);
+		data = 0;
+		power = 1;
+		for(x=15; <30) {
+			card = x + 30 * c;
+			data = data + power * getCardCountDeck(card);
+			power = power * 4;
+		}
+		trQuestVarSet("data9", data);
 	}
-	trQuestVarSet("data8", data);
-	data = 0;
-	power = 1;
-	for(x=15; <30) {
-		card = x + 30 * c;
-		data = data + power * getCardCountDeck(card);
-		power = power * 4;
-	}
-	trQuestVarSet("data9", data);
+	
 
 	/*
 	Saving collection and class progress data
