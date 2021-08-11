@@ -183,12 +183,13 @@ inactive
 
 rule gameplay_select_show_keywords
 highFrequency
-active
+inactive
 {
 	yDatabaseNext("allUnits", true);
 	if (trUnitIsSelected()) {
 		displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
 	}
+	
 	for(p=2; >0) {
 		yDatabaseNext("p"+p+"hand", true);
 		if (trUnitIsSelected()) {

@@ -324,10 +324,9 @@ void setupBoard() {
 
 
 rule initializeBoard
-highFrequency
-active
-runImmediately
+inactive
 {
+	xsEnableRule("gameplay_select_show_keywords");
 	/*
 	Tile index increases outwards from the center.
 	To vary the size of the map, just vary the 
@@ -343,9 +342,12 @@ runImmediately
 	zBankInit("borders", 297, 552);
 
 	setupBoard();
-
+	
+	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
 	chooseTerrainTheme(TERRAIN_GRASSLAND);
 	setupImpassableTerrain();
+	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
+
 
 	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
 	trQuestVarCopy("p1startPosz", "p1startposx");
@@ -355,10 +357,17 @@ runImmediately
 
 	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
 	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));
-
-	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") - 6);
-	trModifyProtounit("Revealer to Player", 1, 2, 6);
-	trModifyProtounit("Revealer to Player", 2, 2, 6);
+	
+	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") + 6);
 
 	xsDisableRule("initializeBoard");
+	xsEnableRule("match_00_start");
+	
+	if (trCurrentPlayer() == 1) {
+		trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
+	} else {
+		trCameraCut(vector(27.838341,112.294716,27.838341),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
+	}
 }

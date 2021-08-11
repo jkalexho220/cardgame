@@ -84,11 +84,13 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'trMusicStop', 'uiFindType', 'xsRound', 'xsFloor', 'trChatHistoryClear', 'trSetCivilizationNameOverride', 'kbIsPlayerResigned',
 			'trSoundPlayDialog', 'trChangeTerrainHeight', 'trRenderSky', 'trFadeOutAllSounds', 'aiIsMultiplayer', 'trShowWinLose', 
 			'gadgetUnreal', 'trGetScenarioUserData', 'uiLookAtUnit', 'uiClearSelection', 'uiCreateNumberGroup', 'kbLookAtAllUnitsOnMap',
-			'trTimeMS', 'trChatSendToPlayer'}
+			'trTimeMS', 'trChatSendToPlayer', 'uiTransformSelectedUnit', 'trBlockAllSounds', 'xsDisableSelf', 'trUnblockAllSounds', 
+			'trSetCurrentScenarioUserData','trModeEnter', 'exit'}
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['shared.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c', 'gameplayHelpers.c', 'deck.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'gameplay.c', 'bot.c', 'match.c']
+	files = ['shared.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c']
+
 	named = True
 	FILE_2 = 'cardGameAll.xml'
 	NAME = " Card Game"

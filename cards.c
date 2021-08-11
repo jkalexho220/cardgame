@@ -3,6 +3,15 @@ void ThrowError(string message = "Zeno you made bug again!"){
 	trShowWinLose(message, "xpack\xtaunts\en\999 theme.mp3");
 }
 
+/*
+Classes
+*/
+const int CLASS_ADVENTURER = 0;
+const int CLASS_ARCANE = 1;
+const int CLASS_NAGA = 2;
+const int CLASS_CLOCKWORK = 3;
+const int CLASS_EVIL = 4;
+const int CLASS_SPACE = 5;
 
 /*
 Spells
@@ -126,6 +135,53 @@ bool HasKeyword(int key = 0, int keywords = 0) {
 }
 
 /*
+Given a card proto or spell
+*/
+void displayCardDetails(int proto = 0, int spell = 0) {
+	string dialog = "";
+	string message = "";
+	int keywords = trQuestVarGet("card_"+proto+"_keywords");
+	if (spell > 1) {
+		keywords = trQuestVarGet("spell_"+spell+"_keywords");
+		trMessageSetText(trStringQuestVarGet("spell_"+spell+"_description"), -1);
+	}
+	bool multiple = false;
+	if(keywords>0){
+		int current = xsPow(2, NUM_KEYWORDS - 1);
+		for(k=NUM_KEYWORDS - 1; >=0){
+			if (keywords >= current) {
+				if(multiple){
+					dialog = dialog + ", ";
+				}
+				multiple = true;
+				dialog = dialog + GetKeywordName(k);
+				keywords = keywords - current;
+			}
+			current = current / 2;
+		}
+	}
+	message = trStringQuestVarGet("card_"+proto+"_ability");
+
+	if (spell <= SPELL_COMMANDER) {
+		gadgetUnreal("DetailedHelpButton");
+		if(HasKeyword(ARMORED, keywords)){
+			gadgetUnreal("NormalArmorTextDisplay");			
+		} else {
+			gadgetUnreal("unitStatPanel-stat-normalArmor");
+		}
+		if(HasKeyword(WARD, keywords)){
+			gadgetUnreal("PierceArmorTextDisplay");			
+		} else {
+			gadgetUnreal("unitStatPanel-stat-pierceArmor");
+		}
+	}
+
+	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
+	trSetCounterDisplay(message);
+
+}
+
+/*
 Given a card name in a given db array, print information
 of the selected unit.
 */
@@ -234,7 +290,15 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "",
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
 	trStringQuestVarSet("spell_"+spell+"_description", desc);
+
+
+	trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
+	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
+	trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
+	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
+
 	trQuestVarSet("spell_"+spell+"_keywords", keywords);
+
 }
 
 void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string ability="") {
@@ -249,9 +313,11 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
 	}
+
 	if (uncollectable == false) {
-		trQuestVarSet("cardProtos_" + 1*trQuestVarGet("cardProtosIndex"), proto);
-		trQuestVarSet("cardProtosIndex", trQuestVarGet("cardProtosIndex") + 1);
+		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
+		trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
+		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
@@ -307,7 +373,9 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		trModifyProtounit(protoName, p, 11, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, range); // Range
 
-		trModifyProtounit(protoName, p, 1, 10); // Just give everything +10 speed
+		trModifyProtounit(protoName, p, 1, 9999999999999999999.0);
+		trModifyProtounit(protoName, p, 1, -9999999999999999999.0);
+		trModifyProtounit(protoName, p, 1, 10); // Speed
 
 		// 0 LOS
 		trModifyProtounit(protoName, p, 2, 9999999999999999999.0);
@@ -327,7 +395,10 @@ runImmediately
 		trForbidProtounit(p, "Maceman Hero");
 		trForbidProtounit(p, "Oracle Hero");
 		trForbidProtounit(p, "Royal Guard Hero");
-		trForbidProtounit(p, "Swordsman Hero");
+		/* 
+		need this for heroize deck importing 
+		trForbidProtounit(p, "Swordsman Hero"); 
+		*/
 		trForbidProtounit(p, "Trident Soldier Hero");
 		trForbidProtounit(p, "Villager Atlantean Hero");
 		trForbidProtounit(p, "Settlement Level 1");
@@ -356,16 +427,22 @@ runImmediately
 	*/
 	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
+	CardSetup("Hero Greek Heracles",	0, "Venlesh", 			2, 20, 2, 1, Keyword(BEACON), true);
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
 	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	// 5 - 9
+<<<<<<< HEAD
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
 	CardSetup("Peltast", 				3, "Elven Ranger",	 	2, 1, 2, 2); // Play: Deal 1 damage.
+=======
+	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
+	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
+>>>>>>> main
 	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
@@ -376,10 +453,10 @@ runImmediately
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
 	// 15 - 19
-	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
-	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
 	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
@@ -397,23 +474,26 @@ runImmediately
 	ARCANE
 	*/
 	// Created cards
-	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS));
-	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1); // stuns its targets.
-	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
+	CardSetup("Oracle Hero",			0, "Nanodude", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Minotaur",				0, "nottud", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS), true);
+	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1, 0, true); // stuns its targets.
+	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0, 0, true); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
 	
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
-	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
+	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
 	CardSetup("Priest",					4, "Magic Teacher",		2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 35-39
-	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 1, 0); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
-	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
+	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
+	CardSetup("Priest",					4, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
+	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
 	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"(4)Doubleblast: Deal 1 damage to two enemies. Draw a card.");
@@ -430,29 +510,72 @@ runImmediately
 	// 55-59 (LEGENDARY at 59)
 
 	/*
+	NAGA
+	*/
+	// Created cards
+	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Archer Atlantean Hero",	0, "scragins", 			2, 20, 2, 2, Keyword(BEACON), true);
+	
+	/*
+	CLOCKWORK
+	*/
+	// Created cards
+	CardSetup("Hero Greek Polyphemus",	0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON), true);
+	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
+
+	/*
+	EVIL
+	*/
+	// Created cards
+	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
+	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
+	
+	/*
+	SPACE
+	*/
+	// Created cards
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
+	
+	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
 	*/
-	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
-	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", 0, 0, "Play: Summon a 1|1 Loyal Wolf with Guard.");
-	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
-	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
-	CardEvents("Physician", Keyword(ATTACK_SING), 0, "When I heal an ally that has acted, grant them another action.");
-	CardEvents("Scout", 0, 0, "Play: Add an Explorer's Map to your hand.");
-	CardEvents("Peltast", 0, 0, "Play: Deal 1 damage.");
-	CardEvents("Huskarl", 0, 0, "Play: Grant adjacent allied minions +1 attack and health.");
-	CardEvents("Nemean Lion", 0, 0, "Play: Stun all enemy minions that cost {Manaflow} or less.");
+	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Add a Windsong to your hand. Discard it when turn ends.");
+	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
+	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
+	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
+	CardEvents("Avenger", 0, 0, 										"Play: Deal 1 damage to all adjacent enemies.");
+	CardEvents("Villager Atlantean", 0, 0, 								"Play: Grant an allied minion +1 attack and health.");
+	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"Minions I kill don't trigger their Death effect.");
+	CardEvents("Physician", Keyword(ATTACK_SING), 0, 					"When I heal an ally that has acted, grant them another action.");
+	CardEvents("Scout", 0, 0, 											"Play: Add an Explorer's Map to your hand.");
+	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
+	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
+	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
-	CardEvents("Swordsman Hero", 0, 0, "After you cast a spell, grant me +1 attack.");
-	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
-	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), "Your spells cost 1 less.");
-	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), "Your spells deal +1 damage.");
-	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
-	CardEvents("Phoenix Egg", 0, 0, "At the start of your turn, destroy me to summon a Fading Lightwing.");
-	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), "Death: Summon a Reviving Egg on my tile.");
-	CardEvents("Hero Greek Bellerophon", 0, 0, "After you cast a spell, grant me another action if I have already acted.");
+	CardEvents("Oracle Hero", 0, 0, 									"Loading ability...");
+	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
+	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
+	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
+	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
+	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");
+	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
+	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing.");
+	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
+	
+	CardEvents("Royal Guard Hero", 0, 0, 								"Loading ability...");
+	CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
+	
+	CardEvents("Hero Greek Polyphemus", 0, 0, 							"I'm chunky!");
+	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
+	
+	CardEvents("Hoplite", 0, 0, 										"Whenever I kill a minion, add a copy of it to your hand.");
+	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
+	
+	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
+	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
+
 	/*
 	Spells
 				Name 	Cost 	Spell
@@ -460,15 +583,64 @@ runImmediately
 	
 	
 	
-	/*
-	//Deploy one of each card to playtest.
-	int cardsCount = trQuestVarGet("cardProtosIndex");
-	for(i=0;<cardsCount){
-		trQuestVarSetFromRand("random", 128, 296, true);
-		trVectorQuestVarSet("temp", kbGetBlockPosition(""+1*trQuestVarGet("random")));
-		CardInstantiate(kbGetProtoUnitName(trQuestVarGet("cardProtos_"+i)),"temp");
-	}
-	*/
-	
 	xsDisableRule("initializeCards");
 }
+
+int getCardClass(int index = 0) {
+	return(1*xsFloor(index / 30));
+}
+/*
+we don't need this function. Just call dataSave() in dataLoad.c;
+*/
+void saveDeck() {
+	
+}
+
+int CardToProto(int card = 0) {
+	return(1*trQuestVarGet("CardToProto"+card));
+}
+
+int CardToSpell(int card = 0) {
+	return(1*trQuestVarGet("CardToSpell"+card));
+}
+
+int ProtoToCard(int proto = 0) {
+	return(1*trQuestVarGet("ProtoToCard"+proto));
+}
+
+int SpellToCard(int spell = 0) {
+	return(1*trQuestVarGet("SpellToCard"+spell));
+}
+
+int getCardCountCollection(int index = 0) {
+	return(1*trQuestVarGet("card_"+index+"_count") - trQuestVarGet("card_"+index+"_countInDeck"));
+}
+
+int getCardCountDeck(int index = 0) {
+	return(1*trQuestVarGet("card_"+index+"_countInDeck"));
+}
+
+void setCardCountCollection(int index = 0, int count = 0) {
+	trQuestVarSet("card_"+index+"_count", count);
+}
+
+void setCardCountDeck(int index = 0, int count = 0) {
+	trQuestVarSet("card_"+index+"_countInDeck", count);
+}
+
+void setDeckCommander(int commander = 0) {
+	trQuestVarSet("commander", commander);
+}
+
+int getDeckCommander() {
+	return(1*trQuestVarGet("commander"));
+}
+
+void setClassProgress(int class = 0, int progress = 0) {
+	trQuestVarSet("class"+class+"progress", progress);
+}
+
+int getClassProgress(int class = 0) {
+	return(1*trQuestVarGet("class"+class+"progress"));
+}
+
