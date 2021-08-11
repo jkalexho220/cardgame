@@ -431,13 +431,13 @@ runImmediately
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
 	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	// 5 - 9
-	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
+	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
 	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
+	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
@@ -448,10 +448,10 @@ runImmediately
 	CardSetup("Hero Greek Theseus", 	4, "Silent Paladin", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Archer Atlantean Hero", 	7, "Ace", 				3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
 	// 15 - 19
-	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
-	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
 	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
@@ -478,19 +478,19 @@ runImmediately
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
-	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
+	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
-	CardSetup("Priest",					4, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
+	SpellSetup("Doubleblast",			2, SPELL_DOUBLEBLAST,	"(2)Doubleblast: Deal 1 damage to two enemies.");
 	// 35-39
-	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
-	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
+	CardSetup("Oracle Scout",			3, "Magic Teacher",		0, 2, 1, 0); // Your spells deal +1 damage.
+	CardSetup("Priest",					4, "Tower Researcher",	2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
+	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
-	SpellSetup("Doubleblast",			2, SPELL_DOUBLEBLAST,	"(2)Doubleblast: Deal 1 damage to two enemies.");
 	SpellSetup("Electrosurge",			5, SPELL_ELECTROSURGE,	"(5)Electrosurge: Deal 2 damage with Lightning.");
 	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", Keyword(OVERFLOW));
 	// 45-49
