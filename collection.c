@@ -583,20 +583,23 @@ inactive
 						}
 					} else {
 						int card = 0;
+						string name = "";
 						if(1*yGetVar("allUnits", "spell") == 0){
 							card = ProtoToCard(kbGetUnitBaseTypeID(id));
+							name = trStringQuestVarGet("card_"+kbGetUnitBaseTypeID(id)+"_Name");
 						} else {
-							card = SpellToCard(yGetVar("allUnits", "spell"));
+							card = SpellToCard(1*yGetVar("allUnits", "spell"));
+							name = trStringQuestVarGet("card_"+1*yGetVar("allUnits", "spell")+"_Name");
 						}
 
 						if(trVectorQuestVarGetZ("temp") < 44){
 							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
 							setCardCountDeck(card, getCardCountDeck(card) + 1);
-							ChatLog(1, "Card added to deck");
+							ChatLog(1, name + " added to deck");
 						} else {
 							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
 							setCardCountDeck(card, getCardCountDeck(card) - 1);
-							ChatLog(1, "Card removed from deck");
+							ChatLog(1, name + " removed from deck");
 						}
 						if(ValidateCollection()){
 							xsEnableRule("CollectionSpace");

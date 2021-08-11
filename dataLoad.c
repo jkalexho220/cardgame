@@ -42,23 +42,29 @@ void dataSave() {
 	}
 	trQuestVarSet("data7", data);
 
-	c = trQuestVarGet("class2");
-	data = 0;
-	power = 1;
-	for(x=0; <15) {
-		card = x + 30 * c;
-		data = data + power * getCardCountDeck(card);
-		power = power * 4;
+	if (trQuestVarGet("class1") == trQuestVarGet("class2")) {
+		trQuestVarSet("data8", 0);
+		trQuestVarSet("data9", 0);
+	} else {
+		c = trQuestVarGet("class2");
+		data = 0;
+		power = 1;
+		for(x=0; <15) {
+			card = x + 30 * c;
+			data = data + power * getCardCountDeck(card);
+			power = power * 4;
+		}
+		trQuestVarSet("data8", data);
+		data = 0;
+		power = 1;
+		for(x=15; <30) {
+			card = x + 30 * c;
+			data = data + power * getCardCountDeck(card);
+			power = power * 4;
+		}
+		trQuestVarSet("data9", data);
 	}
-	trQuestVarSet("data8", data);
-	data = 0;
-	power = 1;
-	for(x=15; <30) {
-		card = x + 30 * c;
-		data = data + power * getCardCountDeck(card);
-		power = power * 4;
-	}
-	trQuestVarSet("data9", data);
+	
 
 	/*
 	Saving collection and class progress data
@@ -66,9 +72,9 @@ void dataSave() {
 	for(c=0; <6) {
 		data = 0;
 		if (trQuestVarGet("class2") == c) {
-			data = data + 1; // set the first bit
+			data = data + 3; // set the first bit
 		} else if (trQuestVarGet("class1") == c) {
-			data = data + 3; // set the first 2 bits
+			data = data + 1; // set the first 2 bits
 			data = data + 4 * (1 * trQuestVarGet("commander") - 2 * c); // set the commander bit
 		}
 		data = data + 8 * trQuestVarGet("class"+c+"progress"); // progress is bits 3-5
@@ -218,26 +224,28 @@ inactive
 				break;
 			}
 		}
-
-		c = 30 * trQuestVarGet("class2");
-		data = 1*trQuestVarGet("data8");
-		for(x=0;<15) {
-			card = c + x;
-			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
-			data = data / 4;
-			if (data == 0) {
-				break;
+		if ((trQuestVarGet("class1") == trQuestVarGet("class2")) == false) {
+			c = 30 * trQuestVarGet("class2");
+			data = 1*trQuestVarGet("data8");
+			for(x=0;<15) {
+				card = c + x;
+				trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+				data = data / 4;
+				if (data == 0) {
+					break;
+				}
+			}
+			data = 1*trQuestVarGet("data9");
+			for(x=15;<30) {
+				card = c + x;
+				trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+				data = data / 4;
+				if (data == 0) {
+					break;
+				}
 			}
 		}
-		data = 1*trQuestVarGet("data9");
-		for(x=15;<30) {
-			card = c + x;
-			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
-			data = data / 4;
-			if (data == 0) {
-				break;
-			}
-		}
+		
 	}
 	xsDisableSelf();
 }
