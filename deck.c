@@ -1,4 +1,3 @@
-
 /*
 Fischer-Yates shuffle
 */
@@ -148,7 +147,6 @@ void drawCard(int p = 0) {
 
 	updateHandPlayable(p);
 }
-
 
 rule initializeHand
 highFrequency

@@ -39,6 +39,7 @@ inactive
 {
 	trTechGodPower(0, "spy", 2);
 	for(p=2; >0) {
+		trQuestVarSet("p"+p+"commanderSecondary", -1);
 		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, kbGetProtoUnitID("Hero Greek Jason")));
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
 
@@ -80,7 +81,7 @@ inactive
 			}
 			trQuestVarSet("p"+p+"done", 0);
 		}
-		trMessageSetText("Left click to choose cards to mulligan. Right click to finish.",-1);
+		trMessageSetText("Left click to choose cards to mulligan. Enter to finish.",-1);
 		
 		if(Multiplayer){
 			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
@@ -257,11 +258,6 @@ inactive
 		trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
 
-		if (trQuestVarGet("activePlayer") == 1) {
-			trOverlayTextColour(0, 0, 255);
-		} else {
-			trOverlayTextColour(255,0,0);
-		}
 		removeDeadUnits();
 
 		xsEnableRule("gameplay_01_select");

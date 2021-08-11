@@ -373,7 +373,9 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		trModifyProtounit(protoName, p, 11, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, range); // Range
 
-		trModifyProtounit(protoName, p, 1, 10); // Just give everything +10 speed
+		trModifyProtounit(protoName, p, 1, 9999999999999999999.0);
+		trModifyProtounit(protoName, p, 1, -9999999999999999999.0);
+		trModifyProtounit(protoName, p, 1, 10); // Speed
 
 		// 0 LOS
 		trModifyProtounit(protoName, p, 2, 9999999999999999999.0);
@@ -425,6 +427,7 @@ runImmediately
 	*/
 	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
+	CardSetup("Hero Greek Heracles",	0, "Venlesh", 			2, 20, 2, 1, Keyword(BEACON), true);
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
@@ -466,6 +469,8 @@ runImmediately
 	ARCANE
 	*/
 	// Created cards
+	CardSetup("Oracle Hero",			0, "Nanodude", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Minotaur",				0, "nottud", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS), true);
 	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1, 0, true); // stuns its targets.
 	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0, 0, true); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
@@ -495,28 +500,71 @@ runImmediately
 	// 55-59 (LEGENDARY at 59)
 
 	/*
+	NAGA
+	*/
+	// Created cards
+	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Archer Atlantean Hero",	0, "scragins", 			2, 20, 2, 2, Keyword(BEACON), true);
+	
+	/*
+	CLOCKWORK
+	*/
+	// Created cards
+	CardSetup("Hero Greek Polyphemus",	0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON), true);
+	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
+
+	/*
+	EVIL
+	*/
+	// Created cards
+	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
+	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
+	
+	/*
+	SPACE
+	*/
+	// Created cards
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
+	
+	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
 	*/
-	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, "Attack: Add a Windsong to your hand. Discard it when turn ends.");
-	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, "Attack: Draw a card.");
-	CardEvents("Skraeling", 0, 0, "Play: Summon a 1|1 Loyal Wolf with Guard.");
-	CardEvents("Avenger", 0, 0, "Play: Deal 1 damage to all adjacent enemies.");
-	CardEvents("Villager Atlantean", 0, 0, "Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0, "Minions I kill don't trigger their Death effect.");
-	CardEvents("Physician", Keyword(ATTACK_SING), 0, "When I heal an ally that has acted, grant them another action.");
-	CardEvents("Scout", 0, 0, "Play: Add an Explorer's Map to your hand.");
-	CardEvents("Peltast", 0, 0, "Play: Deal 1 damage.");
-	CardEvents("Huskarl", 0, 0, "Play: Grant adjacent allied minions +1 attack and health.");
-	CardEvents("Nemean Lion", 0, 0, "Play: Stun all enemy minions that cost {Manaflow} or less.");
+	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Add a Windsong to your hand. Discard it when turn ends.");
+	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
+	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
+	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
+	CardEvents("Avenger", 0, 0, 										"Play: Deal 1 damage to all adjacent enemies.");
+	CardEvents("Villager Atlantean", 0, 0, 								"Play: Grant an allied minion +1 attack and health.");
+	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"Minions I kill don't trigger their Death effect.");
+	CardEvents("Physician", Keyword(ATTACK_SING), 0, 					"When I heal an ally that has acted, grant them another action.");
+	CardEvents("Scout", 0, 0, 											"Play: Add an Explorer's Map to your hand.");
+	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
+	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
+	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
-	CardEvents("Swordsman Hero", 0, 0, "After you cast a spell, grant me +1 attack.");
-	CardEvents("Slinger", 0, 0, "Play: Add a Spark to your hand.");
-	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), "Your spells cost 1 less.");
-	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), "Your spells deal +1 damage.");
-	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, "Attack: Stun my target.");
-	CardEvents("Phoenix Egg", 0, 0, "At the start of your turn, destroy me to summon a Fading Lightwing.");
-	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), "Death: Summon a Reviving Egg on my tile.");
+	CardEvents("Oracle Hero", 0, 0, 									"Loading ability...");
+	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
+	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
+	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
+	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
+	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");
+	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
+	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing.");
+	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
+	
+	CardEvents("Royal Guard Hero", 0, 0, 								"Loading ability...");
+	CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
+	
+	CardEvents("Hero Greek Polyphemus", 0, 0, 							"I'm chunky!");
+	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
+	
+	CardEvents("Hoplite", 0, 0, 										"Whenever I kill a minion, add a copy of it to your hand.");
+	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
+	
+	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
+	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
 	/*
 	Spells
 				Name 	Cost 	Spell

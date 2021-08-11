@@ -23,20 +23,7 @@ This function assumes the following:
 - there are only two classes in the "deck" database
 */
 void dataSave() {
-	int id = 0;
 	int card = 0;
-	for(x=0; <180) {
-		setCardCountDeck(x, 0);
-	}
-	for(x=yGetDatabaseCount("deck"); >0) {
-		id = kbGetBlockID(""+1*yDatabaseNext("deck"), true);
-		if (yGetVar("deck", "spell") == SPELL_NONE) {
-			card = ProtoToCard(kbGetUnitBaseTypeID(id));
-		} else {
-			card = SpellToCard(1*yGetVar("deck", "spell"));
-		}
-		setCardCountDeck(card, 1 + getCardCountDeck(card));
-	}
 	int c = trQuestVarGet("class1");
 	int data = 0;
 	int power = 1;
@@ -119,7 +106,7 @@ inactive
 {
 	trQuestVarSet("virgin", 0);
 	for(x=0; < 16) {
-		trQuestVarSet("data"+x, trGetScenarioUserData(x, "cg25.scx"));
+		trQuestVarSet("data"+x, trGetScenarioUserData(x, "!HeavenGames.scx"));
 		trQuestVarSet("virgin", trQuestVarGet("virgin") + trQuestVarGet("data"+x));
 	}
 

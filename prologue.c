@@ -59,6 +59,9 @@ inactive
 	trCameraCut(vector(-21.635717,32.595444,96.573792), vector(0.707104,-0.707109,-0.001133), 
 		vector(0.707104,0.707109,-0.001133), vector(-0.001603,0.000000,-0.999999));
     trSetFogAndBlackmap(false, false);
+	trModifyProtounit("Hero Greek Jason", 1, 1, 9999999999999999999.0);
+	trModifyProtounit("Hero Greek Jason", 1, 1, -9999999999999999999.0);
+	trModifyProtounit("Hero Greek Jason", 1, 1, 4);
     trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
     trArmyDispatch("1,10", "Hero Greek Jason", 1, -0.19, 0.00, 97.42, 0, true);
 	unitTransform("Hero Birth","Cinematic Block");
@@ -318,12 +321,16 @@ rule CinPrologue11
 highFrequency
 inactive
 {
-   if ((trTime()-cActivationTime) >= 4){
-	  trOverlayText("G A M E S   O F   H E A V E N", 4.7, 500, 200, 1000);
-      trSoundPlayFN("xsentinelbirth.wav", "3", -1, "","");
-      trSoundPlayFN("cinematics\32_in\music.mp3", "15", -1, "","");
-      xsDisableRule("CinPrologue11");
-	  xsEnableRule("CinPrologue12");
+	if ((trTime()-cActivationTime) >= 4){
+		trOverlayTextColour(255, 255, 0);
+		trOverlayText("H E A V E N   G A M E S", 4.7, 500, 200, 1000);
+		trSoundPlayFN("xsentinelbirth.wav", "3", -1, "","");
+		trSoundPlayFN("cinematics\32_in\music.mp3", "15", -1, "","");
+		trModifyProtounit("Hero Greek Jason", 1, 1, 9999999999999999999.0);
+		trModifyProtounit("Hero Greek Jason", 1, 1, -9999999999999999999.0);
+		trModifyProtounit("Hero Greek Jason", 1, 1, 10);
+		xsDisableRule("CinPrologue11");
+		xsEnableRule("CinPrologue12");
    }
 }
 
@@ -331,15 +338,18 @@ rule CinPrologue12
 highFrequency
 inactive
 {
-   if ((trTime()-cActivationTime) >= 7){
-	  int next = trGetNextUnitScenarioNameNumber();
-	  for(i=trQuestVarGet("idsStart");<next){
-		  trUnitSelectClear();trUnitSelect(""+i);
-		  trUnitDestroy();
-	  }
-      trLetterBox(false);
-      xsDisableRule("CinPrologue12");
-	  unitTransform("Victory Marker", "Statue of Automaton Base");
-	  xsEnableRule("MissionTutorialBegin");
-   }
+	if ((trTime()-cActivationTime) >= 7){
+		trUIFadeToColor(0,0,0,1000,1000,false);
+		int next = trGetNextUnitScenarioNameNumber();
+		for(i=trQuestVarGet("idsStart");<next){
+			trUnitSelectClear();trUnitSelect(""+i);
+			trUnitDestroy();
+		}
+		trLetterBox(false);
+		xsDisableRule("CinPrologue12");
+		unitTransform("Victory Marker", "Statue of Automaton Base");
+		trQuestVarSet("missionSelection", -1);
+		trQuestVarSet("missionClass", -1);
+		xsEnableRule("MissionBegin");
+	}
 }
