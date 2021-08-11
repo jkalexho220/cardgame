@@ -117,6 +117,7 @@ bool attackUnitAtCursor(int p = 0) {
 				mSetVar(target, "action", ACTION_READY);
 			}
 		}
+		mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
 		xsEnableRule("gameplay_05_attackComplete");
 		return(true);
 	}
@@ -143,13 +144,13 @@ active
 		int targetIndex = trQuestVarGet("lightning"+index);
 		// If Deadly and target isn't a commander
 		if (trQuestVarGet("lightning"+index+"damage") == -1 &&
-			yGetVarByIndex("allUnits", "spell", targetIndex) == SPELL_NONE) {
-			ySetVarByIndex("allUnits", "health", targetIndex, 0);
+			mGetVar(targetIndex, "spell") == SPELL_NONE) {
+			mSetVar(targetIndex, "health", 0);
 			damageUnit(targetIndex, 1);
-			deployAtTile(0, "Lampades Blood", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			deployAtTile(0, "Lampades Blood", 1*mGetVar(targetIndex, "tile"));
 		} else {
 			damageUnit(targetIndex, trQuestVarGet("lightning"+index+"damage"));
-			deployAtTile(0, "Lightning sparks", 1*yGetVarByIndex("allUnits", "tile", targetIndex));
+			deployAtTile(0, "Lightning sparks", 1*mGetVar(targetIndex, "tile"));
 		}
 	}
 }
@@ -182,12 +183,13 @@ inactive
 
 rule gameplay_select_show_keywords
 highFrequency
-active
+inactive
 {
 	yDatabaseNext("allUnits", true);
 	if (trUnitIsSelected()) {
 		displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
 	}
+	
 	for(p=2; >0) {
 		yDatabaseNext("p"+p+"hand", true);
 		if (trUnitIsSelected()) {
@@ -235,6 +237,7 @@ inactive
 			} else {
 				// Check if player selected a card in hand.
 				unit = -1;
+				int cost = 0;
 				int pointer = 0;
 				float closestDistance = 9.0;
 				float currentDistance = 0;
@@ -253,7 +256,14 @@ inactive
 							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
 						}
 					}
-					if (trQuestVarGet("p"+p+"mana") >= mGetVar(unit, "cost")) {
+					cost = mGetVar(unit, "cost");
+					if (mGetVar(unit, "spell") > 0) {
+						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+					}
+					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
+						cost = cost - trQuestVarGet("p"+p+"manaflow");
+					}
+					if (trQuestVarGet("p"+p+"mana") >= cost) {
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
 						if (mGetVar(unit, "spell") == 0) {
@@ -638,6 +648,9 @@ inactive
 					teleportToTile(unit, tile);
 
 					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
+					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
+						trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + xsMin(mGetVar(unit, "cost"), trQuestVarGet("p"+p+"manaflow")));
+					}
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 
 					if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords")) == true) {

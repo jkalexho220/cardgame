@@ -1,4 +1,3 @@
-
 /*
 Fischer-Yates shuffle
 */
@@ -26,9 +25,17 @@ void updateHandPlayable(int p = 0) {
 		zBankNext("p"+p+"handPos", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
+	int cost = 0;
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
-		if (mGetVarByQV("p"+p+"hand", "cost") <= trQuestVarGet("p"+p+"mana")) {
+		cost = mGetVarByQV("p"+p+"hand", "cost");
+		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+		}
+		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
+			cost = cost - trQuestVarGet("p"+p+"manaflow");
+		}
+		if (cost <= trQuestVarGet("p"+p+"mana")) {
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
 			trMutateSelected(kbGetProtoUnitID("Garrison Flag Sky Passage"));
@@ -48,6 +55,18 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 	}
 }
 
+void addCardToDeckByIndex(int p = 0, int card = 0) {
+	int spell = CardToSpell(card);
+	if (spell == 0) {
+		trQuestVarSet("proto", CardToProto(card));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", 0);
+	} else {
+		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
+		yAddToDatabase("p"+p+"deck", "proto");
+		yAddUpdateVar("p"+p+"deck", "spell", spell);
+	}	
+}
 
 /* 
 This function should only be called if there is room in the hand!
@@ -128,7 +147,6 @@ void drawCard(int p = 0) {
 
 	updateHandPlayable(p);
 }
-
 
 rule initializeHand
 highFrequency

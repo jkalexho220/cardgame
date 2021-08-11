@@ -27,5 +27,11 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 			}
 		}
+		case ATTACK_ANIMATE_ORACLE:
+		{
+			trUnitSelectClear();
+			trUnitSelect(""+attacker);
+			trUnitOverrideAnimation(52,0,0,1,-1);
+		}
 	}
 }

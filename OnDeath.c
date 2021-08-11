@@ -1,3 +1,10 @@
+bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
+	int push = modularCounterNext("deathSummonPush");
+	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
+	trQuestVarSet("deathSummon"+push+"player", p);
+	trQuestVarSet("deathSummon"+push+"tile", tile);
+}
+
 bool OnDeath(int event = -1, int unit = 0){
 	int p = mGetVar(unit, "player");
 	bool checkAgain = false;
@@ -10,6 +17,18 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_OPPONENT_DRAW_CARD:
 		{
 			drawCard(3-p);
+		}
+		case DEATH_SPELL_DISCOUNT:
+		{
+			trQuestVarSet("p"+p+"spellDiscount", trQuestVarGet("p"+p+"spellDiscount") - 1);
+		}
+		case DEATH_SPELL_DAMAGE:
+		{
+			trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") - 1);
+		}
+		case DEATH_EGG:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix Egg");
 		}
 		/*
 		case DEATH_BOOM_SMALL:
@@ -72,7 +91,27 @@ void removeDeadUnits() {
 				tileGuard(tile, false);
 			}
 			mSetVarByQV("allUnits", "health", -9999);	
-			removeUnit("allUnits");
+			yRemoveFromDatabase("allUnits");
+		}
+	}
+
+	/* 
+	summon units from deathrattles on a first-come-first-served basis
+	If multiple summons conflict on the same tile, the first one gets it.
+	*/
+	int pop = 0;
+	int unit = 0;
+	while ((trQuestVarGet("deathSummonPush") == trQuestVarGet("deathSummonPop")) == false) {
+		pop = modularCounterNext("deathSummonPop");
+		if (zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("deathSummon"+pop+"tile")) == 0) {
+			unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"), 
+				1*trQuestVarGet("deathSummon"+pop+"player"), 
+				1*trQuestVarGet("deathSummon"+pop+"proto"));
+			if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords"))) {
+				mSetVar(unit, "action", ACTION_READY);
+			} else {
+				mSetVar(unit, "action", ACTION_SLEEPING);
+			}
 		}
 	}
 }

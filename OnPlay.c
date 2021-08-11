@@ -98,6 +98,14 @@ void OnPlay(int unit = 0) {
 				}
 			}
 		}
+		case kbGetProtoUnitID("Priest"):
+		{
+			trQuestVarSet("p"+p+"spellDiscount", 1 + trQuestVarGet("p"+p+"spellDiscount"));
+		}
+		case kbGetProtoUnitID("Oracle Scout"):
+		{
+			trQuestVarSet("p"+p+"spellDamage", 1 + trQuestVarGet("p"+p+"spellDamage"));
+		}
 	}
 	if (done) {
 		removeDeadUnits();

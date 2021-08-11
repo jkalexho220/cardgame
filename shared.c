@@ -612,19 +612,7 @@ runImmediately
 	if(Multiplayer && kbIsPlayerHuman(2) == false){
 		Multiplayer = false; // or kick?
 	}
-	if(Multiplayer){
-		ChatLog(1, "Mode:Multiplayer");
-		ChatLog(2, "Mode:Multiplayer");
-	} else {
-		ChatLog(1, "Mode:Singleplayer");
-		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
-		bool virgin = trGetScenarioUserData(0); 
-		virgin = false; // testing
-		ChatLog(1, "Checking if played before...");
-		if(virgin && trQuestVarGet("chad") == 0){
-			xsEnableRule("CinPrologue00");
-		}
-	}
+	xsEnableRule("data_load_00");
 
 	modularCounterInit("lightningPop", 40);
 	modularCounterInit("lightningPush", 40);
@@ -633,12 +621,29 @@ runImmediately
 	modularCounterInit("spyFind", 40);
 	modularCounterInit("spyFound", 40);
 
+	modularCounterInit("deathSummonPush", 20);
+	modularCounterInit("deathSummonPop", 20);
+
 
 	trModifyProtounit("Gold Mine Dwarven", 1, 55, 4);
 	trModifyProtounit("Gold Mine Dwarven", 2, 55, 4);
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
+	
+	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer", 0, 2, 54);
+	trModifyProtounit("Revealer to Player", 1, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer to Player", 1, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 1, 2, 18);
+	trModifyProtounit("Revealer to Player", 2, 2, 9999999999999999999.0);
+	trModifyProtounit("Revealer to Player", 2, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 2, 2, 18);
+
+	trModifyProtounit("Bolt Strike", 0, 27, -10000);
+	trModifyProtounit("Bolt Strike", 0, 28, -10000);
+	trModifyProtounit("Bolt Strike", 0, 29, -10000);
 
 	// LOS
 	for(p=2; >0) {
@@ -647,7 +652,6 @@ runImmediately
 		trModifyProtounit("Nidhogg", p, 2, -20);
 
 	}
-
 
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);

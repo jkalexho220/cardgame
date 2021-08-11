@@ -47,26 +47,6 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
-	yRemoveUpdateString(db, "ability");
-	yRemoveUpdateVar(db, "cost");
-	yRemoveUpdateVar(db, "pos");
-	yRemoveUpdateVar(db, "health");
-	yRemoveUpdateVar(db, "attack");
-	yRemoveUpdateVar(db, "range");
-	yRemoveUpdateVar(db, "speed");
-	yRemoveUpdateVar(db, "proto");
-	yRemoveUpdateVar(db, "player");
-	yRemoveUpdateVar(db, "ready");
-	yRemoveUpdateVar(db, "keywords");
-	yRemoveUpdateVar(db, "tile");
-	yRemoveUpdateVar(db, "spell");
-	yRemoveUpdateVar(db, "action");
-	yRemoveUpdateVar(db, "onPlay");
-	yRemoveUpdateVar(db, "onAttack");
-	yRemoveUpdateVar(db, "onDeath");
-	yRemoveUpdateVar(db, "stunTime");
-	yRemoveUpdateVar(db, "stunSFX");
-	yRemoveUpdateVar(db, "stunIndex");
 }
 
 /*
@@ -171,7 +151,8 @@ the tiles that are reachable by that unit.
 void highlightReachable(int name = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	int tile = findNearestTile("pos");
-	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")));
+	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", 
+		(HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")) || HasKeyword(FLYING, 1*mGetVar(name, "keywords"))));
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
 		highlightTile(tile, 3600);
@@ -209,7 +190,11 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 		yDatabaseNext("allUnits");
 		if (mGetVarByQV("allUnits", "player") == p) {
 			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
-				yAddToDatabase(db, "allUnits");
+				if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+					yAddToDatabase(db, "allUnits");
+				} else if (mGetVar(name, "range") > 1) {
+					yAddToDatabase(db, "allUnits");
+				}
 			}
 		}
 	}
@@ -247,7 +232,7 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 		zSetVar("tiles", "searched", 0);
 	}
 	int unit = index;
-	zSetVarByIndex("tiles", "searched", 1*mGetVar(unit, "tile"), 1);
+	zSetVarByIndex("tiles", "searched", 1*mGetVar(index, "tile"), 1);
 	int tile = 0;
 	int pop = -1;
 	int neighbor = 0;
@@ -261,13 +246,15 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 
 		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 			neighbor = 1*zGetVarByIndex("tiles", "neighbor"+x, tile);
-			zSetVarByIndex("tiles", "searched", neighbor, 1);
-			unit = zGetVarByIndex("tiles", "occupant", neighbor);
-			if (unit > 0) {
-				if (mGetVar(unit, "player") == 3 - p) {
-					push = modularCounterNext("lightningPush");
-					trQuestVarSet("lightning"+push, unit);
-					trQuestVarSet("lightning"+push+"damage", damage);
+			if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
+				zSetVarByIndex("tiles", "searched", neighbor, 1);
+				unit = zGetVarByIndex("tiles", "occupant", neighbor);
+				if (unit > 0) {
+					if (mGetVar(unit, "player") == p) {
+						push = modularCounterNext("lightningPush");
+						trQuestVarSet("lightning"+push, unit);
+						trQuestVarSet("lightning"+push+"damage", damage);
+					}
 				}
 			}
 		}
