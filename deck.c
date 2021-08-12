@@ -74,7 +74,7 @@ This function should only be called if there is room in the hand!
 void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
 	trQuestVarSet("next", CardInstantiate(p, proto, spell));
 	trUnitSelectClear();
-	trUnitSelect(""+1*trQuestVarGet("next"), true);
+	trUnitSelect(""+1*trQuestVarGet("next"), true); 
 	
 	if (spell > SPELL_NONE) {
 		proto = kbGetProtoUnitID("Statue of Lightning");
@@ -98,6 +98,7 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("next"), true);
+			trMutateSelected(kbGetProtoUnitID("Dwarf"));
 			trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"handPos"));
 
 			trUnitChangeProtoUnit(kbGetProtoUnitName(proto));

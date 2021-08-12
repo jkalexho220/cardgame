@@ -161,9 +161,37 @@ void castEnd() {
 		}
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
-		removeUnit("p"+p+"hand");
+		yRemoveFromDatabase("p"+p+"hand");
+		yRemoveUpdateVar("p"+p+"hand", "pos");
 
 		updateHandPlayable(p);
+
+		/*
+		Effects that occur whenever a spell is cast
+		*/
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			switch(1*mGetVarByQV("allUnits", "proto"))
+			{
+				case kbGetProtoUnitID("Swordsman Hero"):
+				{
+					mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+					deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+				}
+				case kbGetProtoUnitID("Hero Greek Bellerophon"):
+				{
+					if (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING) {
+						mSetVarByQV("allUnits", "action", ACTION_READY);
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+				case kbGetProtoUnitID("Pharaoh of Osiris"):
+				{
+					mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+					trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
+				}
+			}
+		}
 	}
 	trQuestVarSet("castDone", CASTING_NOTHING);
 }
@@ -772,6 +800,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget2", "tile")), true);
 				trDamageUnitPercent(100);
+				trQuestVarSet("p"+p+"drawCards", 1);
 			}
 			case SPELL_ELECTROSURGE:
 			{
@@ -863,6 +892,7 @@ inactive
 				}
 			}
 		}
+		updateHandPlayable(p);
 		xsDisableRule("spell_party_up_activate");
 	}
 }
@@ -891,6 +921,7 @@ inactive
 				break;
 			}
 		}
+		updateHandPlayable(p);
 		xsDisableRule("spell_class_time_activate");
 	}
 }

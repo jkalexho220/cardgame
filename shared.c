@@ -36,6 +36,10 @@ int zModulo(int mod = 10, float val = 0) {
 	return(v - xsFloor(val / m) * m);
 }
 
+int iModulo(int mod = 10, int val = 0) {
+	return(val - val / mod * mod);
+}
+
 float fModulo(float mod = 0, float val = 0) {
 	int c = 0;
 	if (val > 0) {
@@ -600,6 +604,7 @@ runImmediately
 {
 	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
 	trSetUnitIdleProcessing(false); 
+	trUIFadeToColor(0,0,0,0,0,true);
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos

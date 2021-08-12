@@ -4,7 +4,7 @@ Slots 0-5 = progress and metadata for each class and cards 7-14
 1 bit = class is first or second (0 = first class)
 1 bit = selected commander
 3 bits for progress on storyline
-3 x 7 bits = collectible commons 7-13 in collection
+2 x 7 bits = collectible commons 7-13 in collection
 1 bit = collectible legendary in collection
 
 
@@ -15,6 +15,21 @@ Slots 8-9 = cards from class 2 in current deck
 Slots 10-15 = collectible class cards in collection
 */
 
+/*
+If you want a full collection for a particular class:
+The progress + metadata slot for that class should have the number: 2097087
++ 1 if class is in the deck
++ 2 if the class is second
++ 4 if the selected commander is second
++ 8 * storyline progress
+
+The collectible class cards number should be: 536870911
+*/
+
+int deckc1d0 = 0;
+int deckc1d1 = 0;
+int deckc2d0 = 0;
+int deckc2d1 = 0;
 
 /*
 This function assumes the following:
@@ -32,7 +47,7 @@ void dataSave() {
 		data = data + power * getCardCountDeck(card);
 		power = power * 4;
 	}
-	trQuestVarSet("data6", data);
+	trSetCurrentScenarioUserData(6, data);
 	data = 0;
 	power = 1;
 	for(x=15; <30) {
@@ -40,11 +55,11 @@ void dataSave() {
 		data = data + power * getCardCountDeck(card);
 		power = power * 4;
 	}
-	trQuestVarSet("data7", data);
+	trSetCurrentScenarioUserData(7, data);
 
 	if (trQuestVarGet("class1") == trQuestVarGet("class2")) {
-		trQuestVarSet("data8", 0);
-		trQuestVarSet("data9", 0);
+		trSetCurrentScenarioUserData(8, 0);
+		trSetCurrentScenarioUserData(9, 0);
 	} else {
 		c = trQuestVarGet("class2");
 		data = 0;
@@ -54,7 +69,7 @@ void dataSave() {
 			data = data + power * getCardCountDeck(card);
 			power = power * 4;
 		}
-		trQuestVarSet("data8", data);
+		trSetCurrentScenarioUserData(8, data);
 		data = 0;
 		power = 1;
 		for(x=15; <30) {
@@ -62,7 +77,7 @@ void dataSave() {
 			data = data + power * getCardCountDeck(card);
 			power = power * 4;
 		}
-		trQuestVarSet("data9", data);
+		trSetCurrentScenarioUserData(9, data);
 	}
 	
 
@@ -85,7 +100,7 @@ void dataSave() {
 			data = data + power * trQuestVarGet("card_"+card+"_count");
 			power = power * 4;
 		}
-		trQuestVarSet("data"+c, data);
+		trSetCurrentScenarioUserData(c, data);
 
 		data = 0;
 		power = 1;
@@ -94,11 +109,7 @@ void dataSave() {
 			data = data + power * trQuestVarGet("card_"+card+"_count");
 			power = power * 4;
 		}
-		trQuestVarSet("data"+(c+10), data);
-	}
-
-	for(x=0; <16) {
-		trSetCurrentScenarioUserData(x, 1*trQuestVarGet("data"+x));
+		trSetCurrentScenarioUserData(c+10, data);
 	}
 }
 
@@ -110,24 +121,20 @@ rule data_load_00
 highFrequency
 inactive
 {
-	trQuestVarSet("virgin", 0);
-	for(x=0; < 16) {
-		trQuestVarSet("data"+x, trGetScenarioUserData(x, "!HeavenGames.scx"));
-		trQuestVarSet("virgin", trQuestVarGet("virgin") + trQuestVarGet("data"+x));
-	}
-
-	int bit = 0;
 	int data = 0;
+	int bit = 0;
 	int card = 0;
+
+	
 	for(x=0; < 6) {
-		data = 1*trQuestVarGet("data"+x);
-		bit = zModulo(2, data);
+		data = trGetScenarioUserData(x, "!HeavenGames.scx");
+		bit = iModulo(2, data);
 		/*
 		Check if class is in deck
 		*/
 		if (bit == 1) {
 			data = data / 2;
-			bit = zModulo(2, data);
+			bit = iModulo(2, data);
 			/*
 			Check if class is first or second
 			*/
@@ -136,7 +143,7 @@ inactive
 			} else {
 				trQuestVarSet("class1", x);
 				data = data / 2;
-				bit = zModulo(2, data);
+				bit = iModulo(2, data);
 				/*
 				Calculate commander
 				*/
@@ -144,9 +151,9 @@ inactive
 			}
 		}
 
-		data = 1*trQuestVarGet("data"+x);
+		data = trGetScenarioUserData(x, "!HeavenGames.scx");
 		data = data / 8;
-		trQuestVarSet("class"+x+"progress", zModulo(8, data));
+		trQuestVarSet("class"+x+"progress", iModulo(8, data));
 	}
 
 	if (Multiplayer) {
@@ -170,6 +177,8 @@ inactive
 		trBlockAllSounds(true);
 		xsEnableRule("data_load_01_ready");
 	} else {
+		trForbidProtounit(1, "Swordsman Hero");
+		trForbidProtounit(2, "Swordsman Hero");
 		ChatLog(1, "Mode:Singleplayer");
 		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
 		if(trGetScenarioUserData(0) == 0){
@@ -187,18 +196,18 @@ inactive
 				trQuestVarSet("card_"+card+"_count", 3);
 			}
 			// Cards 7-14
-			data = 1*trQuestVarGet("data"+c);
+			data = trGetScenarioUserData(c, "!HeavenGames.scx");
 			data = data / 64; // skip first 6 bits
 			for(x=7; <15) {
 				card = x + 30 * c;
-				trQuestVarSet("card_"+card+"_count", zModulo(4, data));
+				trQuestVarSet("card_"+card+"_count", iModulo(4, data));
 				data = data / 4;
 			}
 			// Cards 15-29
-			data = 1*trQuestVarGet("data"+(c+10));
+			data = trGetScenarioUserData(c + 10, "!HeavenGames.scx");
 			for(x=15; <30) {
 				card = x + 30 * c;
-				trQuestVarSet("card_"+card+"_count", zModulo(4, data));
+				trQuestVarSet("card_"+card+"_count", iModulo(4, data));
 				data = data / 4;
 			}
 		}
@@ -206,19 +215,19 @@ inactive
 		Load player's deck
 		*/
 		c = 30 * trQuestVarGet("class1");
-		data = 1*trQuestVarGet("data6");
+		data = trGetScenarioUserData(6, "!HeavenGames.scx");
 		for(x=0;<15) {
 			card = c + x;
-			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			trQuestVarSet("card_"+card+"_countInDeck", iModulo(4, data));
 			data = data / 4;
 			if (data == 0) {
 				break;
 			}
 		}
-		data = 1*trQuestVarGet("data7");
+		data = trGetScenarioUserData(7, "!HeavenGames.scx");
 		for(x=15;<30) {
 			card = c + x;
-			trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+			trQuestVarSet("card_"+card+"_countInDeck", iModulo(4, data));
 			data = data / 4;
 			if (data == 0) {
 				break;
@@ -226,19 +235,19 @@ inactive
 		}
 		if ((trQuestVarGet("class1") == trQuestVarGet("class2")) == false) {
 			c = 30 * trQuestVarGet("class2");
-			data = 1*trQuestVarGet("data8");
+			data = trGetScenarioUserData(8, "!HeavenGames.scx");
 			for(x=0;<15) {
 				card = c + x;
-				trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+				trQuestVarSet("card_"+card+"_countInDeck", iModulo(4, data));
 				data = data / 4;
 				if (data == 0) {
 					break;
 				}
 			}
-			data = 1*trQuestVarGet("data9");
+			data = trGetScenarioUserData(9, "!HeavenGames.scx");
 			for(x=15;<30) {
 				card = c + x;
-				trQuestVarSet("card_"+card+"_countInDeck", zModulo(4, data));
+				trQuestVarSet("card_"+card+"_countInDeck", iModulo(4, data));
 				data = data / 4;
 				if (data == 0) {
 					break;
@@ -310,7 +319,7 @@ inactive
 		int c = 0;
 		for(p=2; >0) {
 			c = trQuestVarGet("p"+p+"classes");
-			trQuestVarSet("p"+p+"class2", zModulo(6, c));
+			trQuestVarSet("p"+p+"class2", iModulo(6, c));
 			c = c / 6;
 			trQuestVarSet("p"+p+"class1", c);
 			trPlayerGrantResources(p, "food", -1000);
@@ -388,10 +397,11 @@ inactive
 		/*
 		Deck data
 		*/
-		trQuestVarSet("deckDataC1D0", trQuestVarGet("data6"));
-		trQuestVarSet("deckDataC1D1", trQuestVarGet("data7"));
-		trQuestVarSet("deckDataC2D0", trQuestVarGet("data8"));
-		trQuestVarSet("deckDataC2D1", trQuestVarGet("data9"));
+		deckc1d0 = trGetScenarioUserData(6, "!HeavenGames.scx");
+		deckc1d1 = trGetScenarioUserData(7, "!HeavenGames.scx");
+		deckc2d0 = trGetScenarioUserData(8, "!HeavenGames.scx");
+		deckc2d1 = trGetScenarioUserData(9, "!HeavenGames.scx");
+		
 		trQuestVarSet("loadProgress", 0);
 		trQuestVarSet("classProgress", 1);
 		trQuestVarSet("loadNext", 1);
@@ -415,12 +425,35 @@ inactive
 		if (trQuestVarGet("loadProgress") >= 5) {
 			d = 1;
 		}
-		int data = trQuestVarGet("deckDataC"+c+"D"+d);
-		int x = zModulo(64, data);
+		int data = 0;
+		switch(10*c + d)
+		{
+			case 10:
+			{
+				data = deckc1d0;
+				deckc1d0 = deckc1d0 / 64;
+			}
+			case 11:
+			{
+				data = deckc1d1;
+				deckc1d1 = deckc1d1 / 64;
+			}
+			case 20:
+			{
+				data = deckc2d0;
+				deckc2d0 = deckc2d0 / 64;
+			}
+			case 21:
+			{
+				data = deckc2d1;
+				deckc2d1 = deckc2d1 / 64;
+			}
+		}
+
+		int x = iModulo(64, data);
 		if (p == 2) {
 			x = x + 64;
 		}
-		trChatSend(0, "deckDataC"+c+"D"+d+" value: " + x);
 		trUnitSelectClear();
 		trUnitSelectByID(x);
 		for(i=64; >0) {
@@ -432,7 +465,6 @@ inactive
 			}
 		}
 		uiTransformSelectedUnit("Swordsman Hero");
-		trQuestVarSet("deckDataC"+c+"D"+d, data / 64);
 	}
 }
 
@@ -440,7 +472,7 @@ void loadCardsToDeck(int p = 1, int v = 0) {
 	int class = trQuestVarGet("p"+p+"class"+1*trQuestVarGet("classProgress"));
 	int offset = 30 * class + 3 * trQuestVarGet("loadProgress");
 	for(y = 0; <3) {
-		int count = zModulo(4, v);
+		int count = iModulo(4, v);
 		for(x=count; >0) {
 			addCardToDeckByIndex(p,offset+y);
 		}
@@ -502,6 +534,8 @@ highFrequency
 inactive
 {
 	unitTransform("Swordsman", "Cinematic Block");
+	trForbidProtounit(1, "Swordsman Hero");
+	trForbidProtounit(2, "Swordsman Hero");
 	trLetterBox(false);
 	trUIFadeToColor(0,0,0,1000,0,false);
 	trUnblockAllSounds();

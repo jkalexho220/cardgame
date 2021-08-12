@@ -14,6 +14,7 @@ runImmediately
 			addCardToDeck(p, "Huskarl");
 			addCardToDeck(p, "Peltast");
 			addCardToDeck(p, "Oracle Scout");
+			addCardToDeck(p, "Phoenix From Egg");
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
 			addCardToDeck(p, "", SPELL_CLASS_TIME);
@@ -301,8 +302,13 @@ inactive
 				}
 				mSetVarByQV("allUnits", "victoryAmbush", 0);
 			}
-			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords"))) {
+			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
+			}
+			if ((trQuestVarGet("p"+p+"commander") == trQuestVarGet("allUnits")) && 
+				(1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Pharaoh of Osiris"))) {
+				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - trQuestVarGet("p"+p+"yeebbonus"));
+				trQuestVarSet("p"+p+"yeebbonus", 0);
 			}
 		}
 

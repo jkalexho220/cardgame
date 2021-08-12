@@ -245,14 +245,14 @@ void CleanBoard(){
 	yDatabasePointerDefault("p1hand");
 	for(x=yGetDatabaseCount("p1hand"); >0) {
 		yDatabaseNext("p1hand", true);
-		trUnitDestroy();
+		trDamageUnitPercent(100);
 	}
 	yClearDatabase("p1hand");
 	updateHandPlayable(1);
 	yDatabasePointerDefault("p2hand");
 	for(x=yGetDatabaseCount("p2hand"); >0) {
 		yDatabaseNext("p2hand", true);
-		trUnitDestroy();
+		trDamageUnitPercent(100);
 	}
 	yClearDatabase("p2hand");
 	updateHandPlayable(2);
