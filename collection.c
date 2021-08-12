@@ -66,7 +66,7 @@ bool ValidateCollection(){
 	}
 	
 	if(trQuestVarGet("classesInDeck") > 2){
-		ChatLog(1, "ERROR! More than 2 clases in deck!");
+		ChatLog(1, "ERROR! More than 2 classes in deck!");
 		valid = false;
 	}
 	
@@ -513,7 +513,9 @@ inactive
 	trQuestVarSet("activePlayer", 1);
 	trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
 
-	if(ValidateCollection()){
+	ValidateCollection();
+	if(true){
+		trUIFadeToColor(0,0,0,1000,0,false);
 		xsEnableRule("CollectionSpace");
 		trCounterAddTime("tooltipSpace", -1, -9999999, "(Press SPACE to save deck and QUIT)");
 		trQuestVarSet("canPressSpace", 1);
@@ -589,7 +591,7 @@ inactive
 							name = trStringQuestVarGet("card_"+kbGetUnitBaseTypeID(id)+"_Name");
 						} else {
 							card = SpellToCard(1*yGetVar("allUnits", "spell"));
-							name = trStringQuestVarGet("card_"+1*yGetVar("allUnits", "spell")+"_Name");
+							name = trStringQuestVarGet("spell_"+1*yGetVar("allUnits", "spell")+"_Name");
 						}
 
 						if(trVectorQuestVarGetZ("temp") < 44){
@@ -675,7 +677,7 @@ inactive
 				xsDisableRule("CollectionClick");
 				xsDisableRule("CollectionSpace");
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
-				unitTransform("Victory Marker", "Statue of Automaton Base");
+				
 				trCounterAbort("tooltipEnter");
 				dataSave();
 				for(x=yGetDatabaseCount("allUnits"); >0) {

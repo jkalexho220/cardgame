@@ -47,6 +47,7 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
+	yRemoveUpdateVar("pos");
 }
 
 /*
