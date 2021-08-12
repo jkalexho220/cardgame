@@ -241,7 +241,7 @@ inactive
 					yDatabaseNext("allUnits");
 					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
-					} if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);

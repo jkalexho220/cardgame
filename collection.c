@@ -505,7 +505,6 @@ inactive
 	xsEnableRule("CollectionClick");
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
-	trChangeTerrainHeight(0, 0, 60, 60, 0, false);
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 
 	yClearDatabase("allUnits");	
@@ -515,6 +514,7 @@ inactive
 	collectionReward = "";
 	trQuestVarSet("missionSelection", -1);
 	trQuestVarSet("missionClass", -1);
+	trQuestVarSet("canPressEnter", -1);
 	ValidateCollection();
 	if(true){
 		trUIFadeToColor(0,0,0,1000,0,false);

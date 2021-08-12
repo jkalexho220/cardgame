@@ -338,6 +338,8 @@ inactive
 	bool defeat = PlayerDefeated(1);
 	bool victory = PlayerDefeated(2);
 	if (defeat || victory){
+		trPlayerKillAllGodPowers(1);
+		trPlayerKillAllGodPowers(2);
 		trUIFadeToColor(0,0,0,1000,1000,true);
 		xsDisableRule("MissionEnd");		
 		if(defeat && victory){
@@ -375,6 +377,7 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 3){
+		unitTransform("Healing SFX", "Cinematic Block");
 		CleanBoard();
 		trFadeOutAllSounds(0.0);
 		trUIFadeToColor(0,0,0,1000,1000,false);
