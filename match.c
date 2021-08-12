@@ -340,7 +340,8 @@ inactive
 					type = mGetVarByQV("p"+p+"hand", "spell");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
-				removeUnit("p"+p+"hand");
+				yRemoveFromDatabase("p"+p+"hand");
+				yRemoveUpdateVar("p"+p+"hand", "pos");
 			}
 		}
 		if (fleeting && trCurrentPlayer() == p) {

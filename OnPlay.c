@@ -43,7 +43,7 @@ void OnPlay(int unit = 0) {
 			}
 			trSoundPlayFN("sphinxspecialattack.wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Archer Atlantean Hero"):
+		case kbGetProtoUnitID("Hero Greek Hippolyta"):
 		{
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
