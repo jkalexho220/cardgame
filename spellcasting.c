@@ -239,7 +239,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);

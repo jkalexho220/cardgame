@@ -177,17 +177,16 @@ void CollectionCommander(int commander = 0, int x = 0, int z = 0){
 }
 
 void CollectionCard(int index = 0, int x = 0, int z = 0) {
-	int countCollection = getCardCountCollection(index);
 	int countDeck = getCardCountDeck(index);
+	int countCollection = getCardCountCollection(index);
 	for(i=0;<3){
-		if(countCollection > 0){
-			CollectionDeploy(index, x, z);
-			countCollection = countCollection - 1;
-		}
 		if(countDeck > 0){
 			CollectionDeploy(index, x, z + 44);
 			countDeck = countDeck - 1;
-		}
+		} else if(countCollection > 0){
+			CollectionDeploy(index, x, z);
+			countCollection = countCollection - 1;
+		} 
 		x = x + 2;
 	}
 }
@@ -512,7 +511,10 @@ inactive
 	yClearDatabase("allUnits");	
 	trQuestVarSet("activePlayer", 1);
 	trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
-
+	collectionMission = "";
+	collectionReward = "";
+	trQuestVarSet("missionSelection", -1);
+	trQuestVarSet("missionClass", -1);
 	ValidateCollection();
 	if(true){
 		trUIFadeToColor(0,0,0,1000,0,false);
@@ -677,8 +679,7 @@ inactive
 				xsDisableRule("CollectionClick");
 				xsDisableRule("CollectionSpace");
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
-				
-				trCounterAbort("tooltipEnter");
+				trCounterAbort("tooltipSpace");
 				dataSave();
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");

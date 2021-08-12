@@ -339,7 +339,6 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 7){
-		trUIFadeToColor(0,0,0,1000,1000,false);
 		int next = trGetNextUnitScenarioNameNumber();
 		for(i=trQuestVarGet("idsStart");<next){
 			trUnitSelectClear();trUnitSelect(""+i);

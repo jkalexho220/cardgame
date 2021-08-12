@@ -166,6 +166,8 @@ inactive
 					trQuestVarSet("botActiveIndex", -1);
 					trQuestVarSet("botActiveKeywords", 0);
 					trQuestVarSet("botActiveSpeed", 0);
+					trQuestVarSet("botActiveAttack", 0);
+					trQuestVarSet("botActiveHealth", 0);
 					trQuestVarSet("botActiveRange", 0);
 					trQuestVarSet("botActiveFury", 0);
 					int maxUnitCost = -1;
@@ -179,6 +181,8 @@ inactive
 								trQuestVarSet("botActiveIndex", yGetPointer("allUnits"));
 								trQuestVarSet("botActiveKeywords", 1*mGetVarByQV("allUnits", "keywords"));
 								trQuestVarSet("botActiveSpeed", 1*mGetVarByQV("allUnits", "speed"));
+								trQuestVarSet("botActiveAttack", 1*mGetVarByQV("allUnits", "attack"));
+								trQuestVarSet("botActiveHealth", 1*mGetVarByQV("allUnits", "health"));
 								trQuestVarSet("botActiveRange", 1*mGetVarByQV("allUnits", "range"));
 								if(HasKeyword(FURIOUS, 1*trQuestVarGet("botActiveKeywords"))){
 									trQuestVarSet("botActiveFury", 1);
@@ -239,12 +243,18 @@ inactive
 						int maxTargetCost = -1;
 						float dist = xsPow(trQuestVarGet("botActiveRange") * 6 + 1, 2);
 						trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("botActiveUnit"), true));
-
 						for(x=yGetDatabaseCount("allUnits"); >0) {
 							yDatabaseNext("allUnits");
 							if (mGetVarByQV("allUnits", "player") == 1) {
 								if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
 									int currentTargetCost = mGetVarByQV("allUnits", "cost");
+									if(trQuestVarGet("botActiveAttack") >= mGetVarByQV("allUnits", "health")){
+										currentTargetCost = currentTargetCost + 9000;
+									}
+									bool dontSuicide = trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander");
+									if(dontSuicide && trQuestVarGet("botActiveHealth") <= mGetVarByQV("allUnits", "attack")){
+										currentTargetCost = -1;
+									}
 									if(currentTargetCost > maxTargetCost){
 										maxTargetCost = currentTargetCost;
 										trVectorSetUnitPos("botClickPos", "allUnits");

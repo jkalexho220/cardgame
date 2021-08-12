@@ -73,23 +73,23 @@ const int DEATH_EVENT_COUNT = 6;
 /*
 Keyword bit positions. Use these to index into keywords by bit position
 */
-const int CHARGE = 0;			// Action is ready when summoned
-const int GUARD = 1;			// If an adjacent ally is attacked, swap spaces with it before combat occurs.
-const int AIRDROP = 2;			// Doesn't have to be summoned next to the commander.
-const int FURIOUS = 3;			// Two attacks each turn.
-const int LIGHTNING = 4;		// Attack will chain through connected enemies.
-const int REGENERATE = 5;		// Restores to full health at the start of your turn.
-const int DEADLY = 6;			// I kill any minion that I damage.
-const int ETHEREAL = 7;			// Can pass through units and impassable terrain.
-const int ARMORED = 8;			// Unit regenerates to full health after combat
-const int WARD = 9;				// Unit cannot be targeted by spells or play effects
-const int BEACON = 10;			// Allies can be summoned next to this unit.
-const int AMBUSH = 11;			// When initiating combat, unit attacks first.
-const int FLEETING = 12; 		// The card is discarded from hand at the end of the turn.
-const int HEALER = 13;			// Can't attack or counter-attack. Instead, unit can heal allies within range.
-const int DECAY = 14;			// Takes 1 damage at the end of your turn.
-const int FLYING = 15;			// Can move through units and difficult terrain. Other units can move through it. Can only be attacked by enemies with Range >1
-const int OVERFLOW = 16;		// Cost is reduced by your Manaflow.
+const int CHARGE = 0;
+const int GUARD = 1;
+const int AIRDROP = 2;
+const int FURIOUS = 3;
+const int LIGHTNING = 4;
+const int REGENERATE = 5;
+const int DEADLY = 6;
+const int ETHEREAL = 7;
+const int ARMORED = 8;
+const int WARD = 9;
+const int BEACON = 10;
+const int AMBUSH = 11;
+const int FLEETING = 12;
+const int HEALER = 13;
+const int DECAY = 14;
+const int FLYING = 15;
+const int OVERFLOW = 16;
 
 const int NUM_KEYWORDS = 17;
 
@@ -115,6 +115,30 @@ string GetKeywordName(int bitPosition=0){
 		case OVERFLOW: return("Overflow");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
+	return ("");
+}
+
+string GetKeywordDescription(int bitPosition=0){
+	switch(bitPosition){
+		case CHARGE: return ("Ready to act when summoned.");
+		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
+		case AIRDROP: return ("Doesn't have to be summoned next to Beacon.");
+		case FURIOUS: return ("Two attacks each turn.");
+		case LIGHTNING: return ("Attack will chain through connected enemies.");
+		case REGENERATE: return ("Restores to full health at the start of your turn.");
+		case DEADLY: return ("I kill any minion that I damage.");
+		case ETHEREAL: return ("Can pass through units and impassable terrain.");
+		case ARMORED: return ("Unit regenerates to full health after combat.");
+		case WARD: return ("Unit cannot be targeted by spells or play effects.");
+		case BEACON: return ("Allies can be summoned next to this unit.");
+		case AMBUSH: return ("When initiating combat, unit attacks first.");
+		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
+		case HEALER: return("Can't attack or counter-attack. Instead, unit can heal allies within range.");
+		case DECAY: return("Takes 1 damage at the end of your turn.");
+		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
+		case OVERFLOW: return("Cost is reduced by your Manaflow.");
+	}
+	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
 }
 
@@ -147,6 +171,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	}
 	bool multiple = false;
 	if(keywords>0){
+		trChatSend(0, "======== Keywords ========");
 		int current = xsPow(2, NUM_KEYWORDS - 1);
 		for(k=NUM_KEYWORDS - 1; >=0){
 			if (keywords >= current) {
@@ -156,6 +181,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 				multiple = true;
 				dialog = dialog + GetKeywordName(k);
 				keywords = keywords - current;
+				trChatSend(0, GetKeywordName(k) + ": " + GetKeywordDescription(k));
 			}
 			current = current / 2;
 		}
