@@ -665,7 +665,7 @@ inactive
 			case SPELL_PARTY_UP:
 			{
 				trSoundPlayFN("barracks.wav","1",-1,"","");
-				xsEnableRule("spell_party_up_active");
+				xsEnableRule("spell_party_up_activate");
 			}
 			case SPELL_TEAMWORK:
 			{
