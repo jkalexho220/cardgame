@@ -247,6 +247,8 @@ void CleanBoard(){
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
+		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("allUnits", "tile"), 0);
 	}
 	yClearDatabase("allUnits");
 	yDatabasePointerDefault("p1hand");
