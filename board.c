@@ -352,6 +352,7 @@ inactive
 
 	for(x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
+		zSetVar("tiles", "terrain", TILE_EMPTY);
 		trUnitSelectClear();
 		for(y=0; < zGetVar("tiles", "borderCount")) {
 			trUnitSelectByID(1*zGetVar("tiles", "border"+y));
