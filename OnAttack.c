@@ -27,11 +27,17 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 			}
 		}
-		case ATTACK_ANIMATE_ORACLE:
+		case ATTACK_DISCOUNT:
 		{
 			trUnitSelectClear();
 			trUnitSelect(""+attacker);
 			trUnitOverrideAnimation(52,0,0,1,-1);
+			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+					mSetVarByQV("p"+p+"hand", "cost", xsMax(0, mGetVarByQV("p"+p+"hand", "cost") - 1));
+				}
+			}
 		}
 	}
 }
