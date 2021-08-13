@@ -38,6 +38,7 @@ This function assumes the following:
 - there are only two classes in the "deck" database
 */
 void dataSave() {
+	trQuestVarCopy("p1commanderType", "commander");
 	int card = 0;
 	int c = trQuestVarGet("class1");
 	int data = 0;
