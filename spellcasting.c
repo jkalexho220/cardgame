@@ -171,24 +171,26 @@ void castEnd() {
 		*/
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
-			switch(1*mGetVarByQV("allUnits", "proto"))
-			{
-				case kbGetProtoUnitID("Swordsman Hero"):
+			if (mGetVarByQV("allUnits", "player") == p) {
+				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
-					mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
-					deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-				}
-				case kbGetProtoUnitID("Hero Greek Bellerophon"):
-				{
-					if (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING) {
-						mSetVarByQV("allUnits", "action", ACTION_READY);
+					case kbGetProtoUnitID("Swordsman Hero"):
+					{
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
-				}
-				case kbGetProtoUnitID("Pharaoh of Osiris"):
-				{
-					mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
-					trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
+					case kbGetProtoUnitID("Hero Greek Bellerophon"):
+					{
+						if (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING) {
+							mSetVarByQV("allUnits", "action", ACTION_READY);
+							deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+					case kbGetProtoUnitID("Pharaoh of Osiris"):
+					{
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
+					}
 				}
 			}
 		}
@@ -663,7 +665,7 @@ inactive
 			case SPELL_PARTY_UP:
 			{
 				trSoundPlayFN("barracks.wav","1",-1,"","");
-				xsEnableRule("spell_party_up_active");
+				xsEnableRule("spell_party_up_activate");
 			}
 			case SPELL_TEAMWORK:
 			{
