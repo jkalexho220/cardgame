@@ -54,8 +54,9 @@ const int ATTACK_GET_WINDSONG = 2;
 const int ATTACK_BLOCK_DEATH = 3;
 const int ATTACK_SING = 4;
 const int ATTACK_ANIMATE_ORACLE = 5;
+const int ATTACK_DISCOUNT = 6;
 
-const int ATTACK_EVENT_COUNT = 6;
+const int ATTACK_EVENT_COUNT = 7;
 
 
 /*
@@ -469,7 +470,7 @@ runImmediately
 	ARCANE
 	*/
 	// Created cards
-	CardSetup("Oracle Hero",			0, "Nanodude", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Oracle Hero",			0, "Nanodude", 			1, 20, 2, 2, Keyword(BEACON), true);
 	CardSetup("Minotaur",				0, "nottud", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS), true);
 	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1, 0, true); // stuns its targets.
@@ -547,7 +548,7 @@ runImmediately
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
-	CardEvents("Oracle Hero", 0, 0, 									"Loading ability...");
+	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
 	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");

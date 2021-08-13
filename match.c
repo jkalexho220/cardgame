@@ -39,9 +39,10 @@ highFrequency
 inactive
 {
 	trTechGodPower(0, "spy", 2);
+	int commander = 0;
 	for(p=2; >0) {
-		trQuestVarSet("p"+p+"commanderSecondary", -1);
-		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, kbGetProtoUnitID("Hero Greek Jason")));
+		commander = CommanderToProtounit(1*trQuestVarGet("p"+p+"commanderType"));
+		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, commander));
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
 
 		trUnitSelectClear();
