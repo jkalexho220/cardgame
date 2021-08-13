@@ -48,7 +48,6 @@ rule CinPrologue00
 highFrequency
 inactive
 {
-	trChangeTerrainHeight(0, 0, 60, 60, 0, false);
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 	trPaintTerrain(30, 30, 60, 60, 0, 9, false); //GaiaCreepASnow
     trPaintTerrain(0, 30, 30, 60, 0, 5, false); //CliffGreekB
@@ -339,7 +338,6 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 7){
-		trUIFadeToColor(0,0,0,1000,1000,false);
 		int next = trGetNextUnitScenarioNameNumber();
 		for(i=trQuestVarGet("idsStart");<next){
 			trUnitSelectClear();trUnitSelect(""+i);

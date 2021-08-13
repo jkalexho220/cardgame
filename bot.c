@@ -61,6 +61,7 @@ inactive
 			case BOT_PHASE_CARD_CHOOSE:
 			{
 				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {
+					trQuestVarSet("botSpellType", -1);		
 					trQuestVarSet("botActiveKeywords", 0);
 					int maxCardCost = -1;
 					int spell = 0;
@@ -85,6 +86,7 @@ inactive
 						// Bot Click Left	
 						trQuestVarSet("botClick", LEFT_CLICK);
 						if (spell > 0) {
+							trQuestVarSet("botSpellType", trQuestVarGet("spell_" + spell + "_type"));						
 							trQuestVarSet("botPhase", BOT_PHASE_SPELL_PLAY);
 						} else {
 							trQuestVarSet("botPhase", BOT_PHASE_CARD_PLAY);
@@ -107,6 +109,23 @@ inactive
 					trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);
 				} else if (trQuestVarGet("castPop") > trQuestVarGet("botSpellPop")) {
 					trQuestVarSet("botSpellPop", trQuestVarGet("castPop"));
+					if(1*trQuestVarGet("botSpellType") == SPELL_TYPE_OFFENSIVE){
+						for(x=yGetDatabaseCount("castTargets"); >0) {
+							yDatabaseNext("castTargets", true);
+							if(trUnitIsOwnedBy(2)){
+								yRemoveFromDatabase("castTargets");
+							}
+						}
+						yDatabasePointerDefault("castTargets");
+						// This is pretty bad lol
+						for(x=yGetDatabaseCount("castTiles"); >0) {
+							yDatabaseNext("castTiles");
+							if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") != 1){
+								yRemoveFromDatabase("castTiles");
+							}
+						}
+						yDatabasePointerDefault("castTiles");
+					}
 					if (yGetDatabaseCount("castTargets") > 0) {
 						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTargets"), true);
 						for(x=trQuestVarGet("botRandom"); >0) {
@@ -166,6 +185,8 @@ inactive
 					trQuestVarSet("botActiveIndex", -1);
 					trQuestVarSet("botActiveKeywords", 0);
 					trQuestVarSet("botActiveSpeed", 0);
+					trQuestVarSet("botActiveAttack", 0);
+					trQuestVarSet("botActiveHealth", 0);
 					trQuestVarSet("botActiveRange", 0);
 					trQuestVarSet("botActiveFury", 0);
 					int maxUnitCost = -1;
@@ -179,6 +200,8 @@ inactive
 								trQuestVarSet("botActiveIndex", yGetPointer("allUnits"));
 								trQuestVarSet("botActiveKeywords", 1*mGetVarByQV("allUnits", "keywords"));
 								trQuestVarSet("botActiveSpeed", 1*mGetVarByQV("allUnits", "speed"));
+								trQuestVarSet("botActiveAttack", 1*mGetVarByQV("allUnits", "attack"));
+								trQuestVarSet("botActiveHealth", 1*mGetVarByQV("allUnits", "health"));
 								trQuestVarSet("botActiveRange", 1*mGetVarByQV("allUnits", "range"));
 								if(HasKeyword(FURIOUS, 1*trQuestVarGet("botActiveKeywords"))){
 									trQuestVarSet("botActiveFury", 1);
@@ -239,12 +262,18 @@ inactive
 						int maxTargetCost = -1;
 						float dist = xsPow(trQuestVarGet("botActiveRange") * 6 + 1, 2);
 						trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("botActiveUnit"), true));
-
 						for(x=yGetDatabaseCount("allUnits"); >0) {
 							yDatabaseNext("allUnits");
 							if (mGetVarByQV("allUnits", "player") == 1) {
 								if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
 									int currentTargetCost = mGetVarByQV("allUnits", "cost");
+									if(trQuestVarGet("botActiveAttack") >= mGetVarByQV("allUnits", "health")){
+										currentTargetCost = currentTargetCost + 9000;
+									}
+									bool dontSuicide = trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander");
+									if(dontSuicide && trQuestVarGet("botActiveHealth") <= mGetVarByQV("allUnits", "attack")){
+										currentTargetCost = -1;
+									}
 									if(currentTargetCost > maxTargetCost){
 										maxTargetCost = currentTargetCost;
 										trVectorSetUnitPos("botClickPos", "allUnits");
