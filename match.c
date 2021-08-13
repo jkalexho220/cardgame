@@ -58,7 +58,7 @@ inactive
 	// Ravens
 	trQuestVarSet("p1block", 869);
 	trQuestVarSet("p2block", 871);
-	
+	trQuestVarSet("maxMana", 0);
 
 	xsDisableRule("match_00_start");
 	xsEnableRule("match_01_mulliganStart");
