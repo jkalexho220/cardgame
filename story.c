@@ -246,23 +246,20 @@ void CleanBoard(){
 	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
-		trUnitChangeProtoUnit("Cinematic Block");
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("allUnits");
 	yDatabasePointerDefault("p1hand");
 	for(x=yGetDatabaseCount("p1hand"); >0) {
 		yDatabaseNext("p1hand", true);
-		trUnitChangeProtoUnit("Cinematic Block");
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("p1hand");
 	updateHandPlayable(1);
 	yDatabasePointerDefault("p2hand");
 	for(x=yGetDatabaseCount("p2hand"); >0) {
 		yDatabaseNext("p2hand", true);
-		trUnitChangeProtoUnit("Cinematic Block");
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("p2hand");
 	updateHandPlayable(2);
