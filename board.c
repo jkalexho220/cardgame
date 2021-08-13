@@ -250,23 +250,22 @@ void setupImpassableTerrain() {
 
 void setupBoard() {
 	unitTransform("Statue of Automaton Base", "Victory Marker");
-	
-	trQuestVarSet("borders", trQuestVarGet("zbordersend") - 2);
-	bool allborders = false;
+	bool allBorders = false;
 	int count = 0;
-	int statue = kbGetProtoUnitID("Statue of Automaton Base");
+	zBankNext("borders");
+	yAddToDatabase("borderSearch", "borders");
 	for (x=zGetBankCount("tiles"); >0) {
 		trVectorSetUnitPos("currentPos", "tiles", false);
 		/*
 		Take advantage of the fact that the borders were added in ascending
 		order when the board was originally created.
 		*/
-		if (allborders == false) {
-			for(y=6; >0) {
+		if (allBorders == false) {
+			for(y=5; >0) {
 				zBankNext("borders");
 				yAddToDatabase("borderSearch", "borders");
-				if (trQuestVarGet("borders") == trQuestVarGet("zbordersend") - 2) {
-					allborders = true;
+				if (trQuestVarGet("borders") == trQuestVarGet("zbordersstart")) {
+					allBorders = true;
 					break;
 				}
 			}
@@ -309,9 +308,6 @@ void setupBoard() {
 					zSetVar("tiles", "border"+count, trQuestVarGet("borderSearch"));
 					zSetVar("tiles", "borderCount", count + 1);
 					ySetVar("borderSearch", "count", yGetVar("borderSearch", "count") + 1);
-					trUnitSelectClear();
-					trUnitSelectByID(1*trQuestVarGet("borderSearch"));
-					trMutateSelected(statue);
 					if (count == 6) {
 						break;
 					}
@@ -322,6 +318,20 @@ void setupBoard() {
 	}
 }
 
+
+rule initializeBoardStuff
+highFrequency
+active
+runImmediately
+{
+	int tiles = 1 + 3 * (xsPow(8, 2) - 8);
+	zBankInit("tiles", 128, tiles);
+	zBankInit("borders", 297, 552);
+
+	setupBoard();
+
+	xsDisableRule("initializeBoardStuff");
+}
 
 rule initializeBoard
 inactive
@@ -339,9 +349,15 @@ inactive
 	// Number of tiles in a hexagonal grid of X*X*X dimensions:
 	// 3*(X^2-X) + 1
 	zBankInit("tiles", 128, tiles);
-	zBankInit("borders", 297, 552);
 
-	setupBoard();
+	for(x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		trUnitSelectClear();
+		for(y=0; < zGetVar("tiles", "borderCount")) {
+			trUnitSelectByID(1*zGetVar("tiles", "border"+y));
+		}
+		trMutateSelected(kbGetProtoUnitID("Statue of Automaton Base"));
+	}
 	
 	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
 	chooseTerrainTheme(TERRAIN_GRASSLAND);
