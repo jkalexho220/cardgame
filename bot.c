@@ -120,14 +120,7 @@ inactive
 						// This is pretty bad lol
 						for(x=yGetDatabaseCount("castTiles"); >0) {
 							yDatabaseNext("castTiles");
-							bool removeTile = true;
-							for(y=yGetDatabaseCount("allUnits"); >0) {
-								yDatabaseNext("allUnits");
-								if (mGetVarByQV("allUnits", "player") == 1 && mGetVarByQV("allUnits", "tile") == trQuestVarGet("castTiles")) {
-									removeTile = false;
-								}
-							}
-							if(removeTile){
+							if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") != 1){
 								yRemoveFromDatabase("castTiles");
 							}
 						}
