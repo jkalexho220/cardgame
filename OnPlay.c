@@ -48,7 +48,7 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Scout"):
+		case kbGetProtoUnitID("Hetairoi"):
 		{
 			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
 			updateHandPlayable(p);

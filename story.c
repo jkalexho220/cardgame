@@ -232,6 +232,9 @@ void CleanBoard(){
 	trClearCounterDisplay();
 	trSoundPlayDialog("default", "1", -1, false, " : ", "");
 	uiClearSelection();
+	trQuestVarSet("maxMana", 0);
+	trQuestVarSet("p1mana", 0);	
+	trQuestVarSet("p2mana", 0);
 	for(i=trQuestVarGet("idsEyecandyStart");<trQuestVarGet("idsEyecandyEnd")){
 		trUnitSelectClear();trUnitSelect(""+i);
 		trUnitDestroy();
@@ -239,20 +242,22 @@ void CleanBoard(){
 	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
+		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("allUnits", "tile"), 0);
 	}
 	yClearDatabase("allUnits");
 	yDatabasePointerDefault("p1hand");
 	for(x=yGetDatabaseCount("p1hand"); >0) {
 		yDatabaseNext("p1hand", true);
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("p1hand");
 	updateHandPlayable(1);
 	yDatabasePointerDefault("p2hand");
 	for(x=yGetDatabaseCount("p2hand"); >0) {
 		yDatabaseNext("p2hand", true);
-		trDamageUnitPercent(100);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("p2hand");
 	updateHandPlayable(2);
@@ -263,6 +268,11 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 1){
+		trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
+		trPlayerKillAllGodPowers(1);
+		trTechGodPower(1, "animal magnetism", 1);
+		trTechGodPower(1, "create gold", 1);
+		trUIFadeToColor(0,0,0,1000,1000,false);
 		trSetFogAndBlackmap(true, true);
 		trOverlayTextColour(255, 255, 0);
 		if(collectionMission == ""){
@@ -330,9 +340,10 @@ inactive
 	bool defeat = PlayerDefeated(1);
 	bool victory = PlayerDefeated(2);
 	if (defeat || victory){
-		CleanBoard();
-		xsDisableRule("MissionEnd");
-		trFadeOutAllSounds(0.0);		
+		trPlayerKillAllGodPowers(1);
+		trPlayerKillAllGodPowers(2);
+		trUIFadeToColor(0,0,0,1000,1000,true);
+		xsDisableRule("MissionEnd");		
 		if(defeat && victory){
 			trOverlayTextColour(255, 255, 0);
 			trOverlayText("~ TIE ~", 4.7, 500, 200, 1000);
@@ -355,6 +366,25 @@ inactive
 		}
 		// If you lost the Tutorial restart, otherwise go to collection
 		if(defeat && collectionMission == ""){
+			trQuestVarSet("restartMission", 1);
+		} else {
+			trQuestVarSet("restartMission", 0);
+		}
+		xsEnableRule("MissionEnd1");
+   }
+}
+
+rule MissionEnd1
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) >= 3){
+		unitTransform("Healing SFX", "Cinematic Block");
+		CleanBoard();
+		trFadeOutAllSounds(0.0);
+		trUIFadeToColor(0,0,0,1000,1000,false);
+		xsDisableRule("MissionEnd1");
+		if(trQuestVarGet("restartMission") == 1){
 			xsEnableRule("MissionBegin");
 		} else {
 			xsEnableRule("Collection");
