@@ -232,6 +232,13 @@ void CleanBoard(){
 	trClearCounterDisplay();
 	trSoundPlayDialog("default", "1", -1, false, " : ", "");
 	uiClearSelection();
+	trQuestVarSet("maxMana", 0);
+	trQuestVarSet("p1mana", 0);	
+	trQuestVarSet("p2mana", 0);
+	for(x=zGetBankCount("tiles"); >0) {
+		zBankNext("tiles");
+		zSetVar("tiles","occupant", TILE_EMPTY);
+	}
 	for(i=trQuestVarGet("idsEyecandyStart");<trQuestVarGet("idsEyecandyEnd")){
 		trUnitSelectClear();trUnitSelect(""+i);
 		trUnitDestroy();

@@ -19,6 +19,10 @@ Spells
 const int SPELL_NONE = 0;
 const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
 
+const int SPELL_TYPE_OFFENSIVE = 0;
+const int SPELL_TYPE_DEFENSIVE = 1;
+const int SPELL_TYPE_OTHER = 2;
+
 const int SPELL_SPARK = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
@@ -156,6 +160,106 @@ Given a key and a keywords integer, returns true if the keywords integer has the
 */
 bool HasKeyword(int key = 0, int keywords = 0) {
 	return(GetBit(keywords, key));
+}
+
+/* 
+Given the class and spell type, returns the statue animation
+*/
+int GetSpellAnimation(int class = 0, int type = 0){
+	switch(class)
+	{
+		case CLASS_ADVENTURER:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (6);	// Loki
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (8);	// Thor
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (7);	// Odin
+				}
+			}
+		}
+		case CLASS_ARCANE:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (9);	// Kronos
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (10); // Gaia
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (11); // Oranos
+				}
+			}
+		}
+		case CLASS_NAGA:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (12); // Fu Xi
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (13); // Nu Wa
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (14); // Shennong
+				}
+			}
+		}
+		case CLASS_CLOCKWORK:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (2);	// Set
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (0);	// Isis
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (1);	// Ra
+				}
+			}
+		}
+		case CLASS_EVIL:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (4);	// Poseidon
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (3);	// Hades
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (5);	// Zeus
+				}
+			}
+		}
+	}
+	ThrowError("GetSpellAnimation");
 }
 
 /*
@@ -312,11 +416,12 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	return(next);
 }
 
-void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "", int keywords = 0) {
+void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "", int type = 0, int keywords = 0) {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
 	trStringQuestVarSet("spell_"+spell+"_description", desc);
-
+	trQuestVarSet("spell_"+spell+"_type", type);
+	trQuestVarSet("spell_"+spell+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, type));
 
 	trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
 	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
@@ -460,14 +565,14 @@ runImmediately
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
 	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
-	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder");
+	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"(2)Explorer's Map: Grant an allied minion +1 Speed and Pathfinder", SPELL_TYPE_DEFENSIVE);
 	// 5 - 9
 	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		3, "Party Leader", 		3, 4, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
-	// 10 - 14 (LEGENDARY at 19)
+	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
@@ -476,20 +581,20 @@ runImmediately
 	// 15 - 19
 	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
-	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.");
+	SpellSetup("Windsong", 				2, SPELL_SING, 			"(2)Windsong: Select an ally that has already acted. Grant it another action.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
-	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.");
+	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"(1)Backstab: Deal 2 damage to an enemy next to another enemy.", SPELL_TYPE_OFFENSIVE);
 	// 20 - 24
-	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.");
-	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"(3)Party Up!: Draw 3 cards that cost 1 mana.");
-	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.");
-	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.");
-	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.");
+	SpellSetup("Duel", 					2, SPELL_DUEL, 			"(2)Duel: An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
+	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"(3)Party Up!: Draw 3 cards that cost 1 mana.", SPELL_TYPE_OTHER);
+	SpellSetup("Teamwork", 				5, SPELL_TEAMWORK, 		"(5)Teamwork: Choose an enemy minion. All allies within range attack it.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"(3)Defender's Glory: Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"(3)Song of Victory: Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
-	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.");
-	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.");
+	SpellSetup("Whirlwind", 			7, SPELL_WHIRLWIND, 	"(7)Whirlwind: A minion attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Heroic Tales", 			4, SPELL_HEROIC, 		"(4)Heroic Tales: Grant an allied minion +1 attack and Furious.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Add an Explorer's Map to your hand.
-	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"(1)First-Aid: Teleport an allied minion next to your Commander and restore 2 health to it.");
+	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"(1)First-Aid: Teleport an allied minion next to your Commander and restore 2 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
 	/*
 	ARCANE
@@ -504,23 +609,23 @@ runImmediately
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
-	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.");
+	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"(3)Arcane Explosion: Deal 1 damage to enemies within 1 space of the target location.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
-	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"(4)Doubleblast: Deal 1 damage to two enemies. Draw a card.");
+	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"(4)Doubleblast: Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
-	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.");
-	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.");
-	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.");
+	SpellSetup("Spark", 				1, SPELL_SPARK, 		"(1)Spark: Deal 1 damage.",SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"(3)Class Time: Draw a spell and a minion.", SPELL_TYPE_OTHER);
+	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"(3)Spellsnipe: An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		2, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
 	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 4, 2, 1); // After you cast a spell, grant me +1 attack.
-	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.");
-	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.");
-	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.");
+	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
+	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
+	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD));
 	// 45-49
-	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", Keyword(OVERFLOW));
+	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
 
 
@@ -568,7 +673,7 @@ runImmediately
 	CardEvents("Villager Atlantean", 0, 0, 								"Play: Grant an allied minion +1 attack and health.");
 	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"Minions I kill don't trigger their Death effect.");
 	CardEvents("Physician", Keyword(ATTACK_SING), 0, 					"When I heal an ally that has acted, grant them another action.");
-	CardEvents("Scout", 0, 0, 											"Play: Add an Explorer's Map to your hand.");
+	CardEvents("Hetairoi", 0, 0, 										"Play: Add an Explorer's Map to your hand.");
 	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");

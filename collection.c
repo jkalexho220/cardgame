@@ -107,6 +107,7 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
 		trSetSelectedScale(0.75, xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.5, 0.75);
+		trUnitSetAnimationPath(1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 
 	yAddUpdateVar("allUnits", "player", 1);
@@ -416,10 +417,10 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		for(i = 30 * class;<30 * (class + 1)){
 			if(i == 14 + 30 * class){
 				// First Legendary
-				CollectionCard(i,7 + 20 * class,35);
+				CollectionCard(i,9 + 20 * class,35);
 			} else if(i == 29 + 30 * class){
 				// Second Legendary
-				CollectionCard(i,11 + 20 * class,35);
+				CollectionCard(i,13 + 20 * class,35);
 			} else {
 				CollectionCard(i,x,z);
 				z = z - 4;
@@ -460,7 +461,10 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			z = z + 4;
 		}
 		if(progress < 7){
-			trArmyDispatch("1,10", "Garrison Flag Sky Passage", 1, x, 0, z - 4, 180, true);
+			trArmyDispatch("1,10", "Dwarf", 1, 0, 0, 0, 180, true);
+			trArmySelect("1,10");
+			trUnitChangeProtoUnit("Garrison Flag Sky Passage");
+			trUnitTeleport(x,0,z - 4);
 		}
 	}	
 }

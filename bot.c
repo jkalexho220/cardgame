@@ -61,6 +61,7 @@ inactive
 			case BOT_PHASE_CARD_CHOOSE:
 			{
 				if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {
+					trQuestVarSet("botSpellType", -1);		
 					trQuestVarSet("botActiveKeywords", 0);
 					int maxCardCost = -1;
 					int spell = 0;
@@ -85,6 +86,7 @@ inactive
 						// Bot Click Left	
 						trQuestVarSet("botClick", LEFT_CLICK);
 						if (spell > 0) {
+							trQuestVarSet("botSpellType", trQuestVarGet("spell_" + spell + "_type"));						
 							trQuestVarSet("botPhase", BOT_PHASE_SPELL_PLAY);
 						} else {
 							trQuestVarSet("botPhase", BOT_PHASE_CARD_PLAY);
@@ -107,6 +109,30 @@ inactive
 					trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);
 				} else if (trQuestVarGet("castPop") > trQuestVarGet("botSpellPop")) {
 					trQuestVarSet("botSpellPop", trQuestVarGet("castPop"));
+					if(1*trQuestVarGet("botSpellType") == SPELL_TYPE_OFFENSIVE){
+						for(x=yGetDatabaseCount("castTargets"); >0) {
+							yDatabaseNext("castTargets", true);
+							if(trUnitIsOwnedBy(2)){
+								yRemoveFromDatabase("castTargets");
+							}
+						}
+						yDatabasePointerDefault("castTargets");
+						// This is pretty bad lol
+						for(x=yGetDatabaseCount("castTiles"); >0) {
+							yDatabaseNext("castTiles");
+							bool removeTile = true;
+							for(y=yGetDatabaseCount("allUnits"); >0) {
+								yDatabaseNext("allUnits");
+								if (mGetVarByQV("allUnits", "player") == 1 && mGetVarByQV("allUnits", "tile") == trQuestVarGet("castTiles")) {
+									removeTile = false;
+								}
+							}
+							if(removeTile){
+								yRemoveFromDatabase("castTiles");
+							}
+						}
+						yDatabasePointerDefault("castTiles");
+					}
 					if (yGetDatabaseCount("castTargets") > 0) {
 						trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTargets"), true);
 						for(x=trQuestVarGet("botRandom"); >0) {
