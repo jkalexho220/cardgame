@@ -577,6 +577,8 @@ inactive
 							for(y=0; <12) {
 								if(kbGetUnitBaseTypeID(id) == CommanderToProtounit(y)){
 									setDeckCommander(y);
+									trQuestVarSet("class1", -1);
+									trQuestVarSet("class2", -1);
 									break;
 								}
 							}
@@ -609,13 +611,13 @@ inactive
 							setCardCountDeck(card, getCardCountDeck(card) - 1);
 							ChatLog(1, name + " removed from deck");
 						}
-						if(ValidateCollection()){
-							xsEnableRule("CollectionSpace");
-							trQuestVarSet("canPressSpace", 1);
-						} else {
-							xsDisableRule("CollectionSpace");
-							trQuestVarSet("canPressSpace", 0);	
-						}
+					}
+					if(ValidateCollection()){
+						xsEnableRule("CollectionSpace");
+						trQuestVarSet("canPressSpace", 1);
+					} else {
+						xsDisableRule("CollectionSpace");
+						trQuestVarSet("canPressSpace", 0);	
 					}
 					CollectionGodPowers();
 					break;
