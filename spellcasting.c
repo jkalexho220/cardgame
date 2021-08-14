@@ -148,6 +148,7 @@ void castEnd() {
 	refreshGuardAll();
 	xsEnableRule("gameplay_01_select");
 	highlightReady(999999);
+	int cost = 0;
 
 	if (trQuestVarGet("selectedCard") >= 0) {
 		int p = trQuestVarGet("activePlayer");
@@ -155,10 +156,11 @@ void castEnd() {
 		trUnitSelectClear();
 		trUnitSelect(""+unit, true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost") + trQuestVarGet("p"+p+"spellDiscount"));
+		cost = mGetVar(unit, "cost") - trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
-			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + xsMin(mGetVar(unit, "cost"), trQuestVarGet("p"+p+"manaflow")));
+			cost = cost - trQuestVarGet("p"+p+"manaflow");
 		}
+		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - xsMax(0, cost));
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		yRemoveFromDatabase("p"+p+"hand");
