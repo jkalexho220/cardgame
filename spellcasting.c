@@ -776,6 +776,7 @@ inactive
 			{
 				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
 				mSetVarByQV("spellshooter", "attack", mGetVarByQV("spellshooter", "attack") + mGetVarByQV("spellshooter", "range"));
+				trQuestVarSet("spelltarget", checkGuard(1*trQuestVarGet("spellTarget")));
 				startAttack(1*trQuestVarGet("spellshooter"), 1*trQuestVarGet("spelltarget"), false, true);
 				done = false;
 				xsEnableRule("spell_snipe_complete");
@@ -864,6 +865,8 @@ inactive
 
 		if (done) {
 			castEnd();
+		} else {
+			trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);
 		}
 	}
 }
