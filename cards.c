@@ -275,25 +275,27 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 		trMessageSetText(trStringQuestVarGet("spell_"+spell+"_description"), -1);
 	}
 	bool multiple = false;
-	if(keywords>0){
+	if(keywords>0 || trQuestVarGet("card_"+proto+"_range") > 1){
 		trChatSend(0, "======== Keywords ========");
 		if (trQuestVarGet("card_"+proto+"_range") > 1) {
 			trChatSend(0, "Ranged: This unit can attack and counterattack 2 spaces away");
 			dialog = "Ranged";
 			multiple = true;
 		}
-		int current = xsPow(2, NUM_KEYWORDS - 1);
-		for(k=NUM_KEYWORDS - 1; >=0){
-			if (keywords >= current) {
-				if(multiple){
-					dialog = dialog + ", ";
+		if (keywords>0) {
+			int current = xsPow(2, NUM_KEYWORDS - 1);
+			for(k=NUM_KEYWORDS - 1; >=0){
+				if (keywords >= current) {
+					if(multiple){
+						dialog = dialog + ", ";
+					}
+					multiple = true;
+					dialog = dialog + GetKeywordName(k);
+					keywords = keywords - current;
+					trChatSend(0, GetKeywordName(k) + ": " + GetKeywordDescription(k));
 				}
-				multiple = true;
-				dialog = dialog + GetKeywordName(k);
-				keywords = keywords - current;
-				trChatSend(0, GetKeywordName(k) + ": " + GetKeywordDescription(k));
+				current = current / 2;
 			}
-			current = current / 2;
 		}
 	}
 	message = trStringQuestVarGet("card_"+proto+"_ability");
