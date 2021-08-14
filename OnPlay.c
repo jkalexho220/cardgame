@@ -16,6 +16,7 @@ void OnPlay(int unit = 0) {
 			}
 			trQuestVarSet("summonedUnit", unit);
 			chooseSpell(SPELL_WOLF);
+			done = false;
 		}
 		case kbGetProtoUnitID("Villager Atlantean"):
 		{

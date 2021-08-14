@@ -166,6 +166,7 @@ inactive
 			} else {
 				trQuestVarSet("botClick", RIGHT_CLICK);
 				trQuestVarSet("botManaOptions", trQuestVarGet("botManaOptions") - 1);
+				trQuestVarSet("botTimeNext", trTimeMS());
 			}
 		}
 
@@ -192,6 +193,7 @@ inactive
 			} else {
 				trQuestVarSet("botClick", RIGHT_CLICK);
 				trQuestVarSet("botManaOptions", trQuestVarGet("botManaOptions") - 1);
+				trQuestVarSet("botTimeNext", trTimeMS());
 			}
 		}
 		
@@ -224,7 +226,7 @@ inactive
 			int bestTile = 0;
 			int bestTileScore = -1000;
 			int currentScore = 0;
-			trVectorSetUnitPos("pos", "p1commander");
+			trVectorSetUnitPos("commanderpos", "p1commander");
 			for(x=yGetDatabaseCount("reachable"); >0) {
 				yDatabaseNext("reachable");
 				/*
@@ -232,7 +234,7 @@ inactive
 				also prioritize tiles closer to enemy commander
 				*/
 				currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
-				currentScore = currentScore - zDistanceToVector("reachable", "pos") / 9;
+				currentScore = currentScore - zDistanceToVector("reachable", "commanderpos") / 9;
 				if (currentScore >= bestTileScore) {
 					/*
 					prioritize tiles that can be attacked by the fewest number of enemies
@@ -292,58 +294,9 @@ inactive
 				trVectorQuestVarSet("botClickPos", xsVectorSet(111,0,111));
 				trQuestVarSet("botClick", LEFT_CLICK);
 				trQuestVarSet("botMoveOptions", trQuestVarGet("botMoveOptions") - 1);
+				trQuestVarSet("botTimeNext", trTimeMS());
 			}
-		}
-		/*
-		case BOT_PHASE_UNIT_ATTACK:
-		{
-			if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SELECT) {
-				trQuestVarSet("botPhase", BOT_PHASE_CARD_CHOOSE);
-			} else if(trQuestVarGet("gameplayPhase") == GAMEPLAY_WORK){
-				if(trQuestVarGet("botNoAttack") == 0){
-					int maxTargetCost = -1;
-					float dist = xsPow(trQuestVarGet("botActiveRange") * 6 + 1, 2);
-					trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("botActiveUnit"), true));
-					for(x=yGetDatabaseCount("allUnits"); >0) {
-						yDatabaseNext("allUnits");
-						if (mGetVarByQV("allUnits", "player") == 1) {
-							if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
-								int currentTargetCost = mGetVarByQV("allUnits", "cost");
-								if(trQuestVarGet("botActiveAttack") >= mGetVarByQV("allUnits", "health")){
-									currentTargetCost = currentTargetCost + 9000;
-								}
-								bool dontSuicide = trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander");
-								if(dontSuicide && trQuestVarGet("botActiveHealth") <= mGetVarByQV("allUnits", "attack")){
-									currentTargetCost = -1;
-								}
-								if(currentTargetCost > maxTargetCost){
-									maxTargetCost = currentTargetCost;
-									trVectorSetUnitPos("botClickPos", "allUnits");
-								}
-							}
-						}
-					}
-					if(maxTargetCost > -1){
-						// Bot Click Right
-						trQuestVarSet("botClick", RIGHT_CLICK);
-						trQuestVarSet("botAttackTimer", trTime());
-					} else {
-						mSetVar(1*trQuestVarGet("botActiveIndex"), "action", ACTION_DONE);
-						trQuestVarSet("botClick", LEFT_CLICK);
-						trVectorQuestVarSet("botClickPos", xsVectorSet(110,0,110));
-					}
-				} 
-				if(trQuestVarGet("botActiveFury") == 1){
-					trQuestVarSet("botActiveFury", 0);
-				} else {
-					trQuestVarSet("botPhase", BOT_PHASE_UNIT_CHOOSE);	
-				}
-			} else {
-				// Wait until gameplayPhase is GAMEPLAY_WORK
-				trQuestVarSet("botClick", 0);
-			}
-		}
-		*/	
+		}	
 	}
 	if (trQuestVarGet("botClick") >= 0) {
 		xsEnableRule("Bot2");
@@ -356,18 +309,11 @@ highFrequency
 inactive
 {
 	if (trTimeMS() > trQuestVarGet("botTimeNext")){
-		if(trQuestVarGet("botClick") < 0){
-			trQuestVarSet("botThinking", trQuestVarGet("botThinking") + 1);
-		} else {
-			trQuestVarSet("botThinking", 0);
-			trVectorQuestVarSet("p2clickPos", trVectorQuestVarGet("botClickPos"));
-			trQuestVarSet("p2click", trQuestVarGet("botClick"));
-		}
-		if(trQuestVarGet("botThinking") > 10){
-			trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
-		} else {
-			xsEnableRule("Bot1");
-		}
+		trVectorQuestVarSet("p2clickPos", trVectorQuestVarGet("botClickPos"));
+		trQuestVarSet("p2click", trQuestVarGet("botClick"));
+		
+		xsEnableRule("Bot1");
+		
 		xsDisableRule("Bot2");
 	}
 }
