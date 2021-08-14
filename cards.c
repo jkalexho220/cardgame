@@ -277,6 +277,11 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	bool multiple = false;
 	if(keywords>0){
 		trChatSend(0, "======== Keywords ========");
+		if (trQuestVarGet("card_"+proto+"_range") > 1) {
+			trChatSend(0, "Ranged: This unit can attack and counterattack 2 spaces away");
+			dialog = "Ranged";
+			multiple = true;
+		}
 		int current = xsPow(2, NUM_KEYWORDS - 1);
 		for(k=NUM_KEYWORDS - 1; >=0){
 			if (keywords >= current) {
@@ -327,6 +332,13 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		dialog = "Stunned";
 		multiple = true;
 	}
+	if (mGetVar(name, "range") > 1) {
+		if(multiple){
+			dialog = dialog + ", ";
+		}
+		dialog = dialog + "Ranged";
+		multiple = true;
+	}
 	if(keywords>0){
 		int current = xsPow(2, NUM_KEYWORDS - 1);
 		for(k=NUM_KEYWORDS - 1; >=0){
@@ -360,21 +372,30 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		xsSetContextPlayer(1*mGetVar(name, "player"));
 		int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
 		if (diff > 0) {
-			bonus = bonus + "HP +" + diff;
+			bonus = bonus + "HP +" + diff + " ";
 		}
 
 		diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
 		if (diff > 0) {
-			bonus = bonus + " ATK +" + diff;
+			bonus = bonus + "ATK +" + diff + " ";
 		} else if (diff < 0) {
-			bonus = bonus + " ATK " + diff;
+			bonus = bonus + "ATK " + diff + " ";
 		}
 
 		diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
 		if (diff > 0) {
-			bonus = bonus + " SPD +" + diff;
+			bonus = bonus + "SPD +" + diff;
 		} else if (diff < 0) {
-			bonus = bonus + " SPD " + diff;
+			bonus = bonus + "SPD " + diff;
+		}
+	} else {
+		int p = mGetVar(name, "player");
+		int discount = trQuestVarGet("p"+p+"spellDiscount");
+		if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
+			discount = discount + trQuestVarGet("p"+p+"manaflow");
+		}
+		if (discount > 0) {
+			bonus = "Discount " + discount;
 		}
 	}
 	

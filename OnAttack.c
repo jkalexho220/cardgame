@@ -1,5 +1,6 @@
 void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 	int p = mGetVar(attacker, "player");
+	int spell = 0;
 	switch(event)
 	{
 		case ATTACK_DRAW_CARD:
@@ -33,9 +34,11 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trUnitSelect(""+attacker);
 			trUnitOverrideAnimation(52,0,0,1,-1);
 			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
-				yDatabaseNext("p"+p+"hand");
+				yDatabaseNext("p"+p+"hand", true);
 				if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+					spell = mGetVarByQV("p"+p+"hand", "spell");
 					mSetVarByQV("p"+p+"hand", "cost", xsMax(0, mGetVarByQV("p"+p+"hand", "cost") - 1));
+					trUnitChangeName("("+1*mGetVarByQV("p"+p+"hand","cost")+") " + trStringQuestVarGet("spell_"+spell+"_name"));
 				}
 			}
 		}

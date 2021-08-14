@@ -103,7 +103,6 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
 	} else {
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
-		yAddUpdateVar("allUnits", "spell", spell);
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
 		trSetSelectedScale(0.75, xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.5, 0.75);
