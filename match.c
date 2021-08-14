@@ -202,7 +202,7 @@ inactive
 		if(Multiplayer == false && p == 2){
 			trQuestVarSet("botPhase", 0);
 			trQuestVarSet("botThinking", 0);
-			xsEnableRule("Bot1");
+			xsEnableRule("Bot_00_turn_start");
 		}
 
 		xsSetContextPlayer(p);
