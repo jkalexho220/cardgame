@@ -646,7 +646,7 @@ runImmediately
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Swordsman Hero",			3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Regent",					3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -662,7 +662,13 @@ runImmediately
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"(4)Meteor: Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Royal Spellguard",	2, 5, 1, 1); // Adjacent allies have Ward.
 	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
 	// 55-59 (LEGENDARY at 59)
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
 
 	/*
 	NAGA
@@ -711,7 +717,7 @@ runImmediately
 
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
-	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
+	CardEvents("Regent", 0, 0, 											"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
 	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
 	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");

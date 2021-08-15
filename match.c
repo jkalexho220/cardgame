@@ -313,6 +313,38 @@ inactive
 			}
 		}
 
+		/*
+		Meteors
+		*/
+		trQuestVarSet("sound", 0);
+		yDatabasePointerDefault("meteors");
+		for(x=yGetDatabaseCount("meteors"); >0) {
+			yDatabaseNext("meteors", true);
+			ySetVar("meteors", "time", yGetVar("meteors", "time") - 1);
+			if (yGetVar("meteors", "time") == 0) {
+				trQuestVarSet("sound", 1);
+				trUnitChangeProtoUnit("Meteor");
+				deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("meteors", "tile"));
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("meteors", "tile")));
+				for(y=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "tile") == yGetVar("meteors", "tile")) {
+						damageUnit(1*trQuestVarGet("allUnits"), 6 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+						damageUnit(1*trQuestVarGet("allUnits"), 2 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					}
+				}
+				yRemoveFromDatabase("meteors");
+				yRemoveUpdateVar("meteors", "tile");
+				yRemoveUpdateVar("meteors", "time");
+			}
+		}
+
+		if (trQuestVarGet("sound") == 1) {
+			trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
+		}
+
 		removeDeadUnits();
 
 		// Discard fleeting cards

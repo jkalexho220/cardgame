@@ -176,7 +176,7 @@ void castEnd() {
 			if (mGetVarByQV("allUnits", "player") == p) {
 				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
-					case kbGetProtoUnitID("Swordsman Hero"):
+					case kbGetProtoUnitID("Regent"):
 					{
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
@@ -198,6 +198,7 @@ void castEnd() {
 					case kbGetProtoUnitID("Pharaoh of Osiris"):
 					{
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
 					}
 				}
@@ -600,6 +601,14 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"));
 		}
+		case SPELL_COPY_HOMEWORK:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_METEOR:
+		{
+			castAddTile("spellTarget", true);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -877,6 +886,23 @@ inactive
 				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("spellTarget", "tile"));
 				healUnit(1*trQuestVarGet("spellTarget"), 3);
 			}
+			case SPELL_COPY_HOMEWORK:
+			{
+				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+				trSoundPlayFN("spybirth.wav","1",-1,"","");
+				xsEnableRule("spell_copy_homework_activate");
+			}
+			case SPELL_METEOR:
+			{
+				trSoundPlayFN("townattacked.wav","1",-1,"","");
+				trQuestVarSet("next", deployAtTile(0, "Relic", 1*trQuestVarGet("spellTarget")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("next"), true);
+				trMutateSelected(kbGetProtoUnitID("Hero Birth"));
+				yAddToDatabase("meteors", "next");
+				yAddUpdateVar("meteors", "time", 2);
+				yAddUpdateVar("meteors", "tile", trQuestVarGet("spellTarget"));
+			}
 		}
 
 		if (battlecry == false) {
@@ -926,6 +952,26 @@ inactive
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_party_up_activate");
+	}
+}
+
+rule spell_copy_homework_activate
+highFrequency
+inactive
+{
+	int p = trQuestVarGet("activePlayer");
+	int card = 0;
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		for(x=3; >0) {
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				trQuestVarSetFromRand("chooseClass", 1, 2, true);
+				trQuestVarSetFromRand("chooseCard", 0, 29, true);
+				card = 30*trQuestVarGet("p"+(3-p)+"class"+1*trQuestVarGet("chooseClass")) + trQuestVarGet("chooseCard");
+				addCardToHandByIndex(p, card);
+			}
+		}
+		updateHandPlayable(p);
+		xsDisableRule("spell_copy_homework_activate");	
 	}
 }
 

@@ -213,6 +213,7 @@ inactive
 	} else {
 		trQuestVarSet("gameplayPhase", GAMEPLAY_SELECT);
 		int p = trQuestVarGet("activePlayer");
+		int tile = 0;
 		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
 			trQuestVarSet("activeUnit", unit);
@@ -268,7 +269,7 @@ inactive
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
 						if (mGetVar(unit, "spell") == 0) {
-							int tile = 0;
+							tile = 0;
 							yClearDatabase("summonLocations");
 							if (HasKeyword(AIRDROP, 1*mGetVar(unit, "keywords"))) {
 								for(x=zGetBankCount("tiles"); >0) {
@@ -306,6 +307,14 @@ inactive
 						highlightReady(0.1);
 					}
 					
+				} else {
+					for(x=yGetDatabaseCount("meteors"); >0) {
+						yDatabaseNext("meteors");
+						if (zDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
+							trMessageSetText("A meteor will fall on this tile, dealing 6 damage to it and 2 damage to adjacent tiles.", -1);
+							break;
+						}
+					}
 				}
 			}
 

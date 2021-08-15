@@ -120,6 +120,12 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 	}
 }
 
+void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false) {
+	int spell = CardToSpell(card);
+	int proto = CardToProto(card)	;
+	addCardToHand(p, proto, spell, fleeting);
+}
+
 
 void drawCard(int p = 0) {
 	int proto = yDatabaseNext("p"+p+"deck");

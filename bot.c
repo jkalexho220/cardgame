@@ -86,8 +86,7 @@ inactive
 				xsDisableRule("Bot1");
 			// If choose hand
 			} else if (trQuestVarGet("botChooseHand") > trQuestVarGet("botChooseUnit")) {
-				trQuestVarSet("botSpellType", -1);		
-				trQuestVarSet("botActiveKeywords", 0);
+				trQuestVarSet("botSpellType", -1);
 				int maxCardCost = -1;
 				int spell = 0;
 				for(x=yGetDatabaseCount("p2hand"); >0) {
@@ -102,7 +101,6 @@ inactive
 						}
 						if(currentCardCost > maxCardCost){
 							maxCardCost = currentCardCost;
-							trQuestVarSet("botActiveKeywords", 1*mGetVarByQV("p2hand", "keywords"));
 							trVectorSetUnitPos("botClickPos", "p2hand");
 							spell = 1*mGetVarByQV("p2hand", "spell");
 						}	
@@ -267,7 +265,7 @@ inactive
 			for (x=yGetDatabaseCount("targets"); >0) {
 				yDatabaseNext("targets");
 				currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
-				// If the target dies, then currentScore = 2 * target's attack
+				// If the target dies, then currentScore = 2 * (target's attack + cost)
 				if (currentScore >= 0) {
 					currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
 				}
