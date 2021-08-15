@@ -1,6 +1,7 @@
 void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 	int p = mGetVar(attacker, "player");
 	int spell = 0;
+	int count = 0;
 	switch(event)
 	{
 		case ATTACK_DRAW_CARD:
@@ -39,6 +40,35 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 					spell = mGetVarByQV("p"+p+"hand", "spell");
 					mSetVarByQV("p"+p+"hand", "cost", xsMax(0, mGetVarByQV("p"+p+"hand", "cost") - 1));
 					trUnitChangeName("("+1*mGetVarByQV("p"+p+"hand","cost")+") " + trStringQuestVarGet("spell_"+spell+"_name"));
+				}
+			}
+		}
+		case ATTACK_GET_ARCANE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				/*
+				Find which cards in Arcane class are spells.
+				*/
+				for (x=30; < 60) {
+					if (CardToSpell(x) > 0) {
+						count = count + 1;
+					}
+				}
+
+				/*
+				Decide which spell to be drawn and then draw it.
+				*/
+				trQuestVarSetFromRand("spellChosen", 1, count, true);
+				count = trQuestVarGet("spellChosen");
+				for(x=30; <60) {
+					spell = CardToSpell(x);
+					if (spell > 0) {
+						count = count - 1;
+						if (count == 0) {
+							addCardToHand(p, 0, spell, false);
+							break;
+						}
+					}
 				}
 			}
 		}

@@ -117,6 +117,7 @@ bool attackUnitAtCursor(int p = 0) {
 				mSetVar(target, "action", ACTION_READY);
 			}
 		}
+		deployAtTile(0, "Regeneration SFX", 1*mGetVar(target, "tile"));
 		mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
 		xsEnableRule("gameplay_05_attackComplete");
 		return(true);

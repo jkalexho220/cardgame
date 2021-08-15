@@ -154,7 +154,7 @@ void castEnd() {
 		int p = trQuestVarGet("activePlayer");
 		int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		trUnitSelectClear();
-		trUnitSelect(""+unit, true);
+		trUnitSelect(""+unit);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		cost = mGetVar(unit, "cost") - trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
@@ -172,7 +172,7 @@ void castEnd() {
 		Effects that occur whenever a spell is cast
 		*/
 		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
+			yDatabaseNext("allUnits", true);
 			if (mGetVarByQV("allUnits", "player") == p) {
 				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
@@ -180,6 +180,13 @@ void castEnd() {
 					{
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+						spyEffect("Einheriar Boost SFX");
+					}
+					case kbGetProtoUnitID("Petsuchos"):
+					{
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+						spyEffect("Einheriar Boost SFX");
 					}
 					case kbGetProtoUnitID("Hero Greek Bellerophon"):
 					{
@@ -229,7 +236,7 @@ inactive
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -248,7 +255,7 @@ inactive
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -267,7 +274,7 @@ inactive
 					} else if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -589,6 +596,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddSummonLocations("spellTargetFire");
 			castAddSummonLocations("spellTargetIce");
 		}
+		case SPELL_VALKYRIE_HEAL:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"));
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -635,7 +646,7 @@ inactive
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				trUnitSelectClear();
-				trUnitSelect(""+target, true);
+				trUnitSelect(""+target);
 				spyEffect("Einheriar Boost SFX");
 			}
 			case SPELL_SING:
@@ -853,6 +864,18 @@ inactive
 					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetFire"), p, kbGetProtoUnitID("Fire Giant"));
 					mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				}
+			}
+			case SPELL_VALKYRIE_HEAL:
+			{
+				battlecry = true;
+				trVectorSetUnitPos("healerPos", "spellCaster");
+				trVectorSetUnitPos("targetPos", "spellTarget");
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(zGetUnitVector("healerPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trUnitOverrideAnimation(50, 0, 0, 1, -1);
+				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("spellTarget", "tile"));
+				healUnit(1*trQuestVarGet("spellTarget"), 3);
 			}
 		}
 

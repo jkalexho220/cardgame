@@ -107,6 +107,12 @@ void OnPlay(int unit = 0) {
 		{
 			trQuestVarSet("p"+p+"spellDamage", 1 + trQuestVarGet("p"+p+"spellDamage"));
 		}
+		case kbGetProtoUnitID("Valkyrie"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_VALKYRIE_HEAL);
+		}
 	}
 	if (done) {
 		removeDeadUnits();

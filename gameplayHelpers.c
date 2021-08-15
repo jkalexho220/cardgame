@@ -96,12 +96,12 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 	
 	trUnitSelectClear();
-	trUnitSelect(""+name, true);
+	trUnitSelect(""+name);
 	trMutateSelected(kbGetProtoUnitID("Dwarf"));
 	trImmediateUnitGarrison(""+tile);
 	trUnitChangeProtoUnit("Victory Marker");
 	trUnitSelectClear();
-	trUnitSelect(""+name, true);
+	trUnitSelect(""+name);
 	trMutateSelected(1*mGetVar(name, "proto"));
 
 	trUnitSelectClear();
@@ -186,7 +186,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 	if (healer) {
 		p = 3 - p;
 	}
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
 		if (mGetVarByQV("allUnits", "player") == p) {
@@ -203,20 +203,20 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 
 void healUnit(int index = 0, float heal = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
 	trUnitSelectClear();
-	trUnitSelect(""+index, true);
+	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
-	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true)) - health;
+	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
 	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
 }
 
 void damageUnit(int index = 0, float dmg = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
 	mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
 	trUnitSelectClear();
-	trUnitSelect(""+index, true);
+	trUnitSelect(""+index);
 	trDamageUnit(health - mGetVar(index, "health"));
 }
 
@@ -357,12 +357,12 @@ void stunUnit(int index = 0) {
 		mSetVar(index, "action", ACTION_STUNNED);
 		if (mGetVar(index, "stunSFX") == 0) {
 			trUnitSelectClear();
-			trUnitSelect(""+index, true);
+			trUnitSelect(""+index);
 			mSetVar(index, "stunIndex", spyEffect("Shockwave stun effect"));
 			xsEnableRule("spy_assign_new");
 		} else {
 			trUnitSelectClear();
-			trUnitSelect(""+1*mGetVar(index, "stunSFX"), true);
+			trUnitSelect(""+1*mGetVar(index, "stunSFX"));
 			trMutateSelected(kbGetProtoUnitID("Shockwave stun effect"));
 		}
 	}
