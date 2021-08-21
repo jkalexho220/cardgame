@@ -26,6 +26,7 @@ void updateHandPlayable(int p = 0) {
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	int cost = 0;
+	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
 		cost = mGetVarByQV("p"+p+"hand", "cost");
@@ -128,32 +129,40 @@ void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false) {
 
 
 void drawCard(int p = 0) {
-	int proto = yDatabaseNext("p"+p+"deck");
-	if (yGetDatabaseCount("p"+p+"hand") < 10) {
-		if (trCurrentPlayer() == p) {
-			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
-		}
-		if (yGetVar("p"+p+"deck", "spell") == 0) {
-			ChatLog(p, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));
-		} else {
-			ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
-		}
-		addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
+	if (yGetDatabaseCount("p"+p+"deck") <= 0) {
+		trQuestVarSet("p"+p+"fatigue", 1 + trQuestVarGet("p"+p+"fatigue"));
+		damageUnit(1*trQuestVarGet("p"+p+"commander"), trQuestVarGet("p"+p+"fatigue"));
+		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has no more cards! " + 1*trQuestVarGet("p"+p+"fatigue") + " damage");
+		trQuestVarSetFromRand("sound", 1, 5, true);
+		trSoundPlayFN("lightningstrike"+1*trQuestVarGet("sound")+".wav","1",-1,"","");
 	} else {
-		if (trCurrentPlayer() == p) {
-			trSoundPlayFN("cantdothat.wav","1",-1,"","");
-		}
-		if (yGetVar("p"+p+"deck", "spell") == 0) {
-			ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
+		int proto = yDatabaseNext("p"+p+"deck");
+		if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			if (trCurrentPlayer() == p) {
+				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+			}
+			if (yGetVar("p"+p+"deck", "spell") == 0) {
+				ChatLog(p, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));
+			} else {
+				ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
+			}
+			addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
 		} else {
-			ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
+			if (trCurrentPlayer() == p) {
+				trSoundPlayFN("cantdothat.wav","1",-1,"","");
+			}
+			if (yGetVar("p"+p+"deck", "spell") == 0) {
+				ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
+			} else {
+				ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
+			}
+
 		}
+		yRemoveFromDatabase("p"+p+"deck");
+		yRemoveUpdateVar("p"+p+"deck", "spell");
 
+		updateHandPlayable(p);
 	}
-	yRemoveFromDatabase("p"+p+"deck");
-	yRemoveUpdateVar("p"+p+"deck", "spell");
-
-	updateHandPlayable(p);
 }
 
 rule initializeHand

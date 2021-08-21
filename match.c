@@ -238,8 +238,8 @@ inactive
 					}
 					case kbGetProtoUnitID("Hero Greek Chiron"):
 					{
-						drawCard(1);
-						drawCard(2);
+						trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
+						trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
 					}
 				}
 			} else {

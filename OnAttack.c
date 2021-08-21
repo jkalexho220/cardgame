@@ -42,6 +42,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 					trUnitChangeName("("+1*mGetVarByQV("p"+p+"hand","cost")+") " + trStringQuestVarGet("spell_"+spell+"_name"));
 				}
 			}
+			updateHandPlayable();
 		}
 		case ATTACK_GET_ARCANE:
 		{
@@ -56,6 +57,8 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			if ((trQuestVarGet("activePlayer") == p) == false) {
 				if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == 0)) {
 					trSoundPlayFN("shockwave.wav","1",-1,"","");
+					deployAtTile(0, "Tremor", 1*mGetVar(target, "tile"));
+					deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
 					returnToHand(target);
 				}
 			}

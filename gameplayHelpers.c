@@ -34,11 +34,18 @@ void updateMana() {
 
 
 void refreshGuardAll() {
+	yClearDatabase("guardUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-			tileGuard(1*mGetVarByQV("allUnits", "tile"), true);
+		if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+			tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
+		} else {
+			yAddToDatabase("guardUnits", "allUnits");
 		}
+	}
+	for(x=yGetDatabaseCount("guardUnits"); >0) {
+		yDatabaseNext("guardUnits");
+		tileGuard(1*mGetVarByQV("guardUnits", "tile"), true);
 	}
 }
 
@@ -406,7 +413,21 @@ void stunUnit(int index = 0) {
 	}
 }
 
+void updateAuras() {
+	for(p=2; >0) {
+		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
+		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
+		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 0) {
+			if (trCountUnitsInArea("128",p,"Trident Soldier Hero", 45) > 0) {
+				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+			} else {
+				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+			}
+		}
+	}
 
+	refreshGuardAll();
+}
 
 rule spy_assign_new
 highFrequency

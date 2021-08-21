@@ -20,14 +20,6 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			drawCard(3-p);
 		}
-		case DEATH_SPELL_DISCOUNT:
-		{
-			trQuestVarSet("p"+p+"spellDiscount", trQuestVarGet("p"+p+"spellDiscount") - 1);
-		}
-		case DEATH_SPELL_DAMAGE:
-		{
-			trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") - 1);
-		}
 		case DEATH_EGG:
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix Egg");
@@ -39,15 +31,6 @@ bool OnDeath(int event = -1, int unit = 0){
 				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
 				updateHandPlayable(p);
 			}
-		}
-		case DEATH_COMMANDER_GUARD:
-		{
-			trQuestVarSet("p"+p+"commanderGuard", trQuestVarGet("p"+p+"commanderGuard") - 1);
-			if (trQuestVarGet("p"+p+"commanderGuard") <= 0) {
-				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
-				tileGuard(1*mGetVarByQV("p"+p+"commander", "tile"), false);
-			}
-			refreshGuardAll();
 		}
 		/*
 		case DEATH_BOOM_SMALL:
@@ -133,6 +116,7 @@ void removeDeadUnits() {
 			}
 		}
 	}
+	updateAuras();
 }
 
 
@@ -140,6 +124,10 @@ void removeDeadUnits() {
 void returnToHand(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
+	zSetVarByIndex("tiles", "occupant", 1*mGetVar(unit, "tile"), 0);
+	if (HasKeyword(GUARD, 1*mGetVar(unit, "keywords"))) {
+		tileGuard(1*mGetVar(unit, "tile"), false);
+	}
 	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -147,23 +135,14 @@ void returnToHand(int unit = 0) {
 				yRemoveFromDatabase("allUnits");
 			}
 		}
-		int events = 1*mGetVar(unit, "OnDeath");
-		int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
-		for(x=DEATH_EVENT_COUNT - 1; >=0) {
-			if (events >= n) {
-				if (x < RETURN_TO_HAND) {
-					OnDeath(x, events);
-				}
-				events = events - n;
-			}
-			n = n / 2;
-		}
 		trSoundPlayFN("hitpointsmax.wav","1",-1,"","");
 		trUnitSelectClear();
 		trUnitSelect(""+unit);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		mSetVar(unit, "played", 0);
 		addCardToHand(p, proto, 0, false);
+		updateAuras();
+		updateHandPlayable();
 	} else {
 		trSoundPlayFN("cantdothat.wav","1",-1,"","");
 		ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));

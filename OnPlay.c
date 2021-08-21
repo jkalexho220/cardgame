@@ -107,29 +107,15 @@ void OnPlay(int unit = 0) {
 				}
 			}
 		}
-		case kbGetProtoUnitID("Priest"):
-		{
-			trQuestVarSet("p"+p+"spellDiscount", 1 + trQuestVarGet("p"+p+"spellDiscount"));
-		}
-		case kbGetProtoUnitID("Oracle Scout"):
-		{
-			trQuestVarSet("p"+p+"spellDamage", 1 + trQuestVarGet("p"+p+"spellDamage"));
-		}
 		case kbGetProtoUnitID("Valkyrie"):
 		{
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_VALKYRIE_HEAL);
 		}
-		case kbGetProtoUnitID("Trident Soldier Hero"):
-		{
-			trQuestVarSet("p"+p+"commanderGuard", 1 + trQuestVarGet("p"+p+"commanderGuard"));
-			mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
-			refreshGuardAll();
-		}
 		case kbGetProtoUnitID("Centaur"):
 		{
-			trQuestVarSet("p"+p+"drawCard", 1 + trQuestVarGet("p"+p+"drawCards"));
+			trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 		}
 		case kbGetProtoUnitID("Sphinx"):
 		{

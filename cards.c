@@ -76,20 +76,13 @@ const int ATTACK_EVENT_COUNT = 9;
 /*
 OnDeath events (bit positions)
 */
+const int DEATH_DRAW_CARD = 1;
+const int DEATH_OPPONENT_DRAW_CARD = 2;
+const int DEATH_BOOM_SMALL = 3;
+const int DEATH_EGG = 4;
+const int DEATH_GET_ARCANE = 5;
 
-const int DEATH_SPELL_DAMAGE = 0;
-const int DEATH_SPELL_DISCOUNT = 1;
-const int DEATH_COMMANDER_GUARD = 2;
-
-const int RETURN_TO_HAND = 3;
-
-const int DEATH_DRAW_CARD = 3;
-const int DEATH_OPPONENT_DRAW_CARD = 4;
-const int DEATH_BOOM_SMALL = 5;
-const int DEATH_EGG = 6;
-const int DEATH_GET_ARCANE = 7;
-
-const int DEATH_EVENT_COUNT = 8;
+const int DEATH_EVENT_COUNT = 6;
 
 
 /*
@@ -742,15 +735,15 @@ runImmediately
 	
 	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
-	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
-	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");
+	CardEvents("Priest", 0, 0,							 				"Your spells cost 1 less.");
+	CardEvents("Oracle Scout", 0, 0,						 			"Your spells deal +1 damage.");
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
 	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
 	CardEvents("Prisoner", 0, Keyword(DEATH_GET_ARCANE),				"Death: Add a random Arcane spell to your hand.");
 	CardEvents("Chimera", Keyword(ATTACK_GET_ARCANE), 0,				"Attack: Add a random Arcane spell to your hand.");
 	CardEvents("Petsuchos", 0, 0,										"I have 3 range. After you cast a spell, grant me +1 attack.");
-	CardEvents("Trident Soldier Hero",0,Keyword(DEATH_COMMANDER_GUARD),	"Your Commander has Guard. When they take damage, I take it instead");
+	CardEvents("Trident Soldier Hero",0,0,								"Your Commander has Guard. When they take damage, I take it instead");
 	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");

@@ -649,6 +649,7 @@ inactive
 		float dist = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		bool battlecry = false;
+		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
 		switch(1*trQuestVarGet("currentSpell"))
 		{
 			case SPELL_SPARK:
@@ -930,6 +931,7 @@ inactive
 			}
 			case SPELL_SHAPESHIFT:
 			{
+				battlecry = true;
 				trSoundPlayFN("changeunit.wav","1",-1,"","");
 				target = trQuestVarGet("copyTarget");
 				activeUnit = trQuestVarGet("transformTarget");
@@ -952,6 +954,7 @@ inactive
 				trUnitSelect(""+activeUnit);
 				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
 				damageUnit(activeUnit, 0);
+				updateAuras();
 			}
 			case SPELL_APOCALYPSE:
 			{
@@ -965,13 +968,9 @@ inactive
 			{
 				trSoundPlayFN("recreation.wav","1",-1,"","");
 				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
-				proto = mGetVarByQV("spellTarget", "proto");
-				target = ProtoToCard(proto);
-				if (yGetDatabaseCount("p"+p+"hand") < 10) {
-					addCardToHandByIndex(p, target);
-				}
 				addCardToDeckByIndex(p, target);
 				shuffleDeck(p);
+				xsEnableRule("spell_mirror_image_activate");
 			}
 		}
 
@@ -1057,6 +1056,21 @@ inactive
 		}
 		xsDisableRule("spell_apocalypse_activate");
 	}	
+}
+
+rule spell_mirror_image_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		int proto = mGetVarByQV("spellTarget", "proto");
+		int target = ProtoToCard(proto);
+		if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			addCardToHandByIndex(p, target);
+		}
+		xsDisableRule("spell_mirror_image_activate");
+	}
 }
 
 rule spell_class_time_activate

@@ -690,6 +690,8 @@ inactive
 
 					// If the unit has an OnPlay effect
 					OnPlay(unit);
+					
+					updateAuras();
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					yRemoveFromDatabase("p"+p+"hand");
