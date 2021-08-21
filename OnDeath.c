@@ -7,6 +7,8 @@ bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
 
 bool OnDeath(int event = -1, int unit = 0){
 	int p = mGetVar(unit, "player");
+	int count = 0;
+	int spell = 0;
 	bool checkAgain = false;
 	switch(event)
 	{
@@ -29,6 +31,35 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_EGG:
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix Egg");
+		}
+		case DEATH_GET_ARCANE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				/*
+				Find which cards in Arcane class are spells.
+				*/
+				for (x=30; < 60) {
+					if (CardToSpell(x) > 0) {
+						count = count + 1;
+					}
+				}
+
+				/*
+				Decide which spell to be drawn and then draw it.
+				*/
+				trQuestVarSetFromRand("spellChosen", 1, count, true);
+				count = trQuestVarGet("spellChosen");
+				for(x=30; <60) {
+					spell = CardToSpell(x);
+					if (spell > 0) {
+						count = count - 1;
+						if (count == 0) {
+							addCardToHand(p, 0, spell, false);
+							break;
+						}
+					}
+				}
+			}
 		}
 		/*
 		case DEATH_BOOM_SMALL:

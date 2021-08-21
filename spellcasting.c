@@ -176,17 +176,17 @@ void castEnd() {
 			if (mGetVarByQV("allUnits", "player") == p) {
 				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
-					case kbGetProtoUnitID("Regent"):
+					case kbGetProtoUnitID("Swordsman Hero"):
 					{
+						spyEffect("Einheriar Boost SFX");
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-						spyEffect("Einheriar Boost SFX");
 					}
 					case kbGetProtoUnitID("Petsuchos"):
 					{
+						spyEffect("Einheriar Boost SFX");
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-						spyEffect("Einheriar Boost SFX");
 					}
 					case kbGetProtoUnitID("Hero Greek Bellerophon"):
 					{

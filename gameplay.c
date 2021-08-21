@@ -96,7 +96,10 @@ bool attackUnitAtCursor(int p = 0) {
 			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && 
 				(mGetVar(target, "stunTime") == 0) &&
 				(HasKeyword(HEALER, 1*mGetVar(target, "keywords")) == false)) {
-				startAttack(target, a, false, true);
+				if ((HasKeyword(FLYING, 1*mGetVar(a, "keywords")) == false) ||
+					(mGetVar(target, "range") > 1)) {
+					startAttack(target, a, false, true);
+				}
 			}
 
 			mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));

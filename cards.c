@@ -50,6 +50,7 @@ const int SPELL_CLASS_TIME = 24;
 const int SPELL_COPY_HOMEWORK = 25;
 const int SPELL_METEOR = 26;
 const int SPELL_VALKYRIE_HEAL = 27;
+const int SPELL_FINAL_EXAM = 28;
 
 /*
 OnAttack events (bit positions)
@@ -75,8 +76,9 @@ const int DEATH_BOOM_SMALL = 2;
 const int DEATH_EGG = 3;
 const int DEATH_SPELL_DAMAGE = 4;
 const int DEATH_SPELL_DISCOUNT = 5;
+const int DEATH_GET_ARCANE = 6;
 
-const int DEATH_EVENT_COUNT = 6;
+const int DEATH_EVENT_COUNT = 7;
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -646,7 +648,7 @@ runImmediately
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Regent",					3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -654,7 +656,7 @@ runImmediately
 	// 45-49
 	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
-	CardSetup("Prisoner",				2, "Magic Test Subject",2, 1, 2, 1); // Death: Draw a card.
+	CardSetup("Prisoner",				2, "Magic Test Subject",2, 2, 2, 1); // Death: Add a random Arcane spell to your hand.
 	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Add a random Arcane spell to your hand.
 	CardSetup("Petsuchos", 				6, "Bejeweled Sunlisk",	0, 3, 1, 3); // I have 3 range. Each time you cast a spell, grant me +1 attack.
 	// 50-54
@@ -662,13 +664,13 @@ runImmediately
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"(4)Meteor: Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Royal Spellguard",	2, 5, 1, 1); // Adjacent allies have Ward.
 	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Centaur",				3, "Book Courier",		2, 3, 2, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	// 55-59 (LEGENDARY at 59)
+	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"(2)Final Exam: Both players draw two cards.", SPELL_TYPE_OTHER);
+	CardSetup("Sphinx",					5, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: I transform into a copy of a minion. If you have {Manaflow 3}, instead transform a minion into a copy of me.
 	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
 	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
+	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 2, 2); // At the start of your turn, both players draw a card.
 
 	/*
 	NAGA
@@ -717,18 +719,21 @@ runImmediately
 
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
-	CardEvents("Regent", 0, 0, 											"After you cast a spell, grant me +1 attack.");
+	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
 	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
 	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
 	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing.");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
-	CardEvents("Prisoner", 0, Keyword(DEATH_DRAW_CARD),					"Death: Draw a card.");
+	CardEvents("Prisoner", 0, Keyword(DEATH_GET_ARCANE),				"Death: Add a random Arcane spell to your hand.");
 	CardEvents("Chimera", Keyword(ATTACK_GET_ARCANE), 0,				"Attack: Add a random Arcane spell to your hand.");
 	CardEvents("Petsuchos", 0, 0,										"I have 3 range. After you cast a spell, grant me +1 attack.");
 	CardEvents("Trident Soldier Hero", 0, 0,							"Adjacent allies have Ward.");
 	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
+	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
+	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
+	CardEvents("Sphinx", 0, 0,											"Play: I transform into a copy of a minion. If you have {Manaflow 3}, instead transform a minion into a copy of me.");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Loading ability...");
 	CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");

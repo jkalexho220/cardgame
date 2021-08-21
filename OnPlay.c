@@ -2,6 +2,14 @@ void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
 	bool done = true;
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("UI Range Indicator Norse SFX");
+	}
+	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Poison SFX");
+	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Slinger"):
@@ -29,7 +37,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Avenger"):
 		{
 			trUnitSelectClear();
-			trUnitSelect(""+unit, true);
+			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Avenger"));
 			trUnitOverrideAnimation(39, 0, 0, 1, -1);
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
@@ -86,7 +94,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Nemean Lion"):
 		{
 			trUnitSelectClear();
-			trUnitSelect(""+unit, true);
+			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Nemean Lion"));
 			trUnitOverrideAnimation(39, 0, 0, 1, -1);
 			for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -112,6 +120,16 @@ void OnPlay(int unit = 0) {
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_VALKYRIE_HEAL);
+		}
+		case kbGetProtoUnitID("Trident Soldier Hero"):
+		{
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			spyEffect("Gaia Forest effect");
+		}
+		case kbGetProtoUnitID("Centaur"):
+		{
+			drawCard(p);
 		}
 	}
 	if (done) {

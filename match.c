@@ -47,7 +47,7 @@ inactive
 
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
-		trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
+		spyEffect("Healing SFX");
 
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
@@ -70,7 +70,6 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
-		unitTransform("Spy Eye", "Healing SFX");
 		trTechGodPower(1, "nidhogg", 1);
 		trTechGodPower(2, "nidhogg", 1);
 		for(p=2; >0) {
@@ -237,11 +236,17 @@ inactive
 						damageUnit(1*trQuestVarGet("allUnits"), mGetVarByQV("allUnits", "health"));
 						deathSummonQueue(1*mGetVarByQV("allUnits", "tile"), p, "Phoenix From Egg");
 					}
+					case kbGetProtoUnitID("Hero Greek Chiron"):
+					{
+						drawCard(1);
+						drawCard(2);
+					}
 				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
 		}
+
 
 
 		if (p == 1) {
