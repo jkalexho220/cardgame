@@ -131,6 +131,15 @@ void OnPlay(int unit = 0) {
 		{
 			drawCard(p);
 		}
+		case kbGetProtoUnitID("Sphinx"):
+		{
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose a minion to be copied. Then choose a minion to be transformed.", -1);
+			}
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_SHAPESHIFT);
+		}
 	}
 	if (done) {
 		removeDeadUnits();

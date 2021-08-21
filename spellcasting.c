@@ -613,6 +613,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", true);
 		}
+		case SPELL_SHAPESHIFT:
+		{
+			castAddUnit("copyTarget", 0, false);
+			castAddUnit("transformTarget", 0, false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -913,6 +918,31 @@ inactive
 				trSoundPlayFN("pestilencebirth.wav","1",-1,"","");
 				trQuestVarSet("p1drawCards", 2);
 				trQuestVarSet("p2drawCards", 2);
+			}
+			case SPELL_SHAPESHIFT:
+			{
+				trSoundPlayFN("changeunit.wav","1",-1,"","");
+				target = trQuestVarGet("copyTarget");
+				activeUnit = trQuestVarGet("transformTarget");
+				mSetVar(activeUnit, "proto", mGetVar(target, "proto"));
+				mSetVar(activeUnit, "spell", mGetVar(target, "spell"));
+				mSetVar(activeUnit, "cost", mGetVar(target, "cost"));
+				mSetVar(activeUnit, "attack", mGetVar(target, "attack"));
+				mSetVar(activeUnit, "health", mGetVar(target, "health"));
+				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
+				mSetVar(activeUnit, "range", mGetVar(target, "range"));
+				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
+				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
+				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
+				mSetString(activeUnit, "ability", mGetString(target, "ability"));
+				deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(activeUnit, "tile"));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trUnitOverrideAnimation(39,0,0,1,-1);
+				trUnitSelectClear();
+				trUnitSelect(""+activeUnit);
+				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
+				damageUnit(activeUnit, 0);
 			}
 		}
 
