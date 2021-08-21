@@ -175,10 +175,13 @@ highFrequency
 active
 {
 	// We want to give the trCountUnitsInArea some time to update
-	for(p=2; >0) {
-		if (trQuestVarGet("p"+p+"drawCards") > 0) {
-			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);
-			drawCard(p);
+	if (trTimeMS() > trQuestVarGet("card_draw_next")) {
+		trQuestVarSet("card_draw_next", trTimeMS() + 500);
+		for(p=2; >0) {
+			if (trQuestVarGet("p"+p+"drawCards") > 0) {
+				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);
+				drawCard(p);
+			}
 		}
 	}
 }

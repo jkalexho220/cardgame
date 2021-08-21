@@ -295,6 +295,11 @@ inactive
 
 		trQuestVarSet("turnEnd", 1);
 
+		trQuestVarSet("apocalypse", trQuestVarGet("apocalypse") - 1);
+		if (trQuestVarGet("apocalypse") == 0) {
+			musicToggleBattleMode();
+		}
+
 		/*
 		End of turn effects
 		*/

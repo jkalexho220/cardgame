@@ -23,7 +23,7 @@ const int SPELL_TYPE_OFFENSIVE = 0;
 const int SPELL_TYPE_DEFENSIVE = 1;
 const int SPELL_TYPE_OTHER = 2;
 
-const int SPELL_SPARK = 2;
+const int SPELL_FIRST_AID = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
 const int SPELL_MAP = 5;
@@ -37,8 +37,9 @@ const int SPELL_WHIRLWIND = 12;
 const int SPELL_HEROIC = 13;
 const int SPELL_WOLF = 14;
 const int SPELL_PING = 15;
-const int SPELL_FIRST_AID = 16;
 
+
+const int SPELL_SPARK = 16;
 const int SPELL_SNIPE = 17;
 const int SPELL_EXPLOSION = 18;
 const int SPELL_RUNE_OF_FLAME = 19;
@@ -49,9 +50,12 @@ const int SPELL_ELECTROSURGE = 23;
 const int SPELL_CLASS_TIME = 24;
 const int SPELL_COPY_HOMEWORK = 25;
 const int SPELL_METEOR = 26;
-const int SPELL_VALKYRIE_HEAL = 27;
+const int SPELL_MIRROR_IMAGE = 27;
 const int SPELL_FINAL_EXAM = 28;
-const int SPELL_SHAPESHIFT = 29;
+const int SPELL_APOCALYPSE = 29;
+
+const int SPELL_SHAPESHIFT = 30;
+const int SPELL_VALKYRIE_HEAL = 31;
 
 /*
 OnAttack events (bit positions)
@@ -64,8 +68,9 @@ const int ATTACK_SING = 4;
 const int ATTACK_ANIMATE_ORACLE = 5;
 const int ATTACK_DISCOUNT = 6;
 const int ATTACK_GET_ARCANE = 7;
+const int ATTACK_YEET = 8;
 
-const int ATTACK_EVENT_COUNT = 8;
+const int ATTACK_EVENT_COUNT = 9;
 
 
 /*
@@ -421,7 +426,13 @@ void displayCardKeywordsAndDescription(int name = 0) {
 }
 
 int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
-	int next = zBankNext("p"+p+"unitBank");
+	int next = 0;
+	for(x=64; >0) {
+		next = zBankNext("p"+p+"unitBank");
+		if (mGetVar(next, "played") == 0) {
+			break;
+		}
+	}
 	trUnitSelectClear();
 	trUnitSelect(""+next, false);
 
@@ -446,6 +457,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "proto", proto);
 	mSetVar(next, "player", p);
 	mSetVar(next, "spell", spell);
+	mSetVar(next, "played", 1);
 
 	trMutateSelected(proto);
 
@@ -667,17 +679,17 @@ runImmediately
 	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Add a random Arcane spell to your hand.
 	CardSetup("Petsuchos", 				6, "Bejeweled Sunlisk",	0, 3, 1, 3); // I have 3 range. Each time you cast a spell, grant me +1 attack.
 	// 50-54
-	SpellSetup("Copy Homework",			5, SPELL_COPY_HOMEWORK, "(5)Copy Homework: Add three random cards from your opponent's classes to your hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "(5)Book of Reflections: Add three random cards from your opponent's classes to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"(4)Meteor: Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
 	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
-	CardSetup("Centaur",				3, "Book Courier",		2, 3, 2, 2); // Play: Draw a card. Death: Your opponent draws a card.
+	CardSetup("Centaur",				3, "Book Courier",		2, 3, 3, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	// 55-59 (LEGENDARY at 59)
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"(2)Final Exam: Both players draw two cards.", SPELL_TYPE_OTHER);
 	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
-	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
-	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 2, 2); // At the start of your turn, both players draw a card.
+	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"(10)Apocalypse: Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
+	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"(2)Mirror Image: Add a copy of a minion to your hand and your deck.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 5, 3, 2); // At the start of your turn, both players draw a card.
 
 	/*
 	NAGA
@@ -713,6 +725,7 @@ runImmediately
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
+	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
 	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
 	CardEvents("Avenger", 0, 0, 										"Play: Deal 1 damage to all adjacent enemies.");
@@ -725,7 +738,8 @@ runImmediately
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", 0, 0, 										"After I counterattack, return my target to your opponent's hand.");
+	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
+	
 	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
 	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");

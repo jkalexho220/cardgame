@@ -35,30 +35,9 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_GET_ARCANE:
 		{
 			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				/*
-				Find which cards in Arcane class are spells.
-				*/
-				for (x=30; < 60) {
-					if (CardToSpell(x) > 0) {
-						count = count + 1;
-					}
-				}
-
-				/*
-				Decide which spell to be drawn and then draw it.
-				*/
-				trQuestVarSetFromRand("spellChosen", 1, count, true);
-				count = trQuestVarGet("spellChosen");
-				for(x=30; <60) {
-					spell = CardToSpell(x);
-					if (spell > 0) {
-						count = count - 1;
-						if (count == 0) {
-							addCardToHand(p, 0, spell, false);
-							break;
-						}
-					}
-				}
+				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
+				updateHandPlayable(p);
 			}
 		}
 		case DEATH_COMMANDER_GUARD:
@@ -153,5 +132,43 @@ void removeDeadUnits() {
 				mSetVar(unit, "action", ACTION_SLEEPING);
 			}
 		}
+	}
+}
+
+
+
+void returnToHand(int unit = 0) {
+	int p = mGetVar(unit, "player");
+	int proto = mGetVar(unit, "proto");
+	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			if (yDatabaseNext("allUnits") == unit) {
+				yRemoveFromDatabase("allUnits");
+			}
+		}
+		int events = 1*mGetVar(unit, "OnDeath");
+		int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
+		for(x=DEATH_EVENT_COUNT - 1; >=0) {
+			if (events >= n) {
+				if (x < RETURN_TO_HAND) {
+					OnDeath(x, events);
+				}
+				events = events - n;
+			}
+			n = n / 2;
+		}
+		trSoundPlayFN("hitpointsmax.wav","1",-1,"","");
+		trUnitSelectClear();
+		trUnitSelect(""+unit);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		mSetVar(unit, "played", 0);
+		addCardToHand(p, proto, 0, false);
+	} else {
+		trSoundPlayFN("cantdothat.wav","1",-1,"","");
+		ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
+		mSetVar(unit, "health", 0);
+		damageUnit(unit, 999);
+		removeDeadUnits();
 	}
 }

@@ -129,7 +129,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Centaur"):
 		{
-			drawCard(p);
+			trQuestVarSet("p"+p+"drawCard", 1 + trQuestVarGet("p"+p+"drawCards"));
 		}
 		case kbGetProtoUnitID("Sphinx"):
 		{

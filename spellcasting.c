@@ -156,6 +156,7 @@ void castEnd() {
 		trUnitSelectClear();
 		trUnitSelect(""+unit);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		mSetVar(unit, "played", 0);
 		cost = mGetVar(unit, "cost") - trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -618,6 +619,14 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("copyTarget", 0, false);
 			castAddUnit("transformTarget", 0, false);
 		}
+		case SPELL_APOCALYPSE:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_MIRROR_IMAGE:
+		{
+			castAddUnit("spellTarget", 0, false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -944,6 +953,26 @@ inactive
 				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
 				damageUnit(activeUnit, 0);
 			}
+			case SPELL_APOCALYPSE:
+			{
+				trSoundPlayFN("meteorapproach.wav","1",-1,"","");
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_apocalypse_activate");
+			}
+			case SPELL_MIRROR_IMAGE:
+			{
+				trSoundPlayFN("recreation.wav","1",-1,"","");
+				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
+				proto = mGetVarByQV("spellTarget", "proto");
+				target = ProtoToCard(proto);
+				if (yGetDatabaseCount("p"+p+"hand") < 10) {
+					addCardToHandByIndex(p, target);
+				}
+				addCardToDeckByIndex(p, target);
+				shuffleDeck(p);
+			}
 		}
 
 		if (battlecry == false) {
@@ -1014,6 +1043,20 @@ inactive
 		updateHandPlayable(p);
 		xsDisableRule("spell_copy_homework_activate");	
 	}
+}
+
+rule spell_apocalypse_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			addCardToHand(p, 0, SPELL_METEOR, true);
+			mSetVarByQV("next", "cost", 0);
+		}
+		xsDisableRule("spell_apocalypse_activate");
+	}	
 }
 
 rule spell_class_time_activate

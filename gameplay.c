@@ -15,13 +15,28 @@ void processAttack(string db = "attacks") {
 				trUnitSelectClear();
 				trUnitSelect(""+attacker, true);
 				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-				if (mGetVar(attacker, "range") == 1) {
-					trUnitOverrideAnimation(1,0,0,1,-1);
-				} else {
-					trUnitOverrideAnimation(12,0,0,1,-1);
+				switch(1*yGetVar(db, "animation"))
+				{
+					case ANIM_DEFAULT:
+					{
+						if (mGetVar(attacker, "range") == 1) {
+							trUnitOverrideAnimation(1,0,0,1,-1);
+						} else {
+							trUnitOverrideAnimation(12,0,0,1,-1);
+						}
+					}
+					case ANIM_CHARGING:
+					{
+						trUnitOverrideAnimation(19,0,0,1,-1);
+					}
+					case ANIM_GORE:
+					{
+						trUnitOverrideAnimation(26,0,0,1,-1);
+					}
 				}
+				
 				ySetVar(db, "phase", ATTACK_ANIMATE);
-				ySetVar(db, "timeout", trTime() + 1);
+				ySetVar(db, "timeout", trTimeMS() + 1500);
 			} else {
 				yRemoveFromDatabase(db);
 				yRemoveUpdateVar(db, "target");
@@ -31,7 +46,7 @@ void processAttack(string db = "attacks") {
 		}
 		case ATTACK_ANIMATE:
 		{
-			if ((kbUnitGetAnimationActionType(attackerID) == 16) == false || trTime() > yGetVar(db, "timeout")) {
+			if ((kbUnitGetAnimationActionType(attackerID) == 16) == false || trTimeMS() > yGetVar(db, "timeout")) {
 				ySetVar(db, "phase", ATTACK_DONE);
 			}
 		}

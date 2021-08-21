@@ -46,29 +46,17 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		case ATTACK_GET_ARCANE:
 		{
 			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				/*
-				Find which cards in Arcane class are spells.
-				*/
-				for (x=30; < 60) {
-					if (CardToSpell(x) > 0) {
-						count = count + 1;
-					}
-				}
-
-				/*
-				Decide which spell to be drawn and then draw it.
-				*/
-				trQuestVarSetFromRand("spellChosen", 1, count, true);
-				count = trQuestVarGet("spellChosen");
-				for(x=30; <60) {
-					spell = CardToSpell(x);
-					if (spell > 0) {
-						count = count - 1;
-						if (count == 0) {
-							addCardToHand(p, 0, spell, false);
-							break;
-						}
-					}
+				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
+				updateHandPlayable(p);
+			}
+		}
+		case ATTACK_YEET:
+		{
+			if ((trQuestVarGet("activePlayer") == p) == false) {
+				if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == 0)) {
+					trSoundPlayFN("shockwave.wav","1",-1,"","");
+					returnToHand(target);
 				}
 			}
 		}

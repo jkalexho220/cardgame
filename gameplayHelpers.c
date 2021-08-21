@@ -21,6 +21,10 @@ const int ATTACK_DONE = 2;
 const int STATE_ALIVE = 0;
 const int STATE_DEAD = 1;
 
+const int ANIM_DEFAULT = 0;
+const int ANIM_CHARGING = 1;
+const int ANIM_GORE = 2;
+
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
 	trCounterAbort("mana");
@@ -112,6 +116,7 @@ void teleportToTile(int name = 0, int tile = 0) {
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
+
 
 
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
@@ -216,7 +221,7 @@ void damageUnit(int index = 0, float dmg = 0) {
 	/*
 	Throne Shield activates here
 	*/
-	if ((trPlayerUnitCountSpecific(p, "Trident Soldier Hero") > 0) && (index == trQuestVarGet("p"+p+"commander"))) {
+	if ((trCountUnitsInArea("128",p,"Trident Soldier Hero",45) > 0) && (index == trQuestVarGet("p"+p+"commander"))) {
 		int pointer = yGetPointer("allUnits");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
@@ -322,6 +327,23 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 	yAddUpdateVar(db, "target", target);
 	if (animate) {
 		yAddUpdateVar(db, "phase", ATTACK_START);
+		yAddUpdateVar(db, "animation", ANIM_DEFAULT);
+		switch(1*mGetVar(attacker, "proto"))
+		{
+			case kbGetProtoUnitID("Minotaur"):
+			{
+				/*
+				Nottud's counter-attack
+				*/
+				if (mGetVar(attacker, "player") == 3 - trQuestVarGet("activePlayer")){
+					yAddUpdateVar(db, "animation", ANIM_GORE);
+				}
+			}
+			case kbGetProtoUnitID("Pharaoh of Osiris"):
+			{
+				yAddUpdateVar(db, "animation", ANIM_CHARGING);
+			}
+		}
 	} else {
 		yAddUpdateVar(db, "phase", ATTACK_DONE);
 	}
@@ -384,6 +406,8 @@ void stunUnit(int index = 0) {
 	}
 }
 
+
+
 rule spy_assign_new
 highFrequency
 inactive
@@ -428,6 +452,7 @@ active
 				trUnitSelect(""+unit);
 				if (trUnitAlive() == true) {
 					zSetVar("allUnitsBank", "state", STATE_ALIVE);
+					mSetVarByQV("allUnitsBank", "played", 0);
 				}
 			}
 		}
