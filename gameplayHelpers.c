@@ -212,12 +212,28 @@ void healUnit(int index = 0, float heal = 0) {
 }
 
 void damageUnit(int index = 0, float dmg = 0) {
-	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
-	mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
-	trUnitSelectClear();
-	trUnitSelect(""+index);
-	trDamageUnit(health - mGetVar(index, "health"));
+	int p = mGetVar(index, "player");
+	/*
+	Throne Shield activates here
+	*/
+	if ((trPlayerUnitCountSpecific(p, "Trident Soldier Hero") > 0) && (index == trQuestVarGet("p"+p+"commander"))) {
+		int pointer = yGetPointer("allUnits");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
+				damageUnit(1*trQuestVarGet("allUnits"), dmg);
+				break;
+			}
+		}
+		ySetPointer("allUnits", pointer);
+	} else {
+		xsSetContextPlayer(p);
+		float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
+		mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
+		trUnitSelectClear();
+		trUnitSelect(""+index);
+		trDamageUnit(health - mGetVar(index, "health"));
+	}
 }
 
 void lightning(int index = 0, int damage = 0, bool deadly = false) {

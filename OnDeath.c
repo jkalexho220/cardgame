@@ -61,6 +61,15 @@ bool OnDeath(int event = -1, int unit = 0){
 				}
 			}
 		}
+		case DEATH_COMMANDER_GUARD:
+		{
+			trQuestVarSet("p"+p+"commanderGuard", trQuestVarGet("p"+p+"commanderGuard") - 1);
+			if (trQuestVarGet("p"+p+"commanderGuard") <= 0) {
+				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+				tileGuard(1*mGetVarByQV("p"+p+"commander", "tile"), false);
+			}
+			refreshGuardAll();
+		}
 		/*
 		case DEATH_BOOM_SMALL:
 		{

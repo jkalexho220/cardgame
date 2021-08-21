@@ -609,6 +609,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", true);
 		}
+		case SPELL_FINAL_EXAM:
+		{
+			castAddTile("spellTarget", true);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -788,8 +792,8 @@ inactive
 			}
 			case SPELL_CLASS_TIME:
 			{
+				trSoundPlayFN("townbell.wav","1",-1,"","");
 				trSoundPlayFN("temple.wav","1",-1,"","");
-				trSoundPlayFN("gaiasparkle1.wav","1",-1,"","");
 				xsEnableRule("spell_class_time_activate");
 			}
 			case SPELL_SNIPE:
@@ -902,6 +906,13 @@ inactive
 				yAddToDatabase("meteors", "next");
 				yAddUpdateVar("meteors", "time", 2);
 				yAddUpdateVar("meteors", "tile", trQuestVarGet("spellTarget"));
+			}
+			case SPELL_FINAL_EXAM:
+			{
+				trSoundPlayFN("cinematics\15_in\gong.wav","1",-1,"","");
+				trSoundPlayFN("pestilencebirth.wav","1",-1,"","");
+				trQuestVarSet("p1drawCards", 2);
+				trQuestVarSet("p2drawCards", 2);
 			}
 		}
 

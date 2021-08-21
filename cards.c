@@ -70,15 +70,21 @@ const int ATTACK_EVENT_COUNT = 8;
 /*
 OnDeath events (bit positions)
 */
-const int DEATH_DRAW_CARD = 0;
-const int DEATH_OPPONENT_DRAW_CARD = 1;
-const int DEATH_BOOM_SMALL = 2;
-const int DEATH_EGG = 3;
-const int DEATH_SPELL_DAMAGE = 4;
-const int DEATH_SPELL_DISCOUNT = 5;
-const int DEATH_GET_ARCANE = 6;
 
-const int DEATH_EVENT_COUNT = 7;
+const int DEATH_SPELL_DAMAGE = 0;
+const int DEATH_SPELL_DISCOUNT = 1;
+const int DEATH_COMMANDER_GUARD = 2;
+
+const int RETURN_TO_HAND = 3;
+
+const int DEATH_DRAW_CARD = 3;
+const int DEATH_OPPONENT_DRAW_CARD = 4;
+const int DEATH_BOOM_SMALL = 5;
+const int DEATH_EGG = 6;
+const int DEATH_GET_ARCANE = 7;
+
+const int DEATH_EVENT_COUNT = 8;
+
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -662,12 +668,12 @@ runImmediately
 	// 50-54
 	SpellSetup("Copy Homework",			5, SPELL_COPY_HOMEWORK, "(5)Copy Homework: Add three random cards from your opponent's classes to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"(4)Meteor: Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Trident Soldier Hero",	5, "Royal Spellguard",	2, 5, 1, 1); // Adjacent allies have Ward.
+	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
 	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
 	CardSetup("Centaur",				3, "Book Courier",		2, 3, 2, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	// 55-59 (LEGENDARY at 59)
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"(2)Final Exam: Both players draw two cards.", SPELL_TYPE_OTHER);
-	CardSetup("Sphinx",					5, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: I transform into a copy of a minion. If you have {Manaflow 3}, instead transform a minion into a copy of me.
+	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: I transform into a copy of a minion. If you have {Manaflow 3}, instead transform a minion into a copy of me.
 	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
 	CardSetup("Militia",				1, "PLACEHOLDER",		1, 1, 1, 1); // PLACEHOLDER
 	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 2, 2); // At the start of your turn, both players draw a card.
@@ -718,7 +724,7 @@ runImmediately
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
+	CardEvents("Minotaur", 0, 0, 										"After I counterattack, return my target to your opponent's hand.");
 	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
 	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
@@ -729,7 +735,7 @@ runImmediately
 	CardEvents("Prisoner", 0, Keyword(DEATH_GET_ARCANE),				"Death: Add a random Arcane spell to your hand.");
 	CardEvents("Chimera", Keyword(ATTACK_GET_ARCANE), 0,				"Attack: Add a random Arcane spell to your hand.");
 	CardEvents("Petsuchos", 0, 0,										"I have 3 range. After you cast a spell, grant me +1 attack.");
-	CardEvents("Trident Soldier Hero", 0, 0,							"Adjacent allies have Ward.");
+	CardEvents("Trident Soldier Hero",0,Keyword(DEATH_COMMANDER_GUARD),	"Your Commander has Guard. When they take damage, I take it instead");
 	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");

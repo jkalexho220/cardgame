@@ -123,9 +123,9 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Trident Soldier Hero"):
 		{
-			trUnitSelectClear();
-			trUnitSelect(""+unit);
-			spyEffect("Gaia Forest effect");
+			trQuestVarSet("p"+p+"commanderGuard", 1 + trQuestVarGet("p"+p+"commanderGuard"));
+			mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+			refreshGuardAll();
 		}
 		case kbGetProtoUnitID("Centaur"):
 		{
