@@ -21,6 +21,10 @@ const int ATTACK_DONE = 2;
 const int STATE_ALIVE = 0;
 const int STATE_DEAD = 1;
 
+const int ANIM_DEFAULT = 0;
+const int ANIM_CHARGING = 1;
+const int ANIM_GORE = 2;
+
 void updateMana() {
 	int p = trQuestVarGet("activePlayer");
 	trCounterAbort("mana");
@@ -30,11 +34,18 @@ void updateMana() {
 
 
 void refreshGuardAll() {
+	yClearDatabase("guardUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-			tileGuard(1*mGetVarByQV("allUnits", "tile"), true);
+		if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+			tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
+		} else {
+			yAddToDatabase("guardUnits", "allUnits");
 		}
+	}
+	for(x=yGetDatabaseCount("guardUnits"); >0) {
+		yDatabaseNext("guardUnits");
+		tileGuard(1*mGetVarByQV("guardUnits", "tile"), true);
 	}
 }
 
@@ -47,7 +58,7 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
-	yRemoveUpdateVar("pos");
+	yRemoveUpdateVar(db, "pos");
 }
 
 /*
@@ -96,12 +107,12 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
 	
 	trUnitSelectClear();
-	trUnitSelect(""+name, true);
+	trUnitSelect(""+name);
 	trMutateSelected(kbGetProtoUnitID("Dwarf"));
 	trImmediateUnitGarrison(""+tile);
 	trUnitChangeProtoUnit("Victory Marker");
 	trUnitSelectClear();
-	trUnitSelect(""+name, true);
+	trUnitSelect(""+name);
 	trMutateSelected(1*mGetVar(name, "proto"));
 
 	trUnitSelectClear();
@@ -112,6 +123,7 @@ void teleportToTile(int name = 0, int tile = 0) {
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
+
 
 
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
@@ -186,7 +198,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 	if (healer) {
 		p = 3 - p;
 	}
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
 		if (mGetVarByQV("allUnits", "player") == p) {
@@ -203,21 +215,37 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 
 void healUnit(int index = 0, float heal = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
 	trUnitSelectClear();
-	trUnitSelect(""+index, true);
+	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
-	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true)) - health;
+	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
 	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
 }
 
 void damageUnit(int index = 0, float dmg = 0) {
-	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index, true));
-	mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
-	trUnitSelectClear();
-	trUnitSelect(""+index, true);
-	trDamageUnit(health - mGetVar(index, "health"));
+	int p = mGetVar(index, "player");
+	/*
+	Throne Shield activates here
+	*/
+	if ((trCountUnitsInArea("128",p,"Trident Soldier Hero",45) > 0) && (index == trQuestVarGet("p"+p+"commander"))) {
+		int pointer = yGetPointer("allUnits");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
+				damageUnit(1*trQuestVarGet("allUnits"), dmg);
+				break;
+			}
+		}
+		ySetPointer("allUnits", pointer);
+	} else {
+		xsSetContextPlayer(p);
+		float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
+		mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
+		trUnitSelectClear();
+		trUnitSelect(""+index);
+		trDamageUnit(health - mGetVar(index, "health"));
+	}
 }
 
 void lightning(int index = 0, int damage = 0, bool deadly = false) {
@@ -306,6 +334,23 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 	yAddUpdateVar(db, "target", target);
 	if (animate) {
 		yAddUpdateVar(db, "phase", ATTACK_START);
+		yAddUpdateVar(db, "animation", ANIM_DEFAULT);
+		switch(1*mGetVar(attacker, "proto"))
+		{
+			case kbGetProtoUnitID("Minotaur"):
+			{
+				/*
+				Nottud's counter-attack
+				*/
+				if (mGetVar(attacker, "player") == 3 - trQuestVarGet("activePlayer")){
+					yAddUpdateVar(db, "animation", ANIM_GORE);
+				}
+			}
+			case kbGetProtoUnitID("Pharaoh of Osiris"):
+			{
+				yAddUpdateVar(db, "animation", ANIM_CHARGING);
+			}
+		}
 	} else {
 		yAddUpdateVar(db, "phase", ATTACK_DONE);
 	}
@@ -357,15 +402,31 @@ void stunUnit(int index = 0) {
 		mSetVar(index, "action", ACTION_STUNNED);
 		if (mGetVar(index, "stunSFX") == 0) {
 			trUnitSelectClear();
-			trUnitSelect(""+index, true);
+			trUnitSelect(""+index);
 			mSetVar(index, "stunIndex", spyEffect("Shockwave stun effect"));
 			xsEnableRule("spy_assign_new");
 		} else {
 			trUnitSelectClear();
-			trUnitSelect(""+1*mGetVar(index, "stunSFX"), true);
+			trUnitSelect(""+1*mGetVar(index, "stunSFX"));
 			trMutateSelected(kbGetProtoUnitID("Shockwave stun effect"));
 		}
 	}
+}
+
+void updateAuras() {
+	for(p=2; >0) {
+		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
+		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
+		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 0) {
+			if (trCountUnitsInArea("128",p,"Trident Soldier Hero", 45) > 0) {
+				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+			} else {
+				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+			}
+		}
+	}
+
+	refreshGuardAll();
 }
 
 rule spy_assign_new
@@ -412,6 +473,7 @@ active
 				trUnitSelect(""+unit);
 				if (trUnitAlive() == true) {
 					zSetVar("allUnitsBank", "state", STATE_ALIVE);
+					mSetVarByQV("allUnitsBank", "played", 0);
 				}
 			}
 		}

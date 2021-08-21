@@ -15,13 +15,28 @@ void processAttack(string db = "attacks") {
 				trUnitSelectClear();
 				trUnitSelect(""+attacker, true);
 				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-				if (mGetVar(attacker, "range") == 1) {
-					trUnitOverrideAnimation(1,0,0,1,-1);
-				} else {
-					trUnitOverrideAnimation(12,0,0,1,-1);
+				switch(1*yGetVar(db, "animation"))
+				{
+					case ANIM_DEFAULT:
+					{
+						if (mGetVar(attacker, "range") == 1) {
+							trUnitOverrideAnimation(1,0,0,1,-1);
+						} else {
+							trUnitOverrideAnimation(12,0,0,1,-1);
+						}
+					}
+					case ANIM_CHARGING:
+					{
+						trUnitOverrideAnimation(19,0,0,1,-1);
+					}
+					case ANIM_GORE:
+					{
+						trUnitOverrideAnimation(26,0,0,1,-1);
+					}
 				}
+				
 				ySetVar(db, "phase", ATTACK_ANIMATE);
-				ySetVar(db, "timeout", trTime() + 1);
+				ySetVar(db, "timeout", trTimeMS() + 1500);
 			} else {
 				yRemoveFromDatabase(db);
 				yRemoveUpdateVar(db, "target");
@@ -31,7 +46,7 @@ void processAttack(string db = "attacks") {
 		}
 		case ATTACK_ANIMATE:
 		{
-			if ((kbUnitGetAnimationActionType(attackerID) == 16) == false || trTime() > yGetVar(db, "timeout")) {
+			if ((kbUnitGetAnimationActionType(attackerID) == 16) == false || trTimeMS() > yGetVar(db, "timeout")) {
 				ySetVar(db, "phase", ATTACK_DONE);
 			}
 		}
@@ -96,7 +111,10 @@ bool attackUnitAtCursor(int p = 0) {
 			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && 
 				(mGetVar(target, "stunTime") == 0) &&
 				(HasKeyword(HEALER, 1*mGetVar(target, "keywords")) == false)) {
-				startAttack(target, a, false, true);
+				if ((HasKeyword(FLYING, 1*mGetVar(a, "keywords")) == false) ||
+					(mGetVar(target, "range") > 1)) {
+					startAttack(target, a, false, true);
+				}
 			}
 
 			mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
@@ -117,6 +135,7 @@ bool attackUnitAtCursor(int p = 0) {
 				mSetVar(target, "action", ACTION_READY);
 			}
 		}
+		deployAtTile(0, "Regeneration SFX", 1*mGetVar(target, "tile"));
 		mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
 		xsEnableRule("gameplay_05_attackComplete");
 		return(true);
@@ -212,6 +231,7 @@ inactive
 	} else {
 		trQuestVarSet("gameplayPhase", GAMEPLAY_SELECT);
 		int p = trQuestVarGet("activePlayer");
+		int tile = 0;
 		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
 			trQuestVarSet("activeUnit", unit);
@@ -267,7 +287,7 @@ inactive
 						trQuestVarSet("gameplayPhase", GAMEPLAY_SUMMONING);
 						// If it is a unit
 						if (mGetVar(unit, "spell") == 0) {
-							int tile = 0;
+							tile = 0;
 							yClearDatabase("summonLocations");
 							if (HasKeyword(AIRDROP, 1*mGetVar(unit, "keywords"))) {
 								for(x=zGetBankCount("tiles"); >0) {
@@ -305,6 +325,14 @@ inactive
 						highlightReady(0.1);
 					}
 					
+				} else {
+					for(x=yGetDatabaseCount("meteors"); >0) {
+						yDatabaseNext("meteors");
+						if (zDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
+							trMessageSetText("A meteor will fall on this tile, dealing 6 damage to it and 2 damage to adjacent tiles.", -1);
+							break;
+						}
+					}
 				}
 			}
 
@@ -662,6 +690,8 @@ inactive
 
 					// If the unit has an OnPlay effect
 					OnPlay(unit);
+					
+					updateAuras();
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					yRemoveFromDatabase("p"+p+"hand");

@@ -47,7 +47,7 @@ inactive
 
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
-		trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
+		spyEffect("Healing SFX");
 
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
@@ -70,7 +70,6 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
-		unitTransform("Spy Eye", "Healing SFX");
 		trTechGodPower(1, "nidhogg", 1);
 		trTechGodPower(2, "nidhogg", 1);
 		for(p=2; >0) {
@@ -237,11 +236,17 @@ inactive
 						damageUnit(1*trQuestVarGet("allUnits"), mGetVarByQV("allUnits", "health"));
 						deathSummonQueue(1*mGetVarByQV("allUnits", "tile"), p, "Phoenix From Egg");
 					}
+					case kbGetProtoUnitID("Hero Greek Chiron"):
+					{
+						trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
+						trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
+					}
 				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
 		}
+
 
 
 		if (p == 1) {
@@ -290,6 +295,11 @@ inactive
 
 		trQuestVarSet("turnEnd", 1);
 
+		trQuestVarSet("apocalypse", trQuestVarGet("apocalypse") - 1);
+		if (trQuestVarGet("apocalypse") == 0) {
+			musicToggleBattleMode();
+		}
+
 		/*
 		End of turn effects
 		*/
@@ -311,6 +321,38 @@ inactive
 				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - trQuestVarGet("p"+p+"yeebbonus"));
 				trQuestVarSet("p"+p+"yeebbonus", 0);
 			}
+		}
+
+		/*
+		Meteors
+		*/
+		trQuestVarSet("sound", 0);
+		yDatabasePointerDefault("meteors");
+		for(x=yGetDatabaseCount("meteors"); >0) {
+			yDatabaseNext("meteors", true);
+			ySetVar("meteors", "time", yGetVar("meteors", "time") - 1);
+			if (yGetVar("meteors", "time") == 0) {
+				trQuestVarSet("sound", 1);
+				trUnitChangeProtoUnit("Meteor");
+				deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("meteors", "tile"));
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("meteors", "tile")));
+				for(y=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "tile") == yGetVar("meteors", "tile")) {
+						damageUnit(1*trQuestVarGet("allUnits"), 6 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+						damageUnit(1*trQuestVarGet("allUnits"), 2 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					}
+				}
+				yRemoveFromDatabase("meteors");
+				yRemoveUpdateVar("meteors", "tile");
+				yRemoveUpdateVar("meteors", "time");
+			}
+		}
+
+		if (trQuestVarGet("sound") == 1) {
+			trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
 		}
 
 		removeDeadUnits();
