@@ -196,6 +196,9 @@ active
 			if (trQuestVarGet("p"+p+"drawCards") > 0) {
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);
 				drawCard(p);
+				if (trQuestVarGet("p"+p+"drawCards") == 0) {
+					updateHandPlayable(1*trQuestVarGet("activePlayer"));
+				}
 			}
 		}
 	}

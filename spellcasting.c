@@ -370,20 +370,19 @@ inactive
 			case CAST_DIRECTION:
 			{
 				if (trQuestVarGet("cast"+x+"unit") == 1) {
-					trQuestVarSet("start", mGetVar(1*trQuestVarGet(trStringQuestVarGet("cast"+x+"start")), "tile"));
+					trQuestVarSet("start", mGetVarByQV(trStringQuestVarGet("cast"+x+"start"), "tile"));
 				} else {
 					trQuestVarSet("start", trQuestVarGet(trStringQuestVarGet("cast"+x+"start")));
 				}
-				float angle = 0.785398;
-				trVectorSetUnitPos("pos", "start");
 				bool found = true;
 				tile = 0;
 				// For each direction...
-				for(d=6; >0) {
-					trVectorSetFromAngle("step", angle);
-					trVectorScale("step", 6.0);
+				for(d=0; < zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("start"))) {
+					trVectorSetUnitPos("pos", "start");
+					trVectorQuestVarSet("target", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+d, 1*trQuestVarGet("start"))));
+					trVectorQuestVarSet("step", zGetUnitVector("pos", "target", 6.0));
 					trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));
-					trQuestVarSet("posz", trQuestVarGet("posx") + trQuestVarGet("stepz"));
+					trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));
 					tile = trQuestVarGet("start");
 					found = true;
 					while(found) {
@@ -395,8 +394,8 @@ inactive
 								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);
 								trQuestVarSet("currentTile", tile);
 								yAddToDatabase("castTiles", "currentTile");
-								trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));
-								trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));
+								trQuestVarSet("posx", trQuestVarGet("currentx") + trQuestVarGet("stepx"));
+								trQuestVarSet("posz", trQuestVarGet("currentz") + trQuestVarGet("stepz"));
 								if (trCurrentPlayer() == p) {
 									highlightTile(tile, 999999);
 								}
@@ -405,7 +404,6 @@ inactive
 							}
 						}
 					}
-					angle = fModulo(6.283185, angle + 1.047197);
 				}
 			}
 		}
@@ -668,6 +666,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_LAMPADES_CONVERT:
 		{
 			castAddConvertUnit("spellTarget", 3 - trQuestVarGet("activePlayer"));
+		}
+		case SPELL_WATER_CANNON:
+		{
+			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+			castAddDirection("spellDirection", "spellTarget", true);
 		}
 	}
 	castStart();
@@ -1040,6 +1043,18 @@ inactive
 				mSetVarByQV("spellTarget", "player", p);
 				mSetVarByQV("spellTarget", "action", ACTION_SLEEPING);
 			}
+			case SPELL_WATER_CANNON:
+			{
+				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				trSoundPlayFN("shockwave.wav","1",-1,"","");
+				deployAtTile(0, "Meteor Impact Water", 1*mGetVarByQV("spellTarget", "tile"));
+				done = false;
+				trVectorSetUnitPos("start", "spellTarget");
+				trVectorSetUnitPos("end", "spellDirection");
+				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				pushUnit(1*trQuestVarGet("spellTarget"), "dir");
+				xsEnableRule("spell_attack_complete");
+			}
 		}
 
 		if (battlecry == false) {
@@ -1136,6 +1151,7 @@ inactive
 		int target = ProtoToCard(proto);
 		if (yGetDatabaseCount("p"+p+"hand") < 10) {
 			addCardToHandByIndex(p, target);
+			updateHandPlayable(p);
 		}
 		xsDisableRule("spell_mirror_image_activate");
 	}
@@ -1174,7 +1190,7 @@ rule spell_attack_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");

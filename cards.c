@@ -749,7 +749,7 @@ runImmediately
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
 	// 75-79
 	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Grant your Commander +2 attack this turn.
-	CardSetup("Kraken",					5, "Kraken",				1, 6, 2, 1); // Attack: Return my target to its owner's hand.
+	CardSetup("Kraken",					5, "Kraken",				2, 6, 2, 1); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"(4)Tidal Wave: Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent enemies away from your Commander.", SPELL_TYPE_OTHER);

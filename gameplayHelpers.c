@@ -416,6 +416,77 @@ void stunUnit(int index = 0) {
 	}
 }
 
+/*
+name = the unit name number
+dir = string containing the name of a vector for the direction to be pushed
+*/
+void pushUnit(int name = 0, string dir = "") {
+	int p = mGetVar(name, "player");
+	int tile = mGetVar(name, "tile");
+	int container = deployAtTile(p, "Dwarf", tile);
+	zSetVarByIndex("tiles", "occupant", tile, 0);
+	tileGuard(tile, false);
+	refreshGuardAll();
+
+	trUnitSelectClear();
+	trUnitSelect(""+container, true);
+	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
+	trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
+
+	trUnitSelectClear();
+	trUnitSelect(""+name);
+	trUnitOverrideAnimation(24,0,1,1,-1);
+	trMutateSelected(kbGetProtoUnitID("Relic"));
+	trImmediateUnitGarrison(""+container);
+	trMutateSelected(1*mGetVar(name, "proto"));
+
+
+	/*
+	Find destination
+	*/
+	trVectorQuestVarSet("start", kbGetBlockPosition(""+name));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
+	trQuestVarSet("posx", trQuestVarGet("posx") + 6.0*trQuestVarGet(dir+"x"));
+	trQuestVarSet("posz", trQuestVarGet("posz") + 6.0*trQuestVarGet(dir+"z"));
+	bool found = true;
+	int neighbor = 0;
+	int target = 0;
+	while(found) {
+		found = false;
+		// Travel down the line and find stopping tile
+		for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+			neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);
+			if (zGetVarByIndex("tiles", "terrain", neighbor) == 0 && neighbor < trQuestVarGet("ztilesend")) {
+				trVectorQuestVarSet("current", kbGetBlockPosition(""+neighbor));
+				if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
+					if (zGetVarByIndex("tiles", "occupant", neighbor) > 0) {
+						target = zGetVarByIndex("tiles", "occupant", neighbor);
+					} else {
+						tile = neighbor;
+						trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet(dir+"x"));
+						trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet(dir+"z"));
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	trQuestVarSet("next", container);
+	yAddToDatabase("pushes", "next");
+	yAddUpdateVar("pushes", "name", name);
+	yAddUpdateVar("pushes", "dest", tile);
+	yAddUpdateVar("pushes", "target", target);
+	yAddUpdateVar("pushes", "timeout", trTimeMS() + 70 * zDistanceBetweenVectors("start", "pos"));
+	trUnitSelectClear();
+	trUnitSelect(""+tile);
+	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
+	trUnitSelectClear();
+	trUnitSelect(""+container);
+	trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
+	trUnitMoveToVector("pos", false);
+}
+
 void updateAuras() {
 	int card = 0;
 	for(p=2; >0) {
@@ -452,6 +523,32 @@ void updateAuras() {
 		}
 	}
 	refreshGuardAll();
+}
+
+rule resolve_pushes
+highFrequency
+active
+{
+	if (yGetDatabaseCount("pushes") > 0) {
+		int unit = yDatabaseNext("pushes");
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("pushes", "dest")));
+		if (zDistanceToVectorSquared("pushes", "pos") < 4 || trTimeMS() > yGetVar("pushes", "timeout")) {
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			trUnitEjectContained();
+			trUnitChangeProtoUnit("Dust Large");
+			teleportToTile(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "dest"));
+			if (yGetVar("pushes", "target") > 0) {
+				startAttack(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "target"), false, false);
+				startAttack(1*yGetVar("pushes", "target"), 1*yGetVar("pushes", "name"), false, false);
+			}
+			yRemoveFromDatabase("pushes");
+			yRemoveUpdateVar("pushes", "name");
+			yRemoveUpdateVar("pushes", "dest");
+			yRemoveUpdateVar("pushes", "target");
+			yRemoveUpdateVar("pushes", "timeout");
+		}
+	}
 }
 
 rule spy_assign_new

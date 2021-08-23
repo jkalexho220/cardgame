@@ -110,6 +110,9 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Valkyrie"):
 		{
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose a minion to restore 3 health to.", -1);
+			}
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_VALKYRIE_HEAL);
