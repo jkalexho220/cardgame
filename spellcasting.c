@@ -1013,7 +1013,7 @@ inactive
 			{
 				trSoundPlayFN("recreation.wav","1",-1,"","");
 				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
-				addCardToDeckByIndex(p, target);
+				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
 				shuffleDeck(p);
 				xsEnableRule("spell_mirror_image_activate");
 			}
@@ -1148,9 +1148,8 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		int proto = mGetVarByQV("spellTarget", "proto");
-		int target = ProtoToCard(proto);
 		if (yGetDatabaseCount("p"+p+"hand") < 10) {
-			addCardToHandByIndex(p, target);
+			addCardToHand(p, proto);
 			updateHandPlayable(p);
 		}
 		xsDisableRule("spell_mirror_image_activate");
