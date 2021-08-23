@@ -1,38 +1,4 @@
-rule match_test
-highFrequency
-inactive
-runImmediately
-{
-	for(p=2; >0) {
-		for(x=3; >0) {
-			addCardToDeck(p, "Khopesh");
-			addCardToDeck(p, "Javelin Cavalry Hero");
-			addCardToDeck(p, "Priest");
-			addCardToDeck(p, "Maceman");
-			addCardToDeck(p, "Skraeling");
-			addCardToDeck(p, "Slinger");
-			addCardToDeck(p, "Huskarl");
-			addCardToDeck(p, "Peltast");
-			addCardToDeck(p, "Oracle Scout");
-			addCardToDeck(p, "Phoenix From Egg");
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_ELECTROSURGE);
-			addCardToDeck(p, "", SPELL_DOUBLEBLAST);
-			addCardToDeck(p, "", SPELL_FIRE_AND_ICE);
-			addCardToDeck(p, "", SPELL_RUNE_OF_FLAME);
-			addCardToDeck(p, "", SPELL_RUNE_OF_ICE);
-		}
-		addCardToDeck(p, "", SPELL_WHIRLWIND);
-		addCardToDeck(p, "Archer Atlantean Hero");
-		addCardToDeck(p, "Nemean Lion");
-	}
-	
-	InitBot(BOT_PERSONALITY_DEFAULT);
-	
-	xsDisableRule("match_test");
-}
+
 
 rule match_00_start
 highFrequency
@@ -284,8 +250,9 @@ inactive
 			trUnitDestroy();
 		}
 		ChatLogShow();
-		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
+		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"extraManaflow"));
 		trQuestVarSet("p"+p+"mana", -1);
+		trQuestVarSet("p"+p+"extraManaflow", 0);
 		updateHandPlayable(p);
 		
 		trPlayerKillAllGodPowers(p);

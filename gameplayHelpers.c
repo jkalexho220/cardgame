@@ -225,6 +225,9 @@ void healUnit(int index = 0, float heal = 0) {
 
 void damageUnit(int index = 0, float dmg = 0) {
 	int p = mGetVar(index, "player");
+	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
+		dmg = xsMax(0, dmg - 1);
+	}
 	/*
 	Throne Shield activates here
 	*/
@@ -414,6 +417,7 @@ void stunUnit(int index = 0) {
 }
 
 void updateAuras() {
+	int card = 0;
 	for(p=2; >0) {
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
 		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
@@ -424,8 +428,29 @@ void updateAuras() {
 				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
 			}
 		}
-	}
 
+		/*
+		Scylla discounts
+		*/
+		if (trCountUnitsInArea("128", p, "Heka Gigantes", 45) > 0) {
+			for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
+					mSetVarByQV("p"+p+"hand", "keywords", SetBit(1*mGetVarByQV("p"+p+"hand", "keywords"), OVERFLOW));
+				}
+			}
+		} else {
+			for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
+					card = mGetVarByQV("p"+p+"hand", "proto");
+					if (HasKeyword(OVERFLOW, 1*trQuestVarGet("card_"+card+"_keywords")) == false) {
+						mSetVarByQV("p"+p+"hand", "keywords", ClearBit(1*mGetVarByQV("p"+p+"hand", "keywords"), OVERFLOW));
+					}
+				}
+			}
+		}
+	}
 	refreshGuardAll();
 }
 

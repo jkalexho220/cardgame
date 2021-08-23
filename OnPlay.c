@@ -1,6 +1,7 @@
 void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
+	int type = 0;
 	bool done = true;
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
@@ -125,6 +126,70 @@ void OnPlay(int unit = 0) {
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_SHAPESHIFT);
+		}
+		case kbGetProtoUnitID("Hero Greek Chiron"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("sentinelbirth.wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Heka Gigantes"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Hypaspist"):
+		{
+			trQuestVarSet("p"+p+"yeebBonus", 1 + trQuestVarGet("p"+p+"yeebBonus"));
+			mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
+		case kbGetProtoUnitID("Hippikon"):
+		{
+			trQuestVarSet("p"+p+"yeebBonus", 2 + trQuestVarGet("p"+p+"yeebBonus"));
+			mSetVarByQV("p"+p+"commander", "attack", 2 + mGetVarByQV("p"+p+"commander", "attack"));
+			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
+		case kbGetProtoUnitID("Myrmidon"):
+		{
+			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+		}
+		case kbGetProtoUnitID("Behemoth"):
+		{
+			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));	
+		}
+		case kbGetProtoUnitID("Hippocampus"):
+		{
+			trQuestVarSet("highestCost", 0);
+			trQuestVarSet("currentCost", 0);
+			trQuestVarSet("highestPointer", 0);
+			for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+				type = yDatabaseNext("p"+p+"deck");
+				if (yGetVar("p"+p+"deck", "spell") > 0) {
+					type = yGetVar("p"+p+"deck", "spell");
+					trQuestVarCopy("currentCost", "spell_"+type+"_cost");
+				} else {
+					trQuestVarCopy("currentCost", "card_"+type+"_cost");
+				}
+				if (trQuestVarGet("currentCost") >= trQuestVarGet("highestCost")) {
+					trQuestVarSet("highestPointer", yGetPointer("p"+p+"deck"));
+					trQuestVarCopy("highestCost", "currentCost");
+				}
+			}
+			ySetPointer("p"+p+"deck", 1 + trQuestVarGet("highestPointer"));
+			drawCard(p);
+		}
+		case kbGetProtoUnitID("Medusa"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_MEDUSA_STUN);
+		}
+		case kbGetProtoUnitID("Lampades"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_LAMPADES_CONVERT);
 		}
 	}
 	if (done) {

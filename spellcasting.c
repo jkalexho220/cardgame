@@ -3,6 +3,7 @@ const int CAST_UNIT = 0;
 const int CAST_TARGET = 1;
 const int CAST_SING = 2;
 const int CAST_BACKSTAB = 3;
+const int CAST_CONVERT = 4;
 
 const int CAST_TILE = 10;
 const int CAST_ADJACENT_TILE = 11;
@@ -58,6 +59,16 @@ void castAddSing(string qv = "", int p = 0) {
 	int x = trQuestVarGet("castPush");
 
 	trQuestVarSet("cast"+x+"type", CAST_SING);
+	trQuestVarSet("cast"+x+"player", p);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+void castAddConvertUnit(string qv = "", int p = 0) {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	
+	trQuestVarSet("cast"+x+"type", CAST_CONVERT);
 	trQuestVarSet("cast"+x+"player", p);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 }
@@ -161,6 +172,10 @@ void castEnd() {
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
 		}
+		// if the commander is out reach
+		if (trQuestVarGet("p"+p+"commanderType") == 4) {
+			trQuestVarSet("p"+p+"extraManaflow", cost + trQuestVarGet("p"+p+"extraManaflow"));
+		}
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - xsMax(0, cost));
 		updateMana();
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
@@ -256,6 +271,25 @@ inactive
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
+							trUnitSelectClear();
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
+							yAddToDatabase("castTargets", "allUnits");
+							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+								trUnitHighlight(999999, false);
+							}
+						}
+					}
+				}
+			}
+			case CAST_CONVERT:
+			{
+				p = trQuestVarGet("cast"+x+"player");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "cost") <= trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"manaflow")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
@@ -386,7 +420,7 @@ inactive
 
 void spellcastClearHighlights(int x = 0) {
 	/*
-	castTargets can be either a tile or the index of a unit in the allUnits database.
+	castTargets can be either a tile or a unit.
 	The behavior of this function differs based on type.
 	*/
 	if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {
@@ -626,6 +660,14 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_MIRROR_IMAGE:
 		{
 			castAddUnit("spellTarget", 0, false);
+		}
+		case SPELL_MEDUSA_STUN:
+		{
+			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+		}
+		case SPELL_LAMPADES_CONVERT:
+		{
+			castAddConvertUnit("spellTarget", 3 - trQuestVarGet("activePlayer"));
 		}
 	}
 	castStart();
@@ -971,6 +1013,32 @@ inactive
 				addCardToDeckByIndex(p, target);
 				shuffleDeck(p);
 				xsEnableRule("spell_mirror_image_activate");
+			}
+			case SPELL_MEDUSA_STUN:
+			{
+				battlecry = true;
+				trVectorSetUnitPos("casterPos", "spellCaster");
+				trVectorSetUnitPos("targetPos", "spellTarget");
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trUnitOverrideAnimation(40, 0, 0, 1, -1);
+				stunUnit(1*trQuestVarGet("spellTarget"));
+			}
+			case SPELL_LAMPADES_CONVERT:
+			{
+				battlecry = true;
+				trVectorSetUnitPos("casterPos", "spellCaster");
+				trVectorSetUnitPos("targetPos", "spellTarget");
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trUnitOverrideAnimation(37, 0, 0, 1, -1);
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
+				trUnitConvert(p);
+				mSetVarByQV("spellTarget", "player", p);
+				mSetVarByQV("spellTarget", "action", ACTION_SLEEPING);
 			}
 		}
 

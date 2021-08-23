@@ -23,6 +23,7 @@ const int SPELL_TYPE_OFFENSIVE = 0;
 const int SPELL_TYPE_DEFENSIVE = 1;
 const int SPELL_TYPE_OTHER = 2;
 
+// Adventurer
 const int SPELL_FIRST_AID = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
@@ -38,7 +39,7 @@ const int SPELL_HEROIC = 13;
 const int SPELL_WOLF = 14;
 const int SPELL_PING = 15;
 
-
+// Arcane
 const int SPELL_SPARK = 16;
 const int SPELL_SNIPE = 17;
 const int SPELL_EXPLOSION = 18;
@@ -57,6 +58,21 @@ const int SPELL_APOCALYPSE = 29;
 const int SPELL_SHAPESHIFT = 30;
 const int SPELL_VALKYRIE_HEAL = 31;
 
+// Naga
+const int SPELL_RUNE_OF_WATER = 32;
+const int SPELL_WATER_CANNON = 33;
+const int SPELL_TIDAL_WAVE = 34;
+const int SPELL_FLUSH = 35;
+const int SPELL_DEEP_DIVE = 36;
+const int SPELL_SEA_EMBRACE = 37;
+const int SPELL_TELETIDE = 38;
+const int SPELL_WRATH_OF_SEA = 39;
+const int SPELL_GUARDIAN_OF_SEA = 40;
+const int SPELL_CLEANSING_WATERS = 41;
+
+
+const int SPELL_MEDUSA_STUN = 43;
+const int SPELL_LAMPADES_CONVERT = 44;
 /*
 OnAttack events (bit positions)
 */
@@ -69,8 +85,11 @@ const int ATTACK_ANIMATE_ORACLE = 5;
 const int ATTACK_DISCOUNT = 6;
 const int ATTACK_GET_ARCANE = 7;
 const int ATTACK_YEET = 8;
+const int ATTACK_PUSH = 9;
+const int ATTACK_RETURN = 10;
+const int ATTACK_GET_MANAFLOW = 11;
 
-const int ATTACK_EVENT_COUNT = 9;
+const int ATTACK_EVENT_COUNT = 12;
 
 
 /*
@@ -143,7 +162,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case REGENERATE: return ("Restores to full health at the start of your turn.");
 		case DEADLY: return ("I kill any minion that I damage.");
 		case ETHEREAL: return ("Can pass through units and impassable terrain.");
-		case ARMORED: return ("Unit regenerates to full health after combat.");
+		case ARMORED: return ("This unit takes 1 less damage from all sources.");
 		case WARD: return ("Unit cannot be targeted by spells or play effects.");
 		case BEACON: return ("Allies can be summoned next to this unit.");
 		case AMBUSH: return ("When initiating combat, unit attacks first.");
@@ -368,6 +387,8 @@ void displayCardKeywordsAndDescription(int name = 0) {
 	message = mGetString(name, "ability");
 
 	int old = xsGetContextPlayer();
+	int p = mGetVar(name, "player");
+	int discount = 0;
 	if (mGetVar(name, "spell") <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
@@ -380,29 +401,41 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		} else {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
+		
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
+		trVectorQuestVarSet("center", kbGetBlockPosition("128"));
 
-		xsSetContextPlayer(1*mGetVar(name, "player"));
-		int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
-		if (diff > 0) {
-			bonus = bonus + "HP +" + diff + " ";
-		}
+		if (zDistanceBetweenVectorsSquared("pos", "center") > 2025) {
+			discount = trQuestVarGet("p"+p+"minionDiscount");
+			if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
+				discount = discount + trQuestVarGet("p"+p+"manaflow");
+			}
+			if (discount > 0) {
+				bonus = "Discount " + discount;
+			}
+		} else {
+			xsSetContextPlayer(1*mGetVar(name, "player"));
+			int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
+			if (diff > 0) {
+				bonus = bonus + "HP +" + diff + " ";
+			}
 
-		diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
-		if (diff > 0) {
-			bonus = bonus + "ATK +" + diff + " ";
-		} else if (diff < 0) {
-			bonus = bonus + "ATK " + diff + " ";
-		}
+			diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
+			if (diff > 0) {
+				bonus = bonus + "ATK +" + diff + " ";
+			} else if (diff < 0) {
+				bonus = bonus + "ATK " + diff + " ";
+			}
 
-		diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
-		if (diff > 0) {
-			bonus = bonus + "SPD +" + diff;
-		} else if (diff < 0) {
-			bonus = bonus + "SPD " + diff;
+			diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
+			if (diff > 0) {
+				bonus = bonus + "SPD +" + diff;
+			} else if (diff < 0) {
+				bonus = bonus + "SPD " + diff;
+			}
 		}
 	} else {
-		int p = mGetVar(name, "player");
-		int discount = trQuestVarGet("p"+p+"spellDiscount");
+		discount = trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 			discount = discount + trQuestVarGet("p"+p+"manaflow");
 		}
@@ -453,6 +486,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "played", 1);
 
 	trMutateSelected(proto);
+	trUnitConvert(p);
 
 	return(next);
 }
@@ -501,6 +535,9 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	if (HasKeyword(ETHEREAL, keywords)) {
 		trModifyProtounit(protoName, 1, 55, 4);
 		trModifyProtounit(protoName, 2, 55, 4);
+	} else {
+		trModifyProtounit(protoName, 1, 55, 1);
+		trModifyProtounit(protoName, 2, 55, 1);
 	}
 	
 	for(p=1;<cNumberPlayers){
@@ -615,7 +652,7 @@ runImmediately
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Wanderer", 			1, 4, 3, 1, Keyword(DEADLY));
+	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
@@ -682,15 +719,52 @@ runImmediately
 	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"(10)Apocalypse: Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
 	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"(2)Mirror Image: Add a copy of a minion to your hand and your deck.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 5, 3, 2); // At the start of your turn, both players draw a card.
+	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 3, 2); // At the start of your turn, both players draw a card.
 
 	/*
 	NAGA
 	*/
 	// Created cards
-	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true);
-	CardSetup("Archer Atlantean Hero",	0, "scragins", 			2, 20, 2, 2, Keyword(BEACON), true);
-	
+	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true); // Your mana spent on spells will still count as Manaflow next turn.
+	CardSetup("Archer Atlantean Hero",	0, "scragins", 			1, 20, 2, 2, Keyword(BEACON) + Keyword(FURIOUS), true);
+	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
+
+	// 60-64
+	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
+	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
+	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
+	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive minion.
+	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
+	// 65-69
+	CardSetup("Medusa",					4, "Naga Archer",			2, 3, 2, 2); // Play: Stun an enemy minion.
+	CardSetup("Cyclops",				5, "Undercity Protector",	3, 5, 1, 1, Keyword(GUARD) + Keyword(OVERFLOW));
+	CardSetup("Lampades",				6, "Naga Sea Witch",		2, 2, 2, 2); // Play: Convert an enemy that costs {Manaflow} or less.
+	CardSetup("Behemoth",				5, "Mana Muncher",			1, 1, 1, 1); // Play: I gain {Manaflow} attack and health.
+	CardSetup("Nereid",					4, "Naga Sea Hunter",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
+	// 70-74 (LEGENDARY at 74)
+	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"(5)Rune of Water: Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
+	CardSetup("Hydra",					6, "Depth Strider",			5, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
+	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"(5)Water Cannon: Push an enemy in any direction.", SPELL_TYPE_OFFENSIVE);
+	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(REGENERATE) + Keyword(ARMORED));
+	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
+	// 75-79
+	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Grant your Commander +2 attack this turn.
+	CardSetup("Kraken",					5, "Kraken",				1, 6, 2, 1); // Attack: Return my target to its owner's hand.
+	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
+	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"(4)Tidal Wave: Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
+	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent enemies away from your Commander.", SPELL_TYPE_OTHER);
+	// 80-84
+	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"(2)Deep Dive: Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
+	SpellSetup("Sea's Embrace",			2, SPELL_SEA_EMBRACE,		"(2)Sea's Embrace: Restore {2 x Manaflow} health to an ally. Excess health is restored to your Commander.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"(1)Teletide: Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
+	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"(2)Guardian of the Sea: Grant your Commander +5 health and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Wrath of the Sea",		8, SPELL_WRATH_OF_SEA,		"(8)Wrath of the Sea: Grant your Commander {MANAFLOW} attack this turn.", SPELL_TYPE_OTHER);
+	// 85-89 (LEGENDARY at 89)
+	CardSetup("Scylla",					9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
+	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"(1)Cleansing Waters: Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
+	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
+	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
 	/*
 	CLOCKWORK
 	*/
@@ -749,9 +823,22 @@ runImmediately
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
 	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
 	
-	CardEvents("Royal Guard Hero", 0, 0, 								"Loading ability...");
-	CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
+	CardEvents("Royal Guard Hero", 0, 0, 								"Your mana spent on spells will still count as Manaflow next turn.");
+	// CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
 	
+	CardEvents("Hypaspist", 0, 0,										"Play: Grant your Commander +1 attack this turn.");
+	CardEvents("Myrmidon", 0, 0,										"Play: I gain {Manaflow} health.");
+	CardEvents("Archer Atlantean", 0, 0,								"Whenever your Commander attacks an enemy, I attack it too.");
+	CardEvents("Hippocampus", 0, 0,										"Play: Draw the most expensive minion from your deck.");
+	CardEvents("Medusa", 0, 0,											"Play: Stun an enemy minion.");
+	CardEvents("Lampades", 0, 0,										"Play: Convert an enemy minion that costs {Manaflow} or less.");
+	CardEvents("Behemoth", 0, 0,										"Play: I gain {Manaflow} attack and health.");
+	CardEvents("Servant", Keyword(ATTACK_PUSH), 0,						"Attack: Push my target away from me.");
+	CardEvents("Heka Gigantes", 0, 0,									"All your minions have Overflow.");
+	CardEvents("Hippikon", 0, 0,										"Play: Grant your Commander +2 attack this turn.");
+	CardEvents("Kraken", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to its owner's hand.");
+	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 1 Manaflow this turn.");
+
 	CardEvents("Hero Greek Polyphemus", 0, 0, 							"I'm chunky!");
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
 	

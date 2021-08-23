@@ -63,5 +63,15 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 			}
 		}
+		case ATTACK_GET_MANAFLOW:
+		{
+			trQuestVarSet("p"+p+"manaflow", 1 + trQuestVarGet("p"+p+"manaflow"));
+		}
+		case ATTACK_RETURN:
+		{
+			deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
+			trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+			returnToHand(target);
+		}
 	}
 }
