@@ -57,6 +57,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			if ((trQuestVarGet("activePlayer") == p) == false) {
 				if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == 0)) {
 					trSoundPlayFN("shockwave.wav","1",-1,"","");
+					trSoundPlayFN("suckup2.wav","1",-1,"","");
 					deployAtTile(0, "Tremor", 1*mGetVar(target, "tile"));
 					deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
 					returnToHand(target);
@@ -69,13 +70,22 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_RETURN:
 		{
-			deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
-			trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
-			returnToHand(target);
+			if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == SPELL_NONE)) {
+				deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
+				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				trSoundPlayFN("suckup1.wav","1",-1,"","");
+				returnToHand(target);
+			}
 		}
 		case ATTACK_PUSH:
 		{
 			deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
+			trSoundPlayFN("shockwave.wav","1",-1,"","");
+			trSoundPlayFN("meteorsplash.wav","1",-1,"","");
+			trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
+			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
+			trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+			pushUnit(target, "dir");
 		}
 	}
 }

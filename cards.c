@@ -752,13 +752,13 @@ runImmediately
 	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"(4)Tidal Wave: Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
-	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent enemies away from your Commander.", SPELL_TYPE_OTHER);
+	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"(2)Deep Dive: Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
 	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"(1)Sea's Embrace: Restore {Manaflow} health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"(1)Teletide: Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
 	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"(2)Guardian of the Sea: Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
-	SpellSetup("Wrath of the Sea",		8, SPELL_WRATH_OF_SEA,		"(8)Wrath of the Sea: Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
+	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"(12)Wrath of the Sea: Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Scylla",					9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"(1)Cleansing Waters: Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);

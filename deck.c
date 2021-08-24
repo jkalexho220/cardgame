@@ -91,7 +91,7 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
 	}
 
-	if (trCountUnitsInArea("128",p,"Heka Gigantes",45) > 0) {
+	if ((trCountUnitsInArea("128",p,"Heka Gigantes",45) > 0) && (spell == SPELL_NONE)) {
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), OVERFLOW));
 	}
 

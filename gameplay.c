@@ -688,8 +688,7 @@ inactive
 					}
 					updateMana();
 
-					// If the unit has an OnPlay effect
-					OnPlay(unit);
+					
 					
 					updateAuras();
 
@@ -698,6 +697,8 @@ inactive
 					yRemoveUpdateVar("p"+p+"hand", "pos");
 
 					zSetVarByIndex("tiles", "occupant", tile, unit);
+					// If the unit has an OnPlay effect
+					OnPlay(unit);
 					updateHandPlayable(p);
 
 					for (x=yGetDatabaseCount("summonLocations"); >0) {

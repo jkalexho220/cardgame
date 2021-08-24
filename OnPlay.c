@@ -168,15 +168,12 @@ void OnPlay(int unit = 0) {
 			trQuestVarSet("highestPointer", 0);
 			for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 				type = yDatabaseNext("p"+p+"deck");
-				if (yGetVar("p"+p+"deck", "spell") > 0) {
-					type = yGetVar("p"+p+"deck", "spell");
-					trQuestVarCopy("currentCost", "spell_"+type+"_cost");
-				} else {
+				if (yGetVar("p"+p+"deck", "spell") == 0) {
 					trQuestVarCopy("currentCost", "card_"+type+"_cost");
-				}
-				if (trQuestVarGet("currentCost") >= trQuestVarGet("highestCost")) {
-					trQuestVarSet("highestPointer", yGetPointer("p"+p+"deck"));
-					trQuestVarCopy("highestCost", "currentCost");
+					if (trQuestVarGet("currentCost") >= trQuestVarGet("highestCost")) {
+						trQuestVarSet("highestPointer", yGetPointer("p"+p+"deck"));
+						trQuestVarCopy("highestCost", "currentCost");
+					}
 				}
 			}
 			ySetPointer("p"+p+"deck", 1 + trQuestVarGet("highestPointer"));
