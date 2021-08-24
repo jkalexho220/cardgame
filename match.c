@@ -214,6 +214,13 @@ inactive
 		}
 
 
+		/*
+		Guardian of the Sea expires
+		*/
+		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 1) {
+			trQuestVarSet("p"+p+"guardianOfTheSea", 0);
+			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
+		}
 
 		if (p == 1) {
 			trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
@@ -232,6 +239,7 @@ inactive
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
 
 		removeDeadUnits();
+		updateAuras();
 
 		xsEnableRule("gameplay_01_select");
 		xsEnableRule("turn_01_end");

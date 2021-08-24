@@ -138,7 +138,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Heka Gigantes"):
 		{
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+			trSoundPlayFN("ageadvance.wav","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Hypaspist"):
 		{

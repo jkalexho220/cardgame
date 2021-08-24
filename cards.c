@@ -703,7 +703,7 @@ runImmediately
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
 	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD));
 	// 45-49
-	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
+	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
 	CardSetup("Prisoner",				2, "Magic Test Subject",2, 2, 2, 1); // Death: Add a random Arcane spell to your hand.
 	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Add a random Arcane spell to your hand.
@@ -749,16 +749,16 @@ runImmediately
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
 	// 75-79
 	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Grant your Commander +2 attack this turn.
-	CardSetup("Kraken",					5, "Kraken",				2, 6, 2, 1); // Attack: Return my target to its owner's hand.
+	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"(4)Tidal Wave: Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent enemies away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"(2)Deep Dive: Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
-	SpellSetup("Sea's Embrace",			2, SPELL_SEA_EMBRACE,		"(2)Sea's Embrace: Restore {2 x Manaflow} health to an ally. Excess health is restored to your Commander.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"(1)Sea's Embrace: Restore {Manaflow} health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"(1)Teletide: Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
-	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"(2)Guardian of the Sea: Grant your Commander +5 health and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
-	SpellSetup("Wrath of the Sea",		8, SPELL_WRATH_OF_SEA,		"(8)Wrath of the Sea: Grant your Commander {MANAFLOW} attack this turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"(2)Guardian of the Sea: Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Wrath of the Sea",		8, SPELL_WRATH_OF_SEA,		"(8)Wrath of the Sea: Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Scylla",					9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"(1)Cleansing Waters: Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);

@@ -672,6 +672,39 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
 			castAddDirection("spellDirection", "spellTarget", true);
 		}
+		case SPELL_TIDAL_WAVE:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_FLUSH:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_DEEP_DIVE:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_SEA_EMBRACE:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer") true);
+		}
+		case SPELL_TELETIDE:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), true);
+			castAddTile("spellDestination", false);
+		}
+		case SPELL_GUARDIAN_OF_SEA:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_WRATH_OF_SEA:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_CLEANSING_WATERS:
+		{
+			castAddTile("spellTarget", true);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -689,6 +722,7 @@ inactive
 		bool done = true;
 		int activeUnit = 0;
 		int target = 0;
+		int tile = 0;
 		int p = trQuestVarGet("activePlayer");
 		int proto = 0;
 		float dist = 0;
@@ -1054,6 +1088,79 @@ inactive
 				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
 				pushUnit(1*trQuestVarGet("spellTarget"), "dir");
 				xsEnableRule("spell_attack_complete");
+			}
+			case SPELL_TIDAL_WAVE:
+			{
+				trSoundPlayFN("meteorsplash.wav","1",-1,"","");
+				for (x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "cost") < trQuestVarGet("p"+p+"manaflow") && mGetVarByQV("allUnits", "spell") == 0) {
+						stunUnit(1*trQuestVarGet("allUnits"));
+						deployAtTile(0, "Meteor Impact Water", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+			}
+			case SPELL_FLUSH:
+			{
+				trSoundPlayFN("shipmove1.wav","1",-1,"","");
+				trSoundPlayFN("shockwave.wav","1",-1,"","");
+				tile = mGetVarByQV("p"+p+"commander", "tile");
+				deployAtTile(0, "Meteor Impact Water", tile);
+				trVectorSetUnitPos("center", "p"+p+"commander");
+				for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+					target = zGetVarByIndex("tiles", "neighbor"+x, tile);
+					activeUnit = zGetVarByIndex("tiles", "occupant", target);
+					if (activeUnit > 0) {
+						trVectorQuestVarSet("pos", kbGetBlockPosition(""+activeUnit));
+						trVectorQuestVarSet("dir", zGetUnitVector("center", "pos"));
+						pushUnit(activeUnit, "dir");
+					}
+				}
+				done = false;
+				xsEnableRule("spell_attack_complete");
+			}
+			case SPELL_DEEP_DIVE:
+			{
+				trSoundPlayFN("meteorsplash.wav","1",-1,"","");
+				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + xsFloor(0.5*trQuestVarGet("p"+p+"manaflow")));
+			}
+			case SPELL_SEA_EMBRACE:
+			{
+				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
+				tile = mGetVarByQV("spellTarget", "tile");
+				deployAtTile(0, "Hero Birth", tile);
+				healUnit(1*trQuestVarGet("spellTarget"), trQuestVarGet("p"+p+"manaflow"));
+				tile = mGetVarByQV("p"+p+"commander", "tile");
+				deployAtTile(0, "Hero Birth", tile);
+				healUnit(1*trQuestVarGet("p"+p+"commander"), trQuestVarGet("p"+p+"manaflow"));
+			}
+			case SPELL_TELETIDE:
+			{
+				trSoundPlayFN("shipmove2.wav","1",-1,"","");
+				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
+				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("spellDestination"));
+			}
+			case SPELL_GUARDIAN_OF_SEA:
+			{
+				trSoundPlayFN("ageadvance.wav","1",-1,"","");
+				trSoundPlayFN("bronzebirth.wav","1",-1,"","");
+				/*
+				Saving the health of commander
+				*/
+				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
+				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
+				trQuestVarSet("p"+p+"guardianOfTheSea", 1);
+			}
+			case SPELL_WRATH_OF_SEA:
+			{
+				trSoundPlayFN("herobirth2.wav","1",-1,"","");
+				trSoundPlayFN("arkantosspecial2.wav","1",-1,"","");
+				trQuestVarSet("p"+p+"yeebbonus", 2*mGetVarByQV("p"+p+"commander", "attack"));
+				mSetVarByQV("p"+p+"commander", "attack", 2*mGetVarByQV("p"+p+"commander", "attack"));
+			}
+			case SPELL_CLEANSING_WATERS:
+			{
+				
 			}
 		}
 
