@@ -1153,10 +1153,10 @@ inactive
 				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
 				tile = mGetVarByQV("spellTarget", "tile");
 				deployAtTile(0, "Regeneration SFX", tile);
-				healUnit(1*trQuestVarGet("spellTarget"), trQuestVarGet("p"+p+"manaflow"));
+				healUnit(1*trQuestVarGet("spellTarget"), 3);
 				tile = mGetVarByQV("p"+p+"commander", "tile");
 				deployAtTile(0, "Regeneration SFX", tile);
-				healUnit(1*trQuestVarGet("p"+p+"commander"), trQuestVarGet("p"+p+"manaflow"));
+				healUnit(1*trQuestVarGet("p"+p+"commander"), 3);
 			}
 			case SPELL_TELETIDE:
 			{

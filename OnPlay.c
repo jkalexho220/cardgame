@@ -140,6 +140,11 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("ageadvance.wav","1",-1,"","");
 		}
+		case kbGetProtoUnitID("Hero Greek Polyphemus"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("cinematics\15_in\gong.wav","1",-1,"","");
+		}
 		case kbGetProtoUnitID("Hypaspist"):
 		{
 			trQuestVarSet("p"+p+"yeebBonus", 1 + trQuestVarGet("p"+p+"yeebBonus"));

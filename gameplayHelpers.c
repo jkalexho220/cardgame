@@ -499,6 +499,11 @@ void updateAuras() {
 				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
 			}
 		}
+		if (trCountUnitsInArea("128",p,"Hero Greek Polyphemus", 45) > 0) {
+			mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
+		} else {
+			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
+		}
 
 		/*
 		Scylla discounts

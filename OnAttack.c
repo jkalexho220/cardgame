@@ -79,13 +79,15 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_PUSH:
 		{
-			deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
-			trSoundPlayFN("shockwave.wav","1",-1,"","");
-			trSoundPlayFN("meteorsplash.wav","1",-1,"","");
-			trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
-			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
-			trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
-			pushUnit(target, "dir");
+			if (mGetVar(target, "health") > 0) {
+				deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
+				trSoundPlayFN("shockwave.wav","1",-1,"","");
+				trSoundPlayFN("meteorsplash.wav","1",-1,"","");
+				trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
+				trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
+				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				pushUnit(target, "dir");
+			}
 		}
 	}
 }

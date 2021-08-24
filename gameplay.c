@@ -19,7 +19,7 @@ void processAttack(string db = "attacks") {
 				{
 					case ANIM_DEFAULT:
 					{
-						if (mGetVar(attacker, "range") == 1) {
+						if (mGetVar(attacker, "range") <= 1) {
 							trUnitOverrideAnimation(1,0,0,1,-1);
 						} else {
 							trUnitOverrideAnimation(12,0,0,1,-1);
@@ -37,6 +37,19 @@ void processAttack(string db = "attacks") {
 				
 				ySetVar(db, "phase", ATTACK_ANIMATE);
 				ySetVar(db, "timeout", trTimeMS() + 1500);
+
+				/*
+				Undercity Sniper
+				*/
+				if (mGetVar(attacker, "spell") == SPELL_COMMANDER) {
+					for(x=yGetDatabaseCount("allUnits"); >0) {
+						yDatabaseNext("allUnits");
+						if ((mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Archer Atlantean")) && 
+							(mGetVarByQV("allUnits", "player") == mGetVar(attacker, "player"))) {
+							startAttack(1*trQuestVarGet("allUnits"), target, false, true);
+						}
+					}
+				}
 			} else {
 				yRemoveFromDatabase(db);
 				yRemoveUpdateVar(db, "target");

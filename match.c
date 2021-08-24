@@ -291,12 +291,10 @@ inactive
 			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
 			}
-			if ((trQuestVarGet("p"+p+"commander") == trQuestVarGet("allUnits")) && 
-				(1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Pharaoh of Osiris"))) {
-				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - trQuestVarGet("p"+p+"yeebbonus"));
-				trQuestVarSet("p"+p+"yeebbonus", 0);
-			}
 		}
+
+		mSetVarByQV("p"+p+"commander", "attack", mGetVarByQV("p"+p+"commander", "attack") - trQuestVarGet("p"+p+"yeebBonus"));
+		trQuestVarSet("p"+p+"yeebbonus", 0);
 
 		/*
 		Meteors

@@ -226,7 +226,7 @@ int GetSpellAnimation(int class = 0, int type = 0){
 				}
 				case SPELL_TYPE_DEFENSIVE:
 				{
-					return (10); // Gaia
+					return (9); // Kronos
 				}
 				case SPELL_TYPE_OTHER:
 				{
@@ -240,15 +240,15 @@ int GetSpellAnimation(int class = 0, int type = 0){
 			{
 				case SPELL_TYPE_OFFENSIVE:
 				{
-					return (12); // Fu Xi
+					return (9); // Kronos
 				}
 				case SPELL_TYPE_DEFENSIVE:
 				{
-					return (13); // Nu Wa
+					return (9); // Kronos
 				}
 				case SPELL_TYPE_OTHER:
 				{
-					return (14); // Shennong
+					return (10); // Gaia
 				}
 			}
 		}
@@ -726,13 +726,13 @@ runImmediately
 	*/
 	// Created cards
 	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true); // Your mana spent on spells will still count as Manaflow next turn.
-	CardSetup("Archer Atlantean Hero",	0, "scragins", 			1, 20, 2, 2, Keyword(BEACON) + Keyword(FURIOUS), true);
+	CardSetup("Archer Atlantean Hero",	0, "scragins", 			1, 20, 2, 3, Keyword(BEACON), true);
 	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
 
 	// 60-64
 	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
-	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
+	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 2, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive minion.
 	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
 	// 65-69
@@ -755,21 +755,21 @@ runImmediately
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"(2)Flush: Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"(2)Deep Dive: Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
-	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"(1)Sea's Embrace: Restore {Manaflow} health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"(1)Sea's Embrace: Restore 3 health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"(1)Teletide: Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
 	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"(2)Guardian of the Sea: Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"(12)Wrath of the Sea: Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
-	CardSetup("Scylla",					9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
+	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"(1)Cleansing Waters: Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
-	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
-	CardSetup("Militia",				1, "PLACEHOLDER",			9, 9, 2, 1);
+	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
+	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
+	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
 	/*
 	CLOCKWORK
 	*/
 	// Created cards
-	CardSetup("Hero Greek Polyphemus",	0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON) + Keyword(DECAY), true);
+	CardSetup("Eitri",					0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON) + Keyword(DECAY), true);
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 
 	/*
@@ -824,7 +824,7 @@ runImmediately
 	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Your mana spent on spells will still count as Manaflow next turn.");
-	// CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
+	CardEvents("Archer Atlantean Hero", 0, 0, 							"I have 3 range.");
 	
 	CardEvents("Hypaspist", 0, 0,										"Play: Grant your Commander +1 attack this turn.");
 	CardEvents("Myrmidon", 0, 0,										"Play: I gain {Manaflow} health.");
@@ -838,8 +838,8 @@ runImmediately
 	CardEvents("Hippikon", 0, 0,										"Play: Grant your Commander +2 attack this turn.");
 	CardEvents("Kraken", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to its owner's hand.");
 	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 1 Manaflow this turn.");
-
-	CardEvents("Hero Greek Polyphemus", 0, 0, 							"I'm chunky!");
+	CardEvents("Hero Greek Polyphemus", 0, 0, 							"Your Commander has Furious.");
+	
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
 	
 	CardEvents("Hoplite", 0, 0, 										"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
