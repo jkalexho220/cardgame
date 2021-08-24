@@ -156,7 +156,7 @@ void castStart() {
 
 void castEnd() {
 	removeDeadUnits();
-	refreshGuardAll();
+	updateAuras();
 	xsEnableRule("gameplay_01_select");
 	highlightReady(999999);
 	int cost = 0;
@@ -720,6 +720,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", true);
 		}
+		case SPELL_DROWN:
+		{
+			castAddUnit("spellTarget", 0, false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1178,6 +1182,23 @@ inactive
 				trSoundPlayFN("arkantosspecial2.wav","1",-1,"","");
 				trQuestVarSet("p"+p+"yeebbonus", 2*mGetVarByQV("p"+p+"commander", "attack"));
 				mSetVarByQV("p"+p+"commander", "attack", 2*mGetVarByQV("p"+p+"commander", "attack"));
+			}
+			case SPELL_DROWN:
+			{
+				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				deployAtTile(0, "Meteor Impact Water", 1*mGetVarByQV("spellTarget", "tile"));
+				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
+				shuffleDeck(p);
+				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					if (yDatabaseNext("allUnits") == trQuestVarGet("spellTarget")) {
+						yRemoveFromDatabase("allUnits");
+						break;
+					}
+				}
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
+				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 			}
 			case SPELL_CLEANSING_WATERS:
 			{

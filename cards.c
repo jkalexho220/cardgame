@@ -69,7 +69,7 @@ const int SPELL_TELETIDE = 38;
 const int SPELL_WRATH_OF_SEA = 39;
 const int SPELL_GUARDIAN_OF_SEA = 40;
 const int SPELL_CLEANSING_WATERS = 41;
-
+const int SPELL_DROWN = 42;
 
 const int SPELL_MEDUSA_STUN = 43;
 const int SPELL_LAMPADES_CONVERT = 44;
@@ -743,7 +743,7 @@ runImmediately
 	CardSetup("Nereid",					4, "Naga Sea Hunter",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
 	// 70-74 (LEGENDARY at 74)
 	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"(5)Rune of Water: Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
-	CardSetup("Hydra",					6, "Depth Strider",			5, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
+	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
 	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"(5)Water Cannon: Push an enemy in any direction.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(REGENERATE) + Keyword(ARMORED));
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
@@ -762,7 +762,7 @@ runImmediately
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"(1)Cleansing Waters: Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
+	SpellSetup("Drown",					7, SPELL_DROWN,		 		"(7)Drown: Shuffle a minion into your deck.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
 	/*

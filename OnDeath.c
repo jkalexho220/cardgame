@@ -134,6 +134,7 @@ void returnToHand(int unit = 0) {
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			if (yDatabaseNext("allUnits") == unit) {
 				yRemoveFromDatabase("allUnits");
+				break;
 			}
 		}
 		trSoundPlayFN("hitpointsmax.wav","1",-1,"","");
