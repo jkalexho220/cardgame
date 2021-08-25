@@ -32,6 +32,8 @@ void updateHandPlayable(int p = 0) {
 		cost = mGetVarByQV("p"+p+"hand", "cost");
 		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
 			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+		} else {
+			cost = cost - trQuestVarGet("p"+p+"minionDiscount");
 		}
 		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -87,6 +89,10 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 
 	if (fleeting) {
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
+	}
+
+	if ((trCountUnitsInArea("128",p,"Heka Gigantes",45) > 0) && (spell == SPELL_NONE)) {
+		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), OVERFLOW));
 	}
 
 	// Find an empty position in the hand to place the unit.
@@ -190,6 +196,9 @@ active
 			if (trQuestVarGet("p"+p+"drawCards") > 0) {
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") - 1);
 				drawCard(p);
+				if (trQuestVarGet("p"+p+"drawCards") == 0) {
+					updateHandPlayable(1*trQuestVarGet("activePlayer"));
+				}
 			}
 		}
 	}

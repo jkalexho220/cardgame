@@ -128,11 +128,13 @@ void returnToHand(int unit = 0) {
 	if (HasKeyword(GUARD, 1*mGetVar(unit, "keywords"))) {
 		tileGuard(1*mGetVar(unit, "tile"), false);
 	}
+	deployAtTile(0, "Hero Death", 1*mGetVar(unit, "tile"));
 	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			if (yDatabaseNext("allUnits") == unit) {
 				yRemoveFromDatabase("allUnits");
+				break;
 			}
 		}
 		trSoundPlayFN("hitpointsmax.wav","1",-1,"","");

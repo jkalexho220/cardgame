@@ -19,7 +19,7 @@ void processAttack(string db = "attacks") {
 				{
 					case ANIM_DEFAULT:
 					{
-						if (mGetVar(attacker, "range") == 1) {
+						if (mGetVar(attacker, "range") <= 1) {
 							trUnitOverrideAnimation(1,0,0,1,-1);
 						} else {
 							trUnitOverrideAnimation(12,0,0,1,-1);
@@ -37,6 +37,19 @@ void processAttack(string db = "attacks") {
 				
 				ySetVar(db, "phase", ATTACK_ANIMATE);
 				ySetVar(db, "timeout", trTimeMS() + 1500);
+
+				/*
+				Undercity Sniper
+				*/
+				if (mGetVar(attacker, "spell") == SPELL_COMMANDER) {
+					for(x=yGetDatabaseCount("allUnits"); >0) {
+						yDatabaseNext("allUnits");
+						if ((mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Archer Atlantean")) && 
+							(mGetVarByQV("allUnits", "player") == mGetVar(attacker, "player"))) {
+							startAttack(1*trQuestVarGet("allUnits"), target, false, true);
+						}
+					}
+				}
 			} else {
 				yRemoveFromDatabase(db);
 				yRemoveUpdateVar(db, "target");
@@ -589,7 +602,7 @@ rule gameplay_05_attackComplete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
 		(trTime() > cActivationTime + 3)) {
 		int p = trQuestVarGet("activePlayer");
 
@@ -688,8 +701,7 @@ inactive
 					}
 					updateMana();
 
-					// If the unit has an OnPlay effect
-					OnPlay(unit);
+					
 					
 					updateAuras();
 
@@ -698,6 +710,8 @@ inactive
 					yRemoveUpdateVar("p"+p+"hand", "pos");
 
 					zSetVarByIndex("tiles", "occupant", tile, unit);
+					// If the unit has an OnPlay effect
+					OnPlay(unit);
 					updateHandPlayable(p);
 
 					for (x=yGetDatabaseCount("summonLocations"); >0) {
