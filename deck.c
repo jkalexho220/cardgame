@@ -148,6 +148,7 @@ void drawCard(int p = 0) {
 	yRemoveUpdateVar("p"+p+"deck", "spell");
 
 	updateHandPlayable(p);
+	updateMana();
 }
 
 rule initializeHand

@@ -41,6 +41,20 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 					trUnitChangeName("("+1*mGetVarByQV("p"+p+"hand","cost")+") " + trStringQuestVarGet("spell_"+spell+"_name"));
 				}
 			}
+			updateHandPlayable(p);
+		}
+		case ATTACK_OVERKILL_HEALS:
+		{
+			trUnitSelectClear();
+			trUnitSelect(""+attacker);
+			ChatLog(1, "outside");
+			if(trUnitPercentDamaged() > 0 && mGetVar(target, "health") < 0){
+				ChatLog(1, "outside");
+				healUnit(attacker, 0 - mGetVar(target, "health"));
+				deployAtTile(0, "Regeneration SFX", 1*mGetVar(attacker, "tile"));
+				trSoundPlayFN("colossuseat.wav","1",-1,"","");
+				trSoundPlayFN("meatgather1.wav","1",-1,"","");
+			}
 		}
 	}
 }

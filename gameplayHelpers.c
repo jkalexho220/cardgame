@@ -21,13 +21,6 @@ const int ATTACK_DONE = 2;
 const int STATE_ALIVE = 0;
 const int STATE_DEAD = 1;
 
-void updateMana() {
-	int p = trQuestVarGet("activePlayer");
-	trCounterAbort("mana");
-	trCounterAddTime("mana", -1, -91, 
-			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
-}
-
 
 void refreshGuardAll() {
 	for(x=yGetDatabaseCount("allUnits"); >0) {

@@ -23,6 +23,14 @@ const int SPELL_TYPE_OFFENSIVE = 0;
 const int SPELL_TYPE_DEFENSIVE = 1;
 const int SPELL_TYPE_OTHER = 2;
 
+const int SPELL_INTIMIDATE = 999;
+const int SPELL_GROUND_STOMP = 998;
+const int SPELL_PISTOL_SHOT = 997;
+const int SPELL_RELOAD = 996;
+const int SPELL_POISON_CLOUD = 995;
+const int SPELL_NATURE_ANGRY = 994;
+const int SPELL_PYROBALL = 993;
+
 const int SPELL_SPARK = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
@@ -59,8 +67,9 @@ const int ATTACK_BLOCK_DEATH = 3;
 const int ATTACK_SING = 4;
 const int ATTACK_ANIMATE_ORACLE = 5;
 const int ATTACK_DISCOUNT = 6;
+const int ATTACK_OVERKILL_HEALS = 7;
 
-const int ATTACK_EVENT_COUNT = 7;
+const int ATTACK_EVENT_COUNT = 8;
 
 
 /*
@@ -319,6 +328,21 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 
 }
 
+void updateMana() {
+	for(p=1;<=2){
+		trCounterAbort("mana"+p);
+		string str = "<color={Playercolor("+p+")}>Manaflow: "+1*trQuestVarGet("p"+p+"manaflow");
+		if(p == trQuestVarGet("activePlayer")){
+			str = str + " | Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana");
+		}
+		trCounterAddTime("mana"+p, -1, -9999999, str,-1);
+		trCounterAbort("handAndDeck"+p);
+		trCounterAddTime("handAndDeck"+p, -1, -9999999, 
+			"<color={Playercolor("+p+")}>Hand: "+1*yGetDatabaseCount("p"+p+"hand") + " | Deck: "+1*yGetDatabaseCount("p"+p+"deck"), -1);
+	}
+
+}
+
 /*
 Given a card name in a given db array, print information
 of the selected unit.
@@ -400,8 +424,8 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			bonus = "Discount " + discount;
 		}
 	}
-	
 
+	updateMana();
 	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");
 	trSetCounterDisplay(message);
 
@@ -440,17 +464,19 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	return(next);
 }
 
-void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "", int type = 0, int keywords = 0) {
+void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "", int type = 0, int keywords = 0, bool uncollectable = false) {
 	trStringQuestVarSet("spell_"+spell+"_name", name);
 	trQuestVarSet("spell_"+spell+"_cost", cost);
 	trStringQuestVarSet("spell_"+spell+"_description", desc);
 	trQuestVarSet("spell_"+spell+"_type", type);
 	trQuestVarSet("spell_"+spell+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, type));
 
-	trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
-	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
-	trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
-	trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
+	if (uncollectable == false) {
+		trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
+		trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
+		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
+		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
+	}
 
 	trQuestVarSet("spell_"+spell+"_keywords", keywords);
 
@@ -571,6 +597,33 @@ runImmediately
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 128);
 
+	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 	"(1) Intimidating Presence: Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 	"(2) Ground Stomp: Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 	"(1) Pistol Shot: Kill a minion. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Reload", 				5, SPELL_RELOAD, 		"(5) Reload: Draw a card.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 		"(4) Blazeball: Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 	"(5) Poison Cloud: Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, "(10) Nature Has Had Enough: Give your Commander Regenerate and the enemy Commander Decay.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Golem",					6, "Golem 3000",			6, 6, 2, 1, 0, true);
+	CardEvents("Golem", 0, 0, 			"Ignore damage less than half my health.");
+	CardSetup("Griffon",				4, "Soaring Griff",			3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
+	CardSetup("Apep",					4, "Lurking Croco",			6, 3, 2, 1, Keyword(AMBUSH) + Keyword(CHARGE), true);
+	CardSetup("Bear",					6, "Hungry Bear",			8, 8, 2, 1, 0, true);
+	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Attack: Excess damage heals me.");
+	CardSetup("Pirate Ship",			0, "Pirate Ship",			0, 40, 0, 0, 0, true);
+	CardEvents("Pirate Ship", 0, 0, 	"Turn Start: Choose an enemy tile, next turn deal 8 Damage there.");
+	CardSetup("Audrey",					2, "Vora",					2, 20, 0, 1, Keyword(BEACON) + Keyword(REGENERATE), true);
+	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(REGENERATE), true);
+	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
+	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged minions.");
+	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 5, 0, 0, true);
+	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardSetup("Monument 3",				6, "Floating Steward",		0, 15, 5, 0, 0, true);
+	CardEvents("Monument 3", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardSetup("Monument 4",				8, "Floating Twins",		0, 20, 5, 0, 0, true);
+	CardEvents("Monument 4", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
+	CardEvents("Monument 5", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords

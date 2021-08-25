@@ -186,14 +186,62 @@ highFrequency
 inactive
 {
 	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) {
-
-		trQuestVarSet("turnEnd", 0);
-		trSoundPlayFN("fanfare.wav","1",-1,"","");
-
-
 		int p = 3 - trQuestVarGet("activePlayer");
+		if ((trTime()-cActivationTime) >= trQuestVarGet("turnStartDelay")) {
+			if (trQuestVarGet("turnStartDone") == 0) {
+				ChatLog(1, "~turnStart");
+				trQuestVarSet("turnStartDone", 1);
+				trQuestVarSet("turnEnd", 0);
+				trPlayerKillAllGodPowers(p);
+				yClearDatabase("turnStart");	
+				xsSetContextPlayer(p);
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == p) {
+						if (mGetVarByQV("allUnits", "stunTime") > 0) {
+							mSetVarByQV("allUnits", "stunTime", mGetVarByQV("allUnits", "stunTime") - 1);
+							if (mGetVarByQV("allUnits", "stunTime") == 0) {
+								mSetVarByQV("allUnits", "action", ACTION_READY);
+								trUnitSelectClear();
+								trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
+								trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
+							} else {
+								mSetVarByQV("allUnits", "action", ACTION_STUNNED);
+							}
+						} else {
+							mSetVarByQV("allUnits", "action", ACTION_READY);
+						}
+						if (HasKeyword(REGENERATE, 1*mGetVarByQV("allUnits", "keywords"))) {
+							trUnitSelectClear();
+							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trDamageUnitPercent(-100);
+							mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
+						}
+						// Start of turn effects
+						yAddToDatabase("turnStart", "allUnits");					
+					} else {
+						mSetVarByQV("allUnits", "action", ACTION_DONE);
+					}
+				}				
+			}
+			ChatLog(1, "~going trough units");
+			bool delay = false;
+			for(x=yGetDatabaseCount("turnStart"); >0) {
+				yDatabaseNext("turnStart");
+				yRemoveFromDatabase("turnStart");
+				if(OnTurnStart(1*trQuestVarGet("turnStart")) == true){
+					delay = true;
+					break;
+				}
+			}
+			if(delay){
+				trQuestVarSet("turnStartDelay", 1);
+			} else {
+				trQuestVarSet("turnStartDelay", 0);
+				trQuestVarSet("turnStartDone", 0);
+				trSoundPlayFN("fanfare.wav","1",-1,"","");
 
-		trPlayerKillAllGodPowers(p);
+		
 		trTechGodPower(p, "create gold", 1);
 		trTechGodPower(p, "animal magnetism", 1);
 		trTechGodPower(p, "rain", 1);
@@ -205,43 +253,7 @@ inactive
 			xsEnableRule("Bot_00_turn_start");
 		}
 
-		xsSetContextPlayer(p);
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
-			if (mGetVarByQV("allUnits", "player") == p) {
-				if (mGetVarByQV("allUnits", "stunTime") > 0) {
-					mSetVarByQV("allUnits", "stunTime", mGetVarByQV("allUnits", "stunTime") - 1);
-					if (mGetVarByQV("allUnits", "stunTime") == 0) {
-						mSetVarByQV("allUnits", "action", ACTION_READY);
-						trUnitSelectClear();
-						trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
-						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
-					} else {
-						mSetVarByQV("allUnits", "action", ACTION_STUNNED);
-					}
-				} else {
-					mSetVarByQV("allUnits", "action", ACTION_READY);
-				}
-				if (HasKeyword(REGENERATE, 1*mGetVarByQV("allUnits", "keywords"))) {
-					trUnitSelectClear();
-					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
-					trDamageUnitPercent(-100);
-					ySetVar("allUnits", "health", 
-						xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
-				}
-				// Start of turn effects
-				switch(1*mGetVarByQV("allUnits", "proto"))
-				{
-					case kbGetProtoUnitID("Phoenix Egg"):
-					{
-						damageUnit(1*trQuestVarGet("allUnits"), mGetVarByQV("allUnits", "health"));
-						deathSummonQueue(1*mGetVarByQV("allUnits", "tile"), p, "Phoenix From Egg");
-					}
-				}
-			} else {
-				mSetVarByQV("allUnits", "action", ACTION_DONE);
-			}
-		}
+
 
 
 		if (p == 1) {
@@ -257,14 +269,16 @@ inactive
 		if(Multiplayer){
 			trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
 		}
-		trCounterAddTime("mana", -1, -9999999, 
-			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));
 
+		updateMana();
 		removeDeadUnits();
 
 		xsEnableRule("gameplay_01_select");
 		xsEnableRule("turn_01_end");
 		xsDisableRule("turn_00_start");
+				}
+		}
+
 	}
 }
 
@@ -286,6 +300,7 @@ inactive
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "rain", 1);
 		trCounterAbort("mana");
+		trCounterAbort("handAndDeck");
 		trCounterAbort("turnTimer");
 
 		trQuestVarSet("turnEnd", 1);

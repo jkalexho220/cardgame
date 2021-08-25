@@ -168,6 +168,10 @@ int CommanderToProtounit(int commander = 0){
 		{
 			return (kbGetProtoUnitID("Caravan Atlantean"));
 		}
+		case 900:
+		{
+			return (kbGetProtoUnitID("Bear"));
+		}
 	}
 	ThrowError("CommanderToProtounit");
 }
@@ -439,7 +443,7 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			z = z + 44;
 		}
 		CollectionCommander(2 * class, 5 + 20 * class, z);
-		if(progress > 7){
+		if(progress > 6){
 			if(getDeckCommander() == (2 * class + 1)){
 				trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 				z = z + 44;
@@ -448,7 +452,7 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 		}
 		// Missions
 		x = 11 + 20 * class; z = 91;
-		for(i=1;<=xsMin(progress,7)){
+		for(i=1;<=xsMin(progress,6)){
 			trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
 			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
 			trArmySelect("1,10");
@@ -557,11 +561,12 @@ inactive
 	{
 		case LEFT_CLICK:
 		{
+			uiClearSelection();
 			trQuestVarSet("p1click", 0);
-			CollectionGodPowers();
-			xsEnableRule("CollectionSelect");
 			trClearCounterDisplay();
-			trSoundPlayDialog("default", "1", -1, false, " : ", "");
+			trSoundPlayDialog("default", "1", -1, false, " : ", "");	
+			CollectionGodPowers();	
+			xsEnableRule("CollectionSelect");							
 		}
 		case RIGHT_CLICK:
 		{		
@@ -630,38 +635,43 @@ rule CollectionSelect
 highFrequency
 inactive
 {
-	int id = yDatabaseNext("allUnits", true);
-	if (trUnitIsSelected()) {
-		xsDisableRule("CollectionSelect");
-		trVectorSetUnitPos("temp","allUnits");
-		if(trVectorQuestVarGetZ("temp") < 90){
-			displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
-		} else {
-			trQuestVarSet("canPressEnter", 0);	
-			collectionMission = "";
-			collectionReward = "";
-			for(class=0;<6){
-				for(i=1;<=xsMin(getClassProgress(class),7)){
-					if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
-						if(getClassProgress(class) == i){
-							trQuestVarSet("missionHardmode", 0);
-							collectionMission = GetMissionTitle(class,i);
-							collectionReward = "Reward: Class Pack";					
-						} else {
-							trQuestVarSet("missionHardmode", 1);
-							collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-							collectionReward = "Reward: Random Pack";
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		int id = yDatabaseNext("allUnits", true);
+		if (trUnitIsSelected()) {
+			trVectorSetUnitPos("temp","allUnits");
+			if(trVectorQuestVarGetZ("temp") < 90){
+				displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
+			} else {
+				trQuestVarSet("canPressEnter", 0);	
+				collectionMission = "";
+				collectionReward = "";
+				for(class=0;<6){
+					for(i=1;<=xsMin(getClassProgress(class),6)){
+						if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
+							if(getClassProgress(class) == i){
+								trQuestVarSet("missionHardmode", 0);
+								collectionMission = GetMissionTitle(class,i);
+								collectionReward = "Reward: Class Pack";					
+							} else {
+								trQuestVarSet("missionHardmode", 1);
+								collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+								collectionReward = "Reward: Random Pack";
+							}
+							trQuestVarSet("missionSelection", i);
+							trQuestVarSet("missionClass", class);
+							xsEnableRule("CollectionEnter");
+							trQuestVarSet("canPressEnter", 1);	
+							CollectionGodPowers();
 						}
-						trQuestVarSet("missionSelection", i);
-						trQuestVarSet("missionClass", class);
-						xsEnableRule("CollectionEnter");
-						trQuestVarSet("canPressEnter", 1);	
-						CollectionGodPowers();
-						break;
 					}
 				}
 			}
+			xsDisableRule("CollectionSelect");
+			break;
 		}
+	}
+	if ((trTime()-cActivationTime) > 1){
+		xsDisableRule("CollectionSelect");
 	}
 }
 

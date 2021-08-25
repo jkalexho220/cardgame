@@ -4,6 +4,21 @@ void OnPlay(int unit = 0) {
 	bool done = true;
 	switch(proto)
 	{
+		case kbGetProtoUnitID("Bear"):
+		{
+			trQuestVarSetFromRand("soundRandom", 1, 2, true);
+			trSoundPlayFN("beargrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Pirate Ship"):
+		{
+			trSoundPlayFN("battlecry1.wav","1",-1,"","");
+			trQuestVarSet("pirateShipTarget", -1);
+		}
+		case kbGetProtoUnitID("Audrey Water"):
+		{
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("carnivoragrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
 		case kbGetProtoUnitID("Slinger"):
 		{
 			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);

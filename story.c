@@ -1,9 +1,6 @@
 void SetupMission(int class = 0, int mission = 0){
-	// Tutorial
-	trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-	trQuestVarSet("dimension", 6);
-	// Opponent Starter Deck
 	yClearDatabase("p2deck");
+	/*
 	for(i=0;<6){
 		for(x=0;<3){
 			addCardToDeckByIndex(2, i);
@@ -14,16 +11,45 @@ void SetupMission(int class = 0, int mission = 0){
 		addCardToDeckByIndex(2, 6);
 		addCardToDeckByIndex(2, 36);
 	}
+	
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	addCardToDeck(2, "Audrey Water");
+	addCardToDeck(2, "", SPELL_MAP);
+	*/
 	InitBot(BOT_PERSONALITY_DEFAULT);
 	switch(class)
 	{
+		case -1:
+		{
+			// Tutorial
+			trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+			trQuestVarSet("dimension", 6);
+		}
 		case CLASS_ADVENTURER:
 		{
 			switch(mission)
 			{
 				case 1:
-				{				
-					trQuestVarSet("dimension", 8);	
+				{	
+					for(x=0;<40){
+						addCardToDeck(2, "", SPELL_INTIMIDATE);
+					}				
+					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("p2commanderType", 900);
 				}
 				case 2:
 				{
@@ -42,10 +68,6 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 				}
 				case 6:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
-				case 7:
 				{
 					trQuestVarSet("dimension", 8);	
 				}
@@ -57,7 +79,12 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					trQuestVarSet("dimension", 8);	
+					for(x=0;<40){
+						addCardToDeck(2, "", SPELL_GROUND_STOMP);
+					}				
+					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("p2commanderType", 900);
 				}
 				case 2:
 				{
@@ -76,10 +103,6 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 				}
 				case 6:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
-				case 7:
 				{
 					trQuestVarSet("dimension", 8);	
 				}
@@ -113,10 +136,6 @@ void SetupMission(int class = 0, int mission = 0){
 				{
 					trQuestVarSet("dimension", 8);	
 				}
-				case 7:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
 			}
 		}
 		case CLASS_CLOCKWORK:
@@ -144,10 +163,6 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 				}
 				case 6:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
-				case 7:
 				{
 					trQuestVarSet("dimension", 8);	
 				}
@@ -181,10 +196,6 @@ void SetupMission(int class = 0, int mission = 0){
 				{
 					trQuestVarSet("dimension", 8);	
 				}
-				case 7:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
 			}
 		}
 		case CLASS_SPACE:
@@ -212,10 +223,6 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 				}
 				case 6:
-				{
-					trQuestVarSet("dimension", 8);	
-				}
-				case 7:
 				{
 					trQuestVarSet("dimension", 8);	
 				}
@@ -304,10 +311,26 @@ inactive
 		yClearDatabase("p1deck");
 		for(i=0;<180){
 			for(x=0;<getCardCountDeck(i)){
-				addCardToDeckByIndex(1, i);
+				//addCardToDeckByIndex(1, i);
 			}
 		}
 		shuffleDeck(1);
+		
+		for(i=0;<5){
+			addCardToDeck(1, "", SPELL_INTIMIDATE);
+			addCardToDeck(1, "", SPELL_PISTOL_SHOT);
+			addCardToDeck(1, "", SPELL_PYROBALL);
+			//addCardToDeck(1, "", SPELL_POISON_CLOUD);
+			//addCardToDeck(1, "", SPELL_NATURE_ANGRY);
+			addCardToDeck(1, "Bear");
+			//addCardToDeck(1, "Pirate Ship");
+			//addCardToDeck(1, "Audrey");
+			//addCardToDeck(1, "Audrey Water");
+			//addCardToDeck(1, "", SPELL_MAP);
+			addCardToDeck(1, "Monument");
+			addCardToDeck(1, "Monument 2");
+		}
+
 		SetupMission(trQuestVarGet("missionClass"), trQuestVarGet("missionSelection"));
 		xsEnableRule("initializeBoard");
 		xsEnableRule("MissionEnd");

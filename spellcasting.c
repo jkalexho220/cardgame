@@ -3,6 +3,7 @@ const int CAST_UNIT = 0;
 const int CAST_TARGET = 1;
 const int CAST_SING = 2;
 const int CAST_BACKSTAB = 3;
+const int CAST_ADJACENT_UNIT = 4;
 
 const int CAST_TILE = 10;
 const int CAST_ADJACENT_TILE = 11;
@@ -40,6 +41,22 @@ void castAddUnit(string qv = "", int p = 0, bool commander = true) {
 	}
 	trQuestVarSet("cast"+x+"type", CAST_UNIT);
 	trQuestVarSet("cast"+x+"player", p);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+
+void castAddAdjacentUnit(string qv = "", int p = 0, string src = "", bool commander = true) {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	if (commander) {
+		trQuestVarSet("cast"+x+"commander", SPELL_COMMANDER);
+	} else {
+		trQuestVarSet("cast"+x+"commander", SPELL_NONE);
+	}
+	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_UNIT);
+	trQuestVarSet("cast"+x+"player", p);
+	trQuestVarSet("cast"+x+"unit", 1*trQuestVarGet(src));
 	trStringQuestVarSet("cast"+x+"qv", qv);
 }
 
@@ -365,8 +382,37 @@ inactive
 					angle = fModulo(6.283185, angle + 1.047197);
 				}
 			}
+			case CAST_ADJACENT_UNIT:
+			{
+				p = trQuestVarGet("cast"+x+"player");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
+							trVectorSetUnitPos("d1pos", "allUnits");
+							trVectorSetUnitPos("d2pos", "cast"+x+"unit");
+							if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") <= 64){
+								trUnitSelectClear();
+								trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+								yAddToDatabase("castTargets", "allUnits");
+								if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+									trUnitHighlight(999999, false);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 		xsEnableRule("spellcast_01_select");
+		if (yGetDatabaseCount("castTargets") + yGetDatabaseCount("castTiles") == 0) {
+			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+				trSoundPlayFN("cantdothat.wav","1",-1,"","");
+				trChatSend(0, "That spell has no valid targets.");
+			}
+		}
 	} else {
 		trQuestVarSet("castDone", CASTING_DONE);
 	}
@@ -492,6 +538,34 @@ void chooseSpell(int spell = 0, int card = -1) {
 	castReset();
 	switch(spell)
 	{
+		case SPELL_INTIMIDATE:
+		{
+			castAddAdjacentUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), "p"+1*trQuestVarGet("activePlayer")+"commander", true);
+		}
+		case SPELL_GROUND_STOMP:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_PISTOL_SHOT:
+		{
+			castAddUnit("spellTarget", 0, false);
+		}
+		case SPELL_RELOAD:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_POISON_CLOUD:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_NATURE_ANGRY:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_PYROBALL:
+		{
+			castAddUnit("spellTarget", 0, trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage") > 0);
+		}
 		case SPELL_SPARK:
 		{
 			castAddUnit("spellTarget", 0);
@@ -613,6 +687,94 @@ inactive
 		bool battlecry = false;
 		switch(1*trQuestVarGet("currentSpell"))
 		{
+			case SPELL_INTIMIDATE:
+			{
+				trCameraShake(1.0, 0.1);
+				trSoundPlayFN("gaiaattack.wav","1",-1,"","");
+				stunUnit(1*trQuestVarGet("spellTarget"));
+			}
+			case SPELL_GROUND_STOMP:
+			{
+				trCameraShake(1.0, 0.1);
+				trQuestVarSetFromRand("soundRandom", 1, 3, true);
+				trSoundPlayFN("woodcrush" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+				trVectorSetUnitPos("d2pos", "p" + p + "commander");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (trQuestVarGet("allUnits") != trQuestVarGet("p" + p + "commander")) {
+						trVectorSetUnitPos("d1pos", "allUnits");
+						if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") <= 64){
+							damageUnit(1*trQuestVarGet("allUnits"), 1 + trQuestVarGet("p" + p + "spellDamage"));
+							deployAtTile(0, "Dust Small", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_PISTOL_SHOT:
+			{
+				addCardToDeck(p, "", SPELL_RELOAD);
+				ySetPointer("p"+p+"deck", yGetDatabaseCount("p"+p+"deck"));
+				trSoundPlayFN("shockwave.wav","1",-1,"","");				
+				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+				trUnitChangeProtoUnit("Petrobolos Shot");
+				trVectorSetUnitPos("spellProjectileStart", "p" + p + "commander");
+				trVectorSetUnitPos("spellProjectileEnd", "spellTarget");
+				trUnitMoveToVector("spellProjectileEnd");
+				done = false;
+				xsEnableRule("spell_projectile_complete");
+			}
+			case SPELL_RELOAD:
+			{
+				trSoundPlayFN("siegecamp.wav","1",-1,"","");
+				trQuestVarSet("p"+p+"drawCards", 1);
+			}
+			case SPELL_POISON_CLOUD:
+			{
+				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == 3 - p) {
+						if (mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
+							deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_NATURE_ANGRY:
+			{
+				trCameraShake(3.0, 0.3);
+				trSoundPlayFN("gaiaforestambient2.wav","1",-1,"","");
+				trQuestVarSetFromRand("soundRandom", 1, 2, true);
+				trSoundPlayFN("gaiaattack" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "spell") == SPELL_COMMANDER) {
+						if (mGetVarByQV("allUnits", "player") == p) {
+							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), REGENERATE));
+							deployAtTile(0, "Vision SFX", 1*mGetVarByQV("allUnits", "tile"));
+						} else {
+							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
+							deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_PYROBALL:
+			{
+				trSoundPlayFN("fireball launch.wav","1",-1,"","");
+				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+				trUnitChangeProtoUnit("Ball of Fire");
+				trVectorSetUnitPos("spellProjectileStart", "p" + p + "commander");
+				trVectorSetUnitPos("spellProjectileEnd", "spellTarget");
+				trUnitMoveToVector("spellProjectileEnd");
+				done = false;
+				xsEnableRule("spell_projectile_complete");
+			}
 			case SPELL_SPARK:
 			{
 				damageUnit(1*trQuestVarGet("spellTarget"), 1 + trQuestVarGet("p"+p+"spellDamage"));
@@ -993,5 +1155,39 @@ inactive
 			trVectorSetFromAngle("dir", trQuestVarGet("spellAngle"));
 			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
 		}
+	}
+}
+
+rule spell_projectile_complete
+highFrequency
+inactive
+{
+	trVectorSetUnitPos("spellProjectileStart", "spellProjectile");
+	if ((trTime()-cActivationTime) >= 4){
+		trVectorQuestVarSet("spellProjectileStart", trVectorQuestVarGet("spellProjectileEnd"));
+	}
+	if (zDistanceBetweenVectorsSquared("spellProjectileStart", "spellProjectileEnd") < 8) {
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+		trUnitDestroy();
+		switch(1*trQuestVarGet("currentSpell"))
+		{
+			case SPELL_PISTOL_SHOT:
+			{				
+				trSoundPlayFN("arrowonwood1.wav","1",-1,"","");
+				trSoundPlayFN("arrowonwood2.wav","1",-1,"","");
+				trSoundPlayFN("arrowonflesh3.wav","1",-1,"","");
+				trSoundPlayFN("arrowonflesh4.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), 6900);
+			}
+			case SPELL_PYROBALL:
+			{
+				trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), 6 + trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage"));
+				deployAtTile(0, "Meteor Impact Ground", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+		}
+		castEnd();
+		xsDisableRule("spell_projectile_complete");
 	}
 }
