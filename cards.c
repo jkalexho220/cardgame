@@ -31,7 +31,7 @@ const int SPELL_POISON_CLOUD = 995;
 const int SPELL_NATURE_ANGRY = 994;
 const int SPELL_PYROBALL = 993;
 
-const int SPELL_SPARK = 2;
+const int SPELL_FIRST_AID = 2;
 const int SPELL_FOOD = 3;
 const int SPELL_SING = 4;
 const int SPELL_MAP = 5;
@@ -45,8 +45,9 @@ const int SPELL_WHIRLWIND = 12;
 const int SPELL_HEROIC = 13;
 const int SPELL_WOLF = 14;
 const int SPELL_PING = 15;
-const int SPELL_FIRST_AID = 16;
 
+
+const int SPELL_SPARK = 16;
 const int SPELL_SNIPE = 17;
 const int SPELL_EXPLOSION = 18;
 const int SPELL_RUNE_OF_FLAME = 19;
@@ -55,7 +56,14 @@ const int SPELL_FIRE_AND_ICE = 21;
 const int SPELL_DOUBLEBLAST = 22;
 const int SPELL_ELECTROSURGE = 23;
 const int SPELL_CLASS_TIME = 24;
+const int SPELL_COPY_HOMEWORK = 25;
+const int SPELL_METEOR = 26;
+const int SPELL_MIRROR_IMAGE = 27;
+const int SPELL_FINAL_EXAM = 28;
+const int SPELL_APOCALYPSE = 29;
 
+const int SPELL_SHAPESHIFT = 30;
+const int SPELL_VALKYRIE_HEAL = 31;
 
 /*
 OnAttack events (bit positions)
@@ -67,22 +75,24 @@ const int ATTACK_BLOCK_DEATH = 3;
 const int ATTACK_SING = 4;
 const int ATTACK_ANIMATE_ORACLE = 5;
 const int ATTACK_DISCOUNT = 6;
-const int ATTACK_OVERKILL_HEALS = 7;
+const int ATTACK_GET_ARCANE = 7;
+const int ATTACK_YEET = 8;
+const int ATTACK_OVERKILL_HEALS = 9;
 
-const int ATTACK_EVENT_COUNT = 8;
+const int ATTACK_EVENT_COUNT = 10;
 
 
 /*
 OnDeath events (bit positions)
 */
-const int DEATH_DRAW_CARD = 0;
-const int DEATH_OPPONENT_DRAW_CARD = 1;
-const int DEATH_BOOM_SMALL = 2;
-const int DEATH_EGG = 3;
-const int DEATH_SPELL_DAMAGE = 4;
-const int DEATH_SPELL_DISCOUNT = 5;
+const int DEATH_DRAW_CARD = 1;
+const int DEATH_OPPONENT_DRAW_CARD = 2;
+const int DEATH_BOOM_SMALL = 3;
+const int DEATH_EGG = 4;
+const int DEATH_GET_ARCANE = 5;
 
 const int DEATH_EVENT_COUNT = 6;
+
 
 /*
 Keyword bit positions. Use these to index into keywords by bit position
@@ -433,7 +443,13 @@ void displayCardKeywordsAndDescription(int name = 0) {
 }
 
 int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
-	int next = zBankNext("p"+p+"unitBank");
+	int next = 0;
+	for(x=64; >0) {
+		next = zBankNext("p"+p+"unitBank");
+		if (mGetVar(next, "played") == 0) {
+			break;
+		}
+	}
 	trUnitSelectClear();
 	trUnitSelect(""+next, false);
 
@@ -458,6 +474,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "proto", proto);
 	mSetVar(next, "player", p);
 	mSetVar(next, "spell", spell);
+	mSetVar(next, "played", 1);
 
 	trMutateSelected(proto);
 
@@ -696,19 +713,29 @@ runImmediately
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"(5)Rune of Flame: Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"(5)Rune of Ice: Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
-	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"(6)Electrosurge: Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
 	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD));
 	// 45-49
 	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"(15)Fire and Ice: Summon a Blaze Elemental and a Frost Elemental. Cost is reduced by your Manaflow.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
-
-
+	CardSetup("Prisoner",				2, "Magic Test Subject",2, 2, 2, 1); // Death: Add a random Arcane spell to your hand.
+	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Add a random Arcane spell to your hand.
+	CardSetup("Petsuchos", 				6, "Bejeweled Sunlisk",	0, 3, 1, 3); // I have 3 range. Each time you cast a spell, grant me +1 attack.
 	// 50-54
-
+	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "(5)Book of Reflections: Add three random cards from your opponent's classes to your hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Meteor",				4, SPELL_METEOR, 		"(4)Meteor: Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
+	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
+	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
+	CardSetup("Centaur",				3, "Book Courier",		2, 3, 3, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	// 55-59 (LEGENDARY at 59)
+	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"(2)Final Exam: Both players draw two cards.", SPELL_TYPE_OTHER);
+	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
+	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"(10)Apocalypse: Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
+	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"(2)Mirror Image: Add a copy of a minion to your hand and your deck.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 5, 3, 2); // At the start of your turn, both players draw a card.
 
 	/*
 	NAGA
@@ -721,14 +748,14 @@ runImmediately
 	CLOCKWORK
 	*/
 	// Created cards
-	CardSetup("Hero Greek Polyphemus",	0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON), true);
+	CardSetup("Hero Greek Polyphemus",	0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON) + Keyword(DECAY), true);
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 
 	/*
 	EVIL
 	*/
 	// Created cards
-	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
+	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
 	
 	/*
@@ -744,6 +771,7 @@ runImmediately
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Add a Windsong to your hand. Discard it when turn ends.");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
+	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
 	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
 	CardEvents("Avenger", 0, 0, 										"Play: Deal 1 damage to all adjacent enemies.");
@@ -756,14 +784,23 @@ runImmediately
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", 0, 0, 										"Loading ability...");
+	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
+	
 	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Add a Spark to your hand.");
-	CardEvents("Priest", 0, Keyword(DEATH_SPELL_DISCOUNT), 				"Your spells cost 1 less.");
-	CardEvents("Oracle Scout", 0, Keyword(DEATH_SPELL_DAMAGE), 			"Your spells deal +1 damage.");
+	CardEvents("Priest", 0, 0,							 				"Your spells cost 1 less.");
+	CardEvents("Oracle Scout", 0, 0,						 			"Your spells deal +1 damage.");
 	CardEvents("Frost Giant", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
-	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing.");
+	CardEvents("Phoenix Egg",0, 0, 										"At the start of your turn, destroy me to summon a Fading Lightwing");
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
+	CardEvents("Prisoner", 0, Keyword(DEATH_GET_ARCANE),				"Death: Add a random Arcane spell to your hand.");
+	CardEvents("Chimera", Keyword(ATTACK_GET_ARCANE), 0,				"Attack: Add a random Arcane spell to your hand.");
+	CardEvents("Petsuchos", 0, 0,										"I have 3 range. After you cast a spell, grant me +1 attack.");
+	CardEvents("Trident Soldier Hero",0,0,								"Your Commander has Guard. When they take damage, I take it instead");
+	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
+	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
+	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
+	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Loading ability...");
 	CardEvents("Archer Atlantean Hero", 0, 0, 							"Loading ability...");
@@ -771,7 +808,7 @@ runImmediately
 	CardEvents("Hero Greek Polyphemus", 0, 0, 							"I'm chunky!");
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
 	
-	CardEvents("Hoplite", 0, 0, 										"Whenever I kill a minion, add a copy of it to your hand.");
+	CardEvents("Hoplite", 0, 0, 										"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
 	
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");

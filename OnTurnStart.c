@@ -10,6 +10,11 @@ bool OnTurnStart(int unit = 0) {
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix From Egg");
 			return (true);
 		}
+		case kbGetProtoUnitID("Hero Greek Chiron"):
+		{
+			trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
+			trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
+		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			if(trQuestVarGet("pirateShipTarget") > -1){

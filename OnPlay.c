@@ -2,6 +2,14 @@ void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
 	bool done = true;
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("UI Range Indicator Norse SFX");
+	}
+	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Poison SFX");
+	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):
@@ -44,7 +52,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Avenger"):
 		{
 			trUnitSelectClear();
-			trUnitSelect(""+unit, true);
+			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Avenger"));
 			trUnitOverrideAnimation(39, 0, 0, 1, -1);
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
@@ -101,7 +109,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Nemean Lion"):
 		{
 			trUnitSelectClear();
-			trUnitSelect(""+unit, true);
+			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Nemean Lion"));
 			trUnitOverrideAnimation(39, 0, 0, 1, -1);
 			for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -114,13 +122,24 @@ void OnPlay(int unit = 0) {
 				}
 			}
 		}
-		case kbGetProtoUnitID("Priest"):
+		case kbGetProtoUnitID("Valkyrie"):
 		{
-			trQuestVarSet("p"+p+"spellDiscount", 1 + trQuestVarGet("p"+p+"spellDiscount"));
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_VALKYRIE_HEAL);
 		}
-		case kbGetProtoUnitID("Oracle Scout"):
+		case kbGetProtoUnitID("Centaur"):
 		{
-			trQuestVarSet("p"+p+"spellDamage", 1 + trQuestVarGet("p"+p+"spellDamage"));
+			trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
+		}
+		case kbGetProtoUnitID("Sphinx"):
+		{
+			if (trCurrentPlayer() == p) {
+				trMessageSetText("Choose a minion to be copied. Then choose a minion to be transformed.", -1);
+			}
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_SHAPESHIFT);
 		}
 	}
 	if (done) {

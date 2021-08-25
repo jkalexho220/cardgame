@@ -1,6 +1,7 @@
 void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 	int p = mGetVar(attacker, "player");
 	int spell = 0;
+	int count = 0;
 	switch(event)
 	{
 		case ATTACK_DRAW_CARD:
@@ -54,6 +55,25 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				deployAtTile(0, "Regeneration SFX", 1*mGetVar(attacker, "tile"));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("meatgather1.wav","1",-1,"","");
+			}
+		}
+		case ATTACK_GET_ARCANE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
+				updateHandPlayable(p);
+			}
+		}
+		case ATTACK_YEET:
+		{
+			if ((trQuestVarGet("activePlayer") == p) == false) {
+				if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == 0)) {
+					trSoundPlayFN("shockwave.wav","1",-1,"","");
+					deployAtTile(0, "Tremor", 1*mGetVar(target, "tile"));
+					deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
+					returnToHand(target);
+				}
 			}
 		}
 	}

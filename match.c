@@ -47,7 +47,7 @@ inactive
 
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
-		trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
+		spyEffect("Healing SFX");
 
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
@@ -70,7 +70,6 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
-		unitTransform("Spy Eye", "Healing SFX");
 		trTechGodPower(1, "nidhogg", 1);
 		trTechGodPower(2, "nidhogg", 1);
 		for(p=2; >0) {
@@ -240,45 +239,40 @@ inactive
 				trQuestVarSet("turnStartDelay", 0);
 				trQuestVarSet("turnStartDone", 0);
 				trSoundPlayFN("fanfare.wav","1",-1,"","");
-
+	
+				trTechGodPower(p, "create gold", 1);
+				trTechGodPower(p, "animal magnetism", 1);
+				trTechGodPower(p, "rain", 1);
+				trTechGodPower(p, "nidhogg", 1);
 		
-		trTechGodPower(p, "create gold", 1);
-		trTechGodPower(p, "animal magnetism", 1);
-		trTechGodPower(p, "rain", 1);
-		trTechGodPower(p, "nidhogg", 1);
-		
-		if(Multiplayer == false && p == 2){
-			trQuestVarSet("botPhase", 0);
-			trQuestVarSet("botThinking", 0);
-			xsEnableRule("Bot_00_turn_start");
-		}
-
-
-
-
-		if (p == 1) {
-			trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
-		}
-		trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
-		trQuestVarSet("activePlayer", p);
-		trQuestVarSet("p"+p+"click", 0);
-		highlightReady(100);
-
-		trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
-
-		if(Multiplayer){
-			trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
-		}
-
-		updateMana();
-		removeDeadUnits();
-
-		xsEnableRule("gameplay_01_select");
-		xsEnableRule("turn_01_end");
-		xsDisableRule("turn_00_start");
+				if(Multiplayer == false && p == 2){
+					trQuestVarSet("botPhase", 0);
+					trQuestVarSet("botThinking", 0);
+					xsEnableRule("Bot_00_turn_start");
 				}
-		}
 
+				if (p == 1) {
+					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+				}
+				trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
+				trQuestVarSet("activePlayer", p);
+				trQuestVarSet("p"+p+"click", 0);
+				highlightReady(100);
+
+				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
+
+				if(Multiplayer){
+					trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
+				}
+
+				updateMana();
+				removeDeadUnits();
+
+				xsEnableRule("gameplay_01_select");
+				xsEnableRule("turn_01_end");
+				xsDisableRule("turn_00_start");
+			}
+		}
 	}
 }
 
@@ -305,6 +299,11 @@ inactive
 
 		trQuestVarSet("turnEnd", 1);
 
+		trQuestVarSet("apocalypse", trQuestVarGet("apocalypse") - 1);
+		if (trQuestVarGet("apocalypse") == 0) {
+			musicToggleBattleMode();
+		}
+
 		/*
 		End of turn effects
 		*/
@@ -326,6 +325,38 @@ inactive
 				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - trQuestVarGet("p"+p+"yeebbonus"));
 				trQuestVarSet("p"+p+"yeebbonus", 0);
 			}
+		}
+
+		/*
+		Meteors
+		*/
+		trQuestVarSet("sound", 0);
+		yDatabasePointerDefault("meteors");
+		for(x=yGetDatabaseCount("meteors"); >0) {
+			yDatabaseNext("meteors", true);
+			ySetVar("meteors", "time", yGetVar("meteors", "time") - 1);
+			if (yGetVar("meteors", "time") == 0) {
+				trQuestVarSet("sound", 1);
+				trUnitChangeProtoUnit("Meteor");
+				deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("meteors", "tile"));
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("meteors", "tile")));
+				for(y=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "tile") == yGetVar("meteors", "tile")) {
+						damageUnit(1*trQuestVarGet("allUnits"), 6 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					} else if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+						damageUnit(1*trQuestVarGet("allUnits"), 2 + trQuestVarGet("p"+(3-p)+"spellDamage"));
+					}
+				}
+				yRemoveFromDatabase("meteors");
+				yRemoveUpdateVar("meteors", "tile");
+				yRemoveUpdateVar("meteors", "time");
+			}
+		}
+
+		if (trQuestVarGet("sound") == 1) {
+			trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
 		}
 
 		removeDeadUnits();

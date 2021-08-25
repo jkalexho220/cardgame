@@ -171,8 +171,9 @@ void castEnd() {
 		int p = trQuestVarGet("activePlayer");
 		int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		trUnitSelectClear();
-		trUnitSelect(""+unit, true);
+		trUnitSelect(""+unit);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		mSetVar(unit, "played", 0);
 		cost = mGetVar(unit, "cost") - trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -189,12 +190,19 @@ void castEnd() {
 		Effects that occur whenever a spell is cast
 		*/
 		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
+			yDatabaseNext("allUnits", true);
 			if (mGetVarByQV("allUnits", "player") == p) {
 				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
 					case kbGetProtoUnitID("Swordsman Hero"):
 					{
+						spyEffect("Einheriar Boost SFX");
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+					}
+					case kbGetProtoUnitID("Petsuchos"):
+					{
+						spyEffect("Einheriar Boost SFX");
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
@@ -208,6 +216,7 @@ void castEnd() {
 					case kbGetProtoUnitID("Pharaoh of Osiris"):
 					{
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
 					}
 				}
@@ -246,7 +255,7 @@ inactive
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -265,7 +274,7 @@ inactive
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -284,7 +293,7 @@ inactive
 					} else if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
 							if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 								trUnitHighlight(999999, false);
@@ -663,6 +672,35 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddSummonLocations("spellTargetFire");
 			castAddSummonLocations("spellTargetIce");
 		}
+		case SPELL_VALKYRIE_HEAL:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"));
+		}
+		case SPELL_COPY_HOMEWORK:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_METEOR:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_FINAL_EXAM:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_SHAPESHIFT:
+		{
+			castAddUnit("copyTarget", 0, false);
+			castAddUnit("transformTarget", 0, false);
+		}
+		case SPELL_APOCALYPSE:
+		{
+			castAddTile("spellTarget", true);
+		}
+		case SPELL_MIRROR_IMAGE:
+		{
+			castAddUnit("spellTarget", 0, false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -685,6 +723,7 @@ inactive
 		float dist = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		bool battlecry = false;
+		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
 		switch(1*trQuestVarGet("currentSpell"))
 		{
 			case SPELL_INTIMIDATE:
@@ -797,7 +836,7 @@ inactive
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				trUnitSelectClear();
-				trUnitSelect(""+target, true);
+				trUnitSelect(""+target);
 				spyEffect("Einheriar Boost SFX");
 			}
 			case SPELL_SING:
@@ -930,8 +969,8 @@ inactive
 			}
 			case SPELL_CLASS_TIME:
 			{
+				trSoundPlayFN("townbell.wav","1",-1,"","");
 				trSoundPlayFN("temple.wav","1",-1,"","");
-				trSoundPlayFN("gaiasparkle1.wav","1",-1,"","");
 				xsEnableRule("spell_class_time_activate");
 			}
 			case SPELL_SNIPE:
@@ -1016,6 +1055,85 @@ inactive
 					mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				}
 			}
+			case SPELL_VALKYRIE_HEAL:
+			{
+				battlecry = true;
+				trVectorSetUnitPos("healerPos", "spellCaster");
+				trVectorSetUnitPos("targetPos", "spellTarget");
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(zGetUnitVector("healerPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trUnitOverrideAnimation(50, 0, 0, 1, -1);
+				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("spellTarget", "tile"));
+				healUnit(1*trQuestVarGet("spellTarget"), 3);
+			}
+			case SPELL_COPY_HOMEWORK:
+			{
+				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+				trSoundPlayFN("spybirth.wav","1",-1,"","");
+				xsEnableRule("spell_copy_homework_activate");
+			}
+			case SPELL_METEOR:
+			{
+				trSoundPlayFN("townattacked.wav","1",-1,"","");
+				trQuestVarSet("next", deployAtTile(0, "Relic", 1*trQuestVarGet("spellTarget")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("next"), true);
+				trMutateSelected(kbGetProtoUnitID("Hero Birth"));
+				yAddToDatabase("meteors", "next");
+				yAddUpdateVar("meteors", "time", 2);
+				yAddUpdateVar("meteors", "tile", trQuestVarGet("spellTarget"));
+			}
+			case SPELL_FINAL_EXAM:
+			{
+				trSoundPlayFN("cinematics\15_in\gong.wav","1",-1,"","");
+				trSoundPlayFN("pestilencebirth.wav","1",-1,"","");
+				trQuestVarSet("p1drawCards", 2);
+				trQuestVarSet("p2drawCards", 2);
+			}
+			case SPELL_SHAPESHIFT:
+			{
+				battlecry = true;
+				trSoundPlayFN("changeunit.wav","1",-1,"","");
+				target = trQuestVarGet("copyTarget");
+				activeUnit = trQuestVarGet("transformTarget");
+				mSetVar(activeUnit, "proto", mGetVar(target, "proto"));
+				mSetVar(activeUnit, "spell", mGetVar(target, "spell"));
+				mSetVar(activeUnit, "cost", mGetVar(target, "cost"));
+				mSetVar(activeUnit, "attack", mGetVar(target, "attack"));
+				mSetVar(activeUnit, "health", mGetVar(target, "health"));
+				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
+				mSetVar(activeUnit, "range", mGetVar(target, "range"));
+				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
+				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
+				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
+				mSetString(activeUnit, "ability", mGetString(target, "ability"));
+				deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(activeUnit, "tile"));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trUnitOverrideAnimation(39,0,0,1,-1);
+				trUnitSelectClear();
+				trUnitSelect(""+activeUnit);
+				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
+				damageUnit(activeUnit, 0);
+				updateAuras();
+			}
+			case SPELL_APOCALYPSE:
+			{
+				trSoundPlayFN("meteorapproach.wav","1",-1,"","");
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_apocalypse_activate");
+			}
+			case SPELL_MIRROR_IMAGE:
+			{
+				trSoundPlayFN("recreation.wav","1",-1,"","");
+				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
+				addCardToDeckByIndex(p, target);
+				shuffleDeck(p);
+				xsEnableRule("spell_mirror_image_activate");
+			}
 		}
 
 		if (battlecry == false) {
@@ -1065,6 +1183,55 @@ inactive
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_party_up_activate");
+	}
+}
+
+rule spell_copy_homework_activate
+highFrequency
+inactive
+{
+	int p = trQuestVarGet("activePlayer");
+	int card = 0;
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		for(x=3; >0) {
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				trQuestVarSetFromRand("chooseClass", 1, 2, true);
+				trQuestVarSetFromRand("chooseCard", 0, 29, true);
+				card = 30*trQuestVarGet("p"+(3-p)+"class"+1*trQuestVarGet("chooseClass")) + trQuestVarGet("chooseCard");
+				addCardToHandByIndex(p, card);
+			}
+		}
+		updateHandPlayable(p);
+		xsDisableRule("spell_copy_homework_activate");	
+	}
+}
+
+rule spell_apocalypse_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			addCardToHand(p, 0, SPELL_METEOR, true);
+			mSetVarByQV("next", "cost", 0);
+		}
+		xsDisableRule("spell_apocalypse_activate");
+	}	
+}
+
+rule spell_mirror_image_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		int proto = mGetVarByQV("spellTarget", "proto");
+		int target = ProtoToCard(proto);
+		if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			addCardToHandByIndex(p, target);
+		}
+		xsDisableRule("spell_mirror_image_activate");
 	}
 }
 

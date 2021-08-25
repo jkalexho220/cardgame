@@ -7,6 +7,8 @@ bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
 
 bool OnDeath(int event = -1, int unit = 0){
 	int p = mGetVar(unit, "player");
+	int count = 0;
+	int spell = 0;
 	bool checkAgain = false;
 	switch(event)
 	{
@@ -18,17 +20,17 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			drawCard(3-p);
 		}
-		case DEATH_SPELL_DISCOUNT:
-		{
-			trQuestVarSet("p"+p+"spellDiscount", trQuestVarGet("p"+p+"spellDiscount") - 1);
-		}
-		case DEATH_SPELL_DAMAGE:
-		{
-			trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") - 1);
-		}
 		case DEATH_EGG:
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Phoenix Egg");
+		}
+		case DEATH_GET_ARCANE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
+				updateHandPlayable(p);
+			}
 		}
 		/*
 		case DEATH_BOOM_SMALL:
@@ -113,5 +115,39 @@ void removeDeadUnits() {
 				mSetVar(unit, "action", ACTION_SLEEPING);
 			}
 		}
+	}
+	updateAuras();
+}
+
+
+
+void returnToHand(int unit = 0) {
+	int p = mGetVar(unit, "player");
+	int proto = mGetVar(unit, "proto");
+	zSetVarByIndex("tiles", "occupant", 1*mGetVar(unit, "tile"), 0);
+	if (HasKeyword(GUARD, 1*mGetVar(unit, "keywords"))) {
+		tileGuard(1*mGetVar(unit, "tile"), false);
+	}
+	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			if (yDatabaseNext("allUnits") == unit) {
+				yRemoveFromDatabase("allUnits");
+			}
+		}
+		trSoundPlayFN("hitpointsmax.wav","1",-1,"","");
+		trUnitSelectClear();
+		trUnitSelect(""+unit);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+		mSetVar(unit, "played", 0);
+		addCardToHand(p, proto, 0, false);
+		updateAuras();
+		updateHandPlayable();
+	} else {
+		trSoundPlayFN("cantdothat.wav","1",-1,"","");
+		ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
+		mSetVar(unit, "health", 0);
+		damageUnit(unit, 999);
+		removeDeadUnits();
 	}
 }
