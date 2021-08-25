@@ -217,6 +217,9 @@ void healUnit(int index = 0, float heal = 0) {
 
 void damageUnit(int index = 0, float dmg = 0) {
 	int p = mGetVar(index, "player");
+	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
+		dmg = xsMax(0, dmg - 1);
+	}
 	/*
 	Throne Shield activates here
 	*/
@@ -405,7 +408,79 @@ void stunUnit(int index = 0) {
 	}
 }
 
+/*
+name = the unit name number
+dir = string containing the name of a vector for the direction to be pushed
+*/
+void pushUnit(int name = 0, string dir = "") {
+	int p = mGetVar(name, "player");
+	int tile = mGetVar(name, "tile");
+	int container = deployAtTile(p, "Dwarf", tile);
+	zSetVarByIndex("tiles", "occupant", tile, 0);
+	tileGuard(tile, false);
+	refreshGuardAll();
+
+	trUnitSelectClear();
+	trUnitSelect(""+container, true);
+	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
+	trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
+
+	trUnitSelectClear();
+	trUnitSelect(""+name);
+	trUnitOverrideAnimation(24,0,1,1,-1);
+	trMutateSelected(kbGetProtoUnitID("Relic"));
+	trImmediateUnitGarrison(""+container);
+	trMutateSelected(1*mGetVar(name, "proto"));
+
+
+	/*
+	Find destination
+	*/
+	trVectorQuestVarSet("start", kbGetBlockPosition(""+name));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
+	trQuestVarSet("posx", trQuestVarGet("posx") + 6.0*trQuestVarGet(dir+"x"));
+	trQuestVarSet("posz", trQuestVarGet("posz") + 6.0*trQuestVarGet(dir+"z"));
+	bool found = true;
+	int neighbor = 0;
+	int target = 0;
+	while(found) {
+		found = false;
+		// Travel down the line and find stopping tile
+		for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+			neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);
+			if (zGetVarByIndex("tiles", "terrain", neighbor) == 0 && neighbor < trQuestVarGet("ztilesend")) {
+				trVectorQuestVarSet("current", kbGetBlockPosition(""+neighbor));
+				if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
+					if (zGetVarByIndex("tiles", "occupant", neighbor) > 0) {
+						target = zGetVarByIndex("tiles", "occupant", neighbor);
+					} else {
+						tile = neighbor;
+						trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet(dir+"x"));
+						trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet(dir+"z"));
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	trQuestVarSet("next", container);
+	yAddToDatabase("pushes", "next");
+	yAddUpdateVar("pushes", "name", name);
+	yAddUpdateVar("pushes", "dest", tile);
+	yAddUpdateVar("pushes", "target", target);
+	yAddUpdateVar("pushes", "timeout", trTimeMS() + 70 * zDistanceBetweenVectors("start", "pos"));
+	trUnitSelectClear();
+	trUnitSelect(""+tile);
+	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
+	trUnitSelectClear();
+	trUnitSelect(""+container);
+	trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
+	trUnitMoveToVector("pos", false);
+}
+
 void updateAuras() {
+	int card = 0;
 	for(p=2; >0) {
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
 		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
@@ -416,9 +491,61 @@ void updateAuras() {
 				mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
 			}
 		}
-	}
+		if (trCountUnitsInArea("128",p,"Hero Greek Polyphemus", 45) > 0) {
+			mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
+		} else {
+			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
+		}
 
+		/*
+		Scylla discounts
+		*/
+		if (trCountUnitsInArea("128", p, "Heka Gigantes", 45) > 0) {
+			for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
+					mSetVarByQV("p"+p+"hand", "keywords", SetBit(1*mGetVarByQV("p"+p+"hand", "keywords"), OVERFLOW));
+				}
+			}
+		} else {
+			for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				if (mGetVarByQV("p"+p+"hand", "spell") == SPELL_NONE) {
+					card = mGetVarByQV("p"+p+"hand", "proto");
+					if (HasKeyword(OVERFLOW, 1*trQuestVarGet("card_"+card+"_keywords")) == false) {
+						mSetVarByQV("p"+p+"hand", "keywords", ClearBit(1*mGetVarByQV("p"+p+"hand", "keywords"), OVERFLOW));
+					}
+				}
+			}
+		}
+	}
 	refreshGuardAll();
+}
+
+rule resolve_pushes
+highFrequency
+active
+{
+	if (yGetDatabaseCount("pushes") > 0) {
+		int unit = yDatabaseNext("pushes");
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("pushes", "dest")));
+		if (zDistanceToVectorSquared("pushes", "pos") < 4 || trTimeMS() > yGetVar("pushes", "timeout")) {
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			trUnitEjectContained();
+			trUnitChangeProtoUnit("Dust Large");
+			teleportToTile(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "dest"));
+			if (yGetVar("pushes", "target") > 0) {
+				startAttack(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "target"), false, false);
+				startAttack(1*yGetVar("pushes", "target"), 1*yGetVar("pushes", "name"), false, false);
+			}
+			yRemoveFromDatabase("pushes");
+			yRemoveUpdateVar("pushes", "name");
+			yRemoveUpdateVar("pushes", "dest");
+			yRemoveUpdateVar("pushes", "target");
+			yRemoveUpdateVar("pushes", "timeout");
+		}
+	}
 }
 
 rule spy_assign_new

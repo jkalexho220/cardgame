@@ -1,38 +1,4 @@
-rule match_test
-highFrequency
-inactive
-runImmediately
-{
-	for(p=2; >0) {
-		for(x=3; >0) {
-			addCardToDeck(p, "Khopesh");
-			addCardToDeck(p, "Javelin Cavalry Hero");
-			addCardToDeck(p, "Priest");
-			addCardToDeck(p, "Maceman");
-			addCardToDeck(p, "Skraeling");
-			addCardToDeck(p, "Slinger");
-			addCardToDeck(p, "Huskarl");
-			addCardToDeck(p, "Peltast");
-			addCardToDeck(p, "Oracle Scout");
-			addCardToDeck(p, "Phoenix From Egg");
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_CLASS_TIME);
-			addCardToDeck(p, "", SPELL_ELECTROSURGE);
-			addCardToDeck(p, "", SPELL_DOUBLEBLAST);
-			addCardToDeck(p, "", SPELL_FIRE_AND_ICE);
-			addCardToDeck(p, "", SPELL_RUNE_OF_FLAME);
-			addCardToDeck(p, "", SPELL_RUNE_OF_ICE);
-		}
-		addCardToDeck(p, "", SPELL_WHIRLWIND);
-		addCardToDeck(p, "Archer Atlantean Hero");
-		addCardToDeck(p, "Nemean Lion");
-	}
-	
-	InitBot(BOT_PERSONALITY_DEFAULT);
-	
-	xsDisableRule("match_test");
-}
+
 
 rule match_00_start
 highFrequency
@@ -250,7 +216,14 @@ inactive
 					trQuestVarSet("botThinking", 0);
 					xsEnableRule("Bot_00_turn_start");
 				}
-
+				
+				/*
+				Guardian of the Sea expires
+				*/
+				if (trQuestVarGet("p"+p+"guardianOfTheSea") == 1) {
+					trQuestVarSet("p"+p+"guardianOfTheSea", 0);
+					mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
+				}
 				if (p == 1) {
 					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
 				}
@@ -267,6 +240,7 @@ inactive
 
 				updateMana();
 				removeDeadUnits();
+				updateAuras();
 
 				xsEnableRule("gameplay_01_select");
 				xsEnableRule("turn_01_end");
@@ -287,8 +261,9 @@ inactive
 			trUnitDestroy();
 		}
 		ChatLogShow();
-		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana"));
+		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"extraManaflow"));
 		trQuestVarSet("p"+p+"mana", -1);
+		trQuestVarSet("p"+p+"extraManaflow", 0);
 		updateHandPlayable(p);
 		
 		trPlayerKillAllGodPowers(p);
@@ -320,12 +295,10 @@ inactive
 			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
 			}
-			if ((trQuestVarGet("p"+p+"commander") == trQuestVarGet("allUnits")) && 
-				(1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Pharaoh of Osiris"))) {
-				mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") - trQuestVarGet("p"+p+"yeebbonus"));
-				trQuestVarSet("p"+p+"yeebbonus", 0);
-			}
 		}
+
+		mSetVarByQV("p"+p+"commander", "attack", mGetVarByQV("p"+p+"commander", "attack") - trQuestVarGet("p"+p+"yeebBonus"));
+		trQuestVarSet("p"+p+"yeebbonus", 0);
 
 		/*
 		Meteors

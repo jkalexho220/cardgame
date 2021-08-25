@@ -17,7 +17,7 @@ Slots 10-15 = collectible class cards in collection
 
 /*
 If you want a full collection for a particular class:
-The progress + metadata slot for that class should have the number: 2097087
+The progress + metadata slot for that class should have the number: 2097088
 + 1 if class is in the deck
 + 2 if the class is second
 + 4 if the selected commander is second
