@@ -196,6 +196,22 @@ void OnPlay(int unit = 0) {
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_LAMPADES_CONVERT);
 		}
+		case kbGetProtoUnitID("Tartarian Gate spawn"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DEMON_EAT);
+		}
+		case kbGetProtoUnitID("Axeman"):
+		{
+			trQuestVarSet("p"+p+"yeebBonus", 1 + trQuestVarGet("p"+p+"yeebBonus"));
+			mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
+		case kbGetProtoUnitID("Guardian"):
+		{
+			trQuestVarSet("p"+(3-p)+"drawCards", 2);
+		}
 	}
 	if (done) {
 		removeDeadUnits();

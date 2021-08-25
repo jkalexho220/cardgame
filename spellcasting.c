@@ -154,7 +154,16 @@ void castStart() {
 	xsEnableRule("spellcast_00_process");
 }
 
+void castRestoreWard() {
+	for(x=yGetDatabaseCount("wardUnits"); >0) {
+		yDatabaseNext("wardUnits");
+		yAddToDatabase("allUnits", "wardUnits");
+	}
+	yClearDatabase("wardUnits");
+}
+
 void castEnd() {
+	castRestoreWard();
 	removeDeadUnits();
 	updateAuras();
 	xsEnableRule("gameplay_01_select");
@@ -248,9 +257,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-						continue;
-					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -267,9 +274,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-						continue;
-					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -286,9 +291,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-						continue;
-					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "cost") <= trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"manaflow")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -305,9 +308,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
-						continue;
-					} else if (mGetVarByQV("allUnits", "player") == p) {
+					if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -522,6 +523,7 @@ inactive
 			{
 				trQuestVarSet("p"+p+"click", 0);
 				spellcastClearHighlights(x);
+				castRestoreWard();
 				castReset();
 				trQuestVarSet("castDone", CASTING_CANCEL);
 				xsEnableRule("gameplay_01_select");
@@ -541,6 +543,17 @@ card is removed.
 void chooseSpell(int spell = 0, int card = -1) {
 	trQuestVarSet("currentSpell", spell);
 	trQuestVarSet("selectedCard", card);
+	// If the card is a spell
+	if (card > -1) {
+		yDatabasePointerDefault("allUnits");
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+				yAddToDatabase("wardUnits", "allUnits");
+				yRemoveFromDatabase("allUnits");
+			}
+		}
+	}
 	castReset();
 	switch(spell)
 	{
@@ -724,6 +737,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 0, false);
 		}
+		case SPELL_DEMON_EAT:
+		{
+			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -738,6 +755,7 @@ inactive
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
 		xsDisableRule("spell_cast");
+		castRestoreWard();
 		bool done = true;
 		int activeUnit = 0;
 		int target = 0;
@@ -1223,9 +1241,17 @@ inactive
 					}
 				}
 			}
+			case SPELL_DEMON_EAT:
+			{
+				trSoundPlayFN("tartarianspawnbirth1.wav","1",-1,"","");
+				mSetVarByQV("spellCaster", "health", mGetVarByQV("spellCaster", "health") + mGetVarByQV("spellTarget", "health"));
+				mSetVarByQV("spellCaster", "attack", mGetVarByQV("spellCaster", "attack") + mGetVarByQV("spellTarget", "attack"));
+				mSetVarByQV("spellTarget", "health", 0);
+				damageUnit(1*trQuestVarGet("spellTarget"),10);
+			}
 		}
 
-		if (battlecry == false) {
+		if (trQuestVarGet("selectedCard") >= 0) {
 			if (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer")) {
 				trMessageSetText(trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_description"), -1);
 			}

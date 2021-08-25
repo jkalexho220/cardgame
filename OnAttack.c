@@ -89,5 +89,18 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				pushUnit(target, "dir");
 			}
 		}
+		case ATTACK_GET_ZOMBIE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				addCardToHand(p, kbGetProtoUnitID("Minion"), 0, false);
+				updateHandPlayable(p);
+			}
+		}
+		case ATTACK_SUMMON_ZOMBIE:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				deathSummonQueue(1*mGetVar(target, "tile"), p, "Minion");
+			}
+		}
 	}
 }

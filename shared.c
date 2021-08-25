@@ -658,7 +658,8 @@ runImmediately
 		trModifyProtounit("Dwarf", p, 2, -20);
 		trModifyProtounit("Animal Attractor", p, 2, -20);
 		trModifyProtounit("Nidhogg", p, 2, -20);
-
+		trTechSetStatus(p, 7, 4); // heavy infantry
+		trTechSetStatus(p, 476, 4); // iron all
 	}
 
 	// Disable god powers

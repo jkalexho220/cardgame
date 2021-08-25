@@ -542,5 +542,6 @@ inactive
 	trUnblockAllSounds();
 	trSoundPlayFN("favordump.wav","1",-1,"","");
 	xsDisableRule("data_load_07_done");
+	trQuestVarSet("dimension", 6);
 	xsEnableRule("initializeBoard");
 }

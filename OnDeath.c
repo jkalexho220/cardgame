@@ -8,7 +8,8 @@ bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
 bool OnDeath(int event = -1, int unit = 0){
 	int p = mGetVar(unit, "player");
 	int count = 0;
-	int spell = 0;
+	int target = 0;
+	int tile = 0;
 	bool checkAgain = false;
 	switch(event)
 	{
@@ -31,6 +32,41 @@ bool OnDeath(int event = -1, int unit = 0){
 				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
 				updateHandPlayable(p);
 			}
+		}
+		case DEATH_SUMMON_ZOMBIE:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Minion");
+		}
+		case DEATH_SUMMON_SHADOW:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Shade of Hades");
+		}
+		case DEATH_POISON_MIST:
+		{
+			for(x=0; < zGetVarByIndex("tiles", "neighborCount", 1*mGetVar(unit, "tile"))) {
+				tile = zGetVarByIndex("tiles", "neighbor"+x, 1*mGetVar(unit, "tile"));
+				target = zGetVarByIndex("tiles", "occupant", tile);
+				if (target > 0) {
+					if (mGetVar(target, "spell") == SPELL_NONE) {
+						mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
+					}
+				}
+			}
+			deployAtTile(0, "Lampades Blood", 1*mGetVar(unit, "tile"));
+			trSoundPlayFN("lampadesblood.wav","1",-1,"","");
+			trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+		}
+		case DEATH_DARKNESS_RETURNS:
+		{
+			addCardToDeck(p, "Guardian");
+			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
+			deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(unit, "tile"));
+		}
+		case DEATH_GET_ATTACK:
+		{
+			trQuestVarSet("p"+p+"yeebBonus", 1 + trQuestVarGet("p"+p+"yeebBonus"));
+			mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
 		}
 		/*
 		case DEATH_BOOM_SMALL:
@@ -58,6 +94,7 @@ bool OnDeath(int event = -1, int unit = 0){
 void removeDeadUnits() {
 	bool checkAgain = true;
 	int pointer = 0;
+	int p = 0;
 	while(checkAgain){
 		checkAgain = false;
 		yDatabasePointerDefault("allUnits");
@@ -82,6 +119,8 @@ void removeDeadUnits() {
 			}
 		}
 	}
+	trQuestVarSet("p1deathCount", 0);
+	trQuestVarSet("p2deathCount", 0);
 	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
@@ -92,8 +131,26 @@ void removeDeadUnits() {
 			if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
 				tileGuard(tile, false);
 			}
+			p = mGetVarByQV("allUnits", "player");
+			trQuestVarSet("p"+p+"deathCount", 1 + trQuestVarGet("p"+p+"deathCount"));
 			mSetVarByQV("allUnits", "health", -9999);	
 			yRemoveFromDatabase("allUnits");
+		}
+	}
+
+	for (x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		switch(1*mGetVarByQV("allUnits", "proto"))
+		{
+			case kbGetProtoUnitID("Einheriar"):
+			{
+				p = mGetVarByQV("allUnits","player");
+				mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
+				mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("allUnits"));
+				spyEffect("Einheriar Boost SFX");
+			}
 		}
 	}
 

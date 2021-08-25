@@ -73,6 +73,9 @@ const int SPELL_DROWN = 42;
 
 const int SPELL_MEDUSA_STUN = 43;
 const int SPELL_LAMPADES_CONVERT = 44;
+
+// Otherworld
+const int SPELL_DEMON_EAT = 45;
 /*
 OnAttack events (bit positions)
 */
@@ -88,8 +91,10 @@ const int ATTACK_YEET = 8;
 const int ATTACK_PUSH = 9;
 const int ATTACK_RETURN = 10;
 const int ATTACK_GET_MANAFLOW = 11;
+const int ATTACK_GET_ZOMBIE = 12;
+const int ATTACK_SUMMON_ZOMBIE = 13;
 
-const int ATTACK_EVENT_COUNT = 12;
+const int ATTACK_EVENT_COUNT = 14;
 
 
 /*
@@ -100,8 +105,13 @@ const int DEATH_OPPONENT_DRAW_CARD = 2;
 const int DEATH_BOOM_SMALL = 3;
 const int DEATH_EGG = 4;
 const int DEATH_GET_ARCANE = 5;
+const int DEATH_SUMMON_ZOMBIE = 6;
+const int DEATH_SUMMON_SHADOW = 7;
+const int DEATH_GET_ATTACK = 8;
+const int DEATH_POISON_MIST = 9;
+const int DEATH_DARKNESS_RETURNS = 10;
 
-const int DEATH_EVENT_COUNT = 6;
+const int DEATH_EVENT_COUNT = 11;
 
 
 /*
@@ -616,6 +626,7 @@ runImmediately
 		trForbidProtounit(p, "Dock");
 		trForbidProtounit(p, "Wall Connector");
 		trForbidProtounit(p, "Temple");
+		trModifyProtounit("Minion", p, 8, -99); // minion lifespan
 	}
 
 	/*
@@ -772,13 +783,87 @@ runImmediately
 	CardSetup("Eitri",					0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON) + Keyword(DECAY), true);
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 
+	// 90-94
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 95-99
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 100-104 (LEGENDARY at 104)
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 105-109
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 110-114
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 115-119 (LEGENDARY at 119)
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	/*
-	EVIL
+	OTHERWORLD
 	*/
 	// Created cards
 	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Minion",					0, "Zombie",			1, 1, 1, 1, Keyword(CHARGE), true);
+	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(AMBUSH), true);
 	
+	// 120-124
+	CardSetup("Spearman",				1, "Cultist",				1, 1, 2, 1); // Death: Summon a Zombie on my tile.
+	CardSetup("Shade",					2, "Vengeful Spirit",		1, 2, 2, 1, Keyword(GUARD) + Keyword(DEADLY));
+	CardSetup("Axeman",					2, "Executioner",			3, 1, 2, 1); // Play and Death: Give your Commander +1 attack this turn.
+	CardSetup("Anubite",				2, "Demonling",				2, 2, 2, 1, Keyword(CHARGE));
+	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Add a Zombie to your hand.
+	// 125-129
+	CardSetup("Prodromos",				3, "Pillager",				3, 1, 3, 1); // Death: Draw a card.
+	CardSetup("Tartarian Gate spawn",	3, "Demon",					1, 1, 2, 1, Keyword(CHARGE)); // Play: Kill an allied minion and grant me its attack and health.
+	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
+	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	4, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
+	CardSetup("Einheriar",				4, "Dark Reaper",			3, 4, 1, 1); // Each time an ally dies, I gain +1 attack and health.
+	// 130-134 (LEGENDARY at 134)
+	CardSetup("Dryad",					3, "Plaguewalker",			2, 6, 2, 1, Keyword(DECAY)); // Death: Give Decay to all adjacent minions.
+	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2, Keyword(DECAY)); // At the start of your turn, draw a card and give it Fleeting.
+	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // Your opponent's spells cost 1 more.
+	CardSetup("Pharaoh",				5, "Dark Summoner",			2, 3, 2, 2, Keyword(AIRDROP) + Keyword(BEACON) + Keyword(HEALER));
+	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
+	// 135-139
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 140-144
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	// 145-149 (LEGENDARY at 149)
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	/*
 	SPACE
 	*/
@@ -786,6 +871,12 @@ runImmediately
 	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
 	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
 	
+	// 150-154
+	// 155-159
+	// 160-164 (LEGENDARY at 164)
+	// 165-169
+	// 170-174
+	// 175-179 (LEGENDARY at 179)
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
@@ -844,7 +935,20 @@ runImmediately
 	
 	CardEvents("Hoplite", 0, 0, 										"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
-	
+
+	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
+	CardEvents("Axeman", 0, Keyword(DEATH_GET_ATTACK),					"Play and Death: Give your Commander +1 attack this turn.");
+	CardEvents("Satyr", Keyword(ATTACK_GET_ZOMBIE), 0, 					"Attack: Add a Zombie to your hand.");
+	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
+	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an ally and grant me its attack and health.");
+	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Whenever I kill an enemy, summon a Zombie on their tile.");
+	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a Shadow Elemental on my tile.");
+	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
+	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent minions.");
+	CardEvents("Theocrat", 0, 0,										"At the start of your turn, draw a card and give it Fleeting.");
+	CardEvents("Argus", 0, 0,											"Your opponent's spells cost 1 more.");
+	CardEvents("Guardian", 0, Keyword(DEATH_DARKNESS_RETURNS),			"Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deck.");
+
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
 

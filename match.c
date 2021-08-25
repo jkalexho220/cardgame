@@ -207,6 +207,10 @@ inactive
 						trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
 						trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
 					}
+					case kbGetProtoUnitID("Theocrat"):
+					{
+						drawCard(p, true);
+					}
 				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
