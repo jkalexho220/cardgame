@@ -292,6 +292,22 @@ int GetSpellAnimation(int class = 0, int type = 0){
 	ThrowError("GetSpellAnimation");
 }
 
+string colorizeStat(int name = 0, string s = "Attack", string d = "ATK") {
+	int diff = mGetVar(name, s) - trQuestVarGet("card_"+1*mGetVar(name, "proto")+"_"+s);
+	string val = "";
+	
+	if (diff > 0) {
+		val = "<color=0,1,0>"+d+" "+1*mGetVar(name, s)+"</color>";
+	} else if (diff < 0) {
+		val = "<color=1,0,0>"+d+" "+1*mGetVar(name, s)+"</color>";
+	} else {
+		val = d+" "+1*mGetVar(name, s);
+	}
+	
+	return(val);
+}
+
+
 /*
 Given a card proto or spell
 */
@@ -299,36 +315,12 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	string dialog = "";
 	string message = "";
 	int keywords = trQuestVarGet("card_"+proto+"_keywords");
+	message = trStringQuestVarGet("card_"+proto+"_ability");
 	if (spell > 1) {
 		keywords = trQuestVarGet("spell_"+spell+"_keywords");
-		trMessageSetText(trStringQuestVarGet("spell_"+spell+"_description"), -1);
+		message = trStringQuestVarGet("spell_"+spell+"_description");
 	}
-	bool multiple = false;
-	if(keywords>0 || trQuestVarGet("card_"+proto+"_range") > 1){
-		trChatSend(0, "======== Keywords ========");
-		if (trQuestVarGet("card_"+proto+"_range") > 1) {
-			trChatSend(0, "Ranged: This unit can attack and counterattack 2 spaces away");
-			dialog = "Ranged";
-			multiple = true;
-		}
-		if (keywords>0) {
-			int current = xsPow(2, NUM_KEYWORDS - 1);
-			for(k=NUM_KEYWORDS - 1; >=0){
-				if (keywords >= current) {
-					if(multiple){
-						dialog = dialog + ", ";
-					}
-					multiple = true;
-					dialog = dialog + GetKeywordName(k);
-					keywords = keywords - current;
-					trChatSend(0, GetKeywordName(k) + ": " + GetKeywordDescription(k));
-				}
-				current = current / 2;
-			}
-		}
-	}
-	message = trStringQuestVarGet("card_"+proto+"_ability");
-
+	
 	if (spell <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
@@ -341,10 +333,33 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 		} else {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
+		trChatSend(0, "<color={Playercolor(1)}>==== (" + 1*trQuestVarGet("card_"+proto+"_cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====</color>");
+		trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
+	} else {
+		trChatSend(0, "<color={Playercolor(1)}>=== (" + 1*trQuestVarGet("spell_"+spell+"_cost") + ") " + trStringQuestVarGet("spell_"+spell+"_name")+" ===</color>");
+	}
+	trChatSend(0, message);
+
+	bool multiple = false;
+	if (keywords>0) {
+		trChatSend(0, "==== Keywords ====");
+		int current = xsPow(2, NUM_KEYWORDS - 1);
+		for(k=NUM_KEYWORDS - 1; >=0){
+			if (keywords >= current) {
+				if(multiple){
+					dialog = dialog + ", ";
+				}
+				multiple = true;
+				dialog = dialog + GetKeywordName(k);
+				keywords = keywords - current;
+				trChatSend(0, GetKeywordName(k) + ": " + GetKeywordDescription(k));
+			}
+			current = current / 2;
+		}
 	}
 
 	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
-	trSetCounterDisplay(message);
+	//trSetCounterDisplay(message);
 
 }
 
@@ -364,13 +379,6 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		dialog = "Stunned";
 		multiple = true;
 	}
-	if (mGetVar(name, "range") > 1) {
-		if(multiple){
-			dialog = dialog + ", ";
-		}
-		dialog = dialog + "Ranged";
-		multiple = true;
-	}
 	if(keywords>0){
 		int current = xsPow(2, NUM_KEYWORDS - 1);
 		for(k=NUM_KEYWORDS - 1; >=0){
@@ -385,7 +393,6 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			current = current / 2;
 		}
 	}
-	message = mGetString(name, "ability");
 
 	int old = xsGetContextPlayer();
 	int p = mGetVar(name, "player");
@@ -406,14 +413,17 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
 		trVectorQuestVarSet("center", kbGetBlockPosition("128"));
 
+		trChatSend(0, "<color={Playercolor("+p+")}>==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====</color>");
 		if (zDistanceBetweenVectorsSquared("pos", "center") > 2025) {
 			discount = trQuestVarGet("p"+p+"minionDiscount");
 			if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 				discount = discount + trQuestVarGet("p"+p+"manaflow");
 			}
 			if (discount > 0) {
+				trChatSend(0, "<color=0,1,0>Discount " + discount);
 				bonus = "Discount " + discount;
 			}
+			trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
 		} else {
 			xsSetContextPlayer(1*mGetVar(name, "player"));
 			int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
@@ -434,28 +444,33 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			} else if (diff < 0) {
 				bonus = bonus + "SPD " + diff;
 			}
+			trChatSend(0, colorizeStat(name, "Attack", "ATK") + " | " + colorizeStat(name, "Health", "HP") + " | " + colorizeStat(name, "Speed", "SPD") + " | " + colorizeStat(name, "Range", "RNG"));
 		}
-		trChatSend(0, "==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====");
-		trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
+		
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
-		trChatSend(0, bonus);
 	} else {
+		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
+
 		discount = trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 			discount = discount + trQuestVarGet("p"+p+"manaflow");
 		}
-		if (discount > 0) {
+		if ((discount == 0) == false) {
 			bonus = "Discount " + discount;
+			if (discount > 0) {
+				trChatSend(0, "<color=0,1,0>Discount " + discount);
+			} else if (discount < 0) {
+				trChatSend(0, "<color=1,0,0>Discount " + discount);
+			}
 		}
-		trChatSend(0, "==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ====");
+		
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
-		trChatSend(0, bonus);
 	}
 	
 
@@ -830,7 +845,7 @@ runImmediately
 	CardEvents("Phoenix From Egg", 0, Keyword(DEATH_EGG), 				"Death: Summon a Reviving Egg on my tile.");
 	CardEvents("Prisoner", 0, Keyword(DEATH_GET_ARCANE),				"Death: Add a random Arcane spell to your hand.");
 	CardEvents("Chimera", Keyword(ATTACK_GET_ARCANE), 0,				"Attack: Add a random Arcane spell to your hand.");
-	CardEvents("Petsuchos", 0, 0,										"I have 3 range. After you cast a spell, grant me +1 attack.");
+	CardEvents("Petsuchos", 0, 0,										"After you cast a spell, grant me +1 attack.");
 	CardEvents("Trident Soldier Hero",0,0,								"Your Commander has Guard. When they take damage, I take it instead");
 	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
@@ -838,7 +853,7 @@ runImmediately
 	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Your mana spent on spells will still count as Manaflow next turn.");
-	CardEvents("Archer Atlantean Hero", 0, 0, 							"I have 3 range.");
+	// CardEvents("Archer Atlantean Hero", 0, 0, 							"I have 3 range.");
 	
 	CardEvents("Hypaspist", 0, 0,										"Play: Grant your Commander +1 attack this turn.");
 	CardEvents("Myrmidon", 0, 0,										"Play: I gain {Manaflow} health.");
