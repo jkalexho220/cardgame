@@ -149,6 +149,14 @@ void castAddDirection(string qv = "", string start = "", bool unit = false) {
 	trStringQuestVarSet("cast"+x+"start", start);
 }
 
+/*
+called after any of the castAddX functions above to attach a string to it
+*/
+void castInstructions(string inst = "") {
+	int x = trQuestVarGet("castPush");
+	trStringQuestVarSet("cast"+x+"instructions", inst);
+}
+
 void castStart() {
 	trQuestVarSet("castDone", CASTING_IN_PROGRESS);
 	xsEnableRule("spellcast_00_process");
@@ -240,6 +248,9 @@ inactive
 			trQuestVarSet("gameplayPhase", GAMEPLAY_SPELL_UNIT);
 		} else {
 			trQuestVarSet("gameplayPhase", GAMEPLAY_SPELL_TILE);
+		}
+		if (trCurrentPlayer() == p) {
+			trMessageSetText(trStringQuestVarGet("cast"+x+"instructions"), -1);
 		}
 		switch(1*trQuestVarGet("cast"+x+"type"))
 		{
@@ -547,188 +558,238 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SPARK:
 		{
 			castAddUnit("spellTarget", 0);
+			castInstructions("Choose any unit. Right click to cancel.");
 		}
 		case SPELL_FOOD:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion to give +1 attack and health to.");
 		}
 		case SPELL_SING:
 		{
 			castAddSing("spellTarget", 1*trQuestVarGet("activePlayer"));
+			castInstructions("Choose an allied minion that has already acted. Right click to cancel.");
 		}
 		case SPELL_MAP:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_BACKSTAB:
 		{
 			castAddBackstabUnit("spellTarget", 3 - trQuestVarGet("activePlayer"));
+			castInstructions("Choose an enemy that is adjacent to another enemy. Right click to cancel.");
 		}
 		case SPELL_DUEL:
 		{
 			castAddUnit("allyTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 			castAddUnit("enemyTarget", 3 - trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an enemy minion. Right click to cancel.");
 		}
 		case SPELL_PARTY_UP:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_TEAMWORK:
 		{
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an enemy minion. Right click to cancel.");
 		}
 		case SPELL_DEFENDER:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_VICTORY:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right clickto cancel.");
 		}
 		case SPELL_WHIRLWIND:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_HEROIC:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_WOLF:
 		{
 			castAddAdjacentTile("spellTarget", "summonedUnit");
+			castInstructions("Choose a tile to summon a 1|1 Loyal Wolf with Guard.");
 		}
 		case SPELL_PING:
 		{
 			castAddUnit("spellTarget", 0);
+			castInstructions("Choose a unit to deal 1 damage to.");
 		}
 		case SPELL_FIRST_AID:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 			castAddAdjacentTile("tileTarget", "p"+1*trQuestVarGet("activePlayer")+"commander");
+			castInstructions("Choose a tile to teleport it to. Right click to cancel.");
 		}
 		case SPELL_CLASS_TIME:
 		{
 			castAddTile("spellTile", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_SNIPE:
 		{
 			castAddUnit("spellShooter", 1*trQuestVarGet("activePlayer"), true);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 			castAddTarget("spellTarget", "spellShooter");
+			castInstructions("Choose an enemy within range to attack. Right click to cancel.");
 		}
 		case SPELL_EXPLOSION:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_DOUBLEBLAST:
 		{
 			castAddUnit("spellTarget1", 3 - trQuestVarGet("activePlayer"), true);
+			castInstructions("Choose the first target. Right click to cancel.");
 			castAddUnit("spellTarget2", 3 - trQuestVarGet("activePlayer"), true);
+			castInstructions("Choose the second target. Right click to cancel.");
 		}
 		case SPELL_ELECTROSURGE:
 		{
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), true);
+			castInstructions("Choose an enemy. Right click to cancel.");
 		}
 		case SPELL_RUNE_OF_FLAME:
 		{
 			castAddSummonLocations("spellTarget");
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_RUNE_OF_ICE:
 		{
 			castAddSummonLocations("spellTarget");
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_FIRE_AND_ICE:
 		{
 			castAddSummonLocations("spellTargetFire");
+			castInstructions("Choose a tile to summon the Blaze Elemental. Right click to cancel.");
 			castAddSummonLocations("spellTargetIce");
+			castInstructions("Choose a tile to summon the Frost Elemental. Right click to cancel.");
 		}
 		case SPELL_VALKYRIE_HEAL:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"));
+			castInstructions("Choose an ally to restore 3 health to.");
 		}
 		case SPELL_COPY_HOMEWORK:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_METEOR:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_FINAL_EXAM:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_SHAPESHIFT:
 		{
-			castAddUnit("copyTarget", 0, false);
 			castAddUnit("transformTarget", 0, false);
+			castInstructions("Choose a minion to transform.");
+			castAddUnit("copyTarget", 0, false);
+			castInstructions("Choose a minion to copy.");
 		}
 		case SPELL_APOCALYPSE:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_MIRROR_IMAGE:
 		{
 			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
 		}
 		case SPELL_MEDUSA_STUN:
 		{
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an enemy to stun.");
 		}
 		case SPELL_LAMPADES_CONVERT:
 		{
 			castAddConvertUnit("spellTarget", 3 - trQuestVarGet("activePlayer"));
+			castInstructions("Choose an enemy that costs {Manaflow} or less to convert.");
 		}
 		case SPELL_WATER_CANNON:
 		{
 			castAddUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose a unit. Right click to cancel.");
 			castAddDirection("spellDirection", "spellTarget", true);
+			castInstructions("Choose a direction. Right click to cancel.");
 		}
 		case SPELL_RUNE_OF_WATER:
 		{
 			castAddSummonLocations("spellTarget");
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_TIDAL_WAVE:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_FLUSH:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_DEEP_DIVE:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_SEA_EMBRACE:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_TELETIDE:
 		{
 			castAddUnit("spellTarget", 1*trQuestVarGet("activePlayer"), true);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 			castAddTile("spellDestination", false);
+			castInstructions("Choose a tile to teleport it to. Right click to cancel.");
 		}
 		case SPELL_GUARDIAN_OF_SEA:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_WRATH_OF_SEA:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_CLEANSING_WATERS:
 		{
 			castAddTile("spellTarget", true);
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_DROWN:
 		{
 			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
 		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
 }
-
 
 rule spell_cast
 highFrequency
@@ -738,6 +799,7 @@ inactive
 		xsDisableRule("spell_cast");
 	} else if (trQuestVarGet("castDone") == CASTING_DONE) {
 		xsDisableRule("spell_cast");
+		int spell = trQuestVarGet("currentspell");
 		bool done = true;
 		int activeUnit = 0;
 		int target = 0;
@@ -748,7 +810,7 @@ inactive
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		bool battlecry = false;
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
-		switch(1*trQuestVarGet("currentSpell"))
+		switch(spell)
 		{
 			case SPELL_SPARK:
 			{
@@ -1227,7 +1289,7 @@ inactive
 
 		if (battlecry == false) {
 			if (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer")) {
-				trMessageSetText(trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_description"), -1);
+				trMessageSetText("("+1*trQuestVarGet("spell_"+spell+"_cost")+")"+trStringQuestVarGet("spell_"+spell+"_name")+": "+trStringQuestVarGet("spell_"+spell+"_description"), -1);
 			}
 			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> cast " + trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_name"));
 		}
