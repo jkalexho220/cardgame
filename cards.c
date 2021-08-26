@@ -353,6 +353,7 @@ Given a card name in a given db array, print information
 of the selected unit.
 */
 void displayCardKeywordsAndDescription(int name = 0) {
+	ChatLogShow();
 	string bonus = " ";
 	string dialog = "";
 	string message = "";
