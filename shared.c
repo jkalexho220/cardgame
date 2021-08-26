@@ -541,7 +541,7 @@ void ChatLogShow(){
 	trChatHistoryClear();
 	for(p=2; >0) {
 		if (trCurrentPlayer() == p) {
-			for (i = 10; >0) {
+			for (i = 5; >0) {
 				trChatSend(0, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
 			}
 		}
@@ -610,7 +610,7 @@ runImmediately
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
 	
 	for(p=2; >0) {
-		modularCounterInit("chat" + p + "Log", 10);
+		modularCounterInit("chat" + p + "Log", 5);
 	}
 	
 	Multiplayer = aiIsMultiplayer(); 	// nottud is smart

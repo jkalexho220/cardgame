@@ -284,11 +284,6 @@ inactive
 					}
 				}
 				if (unit > -1) {
-					if (mGetVar(unit, "spell") > SPELL_NONE) {
-						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
-							trMessageSetText(trStringQuestVarGet("spell_"+1*mGetVar(unit, "spell")+"_description"), -1);
-						}
-					}
 					cost = mGetVar(unit, "cost");
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
