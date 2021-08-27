@@ -636,8 +636,10 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 
-	trModifyProtounit("Wadjet Spit", 1, 1, -15);
-	trModifyProtounit("Wadjet Spit", 2, 1, -15);
+	zInitProtoUnitStat("Wadjet Spit", 1, 1, 30);
+	zInitProtoUnitStat("Wadjet Spit", 2, 1, 30);
+	zSetProtoUnitStat("Wadjet Spit", 1, 1, 20);
+	zSetProtoUnitStat("Wadjet Spit", 2, 1, 20);
 	
 	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);	

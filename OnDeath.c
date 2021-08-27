@@ -49,6 +49,9 @@ bool OnDeath(int event = -1, int unit = 0){
 				if (target > 0) {
 					if (mGetVar(target, "spell") == SPELL_NONE) {
 						mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
+						trUnitSelectClear();
+						trUnitSelect(""+target);
+						spyEffect("Poison SFX");
 					}
 				}
 			}

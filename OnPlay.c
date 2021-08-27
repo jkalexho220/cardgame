@@ -8,8 +8,11 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
 		spyEffect("UI Range Indicator Norse SFX");
 	}
-	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
 		spyEffect("Poison SFX");
+	}
+	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Chaos effect");
 	}
 	switch(proto)
 	{
@@ -196,6 +199,25 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Guardian"):
 		{
 			trQuestVarSet("p"+(3-p)+"drawCards", 2);
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Hero Greek Achilles"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"commander"));
+			spyEffect("Poison SFX");
+			deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p"+(3-p)+"commander", "tile"));
+			mSetVarByQV("p"+(3-p)+"commander", "keywords", SetBit(1*mGetVarByQV("p"+(3-p)+"commander", "keywords"), DECAY));
+			stunUnit(1*trQuestVarGet("p"+(3-p)+"commander"));
+		}
+		case kbGetProtoUnitID("Scorpion Man"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_SCORPION_STING);
 		}
 	}
 	if (done) {

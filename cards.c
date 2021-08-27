@@ -13,6 +13,7 @@ const int CLASS_CLOCKWORK = 3;
 const int CLASS_EVIL = 4;
 const int CLASS_SPACE = 5;
 
+
 /*
 Spells
 */
@@ -75,7 +76,21 @@ const int SPELL_MEDUSA_STUN = 43;
 const int SPELL_LAMPADES_CONVERT = 44;
 
 // Otherworld
-const int SPELL_DEMON_EAT = 45;
+
+const int SPELL_WORLD_SPLITTER = 45;
+const int SPELL_SOUL_SIPHON = 46;
+const int SPELL_BLOOD_PRICE = 47;
+const int SPELL_DEATH_APPROACHES = 48;
+const int SPELL_DOOM = 49;
+const int SPELL_SHADOWSTEP = 50;
+const int SPELL_FINAL_FRENZY = 51;
+const int SPELL_CORPSE_PARTY = 52;
+const int SPELL_UNDEATH = 53;
+const int SPELL_RUNE_OF_DARKNESS = 54;
+
+
+const int SPELL_SCORPION_STING = 55;
+const int SPELL_DEMON_EAT = 56;
 /*
 OnAttack events (bit positions)
 */
@@ -93,8 +108,10 @@ const int ATTACK_RETURN = 10;
 const int ATTACK_GET_MANAFLOW = 11;
 const int ATTACK_GET_ZOMBIE = 12;
 const int ATTACK_SUMMON_ZOMBIE = 13;
+const int ATTACK_POISON = 14;
+const int ATTACK_GET_MINION = 15;
 
-const int ATTACK_EVENT_COUNT = 14;
+const int ATTACK_EVENT_COUNT = 16;
 
 
 /*
@@ -758,7 +775,7 @@ runImmediately
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"Both players draw two cards.", SPELL_TYPE_OTHER);
 	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
-	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and your deck.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 3, 2); // At the start of your turn, both players draw a card.
 
 	/*
@@ -772,7 +789,7 @@ runImmediately
 	// 60-64
 	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
-	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 2, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
+	CardSetup("Archer Atlantean",		4, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive minion.
 	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
 	// 65-69
@@ -867,7 +884,7 @@ runImmediately
 	CardSetup("Prodromos",				3, "Pillager",				3, 1, 3, 1); // Death: Draw a card.
 	CardSetup("Tartarian Gate spawn",	3, "Demon",					1, 1, 2, 1, Keyword(CHARGE)); // Play: Kill an allied minion and grant me its attack and health.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
-	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	4, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
+	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			3, 4, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
 	CardSetup("Dryad",					3, "Plaguewalker",			2, 6, 2, 1, Keyword(DECAY)); // Death: Give Decay to all adjacent minions.
@@ -876,23 +893,23 @@ runImmediately
 	CardSetup("Pharaoh",				5, "Dark Summoner",			2, 3, 2, 2, Keyword(AIRDROP) + Keyword(BEACON) + Keyword(HEALER));
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
 	// 135-139
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Scorpion Man",			4, "Stinger",				4, 3, 2, 1); // Play: Give Decay to a minion.
+	SpellSetup("World Splitter",		7, SPELL_WORLD_SPLITTER,	"A minion attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied minion to draw 2 cards.", SPELL_TYPE_OTHER);
+	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied minion and an enemy.", SPELL_TYPE_OTHER);
+	SpellSetup("Death Approaches",		4, SPELL_DEATH_APPROACHES,	"Summon a 4|3 Shadow Elemental with Ambush on a tile next to the enemy Commander.", SPELL_TYPE_OTHER);
 	// 140-144
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("Doom",					3, SPELL_DOOM,				"Deal 2 damage to a unit. If it has Decay, add a Doom to your hand.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied minion.", SPELL_TYPE_OTHER);
+	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a minion Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Corpse Party",			3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
+	SpellSetup("Undeath",				4, SPELL_UNDEATH,			"Give all allied minions, 'Death: Summon a Zombie on my tile.'", SPELL_TYPE_OTHER);
 	// 145-149 (LEGENDARY at 149)
+	CardSetup("Bogsveigir",				2, "Dark Archer",			1, 2, 2, 2); // Attack: If my target is a minion, give it Decay.
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
 	/*
 	SPACE
 	*/
@@ -971,12 +988,15 @@ runImmediately
 	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
 	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an ally and grant me its attack and health.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Whenever I kill an enemy, summon a Zombie on their tile.");
-	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a Shadow Elemental on my tile.");
+	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
 	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent minions.");
 	CardEvents("Theocrat", 0, 0,										"At the start of your turn, draw a card and give it Fleeting.");
 	CardEvents("Argus", 0, 0,											"Your opponent's spells cost 1 more.");
 	CardEvents("Guardian", 0, Keyword(DEATH_DARKNESS_RETURNS),			"Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deck.");
+	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
+	CardEvents("Scorpion Man", 0, 0,									"Play: Give a minion Decay.");
+	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
