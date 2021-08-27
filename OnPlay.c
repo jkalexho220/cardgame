@@ -38,9 +38,6 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Skraeling"):
 		{
-			if (trCurrentPlayer() == p) {
-				trMessageSetText("Choose a tile to summon a Loyal Wolf.", -1);
-			}
 			trQuestVarSet("summonedUnit", unit);
 			chooseSpell(SPELL_WOLF);
 			done = false;
@@ -49,9 +46,6 @@ void OnPlay(int unit = 0) {
 		{
 			done = false;
 			chooseSpell(SPELL_FOOD);
-			if (trCurrentPlayer() == p) {
-				trMessageSetText("Choose an allied minion to grant +1 attack and health to.", -1);
-			}
 		}
 		case kbGetProtoUnitID("Avenger"):
 		{
@@ -85,9 +79,6 @@ void OnPlay(int unit = 0) {
 		{
 			done = false;
 			chooseSpell(SPELL_PING);
-			if (trCurrentPlayer() == p) {
-				trMessageSetText("Choose an enemy to deal 1 damage to.", -1);
-			}
 		}
 		case kbGetProtoUnitID("Huskarl"):
 		{
@@ -128,9 +119,6 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Valkyrie"):
 		{
-			if (trCurrentPlayer() == p) {
-				trMessageSetText("Choose a minion to restore 3 health to.", -1);
-			}
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_VALKYRIE_HEAL);
@@ -141,9 +129,6 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Sphinx"):
 		{
-			if (trCurrentPlayer() == p) {
-				trMessageSetText("Choose a minion to be copied. Then choose a minion to be transformed.", -1);
-			}
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_SHAPESHIFT);
