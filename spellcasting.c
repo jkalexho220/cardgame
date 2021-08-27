@@ -265,7 +265,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords")) || HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
@@ -284,7 +284,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords")) || HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
@@ -303,7 +303,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords")) || HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "cost") <= trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"manaflow")) {
@@ -322,7 +322,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords")) || HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
@@ -439,7 +439,7 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
+					if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords")) || HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
@@ -1214,7 +1214,6 @@ inactive
 				trUnitSelect(""+activeUnit);
 				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
 				damageUnit(activeUnit, 0);
-				updateAuras();
 			}
 			case SPELL_APOCALYPSE:
 			{

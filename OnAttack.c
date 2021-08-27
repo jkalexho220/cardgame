@@ -48,9 +48,9 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		{
 			trUnitSelectClear();
 			trUnitSelect(""+attacker);
-			ChatLog(1, "outside");
+			ChatLog(1, "outside " + p);
 			if(trUnitPercentDamaged() > 0 && mGetVar(target, "health") < 0){
-				ChatLog(1, "outside");
+				ChatLog(1, "inside " + p);
 				healUnit(attacker, 0 - mGetVar(target, "health"));
 				deployAtTile(0, "Regeneration SFX", 1*mGetVar(attacker, "tile"));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");

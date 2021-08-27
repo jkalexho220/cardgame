@@ -11,6 +11,9 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
 		spyEffect("Poison SFX");
 	}
+	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
+		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
+	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):

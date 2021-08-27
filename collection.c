@@ -172,6 +172,10 @@ int CommanderToProtounit(int commander = 0){
 		{
 			return (kbGetProtoUnitID("Bear"));
 		}
+		case 906:
+		{
+			return (kbGetProtoUnitID("Golem"));
+		}
 	}
 	ThrowError("CommanderToProtounit");
 }
@@ -226,10 +230,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("The Plot Twists Again");	
 				}
-				case 7:
-				{
-					return ("The Adventure Concludes");	
-				}
 			}
 		}
 		case CLASS_ARCANE:
@@ -259,10 +259,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				case 6:
 				{
 					return ("It's Not Over Yet");	
-				}
-				case 7:
-				{
-					return ("Power Of Magic");	
 				}
 			}
 		}
@@ -294,10 +290,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("Empire Of Water");	
 				}
-				case 7:
-				{
-					return ("Return What Was Taken");	
-				}
 			}
 		}
 		case CLASS_CLOCKWORK:
@@ -327,10 +319,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				case 6:
 				{
 					return ("Accident");	
-				}
-				case 7:
-				{
-					return ("Memories Are To Be Remembered");	
 				}
 			}
 		}
@@ -362,10 +350,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("Moment Of Hesitation");	
 				}
-				case 7:
-				{
-					return ("Break Of Dawn");	
-				}
 			}
 		}
 		case CLASS_SPACE:
@@ -395,10 +379,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				case 6:
 				{
 					return ("Thank You");	
-				}
-				case 7:
-				{
-					return ("Goodbye");	
 				}
 			}
 		}

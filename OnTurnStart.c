@@ -1,7 +1,6 @@
 bool OnTurnStart(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
-	ChatLog(1, "OnTurnStart:"+kbGetProtoUnitName(proto));
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Phoenix Egg"):
@@ -42,7 +41,7 @@ bool OnTurnStart(int unit = 0) {
 					damageUnit(1*trQuestVarGet("allUnits"), 1);
 					deployAtTile(0, "Dust Small", 1*mGetVarByQV("allUnits", "tile"));
 					trQuestVarSetFromRand("soundRandom", 1, 2, true);
-					trSoundPlayFN("gaiaattack" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+					trSoundPlayFN("farming" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 				}
 			}
 			return (true);

@@ -195,10 +195,12 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 		yDatabaseNext("allUnits");
 		if (mGetVarByQV("allUnits", "player") == p) {
 			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
-				if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
-					yAddToDatabase(db, "allUnits");
-				} else if (mGetVar(name, "range") > 1) {
-					yAddToDatabase(db, "allUnits");
+				if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+					if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+						yAddToDatabase(db, "allUnits");
+					} else if (mGetVar(name, "range") > 1) {
+						yAddToDatabase(db, "allUnits");
+					}
 				}
 			}
 		}
@@ -220,27 +222,38 @@ void damageUnit(int index = 0, float dmg = 0) {
 	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
 		dmg = xsMax(0, dmg - 1);
 	}
-	/*
-	Throne Shield activates here
-	*/
-	if ((trCountUnitsInArea("128",p,"Trident Soldier Hero",45) > 0) && (index == trQuestVarGet("p"+p+"commander"))) {
-		int pointer = yGetPointer("allUnits");
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
-			if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
-				damageUnit(1*trQuestVarGet("allUnits"), dmg);
-				break;
-			}
-		}
-		ySetPointer("allUnits", pointer);
-	} else {
-		xsSetContextPlayer(p);
-		float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
-		mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
-		trUnitSelectClear();
-		trUnitSelect(""+index);
-		trDamageUnit(health - mGetVar(index, "health"));
+	if (1*mGetVar(index, "proto") == kbGetProtoUnitID("Golem") && zModulo(2,dmg) == 1) {
+		return();
 	}
+	if(dmg > 0 && HasKeyword(STEALTH, 1*mGetVar(index, "keywords"))){
+		mSetVar(index, "keywords", mGetVar(index, "keywords") - Keyword(STEALTH));
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("spyEye"+1*trQuestVarGet("stealthSFX"+index)));
+		trUnitDestroy();
+	}
+	if(index == trQuestVarGet("p"+p+"commander")){
+		/*
+		Throne Shield activates here
+		*/
+		if (trCountUnitsInArea("128",p,"Trident Soldier Hero",45) > 0) {
+			int pointer = yGetPointer("allUnits");
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
+					damageUnit(1*trQuestVarGet("allUnits"), dmg);
+					ySetPointer("allUnits", pointer);
+					return();
+				}
+			}
+			ySetPointer("allUnits", pointer);
+		}
+	}
+	xsSetContextPlayer(p);
+	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
+	mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
+	trUnitSelectClear();
+	trUnitSelect(""+index);
+	trDamageUnit(health - mGetVar(index, "health"));
 }
 
 void lightning(int index = 0, int damage = 0, bool deadly = false) {
@@ -380,6 +393,9 @@ active
 			trQuestVarCopy("spyEye"+x, "spyEye");
 			trMutateSelected(1*trQuestVarGet("spyEye"+x+"proto"));
 			trQuestVarSet("spyTimeout", 0);
+			if(trQuestVarGet("spyEye"+x+"proto") == kbGetProtoUnitID("Sky Passage")){
+				trSetSelectedScale(0, 0, 0);
+			}
 		}
 		trQuestVarSet("spyTimeout", trQuestVarGet("spyTimeout") + 1);
 		if (trQuestVarGet("spyTimeout") >= 5) {

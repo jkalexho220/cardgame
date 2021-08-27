@@ -154,7 +154,6 @@ inactive
 		int p = 3 - trQuestVarGet("activePlayer");
 		if ((trTime()-cActivationTime) >= trQuestVarGet("turnStartDelay")) {
 			if (trQuestVarGet("turnStartDone") == 0) {
-				ChatLog(1, "~turnStart");
 				trQuestVarSet("turnStartDone", 1);
 				trQuestVarSet("turnEnd", 0);
 				trPlayerKillAllGodPowers(p);
@@ -189,7 +188,6 @@ inactive
 					}
 				}				
 			}
-			ChatLog(1, "~going trough units");
 			bool delay = false;
 			for(x=yGetDatabaseCount("turnStart"); >0) {
 				yDatabaseNext("turnStart");

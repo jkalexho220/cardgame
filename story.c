@@ -44,12 +44,15 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{	
-					for(x=0;<40){
+					for(x=0;<10){
 						addCardToDeck(2, "", SPELL_INTIMIDATE);
 					}				
 					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
 					trQuestVarSet("dimension", 6);	
-					trQuestVarSet("p2commanderType", 900);
+					addCardToDeck(2, "Apep");
+					addCardToDeck(2, "Apep");
+					addCardToDeck(2, "Apep");
+					//trQuestVarSet("p2commanderType", 900);
 				}
 				case 2:
 				{
@@ -84,7 +87,7 @@ void SetupMission(int class = 0, int mission = 0){
 					}				
 					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
 					trQuestVarSet("dimension", 6);	
-					trQuestVarSet("p2commanderType", 900);
+					trQuestVarSet("p2commanderType", 906);
 				}
 				case 2:
 				{
@@ -234,6 +237,8 @@ void SetupMission(int class = 0, int mission = 0){
 
 void CleanBoard(){
 	xsDisableRule("gameplay_select_show_keywords");
+	unitTransform("Healing SFX", "Cinematic Block");
+	unitTransform("Sky Passage", "Cinematic Block");
 	trCounterAbort("counter");
 	trCounterAbort("mana");
 	trClearCounterDisplay();
@@ -402,7 +407,6 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 3){
-		unitTransform("Healing SFX", "Cinematic Block");
 		CleanBoard();
 		trFadeOutAllSounds(0.0);
 		trUIFadeToColor(0,0,0,1000,1000,false);

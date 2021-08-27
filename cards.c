@@ -134,8 +134,9 @@ const int HEALER = 13;
 const int DECAY = 14;
 const int FLYING = 15;
 const int OVERFLOW = 16;
+const int STEALTH = 17;
 
-const int NUM_KEYWORDS = 17;
+const int NUM_KEYWORDS = 18;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -157,6 +158,7 @@ string GetKeywordName(int bitPosition=0){
 		case DECAY: return("Decay");
 		case FLYING: return("Flying");
 		case OVERFLOW: return("Overflow");
+		case STEALTH: return("Stealth");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -166,21 +168,22 @@ string GetKeywordDescription(int bitPosition=0){
 	switch(bitPosition){
 		case CHARGE: return ("Ready to act when summoned.");
 		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
-		case AIRDROP: return ("Doesn't have to be summoned next to Beacon.");
+		case AIRDROP: return ("I don't have to be summoned next to Beacon.");
 		case FURIOUS: return ("Two attacks each turn.");
 		case LIGHTNING: return ("Attack will chain through connected enemies.");
 		case REGENERATE: return ("Restores to full health at the start of your turn.");
 		case DEADLY: return ("I kill any minion that I damage.");
 		case ETHEREAL: return ("Can pass through units and impassable terrain.");
-		case ARMORED: return ("This unit takes 1 less damage from all sources.");
-		case WARD: return ("Unit cannot be targeted by spells or play effects.");
-		case BEACON: return ("Allies can be summoned next to this unit.");
-		case AMBUSH: return ("When initiating combat, unit attacks first.");
+		case ARMORED: return ("I take 1 less damage from all sources.");
+		case WARD: return ("I cannot be targeted by spells or play effects.");
+		case BEACON: return ("Allies can be summoned next to me.");
+		case AMBUSH: return ("When initiating combat, I attack first.");
 		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
-		case HEALER: return("Can't attack or counter-attack. Instead, unit can heal allies within range.");
-		case DECAY: return("Takes 1 damage at the end of your turn.");
+		case HEALER: return("Can't attack or counter-attack. Instead, I can heal allies within range.");
+		case DECAY: return("I take 1 damage at the end of your turn.");
 		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
 		case OVERFLOW: return("Cost is reduced by your Manaflow.");
+		case STEALTH: return("I cannot be targeted until I take damage.");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
@@ -659,11 +662,11 @@ runImmediately
 	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 		"(4) Blazeball: Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 	"(5) Poison Cloud: Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, "(10) Nature Has Had Enough: Give your Commander Regenerate and the enemy Commander Decay.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Golem",					6, "Golem 3000",			6, 6, 2, 1, 0, true);
-	CardEvents("Golem", 0, 0, 			"Ignore damage less than half my health.");
+	CardSetup("Golem",					5, "Arcane Golem",			6, 8, 2, 1, 0, true);
+	CardEvents("Golem", 0, 0, 			"Ignore odd damage.");
 	CardSetup("Griffon",				4, "Soaring Griff",			3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
-	CardSetup("Apep",					4, "Lurking Croco",			6, 3, 2, 1, Keyword(AMBUSH) + Keyword(CHARGE), true);
-	CardSetup("Bear",					6, "Hungry Bear",			8, 8, 2, 1, 0, true);
+	CardSetup("Apep",					4, "Lurking Croco",			6, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
+	CardSetup("Bear",					5, "Hungry Bear",			8, 6, 2, 1, 0, true);
 	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Attack: Excess damage heals me.");
 	CardSetup("Pirate Ship",			0, "Pirate Ship",			0, 40, 0, 0, 0, true);
 	CardEvents("Pirate Ship", 0, 0, 	"Turn Start: Choose an enemy tile, next turn deal 8 Damage there.");

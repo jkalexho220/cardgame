@@ -107,6 +107,9 @@ bool attackUnitAtCursor(int p = 0) {
 	if (target == -1) {
 		return(false);
 	}
+	if (HasKeyword(STEALTH, 1*mGetVar(target, "keywords"))) {
+		return(false);
+	}
 	if (mGetVar(target, "player") == 3 - p) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
