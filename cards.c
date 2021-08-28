@@ -54,7 +54,8 @@ const int SPELL_WHIRLWIND = 12;
 const int SPELL_SUMMON_ONE = 13;
 const int SPELL_WOLF = 14;
 const int SPELL_PING = 15;
-const int SPELL_SONG_OF_REST = 16;
+const int SPELL_GUARDIAN_OF_SEA = 16;
+
 
 // Arcane
 const int SPELL_SPARK = 17;
@@ -83,15 +84,15 @@ const int SPELL_DEEP_DIVE = 36;
 const int SPELL_SEA_EMBRACE = 37;
 const int SPELL_TELETIDE = 38;
 const int SPELL_WRATH_OF_SEA = 39;
-const int SPELL_GUARDIAN_OF_SEA = 40;
+const int SPELL_RUNE_OF_WATER = 40;
 const int SPELL_CLEANSING_WATERS = 41;
 const int SPELL_DROWN = 42;
-const int SPELL_RUNE_OF_WATER = 43;
 
+const int SPELL_LAMPADES_CONVERT = 43;
 const int SPELL_MEDUSA_STUN = 44;
-const int SPELL_LAMPADES_CONVERT = 45;
 
 // Otherworld
+const int SPELL_WORLD_SPLITTER = 45;
 const int SPELL_SOUL_SIPHON = 46;
 const int SPELL_BLOOD_PRICE = 47;
 const int SPELL_DEATH_APPROACHES = 48;
@@ -102,10 +103,13 @@ const int SPELL_CORPSE_PARTY = 52;
 const int SPELL_UNDEATH = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
-const int SPELL_WORLD_SPLITTER = 56;
 
+const int SPELL_DEMON_EAT = 56;
 const int SPELL_SCORPION_STING = 57;
-const int SPELL_DEMON_EAT = 58;
+
+// Clockwork
+const int SPELL_SONG_OF_REST = 58;
+
 /*
 OnAttack events (bit positions)
 */
@@ -719,7 +723,7 @@ runImmediately
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
 	CardSetup("Skraeling", 				3, "Bear Hunter", 		3, 1, 2, 1); // Play: Summon a 1|1 Loyal Wolf with Guard.
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
-	SpellSetup("Song of Rest",	 		3, SPELL_SONG_OF_REST,	"Restore 6 health to your Commander. Draw a card.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Guardian of the Woods",	2, SPELL_GUARDIAN_OF_SEA,	"Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
 	// 5 - 9
 	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
@@ -833,7 +837,7 @@ runImmediately
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
 	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
-	SpellSetup("Guardian of the Sea",	2, SPELL_GUARDIAN_OF_SEA,	"Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
+	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
@@ -849,7 +853,7 @@ runImmediately
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 
 	// 90-94
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("Repair",		 		3, SPELL_SONG_OF_REST,		"Restore 6 health to your Commander. Draw a card.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
 	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
@@ -927,7 +931,7 @@ runImmediately
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 2, 2, 2); // Attack: If my target is a minion, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied minion to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied minion and an enemy minion swap spaces.", SPELL_TYPE_OTHER);
-	CardSetup("Scout",					1, "Doomsayer",				2, 3, 3, 1); // Play: Your opponent draws a card.
+	CardSetup("Scout",					1, "Doomsayer",				3, 3, 3, 1); // Play: Your opponent draws a card.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
 	/*
 	SPACE

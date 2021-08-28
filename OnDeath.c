@@ -159,6 +159,12 @@ void removeDeadUnits() {
 		}
 	}
 
+	for(p=2; >0) {
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ANRAHEIR) {
+			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"deathCount"));
+		}
+	}
+
 	/* 
 	summon units from deathrattles on a first-come-first-served basis
 	If multiple summons conflict on the same tile, the first one gets it.

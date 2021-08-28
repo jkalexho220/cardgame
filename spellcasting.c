@@ -515,6 +515,7 @@ inactive
 							spellcastClearHighlights(x);
 							castReset();
 							trQuestVarSet("castDone", CASTING_CANCEL);
+							castRestoreWard();
 							xsEnableRule("gameplay_01_select");
 							highlightReady(999999);
 							xsDisableRule("spellcast_01_select");
@@ -1033,21 +1034,26 @@ inactive
 			case SPELL_SUMMON_ONE:
 			{
 				battlecry = true;
+				done = false;
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
 				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 					proto = yDatabaseNext("p"+p+"deck");
 					if ((trQuestVarGet("card_"+proto+"_cost") == 1) && (yGetVar("p"+p+"deck", "spell") == SPELL_NONE)) {
 						yRemoveFromDatabase("p"+p+"deck");
 						yRemoveUpdateVar("p"+p+"deck", "spell");
+						done = true;
 						break;
 					}
 				}
-				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,proto);
-				if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {
-					mSetVar(activeUnit, "action", ACTION_READY);
-				} else {
-					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				if (done) {
+					activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,proto);
+					if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {
+						mSetVar(activeUnit, "action", ACTION_READY);
+					} else {
+						mSetVar(activeUnit, "action", ACTION_SLEEPING);
+					}
 				}
+				done = true;
 			}
 			case SPELL_SONG_OF_REST:
 			{
