@@ -204,7 +204,7 @@ int modularCounterNext(string name = "") {
 	if (trQuestVarGet("counter" + name + "pointer") > trQuestVarGet("counter" + name + "size")) {
 		trQuestVarSet("counter" + name + "pointer", 1);
 	}
-	trQuestVarCopy(name, "counter" + name + "pointer");
+	trQuestVarSet(name, trQuestVarGet("counter"+name+"pointer"));
 	return(0 + trQuestVarGet("counter" + name + "pointer"));
 }
 
@@ -636,8 +636,10 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 
-	trModifyProtounit("Wadjet Spit", 1, 1, -15);
-	trModifyProtounit("Wadjet Spit", 2, 1, -15);
+	zInitProtoUnitStat("Wadjet Spit", 1, 1, 30);
+	zInitProtoUnitStat("Wadjet Spit", 2, 1, 30);
+	zSetProtoUnitStat("Wadjet Spit", 1, 1, 20);
+	zSetProtoUnitStat("Wadjet Spit", 2, 1, 20);
 	
 	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);	
@@ -658,7 +660,8 @@ runImmediately
 		trModifyProtounit("Dwarf", p, 2, -20);
 		trModifyProtounit("Animal Attractor", p, 2, -20);
 		trModifyProtounit("Nidhogg", p, 2, -20);
-
+		trTechSetStatus(p, 7, 4); // heavy infantry
+		trTechSetStatus(p, 476, 4); // iron all
 	}
 
 	// Disable god powers

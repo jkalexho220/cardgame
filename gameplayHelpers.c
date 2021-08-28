@@ -129,6 +129,9 @@ void teleportToTile(int name = 0, int tile = 0) {
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	trQuestVarSet("next", CardInstantiate(p, proto, SPELL_NONE));
 	teleportToTile(1*trQuestVarGet("next"), tile);
+	trUnitSelectClear();
+	trUnitSelect(""+1*trQuestVarGet("next"));
+	trUnitOverrideAnimation(18,0,0,1,-1);
 	yAddToDatabase("allUnits", "next");
 	return(1*trQuestVarGet("next"));
 }
@@ -201,7 +204,10 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		if (mGetVarByQV("allUnits", "player") == p) {
+		if (trQuestVarGet("allUnits") == name) {
+			continue;
+		} else if ((mGetVarByQV("allUnits", "player") == p) ||
+			mGetVar(name, "proto") == kbGetProtoUnitID("Hoplite")) {
 			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
 				if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
 					yAddToDatabase(db, "allUnits");

@@ -89,5 +89,45 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				pushUnit(target, "dir");
 			}
 		}
+		case ATTACK_GET_ZOMBIE:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				addCardToHand(p, kbGetProtoUnitID("Minion"), 0, false);
+				updateHandPlayable(p);
+			}
+		}
+		case ATTACK_SUMMON_ZOMBIE:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				deathSummonQueue(1*mGetVar(target, "tile"), p, "Minion");
+			}
+		}
+		case ATTACK_POISON:
+		{
+			if ((mGetVar(target, "spell") == SPELL_NONE) && (mGetVar(target, "health") > 0)) {
+				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
+				trUnitSelectClear();
+				trUnitSelect(""+target);
+				spyEffect("Poison SFX");
+				trSoundPlayFN("lampadesblood.wav","1",-1,"","");
+				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+			}
+		}
+		case ATTACK_GET_MINION:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				if (yGetDatabaseCount("p"+p+"hand") < 10) {
+					addCardToHand(p, 1*mGetVar(target, "proto"));
+					updateHandPlayable(p);
+				}
+			}
+		}
+		case ATTACK_GET_FENRIS:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				addCardToHand(p, kbGetProtoUnitID("Ornlu"), 0, false);
+				updateHandPlayable(p);
+			}
+		}
 	}
 }

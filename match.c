@@ -150,7 +150,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) {
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") + trQuestVarGet("bossSpell") == 0) {
 
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");
@@ -206,6 +206,10 @@ inactive
 					{
 						trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
 						trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
+					}
+					case kbGetProtoUnitID("Theocrat"):
+					{
+						drawCard(p, true);
 					}
 				}
 			} else {
