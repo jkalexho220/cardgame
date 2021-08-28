@@ -8,8 +8,11 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
 		spyEffect("UI Range Indicator Norse SFX");
 	}
-	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
 		spyEffect("Poison SFX");
+	}
+	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Chaos effect");
 	}
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
@@ -198,6 +201,56 @@ void OnPlay(int unit = 0) {
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_LAMPADES_CONVERT);
+		}
+		case kbGetProtoUnitID("Tartarian Gate spawn"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DEMON_EAT);
+		}
+		case kbGetProtoUnitID("Axeman"):
+		{
+			trQuestVarSet("p"+p+"yeebBonus", 1 + trQuestVarGet("p"+p+"yeebBonus"));
+			mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
+		case kbGetProtoUnitID("Guardian"):
+		{
+			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Hero Greek Achilles"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"commander"));
+			spyEffect("Poison SFX");
+			deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p"+(3-p)+"commander", "tile"));
+			mSetVarByQV("p"+(3-p)+"commander", "keywords", SetBit(1*mGetVarByQV("p"+(3-p)+"commander", "keywords"), DECAY));
+			stunUnit(1*trQuestVarGet("p"+(3-p)+"commander"));
+		}
+		case kbGetProtoUnitID("Scorpion Man"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_SCORPION_STING);
+		}
+		case kbGetProtoUnitID("Anubite"):
+		{
+			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
+			damageUnit(1*trQuestVarGet("p"+p+"commander"), 3);
+		}
+		case kbGetProtoUnitID("Hero Greek Ajax"):
+		{
+			trQuestVarSet("summonedUnit", unit);
+			chooseSpell(SPELL_SUMMON_ONE);
+			done = false;
+		}
+		case kbGetProtoUnitID("Scout"):
+		{
+			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
 		}
 	}
 	if (done) {

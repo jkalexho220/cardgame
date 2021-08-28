@@ -14,6 +14,10 @@ bool OnTurnStart(int unit = 0) {
 			trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
 			trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
 		}
+		case kbGetProtoUnitID("Theocrat"):
+		{
+			drawCard(p, true);
+		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			if(trQuestVarGet("pirateShipTarget") > -1){

@@ -26,7 +26,7 @@ void updateHandPlayable(int p = 0) {
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	int cost = 0;
-	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
+	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45) - trCountUnitsInArea("128",3-p,"Argus",45));
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
 		cost = mGetVarByQV("p"+p+"hand", "cost");
@@ -134,7 +134,7 @@ void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false) {
 }
 
 
-void drawCard(int p = 0) {
+void drawCard(int p = 0, bool fleeting = false) {
 	if (yGetDatabaseCount("p"+p+"deck") <= 0) {
 		trQuestVarSet("p"+p+"fatigue", 1 + trQuestVarGet("p"+p+"fatigue"));
 		damageUnit(1*trQuestVarGet("p"+p+"commander"), trQuestVarGet("p"+p+"fatigue"));
@@ -152,7 +152,7 @@ void drawCard(int p = 0) {
 			} else {
 				ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
-			addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"));
+			addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"), fleeting);
 		} else {
 			if (trCurrentPlayer() == p) {
 				trSoundPlayFN("cantdothat.wav","1",-1,"","");

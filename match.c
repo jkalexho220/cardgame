@@ -150,7 +150,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) {
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") + trQuestVarGet("bossSpell") == 0) {
 		int p = 3 - trQuestVarGet("activePlayer");
 		if ((trTime()-cActivationTime) >= trQuestVarGet("turnStartDelay")) {
 			if (trQuestVarGet("turnStartDone") == 0) {
