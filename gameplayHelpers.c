@@ -32,6 +32,13 @@ void updateMana() {
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
 }
 
+void scaleUnit(int unit = 0) {
+	float scale = xsSqrt(mGetVar(unit, "scale"));
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	trSetSelectedScale(scale, scale, scale);
+}
+
 
 void refreshGuardAll() {
 	yClearDatabase("guardUnits");
@@ -114,6 +121,7 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trUnitSelectClear();
 	trUnitSelect(""+name);
 	trMutateSelected(1*mGetVar(name, "proto"));
+	scaleUnit(name);
 
 	trUnitSelectClear();
 	trUnitSelectByID(tile);

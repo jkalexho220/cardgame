@@ -1424,6 +1424,8 @@ inactive
 				trSoundPlayFN("tartarianspawnbirth1.wav","1",-1,"","");
 				mSetVarByQV("spellCaster", "health", mGetVarByQV("spellCaster", "health") + mGetVarByQV("spellTarget", "health"));
 				mSetVarByQV("spellCaster", "attack", mGetVarByQV("spellCaster", "attack") + mGetVarByQV("spellTarget", "attack"));
+				mSetVarByQV("spellCaster", "scale", 1 + 0.25*mGetVarByQV("spellCaster", "health"));
+				scaleUnit(1*trQuestVarGet("spellCaster"));
 				mSetVarByQV("spellTarget", "health", 0);
 				damageUnit(1*trQuestVarGet("spellTarget"),10);
 			}
@@ -1960,6 +1962,7 @@ inactive
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 			trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
+			scaleUnit(1*trQuestVarGet("spellTarget"));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);
 			trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);

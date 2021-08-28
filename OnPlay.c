@@ -152,7 +152,9 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Behemoth"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
-			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));	
+			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
+			scaleUnit(unit);
 		}
 		case kbGetProtoUnitID("Hippocampus"):
 		{
