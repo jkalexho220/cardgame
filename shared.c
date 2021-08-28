@@ -204,7 +204,7 @@ int modularCounterNext(string name = "") {
 	if (trQuestVarGet("counter" + name + "pointer") > trQuestVarGet("counter" + name + "size")) {
 		trQuestVarSet("counter" + name + "pointer", 1);
 	}
-	trQuestVarCopy(name, "counter" + name + "pointer");
+	trQuestVarSet(name, trQuestVarGet("counter"+name+"pointer"));
 	return(0 + trQuestVarGet("counter" + name + "pointer"));
 }
 

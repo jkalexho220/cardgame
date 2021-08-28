@@ -189,8 +189,7 @@ void castEnd() {
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
 		}
-		// if the commander is out reach
-		if (trQuestVarGet("p"+p+"commanderType") == 4) {
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_REACH) {
 			trQuestVarSet("p"+p+"extraManaflow", cost + trQuestVarGet("p"+p+"extraManaflow"));
 		}
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - xsMax(0, cost));
@@ -626,10 +625,10 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", p, false);
 			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
-		case SPELL_HEROIC:
+		case SPELL_SUMMON_ONE:
 		{
-			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castAddAdjacentTile("spellTarget", "summonedUnit");
+			castInstructions("Choose a tile to summon a random 1-cost minion from your deck.");
 		}
 		case SPELL_WOLF:
 		{
@@ -647,6 +646,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castInstructions("Choose an allied minion. Right click to cancel.");
 			castAddAdjacentTile("tileTarget", "p"+p+"commander");
 			castInstructions("Choose a tile to teleport it to. Right click to cancel.");
+		}
+		case SPELL_SONG_OF_REST:
+		{
+			castAddTile("spellTile", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 		case SPELL_CLASS_TIME:
 		{
@@ -808,17 +812,18 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SCORPION_STING:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion to give Decay to.");
+			castInstructions("Choose a minion to give to teleport.");
+			castAddAdjacentTile("spellTile", "spellCaster");
+			castInstructions("Choose a tile to teleport it to.");
 		}
 		case SPELL_WORLD_SPLITTER:
 		{
-			// If commander is Zenophobia
-			if (trQuestVarGet("p"+p+"commanderType") == 10) {
+			if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ZENOPHOBIA) {
 				castAddUnit("spellTarget", p, true);
 				castInstructions("Choose an ally. Right click to cancel.");
 			} else {
 				castAddUnit("spellTarget", p, false);
-				castInstructions("Choose a minion. Right click to cancel.");
+				castInstructions("Choose an allied minion. Right click to cancel.");
 			}
 			castAddDirection("spellDirection", "spellTarget", true);
 			castInstructions("Choose a direction. Right click to cancel.");
@@ -859,15 +864,31 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddSummonLocations("spellTarget1");
 			castInstructions("Choose a tile (1/3). Right click to cancel.");
-			castAddSummonLocations("spellTarget1");
+			castAddSummonLocations("spellTarget2");
 			castInstructions("Choose a tile (2/3). Right click to cancel.");
-			castAddSummonLocations("spellTarget1");
+			castAddSummonLocations("spellTarget3");
 			castInstructions("Choose a tile (3/3). Right click to cancel.");
 		}
 		case SPELL_UNDEATH:
 		{
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
+		}
+		case SPELL_RUNE_OF_DARKNESS:
+		{
+			castAddUnit("spellTarget", p, false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
+			castAddSummonLocations("spellTarget1");
+			castInstructions("Choose a tile (1/2). Right click to cancel.");
+			castAddSummonLocations("spellTarget2");
+			castInstructions("Choose a tile (2/2). Right click to cancel.");
+		}
+		case SPELL_ZENOS_PARADOX:
+		{
+			castAddUnit("spellTarget1", p, false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
+			castAddUnit("spellTarget2", 3 - p, false);
+			castInstructions("Choose an enemy minion. Right click to cancel.");
 		}
 	}
 	castStart();
@@ -1009,14 +1030,32 @@ inactive
 					}
 				}
 			}
-			case SPELL_HEROIC:
+			case SPELL_SUMMON_ONE:
 			{
-				trSoundPlayFN("herocreation.wav","1",-1,"","");
-				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
-				target = 1*trQuestVarGet("spellTarget");
-				mSetVar(target, "attack", 1 + mGetVar(target, "attack"));
-				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), FURIOUS));
-				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+				battlecry = true;
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+					proto = yDatabaseNext("p"+p+"deck");
+					if ((trQuestVarGet("card_"+proto+"_cost") == 1) && (yGetVar("p"+p+"deck", "spell") == SPELL_NONE)) {
+						yRemoveFromDatabase("p"+p+"deck");
+						yRemoveUpdateVar("p"+p+"deck", "spell");
+						break;
+					}
+				}
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,proto);
+				if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {
+					mSetVar(activeUnit, "action", ACTION_READY);
+				} else {
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				}
+			}
+			case SPELL_SONG_OF_REST:
+			{
+				trSoundPlayFN("restorationbirth.wav","1",-1,"","");
+				trSoundPlayFN("heal.wav","1",-1,"","");
+				healUnit(1*trQuestVarGet("p"+p+"commander"), 6);
+				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+				trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 			}
 			case SPELL_WHIRLWIND:
 			{
@@ -1091,7 +1130,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget2", "tile")), true);
 				trDamageUnitPercent(100);
-				trQuestVarSet("p"+p+"drawCards", 1);
+				trQuestVarSet("p"+p+"drawCards", 1+trQuestVarGet("p"+p+"drawCards"));
 			}
 			case SPELL_ELECTROSURGE:
 			{
@@ -1128,8 +1167,8 @@ inactive
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
 					done = false;
-					battlecry = true;
 					chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
+					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
 				} else {
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Frost Giant"));
@@ -1215,7 +1254,7 @@ inactive
 				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
 				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
 				// if commander is nottud
-				if (trQuestVarGet("p"+p+"commanderType") == 3) {
+				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NOTTUD) {
 					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
 				}
 				shuffleDeck(p);
@@ -1386,17 +1425,15 @@ inactive
 			{
 				battlecry = true;
 				trVectorSetUnitPos("casterPos", "spellCaster");
-				trVectorSetUnitPos("targetPos", "spellTarget");
+				trVectorSetUnitPos("targetPos", "spellTile");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(39, 0, 0, 1, -1);
-				trUnitSelectClear();
-				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
-				spyEffect("Poison SFX");
-				mSetVarByQV("spellTarget", "keywords", SetBit(1*mGetVarByQV("spellTarget", "keywords"), DECAY));
-				trSoundPlayFN("lampadesblood.wav","1",-1,"","");
-				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
+				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("spellTile"));
+				trSoundPlayFN("relicselect.wav","1",-1,"","");
+				trSoundPlayFN("dialog\genr122f.mp3","1",-1,"","");
 			}
 			case SPELL_WORLD_SPLITTER:
 			{
@@ -1471,11 +1508,15 @@ inactive
 				trMutateSelected(kbGetProtoUnitID("Phoenix"));
 
 				trQuestVarSet("laserMeteorite", deployAtTile(p, "Dwarf", tile));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);
 				trMutateSelected(kbGetProtoUnitID("Meteorite"));
 				trUnitOverrideAnimation(6,0,1,1,-1);
 				trMutateSelected(kbGetProtoUnitID("Relic"));
 
 				trQuestVarSet("laserGround", deployAtTile(p, "Dwarf", tile));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 				trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
 
 				trUnitSelectClear();
@@ -1524,7 +1565,7 @@ inactive
 			case SPELL_SOUL_SIPHON:
 			{
 				trSoundPlayFN("shadeofhadesdeath.wav","1",-1,"","");
-				trQuestVarSet("p"+p+"drawCards", 2);
+				trQuestVarSet("p"+p+"drawCards", 2 + trQuestVarGet("p"+p+"drawCards"));
 				mSetVarByQV("spellTarget", "health", 0);
 				damageUnit(1*trQuestVarGet("spellTarget"), 100);
 				deployAtTile(0, "Hero Death", 1*mGetVarByQV("spellTarget", "tile"));
@@ -1583,11 +1624,12 @@ inactive
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
 					done = false;
-					battlecry = true;
 					chooseSpell(SPELL_CORPSE_PARTY, 1*trQuestVarGet("selectedCard"));
+					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
 				} else {
+					trSoundPlayFN("ancestorsbirth.wav","1",-1,"","");
 					for(x=3; >0) {
-						summonAtTile(1*trQuestVarGet("tile"+x), p, kbGetProtoUnitID("Minion"));
+						summonAtTile(1*trQuestVarGet("spellTarget"+x), p, kbGetProtoUnitID("Minion"));
 					}
 				}
 			}
@@ -1601,6 +1643,36 @@ inactive
 						mSetVarByQV("allUnits", "OnDeath", SetBit(1*mGetVarByQV("allUnits", "OnDeath"), DEATH_SUMMON_ZOMBIE));
 					}
 				}
+			}
+			case SPELL_RUNE_OF_DARKNESS:
+			{
+				if (trQuestVarGet("spellTarget1") == trQuestVarGet("spellTarget2")) {
+					if (trCurrentPlayer() == p) {
+						trSoundPlayFN("cantdothat.wav","1",-1,"","");
+					}
+					done = false;
+					chooseSpell(SPELL_RUNE_OF_DARKNESS, 1*trQuestVarGet("selectedCard"));
+					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+				} else {
+					trSoundPlayFN("mythcreate.wav","1",-1,"","");
+					mSetVarByQV("spellTarget", "health", 0);
+					damageUnit(1*trQuestVarGet("spellTarget"), 100);
+					activeUnit = summonAtTile(1*trQuestVarGet("spellTarget1"), p, kbGetProtoUnitID("Shade of Hades"));
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+					activeUnit = summonAtTile(1*trQuestVarGet("spellTarget2"), p, kbGetProtoUnitID("Shade of Hades"));
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				}
+			}
+			case SPELL_ZENOS_PARADOX:
+			{
+				trSoundPlayFN("spybirth.wav","1",-1,"","");
+				trSoundPlayFN("timeshift.wav","1",-1,"","");
+				trQuestVarSet("tile1", mGetVarByQV("spellTarget1", "tile"));
+				trQuestVarSet("tile2", mGetVarByQV("spellTarget2", "tile"));
+				deployAtTile(0, "Curse SFX", 1*trQuestVarGet("tile1"));
+				deployAtTile(0, "Curse SFX", 1*trQuestVarGet("tile2"));
+				teleportToTile(1*trQuestVarGet("spellTarget2"), 1*trQuestVarGet("tile1"));
+				teleportToTile(1*trQuestVarGet("spellTarget1"), 1*trQuestVarGet("tile2"));
 			}
 		}
 
@@ -1797,7 +1869,7 @@ void laserEnd(int eventId = -1) {
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 	trMutateSelected(kbGetProtoUnitID("Rocket"));
-	trQuestVarSet("bossSpell", 0);
+	trQuestVarSet("bossSpell", 4);
 	trQuestVarSet("laserEndTime", trTimeMS() + 500);
 }
 
@@ -1896,7 +1968,8 @@ inactive
 				startAttack(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("worldSplitterHit"), false, false);
 			}
 			yClearDatabase("worldSplitterHit");
-			castEnd();
+			trQuestVarSet("bossSpell", 0);
+			xsEnableRule("spell_attack_complete");
 		} else {
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);

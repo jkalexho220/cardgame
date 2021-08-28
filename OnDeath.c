@@ -148,11 +148,13 @@ void removeDeadUnits() {
 			case kbGetProtoUnitID("Einheriar"):
 			{
 				p = mGetVarByQV("allUnits","player");
-				mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
-				mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
-				trUnitSelectClear();
-				trUnitSelect(""+1*trQuestVarGet("allUnits"));
-				spyEffect("Einheriar Boost SFX");
+				if (trQuestVarGet("p"+p+"deathCount") > 0) {
+					mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
+					mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
+					trUnitSelectClear();
+					trUnitSelect(""+1*trQuestVarGet("allUnits"));
+					spyEffect("Einheriar Boost SFX");
+				}
 			}
 		}
 	}

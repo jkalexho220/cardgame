@@ -120,51 +120,51 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 int CommanderToProtounit(int commander = 0){
 	switch(commander)
 	{
-		case 0:
+		case COMMANDER_ROGERS:
 		{
 			return (kbGetProtoUnitID("Hero Greek Jason"));
 		}
-		case 1:
+		case COMMANDER_VENLESH:
 		{
 			return (kbGetProtoUnitID("Hero Greek Heracles"));
 		}
-		case 2:
+		case COMMANDER_NANO:
 		{
 			return (kbGetProtoUnitID("Oracle Hero"));
 		}
-		case 3:
+		case COMMANDER_NOTTUD:
 		{
 			return (kbGetProtoUnitID("Minotaur"));
 		}
-		case 4:
+		case COMMANDER_REACH:
 		{
 			return (kbGetProtoUnitID("Royal Guard Hero"));
 		}
-		case 5:
+		case COMMANDER_SCRAGINS:
 		{
 			return (kbGetProtoUnitID("Archer Atlantean Hero"));
 		}
-		case 6:
+		case COMMANDER_ROXAS:
 		{
 			return (kbGetProtoUnitID("Hero Greek Polyphemus"));
 		}
-		case 7:
+		case COMMANDER_YEEBAAGOOON:
 		{
 			return (kbGetProtoUnitID("Pharaoh of Osiris"));
 		}
-		case 8:
+		case COMMANDER_ZENOPHOBIA:
 		{
 			return (kbGetProtoUnitID("Hoplite"));
 		}
-		case 9:
+		case COMMANDER_ANRAHEIR:
 		{
 			return (kbGetProtoUnitID("Hero Greek Perseus"));
 		}
-		case 10:
+		case COMMANDER_NICK:
 		{
 			return (kbGetProtoUnitID("Hero Greek Odysseus"));
 		}
-		case 11:
+		case COMMANDER_GOD:
 		{
 			return (kbGetProtoUnitID("Caravan Atlantean"));
 		}

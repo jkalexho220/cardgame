@@ -198,7 +198,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Guardian"):
 		{
-			trQuestVarSet("p"+(3-p)+"drawCards", 2);
+			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
 		}
@@ -218,6 +218,21 @@ void OnPlay(int unit = 0) {
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_SCORPION_STING);
+		}
+		case kbGetProtoUnitID("Anubite"):
+		{
+			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
+			damageUnit(1*trQuestVarGet("p"+p+"commander"), 3);
+		}
+		case kbGetProtoUnitID("Hero Greek Ajax"):
+		{
+			trQuestVarSet("summonedUnit", unit);
+			chooseSpell(SPELL_SUMMON_ONE);
+			done = false;
+		}
+		case kbGetProtoUnitID("Scout"):
+		{
+			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
 		}
 	}
 	if (done) {

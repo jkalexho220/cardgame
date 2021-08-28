@@ -113,5 +113,21 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
 			}
 		}
+		case ATTACK_GET_MINION:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				if (yGetDatabaseCount("p"+p+"hand") < 10) {
+					addCardToHand(p, 1*mGetVar(target, "proto"));
+					updateHandPlayable(p);
+				}
+			}
+		}
+		case ATTACK_GET_FENRIS:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				addCardToHand(p, kbGetProtoUnitID("Ornlu"), 0, false);
+				updateHandPlayable(p);
+			}
+		}
 	}
 }
