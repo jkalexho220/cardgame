@@ -316,24 +316,24 @@ inactive
 		yClearDatabase("p1deck");
 		for(i=0;<180){
 			for(x=0;<getCardCountDeck(i)){
-				//addCardToDeckByIndex(1, i);
+				addCardToDeckByIndex(1, i);
 			}
 		}
 		shuffleDeck(1);
 		
 		for(i=0;<5){
-			addCardToDeck(1, "", SPELL_INTIMIDATE);
-			addCardToDeck(1, "", SPELL_PISTOL_SHOT);
-			addCardToDeck(1, "", SPELL_PYROBALL);
+			//addCardToDeck(1, "", SPELL_INTIMIDATE);
+			//addCardToDeck(1, "", SPELL_PISTOL_SHOT);
+			//addCardToDeck(1, "", SPELL_PYROBALL);
 			//addCardToDeck(1, "", SPELL_POISON_CLOUD);
 			//addCardToDeck(1, "", SPELL_NATURE_ANGRY);
-			addCardToDeck(1, "Bear");
+			//addCardToDeck(1, "Bear");
 			//addCardToDeck(1, "Pirate Ship");
 			//addCardToDeck(1, "Audrey");
 			//addCardToDeck(1, "Audrey Water");
 			//addCardToDeck(1, "", SPELL_MAP);
-			addCardToDeck(1, "Monument");
-			addCardToDeck(1, "Monument 2");
+			//addCardToDeck(1, "Monument");
+			//addCardToDeck(1, "Monument 2");
 		}
 
 		SetupMission(trQuestVarGet("missionClass"), trQuestVarGet("missionSelection"));

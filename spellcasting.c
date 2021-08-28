@@ -471,10 +471,7 @@ inactive
 		}
 		xsEnableRule("spellcast_01_select");
 		if (yGetDatabaseCount("castTargets") + yGetDatabaseCount("castTiles") == 0) {
-			if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
-				trSoundPlayFN("cantdothat.wav","1",-1,"","");
-				trChatSend(0, "That spell has no valid targets.");
-			}
+			trQuestVarSet("spellNoTargets", 1);
 		}
 	} else {
 		trQuestVarSet("castDone", CASTING_DONE);

@@ -86,7 +86,7 @@ inactive
 				xsDisableRule("Bot1");
 			// If choose hand
 			} else if (trQuestVarGet("botChooseHand") > trQuestVarGet("botChooseUnit")) {
-				trQuestVarSet("botSpellType", -1);
+				trQuestVarSet("botSpell", -1);
 				int maxCardCost = -1;
 				int spell = 0;
 				for(x=yGetDatabaseCount("p2hand"); >0) {
@@ -110,7 +110,7 @@ inactive
 					// Bot Click Left	
 					trQuestVarSet("botClick", LEFT_CLICK);
 					if (spell > 0) {
-						trQuestVarSet("botSpellType", trQuestVarGet("spell_" + spell + "_type"));
+						trQuestVarSet("botSpell", spell);
 					}
 				} else {
 					trQuestVarSet("botManaOptions", 0);
@@ -143,11 +143,21 @@ inactive
 
 		case GAMEPLAY_SPELL_UNIT:
 		{
-			if(1*trQuestVarGet("botSpellType") == SPELL_TYPE_OFFENSIVE){
+			if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE){
 				yDatabasePointerDefault("castTargets");
 				for(x=yGetDatabaseCount("castTargets"); >0) {
 					yDatabaseNext("castTargets", true);
 					if(trUnitIsOwnedBy(2)){
+						yRemoveFromDatabase("castTargets");
+					}
+				}
+			}
+			
+			if(1*trQuestVarGet("botSpell") == SPELL_INTIMIDATE){
+				yDatabasePointerDefault("castTargets");
+				for(x=yGetDatabaseCount("castTargets"); >0) {
+					yDatabaseNext("castTargets");
+					if(mGetVarByQV("castTargets", "stunTime") > 0){
 						yRemoveFromDatabase("castTargets");
 					}
 				}
@@ -170,13 +180,19 @@ inactive
 
 		case GAMEPLAY_SPELL_TILE:
 		{
-			if (1*trQuestVarGet("botSpellType") == SPELL_TYPE_OFFENSIVE) {
+			if (1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE) {
 				yDatabasePointerDefault("castTiles");
 				for(x=yGetDatabaseCount("castTiles"); >0) {
 					yDatabaseNext("castTiles");
 					if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") != 1){
 						yRemoveFromDatabase("castTiles");
 					}
+				}
+			}
+
+			if(1*trQuestVarGet("botSpell") == SPELL_GROUND_STOMP){
+				if(trCountUnitsInArea(""+1*trQuestVarGet("p2commander"),1,"Unit",9) < 1){
+					yClearDatabase("castTiles");
 				}
 			}
 

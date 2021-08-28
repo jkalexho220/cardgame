@@ -61,7 +61,7 @@ bool ValidateCollection(){
 	}
 	
 	if(trQuestVarGet("cardsInDeck") != 40){
-		ChatLog(1, "ERROR! Not 40 cards in deck!");
+		ChatLog(1, "ERROR! Not 40 cards in deck! " + 1*trQuestVarGet("cardsInDeck") + "/40");
 		valid = false;
 	}
 	
@@ -79,6 +79,9 @@ bool ValidateCollection(){
 		ChatLog(1, "ERROR! Deck Commander not from one of the two classes!");
 		valid = false;
 	}
+	
+	trCounterAbort("deckCount");
+	trCounterAddTime("deckCount", -1, -9999999, "Deck: " + 1*trQuestVarGet("cardsInDeck") + "/40");
 	
 	return (valid);
 }
@@ -546,7 +549,9 @@ inactive
 			trClearCounterDisplay();
 			trSoundPlayDialog("default", "1", -1, false, " : ", "");	
 			CollectionGodPowers();	
-			xsEnableRule("CollectionSelect");							
+			trQuestVarSet("selectionTryAgain", 0);
+			xsDisableRule("CollectionSelect");
+			trDelayedRuleActivation("CollectionSelect");						
 		}
 		case RIGHT_CLICK:
 		{		
@@ -615,6 +620,8 @@ rule CollectionSelect
 highFrequency
 inactive
 {
+	if ((trTimeMS()-(cActivationTime*1000)) > 470){
+		bool nothing = true;
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		int id = yDatabaseNext("allUnits", true);
 		if (trUnitIsSelected()) {
@@ -646,12 +653,20 @@ inactive
 					}
 				}
 			}
-			xsDisableRule("CollectionSelect");
+			nothing = false;
 			break;
 		}
 	}
-	if ((trTime()-cActivationTime) > 1){
+				xsDisableRule("CollectionSelect");
+	if(nothing && trQuestVarGet("selectionTryAgain") == 0){
+		trQuestVarSet("selectionTryAgain", 1);
+		trDelayedRuleActivation("CollectionSelect");	
+	}
+	/*
+	if ((trTimeMS()-(cActivationTime*1000)) > 1470){
 		xsDisableRule("CollectionSelect");
+	}
+	*/
 	}
 }
 
@@ -669,6 +684,7 @@ inactive
 				xsDisableRule("CollectionEnter");
 				trClearCounterDisplay();
 				trSoundPlayDialog("default", "1", -1, false, " : ", "");
+				trCounterAbort("deckCount");
 				trCounterAbort("mission");
 				trCounterAbort("reward");
 				xsDisableRule("CollectionClick");
@@ -706,6 +722,18 @@ inactive
 	if (trCheckGPActive("rain", 1)) {
 		if (trQuestVarGet("p1rain") == 0) {
 			trQuestVarSet("p1rain", 1);
+			setClassProgress(0,1);
+			setClassProgress(1,1);
+			setClassProgress(2,1);
+			for(i=0;<90) {
+				setCardCountCollection(i,3);				
+			}
+			setCardCountCollection(14,1);	
+			setCardCountCollection(29,1);	
+			setCardCountCollection(44,1);	
+			setCardCountCollection(59,1);
+			setCardCountCollection(74,1);	
+			setCardCountCollection(89,1);				
 			dataSave();
 			map("mouse1down", "game", "");
 			map("mouse2up", "game", "");

@@ -351,7 +351,10 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	} else {
 		trChatSend(0, "<color={Playercolor(1)}>=== (" + 1*trQuestVarGet("spell_"+spell+"_cost") + ") " + trStringQuestVarGet("spell_"+spell+"_name")+" ===</color>");
 	}
-	trChatSend(0, message);
+	
+	if(message != ""){
+		trChatSend(0, message);		
+	}
 
 	bool multiple = false;
 	if (keywords>0) {
@@ -372,8 +375,6 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	}
 
 	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
-	//trSetCounterDisplay(message);
-
 }
 
 void updateMana() {
@@ -503,7 +504,10 @@ void displayCardKeywordsAndDescription(int name = 0) {
 
 	updateMana();
 	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");
-	//trSetCounterDisplay(message);
+	
+	if (trQuestVarGet("spellNoTargets") == 1) {
+		trChatSend(0, "(No valid targets.)");
+	}
 
 	xsSetContextPlayer(old);
 }
@@ -684,13 +688,13 @@ runImmediately
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 128);
 
-	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 	"(1) Intimidating Presence: Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 	"(2) Ground Stomp: Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 	"(1) Pistol Shot: Kill a minion. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Reload", 				5, SPELL_RELOAD, 		"(5) Reload: Draw a card.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 		"(4) Blazeball: Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 	"(5) Poison Cloud: Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, "(10) Nature Has Had Enough: Give your Commander Regenerate and the enemy Commander Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 	"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 	"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 	"Kill a minion. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Reload", 				5, SPELL_RELOAD, 		"Draw a card.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 		"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 	"Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, "Give your Commander Regenerate and the enemy Commander Decay.", SPELL_TYPE_OTHER, 0, true);
 	CardSetup("Golem",					5, "Arcane Golem",			6, 8, 2, 1, 0, true);
 	CardEvents("Golem", 0, 0, 			"Ignore odd damage.");
 	CardSetup("Griffon",				4, "Soaring Griff",			3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
@@ -704,13 +708,13 @@ runImmediately
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
 	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged minions.");
 	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 5, 0, 0, true);
-	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander.");
 	CardSetup("Monument 3",				6, "Floating Steward",		0, 15, 5, 0, 0, true);
-	CardEvents("Monument 3", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardEvents("Monument 3", 0, 0, 		"Turn Start: Opponent discards a random card.");
 	CardSetup("Monument 4",				8, "Floating Twins",		0, 20, 5, 0, 0, true);
-	CardEvents("Monument 4", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane minion and play a random Arcane spell.");
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
-	CardEvents("Monument 5", 0, 0, 		"Turn Start: Restore 5 health to my Commander. ");
+	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
