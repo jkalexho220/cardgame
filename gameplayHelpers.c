@@ -392,6 +392,7 @@ active
 		}
 		trQuestVarSet("spyTimeout", trQuestVarGet("spyTimeout") + 1);
 		if (trQuestVarGet("spyTimeout") >= 5) {
+			trQuestVarSet("spyTimeout", 0);
 			trQuestVarCopy("spyFound", "spyFind");
 		}
 	}
