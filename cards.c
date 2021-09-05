@@ -147,8 +147,9 @@ const int ATTACK_SUMMON_ZOMBIE = 13;
 const int ATTACK_POISON = 14;
 const int ATTACK_GET_MINION = 15;
 const int ATTACK_GET_FENRIS = 16;
+const int ATTACK_ANIMATE_TOWER = 17;
 
-const int ATTACK_EVENT_COUNT = 17;
+const int ATTACK_EVENT_COUNT = 18;
 
 
 /*
@@ -1132,6 +1133,7 @@ runImmediately
 	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
 	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
 	CardEvents("Fire Siphon", 0, 0,										"At the start of your turn, grant me +1 attack.");
+	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");

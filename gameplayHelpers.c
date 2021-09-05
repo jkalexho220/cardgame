@@ -636,7 +636,11 @@ active
 		{
 			if (trUnitAlive() == false) {
 				zSetVar("allUnitsBank", "state", STATE_DEAD);
-				zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
+				if (kbProtoUnitIsUnitType(1*mGetVar(unit, "proto"), 937)) {
+					zSetVar("allUnitsBank", "next", trTimeMS() + 300);
+				} else {
+					zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
+				}
 			}
 		}
 		case STATE_DEAD:

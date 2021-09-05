@@ -85,7 +85,7 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'trSoundPlayDialog', 'trChangeTerrainHeight', 'trRenderSky', 'trFadeOutAllSounds', 'aiIsMultiplayer', 'trShowWinLose', 
 			'gadgetUnreal', 'trGetScenarioUserData', 'uiLookAtUnit', 'uiClearSelection', 'uiCreateNumberGroup', 'kbLookAtAllUnitsOnMap',
 			'trTimeMS', 'trChatSendToPlayer', 'uiTransformSelectedUnit', 'trBlockAllSounds', 'xsDisableSelf', 'trUnblockAllSounds', 
-			'trSetCurrentScenarioUserData','trModeEnter', 'exit', 'musicToggleBattleMode', 'trEventSetHandler'}
+			'trSetCurrentScenarioUserData','trModeEnter', 'exit', 'musicToggleBattleMode', 'trEventSetHandler', 'kbProtoUnitIsUnitType'}
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':

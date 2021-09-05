@@ -232,9 +232,9 @@ void OnPlay(int unit = 0) {
 			chooseSpell(SPELL_SUMMON_ONE);
 			done = false;
 		}
-		case kbGetProtoUnitID("Scout"):
+		case kbGetProtoUnitID("Tower Mirror"):
 		{
-			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
+			trSoundPlayFN("wonder.wav","1",-1,"","");
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
