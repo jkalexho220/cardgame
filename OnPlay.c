@@ -57,8 +57,8 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hetairoi"):
 		{
-			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
-			updateHandPlayable(p);
+			done = false;
+			chooseSpell(SPELL_MAP);
 		}
 		case kbGetProtoUnitID("Peltast"):
 		{
@@ -235,6 +235,21 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Scout"):
 		{
 			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
+		}
+	}
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
+	if (HasKeyword(MAGNETIC, 1*mGetVar(unit, "keywords"))) {
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if ((trQuestVarGet("allUnits") == unit) || (mGetVarByQV("allUnits", "player") == 3 - p)) {
+				continue;
+			} else if (HasKeyword(MAGNETIC, 1*mGetVarByQV("allUnits", "keywords")) &&
+				zDistanceToVectorSquared("allUnits", "pos") < 40) {
+				done = false;
+				trQuestVarSet("spellCaster", unit);
+				chooseSpell(SPELL_MAGNETIZE);
+				break;
+			}
 		}
 	}
 	if (done) {

@@ -32,6 +32,8 @@ void updateMana() {
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"),-1);
 }
 
+
+
 void scaleUnit(int unit = 0) {
 	float scale = xsSqrt(mGetVar(unit, "scale"));
 	trUnitSelectClear();
@@ -74,26 +76,7 @@ to the 'to' database.
 */
 void transferUnit(string to = "", string from = "") {
 	yAddToDatabase(to, from);
-	yTransferUpdateString(to, from, "ability");
-	yTransferUpdateVar(to, from, "cost");
 	yTransferUpdateVar(to, from, "pos");
-	yTransferUpdateVar(to, from, "health");
-	yTransferUpdateVar(to, from, "attack");
-	yTransferUpdateVar(to, from, "range");
-	yTransferUpdateVar(to, from, "speed");
-	yTransferUpdateVar(to, from, "proto");
-	yTransferUpdateVar(to, from, "player");
-	yTransferUpdateVar(to, from, "ready");
-	yTransferUpdateVar(to, from, "keywords");
-	yTransferUpdateVar(to, from, "tile");
-	yTransferUpdateVar(to, from, "spell");
-	yTransferUpdateVar(to, from, "action");
-	yTransferUpdateVar(to, from, "onPlay");
-	yTransferUpdateVar(to, from, "onAttack");
-	yTransferUpdateVar(to, from, "onDeath");
-	yTransferUpdateVar(to, from, "stunTime");
-	yTransferUpdateVar(to, from, "stunSFX");
-	yTransferUpdateVar(to, from, "stunIndex");
 }
 
 
@@ -300,6 +283,10 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 						push = modularCounterNext("lightningPush");
 						trQuestVarSet("lightning"+push, unit);
 						trQuestVarSet("lightning"+push+"damage", damage);
+					} else if (HasKeyword(CONDUCTOR, mGetVar(unit, "keywords"))) {
+						push = modularCounterNext("lightningPush");
+						trQuestVarSet("lightning"+push, unit);
+						trQuestVarSet("lightning"+push+"damage", 0);
 					}
 				}
 			}
@@ -501,11 +488,59 @@ void pushUnit(int name = 0, string dir = "") {
 	trUnitMoveToVector("pos", false);
 }
 
+
+
+/*
+target = the unit that is being upgraded
+unit = the unit being magnetized and consumed
+*/
+void magnetize(int target = 0, int unit = 0) {
+	deployAtTile(0, "Fireball Launch Damage Effect", 1*mGetVar(unit, "tile"));
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	zSetVarByIndex("tiles", "occupant", 1*mGetVar(unit, "tile"), 0);
+	tileGuard(1*mGetVar(unit, "tile"), false);
+	mSetVar(target, "health", mGetVar(target, "health") + mGetVar(unit, "health"));
+	mSetVar(target, "attack", mGetVar(target, "attack") + mGetVar(unit, "attack"));
+	trQuestVarSet("keywords1", mGetVar(target, "keywords"));
+	trQuestVarSet("keywords2", mGetVar(unit, "keywords"));
+	int keywords = 0;
+	int current = xsPow(2, NUM_KEYWORDS - 1);
+	for(x=NUM_KEYWORDS - 1; >=0) {
+		if (trQuestVarGet("keywords1") >= current || trQuestVarGet("keywords2") >= current) {
+			keywords = keywords + current;
+			if (trQuestVarGet("keywords1") >= current) {
+				trQuestVarSet("keywords1", trQuestVarGet("keywords1") - current);
+			}
+			if (trQuestVarGet("keywords2") >= current) {
+				trQuestVarSet("keywords2", trQuestVarGet("keywords2") - current);
+			}
+		}
+		current = current / 2;
+	}
+	mSetVar(target, "keywords", keywords);
+	mSetVar(target, "scale", mGetVar(target, "scale") + 0.25 * mGetVar(unit, "health"));
+	scaleUnit(target);
+	if (HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) && mGetVar(target, "action") == ACTION_SLEEPING) {
+		mSetVar(target, "action", ACTION_READY);
+	}
+}
+
+void updateRoxasHealth(int p = 0) {
+	if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {
+		int diff = trQuestVarGet("p"+p+"roxasHealth") - yGetDatabaseCount("p"+p+"deck");
+		trQuestVarSet("p"+p+"roxasHealth", yGetDatabaseCount("p"+p+"deck"));
+		damageUnit(1*trQuestVarGet("p"+p+"commander"), diff);
+	}
+}
+
 void updateAuras() {
 	int card = 0;
 	for(p=2; >0) {
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
-		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
+		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45) - trCountUnitsInArea("128",3-p,"Argus",45));
+		trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
 		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 0) {
 			if (trCountUnitsInArea("128",p,"Trident Soldier Hero", 45) > 0) {
 				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
@@ -540,6 +575,7 @@ void updateAuras() {
 				}
 			}
 		}
+		updateRoxasHealth(p);
 	}
 	refreshGuardAll();
 }
@@ -553,8 +589,10 @@ active
 		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("pushes", "dest")));
 		if (zDistanceToVectorSquared("pushes", "pos") < 4 || trTimeMS() > yGetVar("pushes", "timeout")) {
 			trUnitSelectClear();
+			trUnitSelect(""+1*yGetVar("pushes", "name"));
+			trUnitChangeProtoUnit("Dwarf");
+			trUnitSelectClear();
 			trUnitSelect(""+unit);
-			trUnitEjectContained();
 			trUnitChangeProtoUnit("Dust Large");
 			teleportToTile(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "dest"));
 			if (yGetVar("pushes", "target") > 0) {

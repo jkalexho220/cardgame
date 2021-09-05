@@ -129,6 +129,7 @@ inactive
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
+				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 			} else {
 				transferUnit("temp", "p"+p+"hand");
 			}
@@ -155,8 +156,15 @@ inactive
 		trQuestVarSet("turnEnd", 0);
 		trSoundPlayFN("fanfare.wav","1",-1,"","");
 
-
-		int p = 3 - trQuestVarGet("activePlayer");
+		int p = trQuestVarGet("activePlayer");
+		if (trQuestVarGet("p"+p+"borrowedTime") > 0) {
+			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
+		} else {
+			p = 3 - p;
+			if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
+				trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+			}
+		}
 
 		trPlayerKillAllGodPowers(p);
 		trTechGodPower(p, "create gold", 1);
@@ -211,6 +219,10 @@ inactive
 					{
 						drawCard(p, true);
 					}
+					case kbGetProtoUnitID("Fire Siphon"):
+					{
+						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+					}
 				}
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
@@ -226,9 +238,7 @@ inactive
 			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
 		}
 
-		if (p == 1) {
-			trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
-		}
+		
 		trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
 		trQuestVarSet("activePlayer", p);
 		trQuestVarSet("p"+p+"click", 0);
@@ -295,6 +305,18 @@ inactive
 			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
 			}
+			if (1*mGetVarByQV("allUnits", "player") == p) {
+				switch(1*mGetVarByQV("allUnits", "proto"))
+				{
+					case kbGetProtoUnitID("Guild"):
+					{
+						if (yGetDatabaseCount("p"+p+"hand") < 10) {
+							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
+						}
+						damageUnit(1*trQuestVarGet("allUnits"), 2);
+					}
+				}
+			}
 		}
 
 		mSetVarByQV("p"+p+"commander", "attack", mGetVarByQV("p"+p+"commander", "attack") - trQuestVarGet("p"+p+"yeebBonus"));
@@ -360,6 +382,7 @@ inactive
 					type = mGetVarByQV("p"+p+"hand", "spell");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
+				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+p+"hand");
 				yRemoveUpdateVar("p"+p+"hand", "pos");
 			}

@@ -662,6 +662,7 @@ runImmediately
 		trModifyProtounit("Nidhogg", p, 2, -20);
 		trTechSetStatus(p, 7, 4); // heavy infantry
 		trTechSetStatus(p, 476, 4); // iron all
+		trTechSetStatus(p, 412, 4); // Iron wall
 	}
 
 	// Disable god powers
