@@ -18,9 +18,6 @@ const int ATTACK_START = 0;
 const int ATTACK_ANIMATE = 1;
 const int ATTACK_DONE = 2;
 
-const int STATE_ALIVE = 0;
-const int STATE_DEAD = 1;
-
 const int ANIM_DEFAULT = 0;
 const int ANIM_CHARGING = 1;
 const int ANIM_GORE = 2;
@@ -241,10 +238,10 @@ void damageUnit(int index = 0, float dmg = 0) {
 	} else {
 		xsSetContextPlayer(p);
 		float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
-		mSetVar(index, "health", 1*mGetVar(index, "health") - dmg);
+		mSetVar(index, "health", xsMax(0, 1*mGetVar(index, "health") - dmg));
 		trUnitSelectClear();
 		trUnitSelect(""+index);
-		trDamageUnit(health - mGetVar(index, "health"));
+		trDamageUnit(health - xsMax(mGetVar(index, "health"), 1));
 	}
 }
 
@@ -637,11 +634,7 @@ active
 		{
 			if (trUnitAlive() == false) {
 				zSetVar("allUnitsBank", "state", STATE_DEAD);
-				if (kbProtoUnitIsUnitType(1*mGetVar(unit, "proto"), 937)) {
-					zSetVar("allUnitsBank", "next", trTimeMS() + 300);
-				} else {
-					zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
-				}
+				zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
 			}
 		}
 		case STATE_DEAD:
