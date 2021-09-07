@@ -140,16 +140,25 @@ void removeDeadUnits() {
 	}
 	trQuestVarSet("p1deathCount", 0);
 	trQuestVarSet("p2deathCount", 0);
+	int proto = 0;
 	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		if (mGetVarByQV("allUnits", "health") <= 0) {
-			trDamageUnitPercent(-100);
-			trUnitChangeProtoUnit("Spy Eye");
-			trUnitSelectClear();
-			trUnitSelect(""+1*trQuestVarGet("allUnits"));
-			trMutateSelected(1*mGetVarByQV("allUnits", "proto"));
-			trUnitOverrideAnimation(6, 0, 0, 1, -1);
+			proto = mGetVarByQV("allUnits", "proto");
+			if ((kbProtoUnitIsUnitType(proto, 937)) ||
+				(proto == kbGetProtoUnitID("Lampades")) ||
+				(proto == kbGetProtoUnitID("Carcinos"))) {
+				trDamageUnitPercent(-100);
+				trUnitChangeProtoUnit("Spy Eye");
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("allUnits"));
+				trMutateSelected(1*mGetVarByQV("allUnits", "proto"));
+				trUnitOverrideAnimation(6, 0, 0, 1, -1);
+			} else {
+				trDamageUnitPercent(100);
+			}
+			
 			int tile = mGetVarByQV("allUnits", "tile");
 			zSetVarByIndex("tiles", "occupant", tile, 0);
 			if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {

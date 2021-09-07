@@ -693,9 +693,10 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "",
 	trQuestVarSet("spell_"+spell+"_type", type);
 	trQuestVarSet("spell_"+spell+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, type));
 
+	// This is so that the uncollectable card is assigned to the right class
+	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
 		trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
-		trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
@@ -717,11 +718,13 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		ThrowError("That's not a unit. Method: CardSetup");
 	}
 
+	// this is so that the uncollectable card is assigned to the right class
+	trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
-		trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
+
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -823,6 +826,7 @@ runImmediately
 	*/
 	zBankInit("p1unitBank", 1, 63);
 	zBankInit("p2unitBank", 64, 64);
+	zBankInit("allUnitsBank", 1, 127);
 
 	//Pick a card. Any card.
 	/*

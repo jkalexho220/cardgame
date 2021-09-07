@@ -625,14 +625,34 @@ rule recycle_dead_cards
 highFrequency
 active
 {
-	if (yGetDatabaseCount("deadUnits") > 0) {
-		int unit = yDatabaseNext("deadUnits");
-		if (trTimeMS() > yGetVar("deadUnits", "timeout")) {
-			trUnitSelectClear();
-			trUnitSelect(""+unit);
-			trUnitChangeProtoUnit("Victory Marker");
-			yRemoveFromDatabase("deadUnits");
-			yRemoveUpdateVar("deadUnits", "timeout");
+	int unit = zBankNext("allUnitsBank");
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	switch(1*zGetVar("allUnitsBank", "state"))
+	{
+		case STATE_ALIVE:
+		{
+			if (trUnitAlive() == false) {
+				zSetVar("allUnitsBank", "state", STATE_DEAD);
+				zSetVar("allUnitsBank", "next", trTimeMS() + 2000);
+			}
+		}
+		case STATE_DEAD:
+		{
+			if (trTimeMS() > zGetVar("allUnitsBank", "next")) {
+				trDamageUnitPercent(-100);
+				trUnitChangeProtoUnit("Automaton");
+				trUnitSelectClear();
+				trUnitSelect(""+unit);
+				trDamageUnitPercent(-100);
+				trUnitChangeProtoUnit("Victory Marker");
+				trUnitSelectClear();
+				trUnitSelect(""+unit);
+				if (trUnitAlive() == true) {
+					zSetVar("allUnitsBank", "state", STATE_ALIVE);
+					mSetVarByQV("allUnitsBank", "played", 0);
+				}
+			}
 		}
 	}
 }
