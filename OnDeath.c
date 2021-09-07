@@ -143,16 +143,23 @@ void removeDeadUnits() {
 	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
-		if (mGetVarByQV("allUnits", "health") <= 0 && mGetVarByQV("allUnits", "health") > -9000) {
+		if (mGetVarByQV("allUnits", "health") <= 0) {
+			trDamageUnitPercent(-100);
+			trUnitChangeProtoUnit("Spy Eye");
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("allUnits"));
+			trMutateSelected(1*mGetVarByQV("allUnits", "proto"));
+			trUnitOverrideAnimation(6, 0, 0, 1, -1);
 			int tile = mGetVarByQV("allUnits", "tile");
 			zSetVarByIndex("tiles", "occupant", tile, 0);
-			trDamageUnitPercent(100);
 			if (HasKeyword(GUARD, 1*mGetVarByQV("allUnits", "keywords"))) {
 				tileGuard(tile, false);
 			}
 			p = mGetVarByQV("allUnits", "player");
 			trQuestVarSet("p"+p+"deathCount", 1 + trQuestVarGet("p"+p+"deathCount"));
-			mSetVarByQV("allUnits", "health", -9999);	
+			mSetVarByQV("allUnits", "stunSFX", 0);
+			yAddToDatabase("deadUnits", "allUnits");
+			yAddUpdateVar("deadUnits", "timeout", trTimeMS() + 2000);
 			yRemoveFromDatabase("allUnits");
 		}
 	}

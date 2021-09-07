@@ -172,11 +172,7 @@ inactive
 		trTechGodPower(p, "rain", 1);
 		trTechGodPower(p, "nidhogg", 1);
 		
-		if(Multiplayer == false && p == 2){
-			trQuestVarSet("botPhase", 0);
-			trQuestVarSet("botThinking", 0);
-			xsEnableRule("Bot_00_turn_start");
-		}
+		
 
 		xsSetContextPlayer(p);
 		for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -248,6 +244,10 @@ inactive
 
 		if(Multiplayer){
 			trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
+		} else if (p == 2) {
+			trQuestVarSet("botPhase", 0);
+			trQuestVarSet("botThinking", 0);
+			xsEnableRule("Bot_00_turn_start");
 		}
 		trCounterAddTime("mana", -1, -9999999, 
 			"<color={Playercolor("+p+")}>Mana: "+1*trQuestVarGet("p"+p+"mana") + "/" + 1*trQuestVarGet("maxMana"));

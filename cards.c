@@ -3,6 +3,9 @@ void ThrowError(string message = "Zeno you made bug again!"){
 	trShowWinLose(message, "xpack\xtaunts\en\999 theme.mp3");
 }
 
+const int STATE_ALIVE = 0;
+const int STATE_DEAD = 1;
+
 /*
 Classes
 */
@@ -675,6 +678,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "player", p);
 	mSetVar(next, "spell", spell);
 	mSetVar(next, "played", 1);
+	mSetVar(next, "state", STATE_ALIVE);
 
 	trMutateSelected(proto);
 	trUnitConvert(p);
@@ -819,7 +823,6 @@ runImmediately
 	*/
 	zBankInit("p1unitBank", 1, 63);
 	zBankInit("p2unitBank", 64, 64);
-	zBankInit("allUnitsBank", 1, 128);
 
 	//Pick a card. Any card.
 	/*
@@ -1072,7 +1075,7 @@ runImmediately
 		Proto | OnAttack | OnDeath | Description
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Add a Windsong to your hand. Discard it when turn ends.");
-	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
+	CardEvents("Lancer Hero", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
 	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
 	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
