@@ -10,6 +10,7 @@ bool OnDeath(int event = -1, int unit = 0){
 	int count = 0;
 	int target = 0;
 	int tile = 0;
+	int proto = 0;
 	bool checkAgain = false;
 	switch(event)
 	{
@@ -41,6 +42,12 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Shade of Hades");
 		}
+		case DEATH_GET_SCRAP:
+		{
+			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+				addCardToHand(p, 0, SPELL_SCRAP_METAL);
+			}
+		}
 		case DEATH_POISON_MIST:
 		{
 			for(x=0; < zGetVarByIndex("tiles", "neighborCount", 1*mGetVar(unit, "tile"))) {
@@ -71,25 +78,34 @@ bool OnDeath(int event = -1, int unit = 0){
 			mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
 			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
 		}
-		/*
 		case DEATH_BOOM_SMALL:
 		{
-			deployAtTile(0, "Meteor Impact Ground", 1*yGetVar("allUnits", "tile"));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("allUnits", "tile")));
+			deployAtTile(0, "Meteor Impact Ground", 1*mGetVarByQV("allUnits", "tile"));
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (zDistanceToVectorSquared("allUnits", "pos") > 2) { // yGetVar("allUnits", "player") == 3 - p
-					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
-						damageUnit("allUnits", 1*yGetPointer("allUnits"), 2);
-						checkAgain = true;
-						deployAtTile(0, "Ball of Fire impact", 1*yGetVar("allUnits", "tile"));
-					}
+				if (trQuestVarGet("allUnits") == unit) { 
+					continue;
+				} else if (zDistanceToVectorSquared("allUnits", "pos") < 40) {
+					startAttack(unit, 1*trQuestVarGet("allUnits"), false, false);
+					checkAgain = true;
 				}
 			}
 			trSoundPlayFN("meteorsmallhit.wav","1",-1,"","");
 		}
-		*/
+		case DEATH_SUMMON_RANDOM:
+		{
+			for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+				proto = yDatabaseNext("p"+p+"deck");
+				if (yGetVar("p"+p+"deck", "spell") == SPELL_NONE) {
+					yRemoveFromDatabase("p"+p+"deck");
+					yRemoveUpdateVar("p"+p+"deck", "spell");
+					break;
+				}
+			}
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(proto));
+		}
 	}
 	return (checkAgain);
 }
@@ -151,9 +167,8 @@ void removeDeadUnits() {
 				if (trQuestVarGet("p"+p+"deathCount") > 0) {
 					mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
 					mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
-					trUnitSelectClear();
-					trUnitSelect(""+1*trQuestVarGet("allUnits"));
-					spyEffect("Einheriar Boost SFX");
+					mSetVarByQV("allUnits", "scale", 0.25*trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));
+					scaleUnit(1*trQuestVarGet("allUnits"));
 				}
 			}
 		}
@@ -196,7 +211,7 @@ void returnToHand(int unit = 0) {
 	if (HasKeyword(GUARD, 1*mGetVar(unit, "keywords"))) {
 		tileGuard(1*mGetVar(unit, "tile"), false);
 	}
-	deployAtTile(0, "Hero Death", 1*mGetVar(unit, "tile"));
+	deployAtTile(0, "Vortex Start linked", 1*mGetVar(unit, "tile"));
 	if (yGetDatabaseCount("p"+p+"hand") < 10) {
 		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
 		for(x=yGetDatabaseCount("allUnits"); >0) {

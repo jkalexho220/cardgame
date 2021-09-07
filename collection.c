@@ -146,7 +146,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case COMMANDER_ROXAS:
 		{
-			return (kbGetProtoUnitID("Hero Greek Polyphemus"));
+			return (kbGetProtoUnitID("Arkantos God"));
 		}
 		case COMMANDER_YEEBAAGOOON:
 		{

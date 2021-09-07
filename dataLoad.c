@@ -115,7 +115,7 @@ void dataSave() {
 }
 
 void showLoadProgress(int p = 0) {
-	trSoundPlayFN("default","1",-1,""+100 * p / 22,"");
+	trSoundPlayFN("default","1",-1,""+100 * p / 22,"icons\god power reverse time icons 64");
 }
 
 rule data_load_00

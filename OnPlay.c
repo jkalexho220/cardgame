@@ -57,8 +57,8 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hetairoi"):
 		{
-			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
-			updateHandPlayable(p);
+			done = false;
+			chooseSpell(SPELL_MAP);
 		}
 		case kbGetProtoUnitID("Peltast"):
 		{
@@ -152,7 +152,9 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Behemoth"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
-			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));	
+			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
+			scaleUnit(unit);
 		}
 		case kbGetProtoUnitID("Hippocampus"):
 		{
@@ -230,9 +232,24 @@ void OnPlay(int unit = 0) {
 			chooseSpell(SPELL_SUMMON_ONE);
 			done = false;
 		}
-		case kbGetProtoUnitID("Scout"):
+		case kbGetProtoUnitID("Tower Mirror"):
 		{
-			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
+			trSoundPlayFN("wonder.wav","1",-1,"","");
+		}
+	}
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
+	if (HasKeyword(MAGNETIC, 1*mGetVar(unit, "keywords"))) {
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if ((trQuestVarGet("allUnits") == unit) || (mGetVarByQV("allUnits", "player") == 3 - p)) {
+				continue;
+			} else if (HasKeyword(MAGNETIC, 1*mGetVarByQV("allUnits", "keywords")) &&
+				zDistanceToVectorSquared("allUnits", "pos") < 40) {
+				done = false;
+				trQuestVarSet("spellCaster", unit);
+				chooseSpell(SPELL_MAGNETIZE);
+				break;
+			}
 		}
 	}
 	if (done) {
