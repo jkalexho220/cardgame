@@ -287,7 +287,6 @@ inactive
 					}
 				}
 				if (unit > -1) {
-					trQuestVarSet("spellNoTargets", 0);
 					cost = mGetVar(unit, "cost");
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");

@@ -27,11 +27,8 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_GET_ARCANE:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
-				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
-				updateHandPlayable(p);
-			}
+			trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+			generateCard(p, 0, 1*trQuestVarGet("spellChosen"));
 		}
 		case DEATH_SUMMON_ZOMBIE:
 		{

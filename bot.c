@@ -87,8 +87,10 @@ inactive
 			// If choose hand
 			} else if (trQuestVarGet("botChooseHand") > trQuestVarGet("botChooseUnit")) {
 				trQuestVarSet("botSpell", -1);
+				trQuestVarSet("botProto", -1);
 				int maxCardCost = -1;
 				int spell = 0;
+				int proto = 0;
 				for(x=yGetDatabaseCount("p2hand"); >0) {
 					yDatabaseNext("p2hand");
 					if ((mGetVarByQV("p2hand", "cost") <= trQuestVarGet("p2mana")) &&
@@ -103,6 +105,7 @@ inactive
 							maxCardCost = currentCardCost;
 							trVectorSetUnitPos("botClickPos", "p2hand");
 							spell = 1*mGetVarByQV("p2hand", "spell");
+							proto = 1*mGetVarByQV("p2hand", "proto");
 						}	
 					}
 				}
@@ -110,8 +113,9 @@ inactive
 					// Bot Click Left	
 					trQuestVarSet("botClick", LEFT_CLICK);
 					if (spell > 0) {
-						trQuestVarSet("botSpell", spell);
+						trQuestVarSet("botSpell", spell);		
 					}
+					trQuestVarSet("botProto", proto);
 				} else {
 					trQuestVarSet("botManaOptions", 0);
 				}
@@ -151,13 +155,38 @@ inactive
 						yRemoveFromDatabase("castTargets");
 					}
 				}
-			}
-			
-			if(1*trQuestVarGet("botSpell") == SPELL_INTIMIDATE){
+				
+				if(1*trQuestVarGet("botSpell") == SPELL_INTIMIDATE){
+					yDatabasePointerDefault("castTargets");
+					for(x=yGetDatabaseCount("castTargets"); >0) {
+						yDatabaseNext("castTargets");
+						if(mGetVarByQV("castTargets", "stunTime") > 0){
+							yRemoveFromDatabase("castTargets");
+						}
+					}
+				} else if(1*trQuestVarGet("botSpell") == SPELL_PISTOL_SHOT){
+					yDatabasePointerDefault("castTargets");
+					for(x=yGetDatabaseCount("castTargets"); >0) {
+						yDatabaseNext("castTargets");
+						if(mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") < 9){
+							yRemoveFromDatabase("castTargets");
+						}
+					}
+				} else if(1*trQuestVarGet("botSpell") == SPELL_ELECTROSURGE){
+					yDatabasePointerDefault("castTargets");
+					for(x=yGetDatabaseCount("castTargets"); >0) {
+						yDatabaseNext("castTargets");
+						if(trCountUnitsInArea(""+1*trQuestVarGet("castTargets"),1,"Unit",9) < 2){
+							yRemoveFromDatabase("castTargets");
+						}
+					}
+				}
+				
+			} else if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_DEFENSIVE){
 				yDatabasePointerDefault("castTargets");
 				for(x=yGetDatabaseCount("castTargets"); >0) {
-					yDatabaseNext("castTargets");
-					if(mGetVarByQV("castTargets", "stunTime") > 0){
+					yDatabaseNext("castTargets", true);
+					if(trUnitIsOwnedBy(2) == false){
 						yRemoveFromDatabase("castTargets");
 					}
 				}
@@ -188,10 +217,41 @@ inactive
 						yRemoveFromDatabase("castTiles");
 					}
 				}
+				
+				if(1*trQuestVarGet("botSpell") == SPELL_EXPLOSION){
+					yDatabasePointerDefault("castTiles");
+					for(x=yGetDatabaseCount("castTiles"); >0) {
+						yDatabaseNext("castTiles");
+						if(trCountUnitsInArea(""+1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")),1,"Unit",9) < 2){
+							yRemoveFromDatabase("castTiles");
+						}
+					}
+				}
+				
+			} else if (1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_DEFENSIVE) {
+				yDatabasePointerDefault("castTiles");
+				for(x=yGetDatabaseCount("castTiles"); >0) {
+					yDatabaseNext("castTiles");
+					if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") < 2){
+						yRemoveFromDatabase("castTiles");
+					}
+				}
 			}
 
 			if(1*trQuestVarGet("botSpell") == SPELL_GROUND_STOMP){
 				if(trCountUnitsInArea(""+1*trQuestVarGet("p2commander"),1,"Unit",9) < 1){
+					yClearDatabase("castTiles");
+				}
+			} else if((1*trQuestVarGet("botSpell") == SPELL_FINAL_EXAM) || (1*trQuestVarGet("botSpell") == SPELL_CLASS_TIME)){
+				if(yGetDatabaseCount("p2hand") > 7){
+					yClearDatabase("castTiles");
+				}
+			} else if(1*trQuestVarGet("botSpell") == SPELL_APOCALYPSE){
+				if(yGetDatabaseCount("p2hand") > 2){
+					yClearDatabase("castTiles");
+				}
+			} else if(1*trQuestVarGet("botSpell") == SPELL_VICTORY){
+				if(trCountUnitsInArea("128",2,"Unit",45) < 3){
 					yClearDatabase("castTiles");
 				}
 			}
@@ -213,6 +273,15 @@ inactive
 		
 		case GAMEPLAY_SUMMONING:
 		{
+			if((trQuestVarGet("botProto") == kbGetProtoUnitID("Griffon")) || (trQuestVarGet("botProto") == kbGetProtoUnitID("Avenger"))){
+				yDatabasePointerDefault("summonLocations");
+				for(x=yGetDatabaseCount("summonLocations"); >0) {
+					yDatabaseNext("summonLocations");
+					if(trCountUnitsInArea(""+1*trQuestVarGet("summonLocations"),1,"Unit",9) < 1){
+						yRemoveFromDatabase("summonLocations");
+					}
+				}
+			}		
 			// Bot tries to play a unit but there are no tiles where to summon it, skip playing cards
 			if(yGetDatabaseCount("summonLocations") == 0){
 				trQuestVarSet("botManaOptions", trQuestVarGet("botManaOptions") - 1);

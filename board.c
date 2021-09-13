@@ -100,17 +100,19 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 				if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
 					zSetVarByIndex("tiles", "searched", neighbor, 1);
 					// Add to fringe if it can be moved through.
-					if ((zGetVarByIndex("tiles", "occupant", neighbor) + zGetVarByIndex("tiles", "terrain", neighbor) == 0) || ghost) {
-						push = push + 1;
-						trQuestVarSet("search"+push+"tile", neighbor);
-						trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
-					} else if (zGetVarByIndex("tiles", "occupant", neighbor) > 0 && zGetVarByIndex("tiles", "terrain", neighbor) == TILE_EMPTY) {
-						// we can move through flying units
-						occupant = zGetVarByIndex("tiles", "occupant", neighbor);
-						if (HasKeyword(FLYING, 1*mGetVar(occupant, "keywords"))) {
+					if(1*zGetVarByIndex("tiles", "terrain", neighbor) != TILE_OCCUPIED){
+						if ((zGetVarByIndex("tiles", "occupant", neighbor) + zGetVarByIndex("tiles", "terrain", neighbor) == 0) || ghost) {
 							push = push + 1;
 							trQuestVarSet("search"+push+"tile", neighbor);
 							trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
+						} else if (zGetVarByIndex("tiles", "occupant", neighbor) > 0 && zGetVarByIndex("tiles", "terrain", neighbor) == TILE_EMPTY) {
+							// we can move through flying units
+							occupant = zGetVarByIndex("tiles", "occupant", neighbor);
+							if (HasKeyword(FLYING, 1*mGetVar(occupant, "keywords"))) {
+								push = push + 1;
+								trQuestVarSet("search"+push+"tile", neighbor);
+								trQuestVarSet("search"+push+"distance", trQuestVarGet("search"+pop+"distance") - 1);
+							}
 						}
 					}
 				}
@@ -358,13 +360,43 @@ inactive
 			trUnitSelectByID(1*zGetVar("tiles", "border"+y));
 		}
 		trMutateSelected(kbGetProtoUnitID("Statue of Automaton Base"));
+		if(trQuestVarGet("customTerrainEmpty") > 0){
+			paintTile(1*trQuestVarGet("tiles"), 0, 1*trQuestVarGet("customTerrainEmpty"));
+		}
 	}
 	
 	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
-	chooseTerrainTheme(TERRAIN_GRASSLAND);
-	setupImpassableTerrain();
+	
+	if(trQuestVarGet("dontPlaceRandomStuff") == 0){	
+		chooseTerrainTheme(TERRAIN_GRASSLAND);
+		setupImpassableTerrain();		
+	}
+	for(y=yGetDatabaseCount("customBoard"); >0) {
+		yDatabaseNext("customBoard");	
+		if(yGetVar("customBoard", "count") > 1){
+			for(i=yGetVar("customBoard", "count"); >0) {
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("customBoard", "tile")));
+				trQuestVarSetFromRand("modx", -2, 2, true);
+				trQuestVarSetFromRand("modz", -2, 2, true);
+				if(trQuestVarGet("modx") == 0 && trQuestVarGet("modz") == 0){
+					trQuestVarSet("modx", 1);
+					trQuestVarSet("modz", 1);
+				}
+				trQuestVarSetFromRand("heading",0, 360, true);
+				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("modx"));
+				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("modz"));
+				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),trQuestVarGet("heading"), true);
+			}
+		} else {
+			trQuestVarSet("customBoard", deployAtTile(0, kbGetProtoUnitName(1*yGetVar("customBoard", "proto")), 1*yGetVar("customBoard", "tile")));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
+			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
+		}		
+		paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));
+		zSetVarByIndex("tiles", "terrain", 1*yGetVar("customBoard", "tile"), 1*yGetVar("customBoard", "terrain"));
+	}
 	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
-
 
 	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
 	trQuestVarCopy("p1startPosz", "p1startposx");

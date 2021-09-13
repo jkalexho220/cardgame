@@ -345,7 +345,6 @@ inactive
 		}
 		trLetterBox(false);
 		xsDisableRule("CinPrologue12");
-		unitTransform("Victory Marker", "Statue of Automaton Base");
 		trQuestVarSet("missionSelection", -1);
 		trQuestVarSet("missionClass", -1);
 		xsEnableRule("MissionBegin");

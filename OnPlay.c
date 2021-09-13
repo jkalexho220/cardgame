@@ -24,20 +24,72 @@ void OnPlay(int unit = 0) {
 			trQuestVarSetFromRand("soundRandom", 1, 2, true);
 			trSoundPlayFN("beargrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 		}
+		case kbGetProtoUnitID("Bondi"):
+		{
+			trSoundPlayFN("militarycreate.wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", trQuestVarGet("p"+p+"manaTax") + 2);
+		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			trSoundPlayFN("battlecry1.wav","1",-1,"","");
-			trQuestVarSet("pirateShipTarget", -1);
+			trQuestVarSet("pirateShipTarget" + unit, -1);
 		}
 		case kbGetProtoUnitID("Audrey Water"):
 		{
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("carnivoragrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 		}
+		case kbGetProtoUnitID("Griffon"):
+		{
+			trQuestVarSetFromRand("soundRandom", 1, 2, true);
+			trSoundPlayFN("griffongrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("wingflaplarge" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Apep"):
+		{
+			trQuestVarSetFromRand("soundRandom", 1, 2, true);
+			trSoundPlayFN("crocodilegrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Monument"):
+		{
+			if(trQuestVarGet("chats_Monument_0") == 0){
+				trQuestVarSet("chats_Monument_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to clean.");
+			}
+		}
+		case kbGetProtoUnitID("Monument 2"):
+		{
+			if(trQuestVarGet("chats_Monument2_0") == 0){
+				trQuestVarSet("chats_Monument2_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to help with outfit.");
+			}
+		}
+		case kbGetProtoUnitID("Monument 3"):
+		{
+			if(trQuestVarGet("chats_Monument3_0") == 0){
+				trQuestVarSet("chats_Monument3_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to assist guest with luggage.");
+			}
+		}
+		case kbGetProtoUnitID("Monument 4"):
+		{
+			if(trQuestVarGet("chats_Monument4_0") == 0){
+				trQuestVarSet("chats_Monument4_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing Arcane buffet.");
+			}
+		}
+		case kbGetProtoUnitID("Monument 5"):
+		{
+			if(trQuestVarGet("chats_Monument5_0") == 0){
+				trQuestVarSet("chats_Monument5_0", 1);
+				trCameraShake(3.0, 0.3);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: PREPARING EVERYTHING.");
+			}
+		}	
 		case kbGetProtoUnitID("Slinger"):
 		{
-			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SPARK);
-			updateHandPlayable(p);
+			generateCard(p, 0, SPELL_SPARK);
 		}
 		case kbGetProtoUnitID("Skraeling"):
 		{
@@ -75,8 +127,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hetairoi"):
 		{
-			addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_MAP);
-			updateHandPlayable(p);
+			generateCard(p, 0, SPELL_MAP);
 		}
 		case kbGetProtoUnitID("Peltast"):
 		{

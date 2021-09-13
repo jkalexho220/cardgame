@@ -10,7 +10,7 @@ inactive
 		commander = CommanderToProtounit(1*trQuestVarGet("p"+p+"commanderType"));
 		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, commander));
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
-
+		mSetVarByQV("p"+p+"commander", "action", ACTION_DONE);
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
 		spyEffect("Healing SFX");
@@ -225,7 +225,8 @@ inactive
 				if (p == 1) {
 					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
 				}
-				trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
+				trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
+				trQuestVarSet("p"+p+"manaTax", 0);
 				trQuestVarSet("activePlayer", p);
 				trQuestVarSet("p"+p+"click", 0);
 				highlightReady(100);

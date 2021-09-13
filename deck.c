@@ -97,7 +97,8 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 
 	// Find an empty position in the hand to place the unit.
 	for(x=zGetBankCount("p"+p+"handPos"); >0) {
-		if (trCountUnitsInArea(""+zBankNext("p"+p+"handPos"),p,"Unit",2) == 0) {
+		int hand = zBankNext("p"+p+"handPos");
+		if (trCountUnitsInArea(""+hand,p,"All",2) - trCountUnitsInArea(""+hand,p,"Victory Marker",2)  == 0) {
 			yAddUpdateVar("p"+p+"hand", "pos", trQuestVarGet("p"+p+"handPos"));
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));
@@ -169,6 +170,31 @@ void drawCard(int p = 0, bool fleeting = false) {
 
 		updateHandPlayable(p);
 		updateMana();
+	}
+}
+
+void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		if (trCurrentPlayer() == p) {
+			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+		}
+		if (spell == 0) {
+			ChatLog(p, "Created " + trStringQuestVarGet("card_" + proto + "_Name"));
+		} else {
+			ChatLog(p, "Created " + trStringQuestVarGet("spell_" + spell + "_Name"));
+		}
+		addCardToHand(p, proto, spell, fleeting);
+		updateHandPlayable(p);
+		updateMana();
+	} else {
+		if (trCurrentPlayer() == p) {
+			trSoundPlayFN("cantdothat.wav","1",-1,"","");
+		}
+		if (spell == 0) {
+			ChatLog(p, "Hand full! Burned created " + trStringQuestVarGet("card_" + proto + "_Name"));
+		} else {
+			ChatLog(p, "Hand full! Burned created " + trStringQuestVarGet("spell_" + spell + "_Name"));
+		}
 	}
 }
 

@@ -173,11 +173,39 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case 900:
 		{
+			return (kbGetProtoUnitID("Terracotta Soldier"));
+		}
+		case 901:
+		{
 			return (kbGetProtoUnitID("Bear"));
+		}
+		case 902:
+		{
+			return (kbGetProtoUnitID("General Melagius"));
+		}
+		case 903:
+		{
+			return (kbGetProtoUnitID("Shaba Ka"));
+		}
+		case 904:
+		{
+			return (kbGetProtoUnitID("Hero Chinese Immortal"));
+		}
+		case 905:
+		{
+			return (kbGetProtoUnitID("Audrey"));
 		}
 		case 906:
 		{
 			return (kbGetProtoUnitID("Golem"));
+		}
+		case 907:
+		{
+			return (kbGetProtoUnitID("Pharaoh Secondary"));
+		}
+		case 908:
+		{
+			return (kbGetProtoUnitID("Setna"));
 		}
 	}
 	ThrowError("CommanderToProtounit");
@@ -198,6 +226,12 @@ void CollectionCard(int index = 0, int x = 0, int z = 0) {
 			CollectionDeploy(index, x, z);
 			countCollection = countCollection - 1;
 		} 
+		for(j=0;<6){
+			if(index > 0 && index == trQuestVarGet("packReward" + j)){
+				trUnitHighlight(4.7, true);
+				trQuestVarSet("packReward" + j, -1);
+			}
+		}
 		x = x + 2;
 	}
 }
@@ -496,7 +530,11 @@ inactive
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
-
+	trChatHistoryClear();
+	for(p=1;<=2){
+		trCounterAbort("mana"+p);
+		trCounterAbort("handAndDeck"+p);
+	}
 	yClearDatabase("allUnits");	
 	trQuestVarSet("activePlayer", 1);
 	trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
@@ -658,8 +696,8 @@ inactive
 		}
 	}
 				xsDisableRule("CollectionSelect");
-	if(nothing && trQuestVarGet("selectionTryAgain") == 0){
-		trQuestVarSet("selectionTryAgain", 1);
+	if(nothing && trQuestVarGet("selectionTryAgain") < 3){
+		trQuestVarSet("selectionTryAgain", trQuestVarGet("selectionTryAgain") + 1);
 		trDelayedRuleActivation("CollectionSelect");	
 	}
 	/*
@@ -721,19 +759,7 @@ inactive
 {
 	if (trCheckGPActive("rain", 1)) {
 		if (trQuestVarGet("p1rain") == 0) {
-			trQuestVarSet("p1rain", 1);
-			setClassProgress(0,1);
-			setClassProgress(1,1);
-			setClassProgress(2,1);
-			for(i=0;<90) {
-				setCardCountCollection(i,3);				
-			}
-			setCardCountCollection(14,1);	
-			setCardCountCollection(29,1);	
-			setCardCountCollection(44,1);	
-			setCardCountCollection(59,1);
-			setCardCountCollection(74,1);	
-			setCardCountCollection(89,1);				
+			trQuestVarSet("p1rain", 1);				
 			dataSave();
 			map("mouse1down", "game", "");
 			map("mouse2up", "game", "");
