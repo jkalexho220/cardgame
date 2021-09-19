@@ -46,8 +46,9 @@ const int SPELL_PISTOL_SHOT = 997;
 const int SPELL_RELOAD = 996;
 const int SPELL_POISON_CLOUD = 995;
 const int SPELL_NATURE_ANGRY = 994;
-const int SPELL_MIRROR_REFLECTION = 993;
-const int SPELL_PYROBALL = 992;
+const int SPELL_ELVEN_APOCALYPSE = 993;
+const int SPELL_MIRROR_REFLECTION = 992;
+const int SPELL_PYROBALL = 991;
 
 // Adventurer
 const int SPELL_FIRST_AID = 2;
@@ -223,7 +224,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case FURIOUS: return ("Two attacks each turn.");
 		case LIGHTNING: return ("Attack will chain through connected enemies.");
 		case REGENERATE: return ("Restores to full health at the start of your turn.");
-		case DEADLY: return ("I kill any minion that I damage.");
+		case DEADLY: return ("I kill any minion that I attack.");
 		case ETHEREAL: return ("Can pass through units and impassable terrain.");
 		case ARMORED: return ("I take 1 less damage from all sources.");
 		case WARD: return ("I cannot be targeted by spells or play effects.");
@@ -736,12 +737,12 @@ runImmediately
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 128);
 
-	CardSetup("Terracotta Soldier",		0, "Training Dummy", 		0, 10, 0, 0, 0, true);
-	CardEvents("Terracotta Soldier", 0, 0, 		"Hit me hard daddy!");
+	CardSetup("Automaton",		0, "Training Dummy", 		0, 10, 0, 0, 0, true);
+	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
-	CardSetup("General Melagius",		0, "General Shoe", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("General Melagius", Keyword(ATTACK_RALLY), 0,	"Attack: If it's my turn, give allied minions +1 Attack.");
-	CardSetup("Shaba Ka",				0, "Pirate Boss", 			4, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
+	CardSetup("Shaba Ka",				0, "Mister Pirate", 			6, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
 	CardSetup("Hero Chinese Immortal",	0, "Forest Protector",		2, 20, 2, 1, Keyword(BEACON) + Keyword(DEADLY), true);
 	CardSetup("Audrey",					0, "Vora",					2, 20, 0, 1, Keyword(BEACON) + Keyword(DEADLY), true);
 	
@@ -754,19 +755,22 @@ runImmediately
 	SpellSetup("Reload", 				5, SPELL_RELOAD, 			"Draw a card.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a minion on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
 	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 			"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Give your Commander Regenerate and the enemy Commander Decay.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Griffon",				5, "Officer Shoe",			2, 8, 2, 1, Keyword(IMPORTANT) + Keyword(BEACON), true);
+	SpellSetup("Poison Cloud", 			4, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Descend From Treetops",	3, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Qilin",					0, "Forest Protector",		4, 40, 2, 1, Keyword(BEACON) + Keyword(GUARD), true);
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
-	CardEvents("Bondi", 0, 0,										"Play: Pay 2 Mana next turn.");
-	CardSetup("Golem",					5, "Arcane Golem",			6, 8, 2, 1, 0, true);
-	CardEvents("Golem", 0, 0, 			"Ignore odd damage.");
+	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
+	CardSetup("Golem",					6, "Arcane Golem",			7, 9, 2, 1, 0, true);
+	CardEvents("Golem", 0, 0, 								"Ignore odd damage.");
+	CardSetup("Hero Chinese Immortal",	7, "Elven Champion",		5, 9, 2, 1, Keyword(GUARD) + Keyword(WARD), true);
+	CardEvents("Hero Chinese Immortal", 0, 0, 				"I have +1 Range during opponent's turn.");
 	CardSetup("Griffon",				4, "Soaring Griffy",		3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
 	CardSetup("Apep",					4, "Lurking Crocky",		6, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
-	CardSetup("Bear",					5, "Hungry Bear",			8, 6, 2, 1, 0, true);
+	CardSetup("Bear",					6, "Hungry Bear",			9, 7, 2, 1, 0, true);
 	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Attack: Excess damage heals me.");
-	CardSetup("Pirate Ship",			0, "Pirate Ship",			0, 40, 0, 0, 0, true);
-	CardEvents("Pirate Ship", 0, 0, 	"Turn Start: Choose an enemy tile, next turn deal 8 Damage there.");
+	CardSetup("Pirate Ship",			10, "Pirate Ship",			0, 40, 0, 0, 0, true);
+	CardEvents("Pirate Ship", 0, 0, 						"Turn Start: Secretly choose an enemy tile, next turn deal 8 Damage there.");
 	
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
@@ -1025,7 +1029,7 @@ runImmediately
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
 	*/
-	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Create a Windsong. Discard it when turn ends.");
+	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Create a Fleeting Windsong.");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
 	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");

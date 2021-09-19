@@ -294,6 +294,13 @@ inactive
 			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
 			}
+			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Hero Chinese Immortal")){
+				if(mGetVarByQV("allUnits", "player") == p){
+					mSetVarByQV("allUnits", "range", 2);
+				} else {
+					mSetVarByQV("allUnits", "range", 1);
+				}
+			}
 		}
 
 		mSetVarByQV("p"+p+"commander", "attack", mGetVarByQV("p"+p+"commander", "attack") - trQuestVarGet("p"+p+"yeebBonus"));

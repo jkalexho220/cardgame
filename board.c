@@ -10,9 +10,11 @@ const int T_GREEK_CLIFF_B = 5;
 const int T_FOREST_PINE = 87;
 
 const int T_SAND_D = 37;
+const int T_EGYPTIAN_ROAD = 64;
 const int T_FOREST_PALM = 86;
 
 const int T_SNOW_A = 41;
+const int T_NORSE_ROAD = 66;
 const int T_FOREST_SNOW = 88;
 
 const int TILE_EMPTY = 0;
@@ -386,6 +388,8 @@ inactive
 				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("modx"));
 				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("modz"));
 				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),trQuestVarGet("heading"), true);
+				trArmySelect("1,10");
+				trUnitConvert(0);
 			}
 		} else {
 			trQuestVarSet("customBoard", deployAtTile(0, kbGetProtoUnitName(1*yGetVar("customBoard", "proto")), 1*yGetVar("customBoard", "tile")));
@@ -393,7 +397,9 @@ inactive
 			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
 			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
 		}		
-		paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));
+		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
+			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));	
+		}	
 		zSetVarByIndex("tiles", "terrain", 1*yGetVar("customBoard", "tile"), 1*yGetVar("customBoard", "terrain"));
 	}
 	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());

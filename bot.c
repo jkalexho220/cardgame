@@ -6,37 +6,10 @@ const int BOT_PHASE_UNIT_ATTACK = 4;
 const int BOT_PHASE_SPELL_PLAY = 5;
 
 const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks
-const int BOT_PERSONALITY_TRAINING = 1; // Doesn't move
-const int BOT_PERSONALITY_CIVILIAN = 2; // Doesn't attack
-const int BOT_PERSONALITY_DECORATIVE = 3; // Doesn't play
+const int BOT_PERSONALITY_TRAINING = 1; // Training bot, passes turn
 
 void InitBot(int personality = 0){
-	switch(personality)
-	{
-		case BOT_PERSONALITY_DEFAULT:
-		{
-			trQuestVarSet("botNoMove", 0);
-			trQuestVarSet("botNoAttack", 0);
-		}
-		
-		case BOT_PERSONALITY_TRAINING:
-		{
-			trQuestVarSet("botNoMove", 1);
-			trQuestVarSet("botNoAttack", 0);
-		}
-		
-		case BOT_PERSONALITY_CIVILIAN:
-		{
-			trQuestVarSet("botNoMove", 0);
-			trQuestVarSet("botNoAttack", 1);
-		}
-		
-		case BOT_PERSONALITY_DECORATIVE:
-		{
-			trQuestVarSet("botNoMove", 1);
-			trQuestVarSet("botNoAttack", 1);
-		}
-	}
+	trQuestVarSet("botPersonality", personality);
 }
 
 rule Bot_00_turn_start
@@ -60,6 +33,12 @@ rule Bot1
 highFrequency
 inactive
 {
+	if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
+		trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
+		xsDisableRule("Bot1");
+		trQuestVarSet("gameplayPhase", -1);
+	}
+	
 	trQuestVarSet("botTimeNext", trTimeMS() + 300);
 	trQuestVarSet("botClick", -1);
 	
@@ -242,11 +221,11 @@ inactive
 				if(trCountUnitsInArea(""+1*trQuestVarGet("p2commander"),1,"Unit",9) < 1){
 					yClearDatabase("castTiles");
 				}
-			} else if((1*trQuestVarGet("botSpell") == SPELL_FINAL_EXAM) || (1*trQuestVarGet("botSpell") == SPELL_CLASS_TIME)){
+			} else if((1*trQuestVarGet("botSpell") == SPELL_FINAL_EXAM) || (1*trQuestVarGet("botSpell") == SPELL_CLASS_TIME) || (1*trQuestVarGet("botSpell") == SPELL_PARTY_UP)){
 				if(yGetDatabaseCount("p2hand") > 7){
 					yClearDatabase("castTiles");
 				}
-			} else if(1*trQuestVarGet("botSpell") == SPELL_APOCALYPSE){
+			} else if((1*trQuestVarGet("botSpell") == SPELL_APOCALYPSE) || (1*trQuestVarGet("botSpell") == SPELL_ELVEN_APOCALYPSE)){
 				if(yGetDatabaseCount("p2hand") > 2){
 					yClearDatabase("castTiles");
 				}
@@ -348,15 +327,34 @@ inactive
 			currentScore = 0;
 			trVectorSetUnitPos("pos", "botActiveUnit");
 			for (x=yGetDatabaseCount("targets"); >0) {
-				yDatabaseNext("targets");
-				currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
+				yDatabaseNext("targets");	
+				if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
+					continue;
+				}
+				if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){
+					currentScore = mGetVarByQV("targets", "health");
+				} else {
+					currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
+					if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
+						currentScore = currentScore - 1;
+					}
+				}				
 				// If the target dies, then currentScore = 2 * (target's attack + cost)
 				if (currentScore >= 0) {
 					currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
 				}
 				// If the target can counterattack, we subtract its attack from currentScore
-				if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
-					currentScore = currentScore - mGetVarByQV("targets", "attack");
+				if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {			
+					if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
+						currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
+					} else {
+						if(1*mGetVarByQV("targets", "stunTime") == 0){
+							currentScore = currentScore - mGetVarByQV("targets", "attack");
+							if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
+								currentScore = currentScore + 1;
+							}							
+						}
+					}
 				}
 				if (currentScore > bestTargetScore) {
 					bestTargetScore = currentScore;

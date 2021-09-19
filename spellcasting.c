@@ -695,6 +695,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
+		case SPELL_ELVEN_APOCALYPSE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
 		case SPELL_MIRROR_REFLECTION:
 		{
 			castAddMirrorReflectionUnit("spellTarget", 0);
@@ -1119,16 +1124,23 @@ inactive
 				trSoundPlayFN("gaiaattack" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (mGetVarByQV("allUnits", "spell") == SPELL_COMMANDER) {
-						if (mGetVarByQV("allUnits", "player") == p) {
-							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), REGENERATE));
-							deployAtTile(0, "Vision SFX", 1*mGetVarByQV("allUnits", "tile"));
-						} else {
-							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
-							deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
-						}
+					if (mGetVarByQV("allUnits", "player") == p) {
+						healUnit(1*trQuestVarGet("allUnits"), 1*mGetVarByQV("allUnits", "health"));
+						deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("allUnits", "tile"));
+					} else {
+						mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
+						deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
 					}
 				}
+			}
+			case SPELL_ELVEN_APOCALYPSE:
+			{
+				trSoundPlayFN("temple.wav","1",-1,"","");
+				trSoundPlayFN("battlecry4.wav","1",-1,"","");
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_elven_apocalypse_activate");
 			}
 			case SPELL_MIRROR_REFLECTION:
 			{
@@ -2130,6 +2142,7 @@ inactive
 				trSoundPlayFN("arrowonwood2.wav","1",-1,"","");
 				trSoundPlayFN("arrowonflesh3.wav","1",-1,"","");
 				trSoundPlayFN("arrowonflesh4.wav","1",-1,"","");
+				mSetVarByQV("spellTarget", "health", 0);
 				damageUnit(1*trQuestVarGet("spellTarget"), 6900);
 			}
 			case SPELL_MIRROR_REFLECTION:
@@ -2150,6 +2163,13 @@ inactive
 				if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == false){
 					mSetVar(activeUnit, "action", ACTION_SLEEPING);					
 				}
+				mSetVar(activeUnit, "attack", mGetVarByQV("spellTarget", "attack"));
+				mSetVar(activeUnit, "health", mGetVarByQV("spellTarget", "health"));
+				mSetVar(activeUnit, "speed", mGetVarByQV("spellTarget", "speed"));
+				mSetVar(activeUnit, "range", mGetVarByQV("spellTarget", "range"));
+				mSetVar(activeUnit, "keywords", mGetVarByQV("spellTarget", "keywords"));
+				mSetVar(activeUnit, "onAttack", mGetVarByQV("spellTarget", "onAttack"));
+				mSetVar(activeUnit, "onDeath", mGetVarByQV("spellTarget", "onDeath"));
 			}
 			case SPELL_PYROBALL:
 			{
@@ -2161,6 +2181,29 @@ inactive
 		castEnd();
 		xsDisableRule("spell_projectile_complete");
 	}
+}
+
+rule spell_elven_apocalypse_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			trQuestVarSetFromRand("temp", 1, 4, true);
+			if(trQuestVarGet("temp") == 1){
+				addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
+			} else if(trQuestVarGet("temp") == 2){
+				addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
+			} else if(trQuestVarGet("temp") == 3){
+				addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
+			} else {
+				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
+			}		
+			mSetVarByQV("next", "cost", 0);
+		}
+		xsDisableRule("spell_elven_apocalypse_activate");
+	}	
 }
 
 void laserEnd(int eventId = -1) {

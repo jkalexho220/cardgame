@@ -23,6 +23,10 @@ void OnPlay(int unit = 0) {
 		{
 			trQuestVarSetFromRand("soundRandom", 1, 2, true);
 			trSoundPlayFN("beargrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			if(trQuestVarGet("chats_Bear_0") == 0){
+				trQuestVarSet("chats_Bear_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Growl!!");
+			}
 		}
 		case kbGetProtoUnitID("Bondi"):
 		{
@@ -33,6 +37,15 @@ void OnPlay(int unit = 0) {
 		{
 			trSoundPlayFN("battlecry1.wav","1",-1,"","");
 			trQuestVarSet("pirateShipTarget" + unit, -1);
+		}
+		case kbGetProtoUnitID("Hero Chinese Immortal"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("archeryrange.wav","1",-1,"","");
+			if(trQuestVarGet("chats_Immortal_0") == 0){
+				trQuestVarSet("chats_Immortal_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: *intense staring*");
+			}
 		}
 		case kbGetProtoUnitID("Audrey Water"):
 		{

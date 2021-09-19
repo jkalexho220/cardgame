@@ -16,7 +16,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_WINDSONG:
 		{
-			generateCard(p, 0, SPELL_SING);
+			generateCard(p, 0, SPELL_SING, true);
 		}
 		case ATTACK_BLOCK_DEATH:
 		{
@@ -61,7 +61,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trUnitOverrideAnimation(39, 0, 0, 1, -1);
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits", true);
-					if (mGetVarByQV("allUnits", "player") == p) {
+					if (mGetVarByQV("allUnits", "player") == p && mGetVarByQV("allUnits", "spell") == 0) {
 						trUnitHighlight(0.1, false);
 						mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") + 1);
 						deployAtTile(0, "Arkantos Boost SFX", 1*mGetVarByQV("allUnits", "tile"));

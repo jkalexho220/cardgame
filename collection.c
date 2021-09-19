@@ -44,6 +44,9 @@ bool ValidateClass(int class = 0){
 }
 
 bool ValidateCollection(){
+	if(getClassProgress(0) <= 0){
+		setDeckCommander(-1);
+	}
 	bool valid = true;
 	trQuestVarSet("class1", -1);
 	trQuestVarSet("class2", -1);
@@ -173,7 +176,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case 900:
 		{
-			return (kbGetProtoUnitID("Terracotta Soldier"));
+			return (kbGetProtoUnitID("Automaton"));
 		}
 		case 901:
 		{
@@ -189,7 +192,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case 904:
 		{
-			return (kbGetProtoUnitID("Hero Chinese Immortal"));
+			return (kbGetProtoUnitID("Qilin"));
 		}
 		case 905:
 		{
@@ -245,27 +248,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("The Adventure Begins");	
+					return ("Shrubbery Lane");	
 				}
 				case 2:
 				{
-					return ("The Plot Thickens");	
+					return ("Standard Procedure");	
 				}
 				case 3:
 				{
-					return ("The Adventure Continues");	
+					return ("I Am Shoe");	
 				}
 				case 4:
 				{
-					return ("The Plot Twists");	
+					return ("Swampy Hideout");	
 				}
 				case 5:
 				{
-					return ("The Adventure Continues Again");	
+					return ("Forest Heart");	
 				}
 				case 6:
 				{
-					return ("The Plot Twists Again");	
+					return ("The Real Fight");	
 				}
 			}
 		}
@@ -427,19 +430,35 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	int progress = getClassProgress(class);
 	int x = 0;
 	int z = 0;
+	bool doClass = false;
+	
 	if(progress > 0){
+		doClass = true;
+	}
+	
+	for(i = (30 * class) + 7;<30 * (class + 1)){
+		if(getCardCountCollection(i) > 0 || getCardCountDeck(i) > 0){
+			doClass = true;
+			break;
+		}
+	}
+	
+	if(doClass){
 		ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
 		trPaintTerrain(10 * class, 0, 10 + 10 * class, 43, 0, 73, false); // CityTileWaterPool
 		trPaintTerrain(1 + 10 * class, 0, 9 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(1 + 10 * class, 22, 9 + 10 * class, 42, terrainType, terrainSubType, false);	
-		// Cards		
+		/* Cards */	
 		x = 3 + 20 * class; z = 37;
 		for(i = 30 * class;<30 * (class + 1)){
+			if(progress < 1 && i < (30 * class) + 7){
+				continue;
+			}
 			if(i == 14 + 30 * class){
-				// First Legendary
+				/* First Legendary */	
 				CollectionCard(i,9 + 20 * class,35);
 			} else if(i == 29 + 30 * class){
-				// Second Legendary
+				/* Second Legendary */	
 				CollectionCard(i,13 + 20 * class,35);
 			} else {
 				CollectionCard(i,x,z);
@@ -453,38 +472,41 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			}
 		}	
 		
-		z = 41;
-		// Commanders
-		if(getDeckCommander() ==  (2 * class)){
-			trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
-			z = z + 44;
-		}
-		CollectionCommander(2 * class, 5 + 20 * class, z);
-		if(progress > 6){
-			if(getDeckCommander() == (2 * class + 1)){
+		if(progress > 0){
+			z = 41;
+			/* Commanders */	
+			if(getDeckCommander() ==  (2 * class)){
 				trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 				z = z + 44;
 			}
-			CollectionCommander(2 * class + 1, 17 + 20 * class, z);
-		}
-		// Missions
-		x = 11 + 20 * class; z = 91;
-		for(i=1;<=xsMin(progress,6)){
-			trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName(GetMissionTitle(class,i));
-			trUnitChangeProtoUnit("Outpost");
-			trSetSelectedScale(1.0, 0.3, 1.0);
-			yAddToDatabase("allUnits", "class" + class + "Mission" + i);
-			yAddUpdateVar("allUnits", "proto", kbGetProtoUnitID("Cinematic Block"));
-			z = z + 4;
-		}
-		if(progress < 7){
-			trArmyDispatch("1,10", "Dwarf", 1, 0, 0, 0, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeProtoUnit("Garrison Flag Sky Passage");
-			trUnitTeleport(x,0,z - 4);
+			CollectionCommander(2 * class, 5 + 20 * class, z);
+			if(progress > 6){
+				if(getDeckCommander() == (2 * class + 1)){
+					trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
+					z = z + 44;
+				}
+				CollectionCommander(2 * class + 1, 17 + 20 * class, z);
+			}
+			
+			/* Missions */	
+			x = 11 + 20 * class; z = 91;
+			for(i=1;<=xsMin(progress,6)){
+				trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
+				trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
+				trArmySelect("1,10");
+				trUnitChangeName(GetMissionTitle(class,i));
+				trUnitChangeProtoUnit("Outpost");
+				trSetSelectedScale(1.0, 0.3, 1.0);
+				yAddToDatabase("allUnits", "class" + class + "Mission" + i);
+				yAddUpdateVar("allUnits", "proto", kbGetProtoUnitID("Cinematic Block"));
+				z = z + 4;
+			}
+			if(progress < 7){
+				trArmyDispatch("1,10", "Dwarf", 1, 0, 0, 0, 180, true);
+				trArmySelect("1,10");
+				trUnitChangeProtoUnit("Garrison Flag Sky Passage");
+				trUnitTeleport(x,0,z - 4);
+			}
 		}
 	}	
 }
@@ -759,8 +781,9 @@ inactive
 {
 	if (trCheckGPActive("rain", 1)) {
 		if (trQuestVarGet("p1rain") == 0) {
-			trQuestVarSet("p1rain", 1);				
-			dataSave();
+			trQuestVarSet("p1rain", 1);	
+			trChatHistoryClear();
+			dataSave();			
 			map("mouse1down", "game", "");
 			map("mouse2up", "game", "");
 			map("space", "game", "");
