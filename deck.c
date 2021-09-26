@@ -172,6 +172,32 @@ void drawCard(int p = 0, bool fleeting = false) {
 
 		updateRoxasHealth(p);
 		updateHandPlayable(p);
+		updateMana();
+	}
+}
+
+void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		if (trCurrentPlayer() == p) {
+			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+		}
+		if (spell == 0) {
+			ChatLog(p, "Created " + trStringQuestVarGet("card_" + proto + "_Name"));
+		} else {
+			ChatLog(p, "Created " + trStringQuestVarGet("spell_" + spell + "_Name"));
+		}
+		addCardToHand(p, proto, spell, fleeting);
+		updateHandPlayable(p);
+		updateMana();
+	} else {
+		if (trCurrentPlayer() == p) {
+			trSoundPlayFN("cantdothat.wav","1",-1,"","");
+		}
+		if (spell == 0) {
+			ChatLog(p, "Hand full! Burned created " + trStringQuestVarGet("card_" + proto + "_Name"));
+		} else {
+			ChatLog(p, "Hand full! Burned created " + trStringQuestVarGet("spell_" + spell + "_Name"));
+		}
 	}
 }
 

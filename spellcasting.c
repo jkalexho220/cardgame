@@ -5,6 +5,8 @@ const int CAST_SING = 2;
 const int CAST_BACKSTAB = 3;
 const int CAST_CONVERT = 4;
 const int CAST_MAGNETIZE = 5;
+const int CAST_ADJACENT_UNIT = 6;
+const int CAST_MIRROR_REFLECTION = 7;
 
 const int CAST_TILE = 10;
 const int CAST_ADJACENT_TILE = 11;
@@ -70,6 +72,30 @@ void castAddConvertUnit(string qv = "", int p = 0) {
 
 	
 	trQuestVarSet("cast"+x+"type", CAST_CONVERT);
+	trQuestVarSet("cast"+x+"player", p);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+void castAddAdjacentUnit(string qv = "", int p = 0, string src = "", bool commander = true) {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+
+	if (commander) {
+		trQuestVarSet("cast"+x+"commander", SPELL_COMMANDER);
+	} else {
+		trQuestVarSet("cast"+x+"commander", SPELL_NONE);
+	}
+	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_UNIT);
+	trQuestVarSet("cast"+x+"player", p);
+	trQuestVarSet("cast"+x+"unit", 1*trQuestVarGet(src));
+	trStringQuestVarSet("cast"+x+"qv", qv);
+}
+
+void castAddMirrorReflectionUnit(string qv = "", int p = 0) {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
+	trQuestVarSet("cast"+x+"commander", SPELL_NONE);
+	trQuestVarSet("cast"+x+"type", CAST_MIRROR_REFLECTION);
 	trQuestVarSet("cast"+x+"player", p);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 }
@@ -283,7 +309,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -300,7 +328,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
 						if ((mGetVarByQV("allUnits", "action") >= ACTION_DONE) && (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING)) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -317,8 +347,10 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
-						if (mGetVarByQV("allUnits", "cost") <= trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"manaflow")) {
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER && mGetVarByQV("allUnits", "cost") <= trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"manaflow")) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
@@ -334,7 +366,9 @@ inactive
 				p = trQuestVarGet("cast"+x+"player");
 				for(z=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if (mGetVarByQV("allUnits", "player") == p) {
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if (mGetVarByQV("allUnits", "player") == p) {
 						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
@@ -462,8 +496,70 @@ inactive
 					}
 				}
 			}
+			case CAST_ADJACENT_UNIT:
+			{
+				p = trQuestVarGet("cast"+x+"player");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
+							trVectorSetUnitPos("d1pos", "allUnits");
+							trVectorSetUnitPos("d2pos", "cast"+x+"unit");
+							if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
+								trUnitSelectClear();
+								trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+								yAddToDatabase("castTargets", "allUnits");
+								if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+									trUnitHighlight(999999, false);
+								}
+							}
+						}
+					}
+				}
+			}
+			case CAST_MIRROR_REFLECTION:
+			{
+				p = trQuestVarGet("cast"+x+"player");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
+						continue;
+					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
+						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {		
+							trVectorSetUnitPos("spellProjectileStart", "allUnits");
+							trVectorQuestVarSet("temp", kbGetBlockPosition("128"));
+							trVectorQuestVarSet("temp", xsVectorSet(trVectorQuestVarGetX("temp") - trVectorQuestVarGetX("spellProjectileStart"), 0, trVectorQuestVarGetZ("temp")  - trVectorQuestVarGetZ("spellProjectileStart")));
+							trVectorQuestVarSet("spellProjectileEnd", kbGetBlockPosition("128"));
+							trVectorQuestVarSet("spellProjectileEnd", xsVectorSet(trVectorQuestVarGetX("spellProjectileEnd") + trVectorQuestVarGetX("temp"), 0, trVectorQuestVarGetZ("spellProjectileEnd")  + trVectorQuestVarGetZ("temp")));					
+							zBankNext("tiles");
+							trQuestVarSet("temp", trQuestVarGet("tiles"));
+							for (x=zGetBankCount("tiles"); >0) {
+								zBankNext("tiles");
+								if (zDistanceToVectorSquared("tiles", "spellProjectileEnd") < zDistanceToVectorSquared("temp", "spellProjectileEnd")) {
+									trQuestVarSet("temp", trQuestVarGet("tiles"));
+								}
+							}		
+							if(zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("temp")) + zGetVarByIndex("tiles", "terrain", 1*trQuestVarGet("temp")) == 0){
+								trUnitSelectClear();
+								trUnitSelect(""+1*trQuestVarGet("allUnits"));
+								yAddToDatabase("castTargets", "allUnits");
+								if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
+									trUnitHighlight(999999, false);
+								}	
+							}	
+						}
+					}
+				}
+			}
 		}
 		xsEnableRule("spellcast_01_select");
+		if (yGetDatabaseCount("castTargets") + yGetDatabaseCount("castTiles") == 0) {
+			if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {
+				trMessageSetText("No valid targets.", -1);
+			}		
+		}
 	} else {
 		trQuestVarSet("castDone", CASTING_DONE);
 	}
@@ -603,6 +699,66 @@ void chooseSpell(int spell = 0, int card = -1) {
 	int p = trQuestVarGet("activePlayer");
 	switch(spell)
 	{
+		case SPELL_INTIMIDATE:
+		{
+			castAddAdjacentUnit("spellTarget", 3 - trQuestVarGet("activePlayer"), "p"+1*trQuestVarGet("activePlayer")+"commander", true);
+			castInstructions("Choose an enemy adjacent to your commander. Right click to cancel.");
+		}
+		case SPELL_GROUND_STOMP:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_BOOTS_TREASURE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_WEAPONS_TREASURE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_SHIELDS_TREASURE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_PISTOL_SHOT:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_RELOAD:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_POISON_CLOUD:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_NATURE_ANGRY:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_ELVEN_APOCALYPSE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_MIRROR_REFLECTION:
+		{
+			castAddMirrorReflectionUnit("spellTarget", 0);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_PYROBALL:
+		{
+			castAddUnit("spellTarget", 0, trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage") > 0);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
 		case SPELL_SPARK:
 		{
 			castAddUnit("spellTarget", 0);
@@ -778,7 +934,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_LAMPADES_CONVERT:
 		{
 			castAddConvertUnit("spellTarget", 3 - p);
-			castInstructions("Choose an enemy that costs {Manaflow} or less to convert.");
+			castInstructions("Choose an enemy minion that costs {Manaflow} or less to convert.");
 		}
 		case SPELL_WATER_CANNON:
 		{
@@ -1035,9 +1191,183 @@ inactive
 		int neighbor = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		bool battlecry = false;
-		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45));
+		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
 		switch(spell)
 		{
+			case SPELL_INTIMIDATE:
+			{
+				trCameraShake(1.0, 0.1);
+				trSoundPlayFN("gaiaattack.wav","1",-1,"","");
+				stunUnit(1*trQuestVarGet("spellTarget"));
+			}
+			case SPELL_GROUND_STOMP:
+			{
+				trQuestVarSetFromRand("soundRandom", 1, 3, true);
+				trSoundPlayFN("woodcrush" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+				for(z=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (trQuestVarGet("allUnits") != trQuestVarGet("p" + p + "commander")) {
+						trVectorSetUnitPos("d1pos", "allUnits");
+						trVectorSetUnitPos("d2pos", "p" + p + "commander");
+						if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
+							damageUnit(1*trQuestVarGet("allUnits"), 1 + trQuestVarGet("p" + p + "spellDamage"));
+							deployAtTile(0, "Dust Small", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_BOOTS_TREASURE:
+			{
+				trSoundPlayFN("plentybirth.wav","1",-1,"","");
+				trSoundPlayFN("longhouse.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (1*mGetVarByQV("allUnits", "player") == p) {
+						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), ETHEREAL));
+							deployAtTile(0, "Fireball Launch Damage Effect", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_WEAPONS_TREASURE:
+			{
+				trSoundPlayFN("plentybirth.wav","1",-1,"","");
+				trSoundPlayFN("barracks.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (1*mGetVarByQV("allUnits", "player") == p) {
+						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") + 2);
+							deployAtTile(0, "Fireball Launch Damage Effect", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			case SPELL_SHIELDS_TREASURE:
+			{
+				trSoundPlayFN("plentybirth.wav","1",-1,"","");
+				trSoundPlayFN("bronzebirth.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (1*mGetVarByQV("allUnits", "player") == p) {
+						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							mSetVarByQV("allUnits", "health", mGetVarByQV("allUnits", "health") + 3);
+							deployAtTile(0, "Fireball Launch Damage Effect", 1*mGetVarByQV("allUnits", "tile"));
+						}
+					}
+				}
+			}
+			
+			case SPELL_PISTOL_SHOT:
+			{
+				addCardToDeck(p, "", SPELL_RELOAD);
+				ySetPointer("p"+p+"deck", yGetDatabaseCount("p"+p+"deck"));
+				trSoundPlayFN("shockwave.wav","1",-1,"","");				
+				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+				trUnitChangeProtoUnit("Petrobolos Shot");
+				trVectorSetUnitPos("spellProjectileStart", "p" + p + "commander");
+				trVectorSetUnitPos("spellProjectileEnd", "spellTarget");
+				trUnitMoveToVector("spellProjectileEnd");
+				done = false;
+				xsEnableRule("spell_projectile_complete");
+			}
+			case SPELL_RELOAD:
+			{
+				trSoundPlayFN("siegecamp.wav","1",-1,"","");
+				trQuestVarSet("p"+p+"drawCards", 1);
+			}
+			case SPELL_POISON_CLOUD:
+			{
+				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (1*mGetVarByQV("allUnits", "player") == 3 - p) {
+						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
+							if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords"))) {
+								damageUnit(1*trQuestVarGet("allUnits"), 5 + trQuestVarGet("p"+p+"spellDamage"));
+							} else {
+								mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));	
+							}											
+						}
+					}
+				}
+			}
+			case SPELL_FROST_BREATH:
+			{
+				trSoundPlayFN("frostgiantattack.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (1*mGetVarByQV("allUnits", "player") == 3 - p) {
+						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
+							deployAtTile(0, "Icy Footprint", 1*mGetVarByQV("allUnits", "tile"));
+							if (mGetVarByQV("allUnits", "stunTime") > 0) {
+								damageUnit(1*trQuestVarGet("allUnits"), 3 + trQuestVarGet("p"+p+"spellDamage"));
+							} else {
+								stunUnit(1*trQuestVarGet("allUnits"));
+							}											
+						}
+					}
+				}
+			}
+			case SPELL_NATURE_ANGRY:
+			{
+				trCameraShake(3.0, 0.3);
+				trSoundPlayFN("gaiaforestambient2.wav","1",-1,"","");
+				trQuestVarSetFromRand("soundRandom", 1, 2, true);
+				trSoundPlayFN("gaiaattack" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == p) {
+						healUnit(1*trQuestVarGet("allUnits"), 1*mGetVarByQV("allUnits", "health"));
+						deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("allUnits", "tile"));
+					} else {
+						mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
+						deployAtTile(0, "Lampades Blood", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+			}
+			case SPELL_ELVEN_APOCALYPSE:
+			{
+				trSoundPlayFN("temple.wav","1",-1,"","");
+				trSoundPlayFN("battlecry4.wav","1",-1,"","");
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_elven_apocalypse_activate");
+			}
+			case SPELL_MIRROR_REFLECTION:
+			{
+				trSoundPlayFN("lapadesconvert.wav","1",-1,"","");
+				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("spellTarget", "tile")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+				trUnitChangeProtoUnit("Lampades Bolt");
+				trVectorSetUnitPos("spellProjectileStart", "spellTarget");
+				trVectorQuestVarSet("temp", kbGetBlockPosition("128"));
+				trVectorQuestVarSet("temp", xsVectorSet(trVectorQuestVarGetX("temp") - trVectorQuestVarGetX("spellProjectileStart"), 0, trVectorQuestVarGetZ("temp")  - trVectorQuestVarGetZ("spellProjectileStart")));
+				trVectorQuestVarSet("spellProjectileEnd", kbGetBlockPosition("128"));
+				trVectorQuestVarSet("spellProjectileEnd", xsVectorSet(trVectorQuestVarGetX("spellProjectileEnd") + trVectorQuestVarGetX("temp"), 0, trVectorQuestVarGetZ("spellProjectileEnd")  + trVectorQuestVarGetZ("temp")));
+				trUnitMoveToVector("spellProjectileEnd");
+				done = false;
+				xsEnableRule("spell_projectile_complete");
+			}
+			case SPELL_PYROBALL:
+			{
+				trSoundPlayFN("fireball launch.wav","1",-1,"","");
+				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+				trUnitChangeProtoUnit("Ball of Fire");
+				trVectorSetUnitPos("spellProjectileStart", "p" + p + "commander");
+				trVectorSetUnitPos("spellProjectileEnd", "spellTarget");
+				trUnitMoveToVector("spellProjectileEnd");
+				done = false;
+				xsEnableRule("spell_projectile_complete");
+			}
 			case SPELL_SPARK:
 			{
 				damageUnit(1*trQuestVarGet("spellTarget"), 1 + trQuestVarGet("p"+p+"spellDamage"));
@@ -1363,7 +1693,6 @@ inactive
 				trUnitSelect(""+activeUnit);
 				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
 				damageUnit(activeUnit, 0);
-				updateAuras();
 			}
 			case SPELL_APOCALYPSE:
 			{
@@ -2032,10 +2361,9 @@ inactive
 				trQuestVarSetFromRand("chooseClass", 1, 2, true);
 				trQuestVarSetFromRand("chooseCard", 0, 29, true);
 				card = 30*trQuestVarGet("p"+(3-p)+"class"+1*trQuestVarGet("chooseClass")) + trQuestVarGet("chooseCard");
-				addCardToHandByIndex(p, card);
+				generateCard(p, CardToProto(card), CardToSpell(card));
 			}
 		}
-		updateHandPlayable(p);
 		xsDisableRule("spell_copy_homework_activate");	
 	}
 }
@@ -2174,6 +2502,90 @@ inactive
 	}
 }
 
+rule spell_projectile_complete
+highFrequency
+inactive
+{
+	trVectorSetUnitPos("spellProjectileStart", "spellProjectile");
+	if ((trTime()-cActivationTime) >= 4){
+		trVectorQuestVarSet("spellProjectileStart", trVectorQuestVarGet("spellProjectileEnd"));
+	}
+	if (zDistanceBetweenVectorsSquared("spellProjectileStart", "spellProjectileEnd") < 8) {
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
+		trUnitDestroy();
+		switch(1*trQuestVarGet("currentSpell"))
+		{
+			case SPELL_PISTOL_SHOT:
+			{				
+				trSoundPlayFN("arrowonwood1.wav","1",-1,"","");
+				trSoundPlayFN("arrowonwood2.wav","1",-1,"","");
+				trSoundPlayFN("arrowonflesh3.wav","1",-1,"","");
+				trSoundPlayFN("arrowonflesh4.wav","1",-1,"","");
+				mSetVarByQV("spellTarget", "health", 0);
+				damageUnit(1*trQuestVarGet("spellTarget"), 6900);
+			}
+			case SPELL_MIRROR_REFLECTION:
+			{
+				trSoundPlayFN("restorationbirth.wav","1",-1,"","");			
+
+				zBankNext("tiles");
+				trQuestVarSet("temp", trQuestVarGet("tiles"));
+				for (x=zGetBankCount("tiles"); >0) {
+					zBankNext("tiles");
+					if (zDistanceToVectorSquared("tiles", "spellProjectileEnd") < zDistanceToVectorSquared("temp", "spellProjectileEnd")) {
+						trQuestVarSet("temp", trQuestVarGet("tiles"));
+					}
+				}
+				
+				deployAtTile(0, "Osiris Box Glow", 1*trQuestVarGet("temp"));
+				int activeUnit = summonAtTile(1*trQuestVarGet("temp"), 1*mGetVarByQV("spellTarget", "player"), 1*mGetVarByQV("spellTarget", "proto"));
+				if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == false){
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);					
+				}
+				mSetVar(activeUnit, "attack", mGetVarByQV("spellTarget", "attack"));
+				mSetVar(activeUnit, "health", mGetVarByQV("spellTarget", "health"));
+				mSetVar(activeUnit, "speed", mGetVarByQV("spellTarget", "speed"));
+				mSetVar(activeUnit, "range", mGetVarByQV("spellTarget", "range"));
+				mSetVar(activeUnit, "keywords", mGetVarByQV("spellTarget", "keywords"));
+				mSetVar(activeUnit, "onAttack", mGetVarByQV("spellTarget", "onAttack"));
+				mSetVar(activeUnit, "onDeath", mGetVarByQV("spellTarget", "onDeath"));
+			}
+			case SPELL_PYROBALL:
+			{
+				trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), 6 + trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage"));
+				deployAtTile(0, "Meteor Impact Ground", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+		}
+		castEnd();
+		xsDisableRule("spell_projectile_complete");
+	}
+}
+
+rule spell_elven_apocalypse_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			trQuestVarSetFromRand("temp", 1, 4, true);
+			if(trQuestVarGet("temp") == 1){
+				addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
+			} else if(trQuestVarGet("temp") == 2){
+				addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
+			} else if(trQuestVarGet("temp") == 3){
+				addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
+			} else {
+				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
+			}		
+			mSetVarByQV("next", "cost", 0);
+		}
+		xsDisableRule("spell_elven_apocalypse_activate");
+	}	
+}
+
 rule spell_electric_grid_activate
 highFrequency
 inactive
@@ -2216,7 +2628,7 @@ inactive
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 			trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
-			trUnitMoveToPoint(trQuestVarGet("laserEndx"),0,trQuestVarGet("laserEndz"), EVENT_LASER_END);
+			trUnitMoveToPoint(trQuestVarGet("laserEndx"),0,trQuestVarGet("laserEndz"), -1);
 
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);

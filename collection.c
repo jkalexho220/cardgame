@@ -44,6 +44,9 @@ bool ValidateClass(int class = 0){
 }
 
 bool ValidateCollection(){
+	if(getClassProgress(0) <= 0){
+		setDeckCommander(-1);
+	}
 	bool valid = true;
 	trQuestVarSet("class1", -1);
 	trQuestVarSet("class2", -1);
@@ -60,9 +63,11 @@ bool ValidateCollection(){
 		trQuestVarSet("class2", trQuestVarGet("class1"));
 	}
 	
+	string cardsInDeckColor = "";
 	if(trQuestVarGet("cardsInDeck") != 40){
-		ChatLog(1, "ERROR! Not 40 cards in deck!");
+		ChatLog(1, "ERROR! Not 40 cards in deck! " + 1*trQuestVarGet("cardsInDeck") + "/40");
 		valid = false;
+		cardsInDeckColor = "<color={Playercolor(2)}>";
 	}
 	
 	if(trQuestVarGet("classesInDeck") > 2){
@@ -79,6 +84,9 @@ bool ValidateCollection(){
 		ChatLog(1, "ERROR! Deck Commander not from one of the two classes!");
 		valid = false;
 	}
+	
+	trCounterAbort("deckCount");
+	trCounterAddTime("deckCount", -1, -9999999, cardsInDeckColor+"Deck: " + 1*trQuestVarGet("cardsInDeck") + "/40");
 	
 	return (valid);
 }
@@ -105,7 +113,7 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
-		trSetSelectedScale(0.75, xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.5, 0.75);
+		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
 		trUnitSetAnimationPath(1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 
@@ -126,7 +134,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case COMMANDER_VENLESH:
 		{
-			return (kbGetProtoUnitID("Hero Greek Heracles"));
+			return (kbGetProtoUnitID("Lancer Hero"));
 		}
 		case COMMANDER_NANO:
 		{
@@ -168,6 +176,54 @@ int CommanderToProtounit(int commander = 0){
 		{
 			return (kbGetProtoUnitID("Caravan Atlantean"));
 		}
+		case 900:
+		{
+			return (kbGetProtoUnitID("Automaton"));
+		}
+		case 901:
+		{
+			return (kbGetProtoUnitID("Bear"));
+		}
+		case 902:
+		{
+			return (kbGetProtoUnitID("General Melagius"));
+		}
+		case 903:
+		{
+			return (kbGetProtoUnitID("Shaba Ka"));
+		}
+		case 904:
+		{
+			return (kbGetProtoUnitID("Qilin"));
+		}
+		case 905:
+		{
+			return (kbGetProtoUnitID("Audrey"));
+		}
+		case 906:
+		{
+			return (kbGetProtoUnitID("Golem"));
+		}
+		case 907:
+		{
+			return (kbGetProtoUnitID("Pharaoh Secondary"));
+		}
+		case 908:
+		{
+			return (kbGetProtoUnitID("King Folstag"));
+		}
+		case 909:
+		{
+			return (kbGetProtoUnitID("Hero Boar"));
+		}
+		case 910:
+		{
+			return (kbGetProtoUnitID("Setna"));
+		}
+		case 911:
+		{
+			return (kbGetProtoUnitID("Circe"));
+		}
 	}
 	ThrowError("CommanderToProtounit");
 }
@@ -187,6 +243,12 @@ void CollectionCard(int index = 0, int x = 0, int z = 0) {
 			CollectionDeploy(index, x, z);
 			countCollection = countCollection - 1;
 		} 
+		for(j=0;<6){
+			if(index > 0 && index == trQuestVarGet("packReward" + j)){
+				trUnitHighlight(4.7, true);
+				trQuestVarSet("packReward" + j, -1);
+			}
+		}
 		x = x + 2;
 	}
 }
@@ -200,31 +262,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("The Adventure Begins");	
+					return ("Shrubbery Lane");	
 				}
 				case 2:
 				{
-					return ("The Plot Thickens");	
+					return ("Standard Procedure");	
 				}
 				case 3:
 				{
-					return ("The Adventure Continues");	
+					return ("Carbon-Free Antivirus");	
 				}
 				case 4:
 				{
-					return ("The Plot Twists");	
+					return ("Swampy Hideout");	
 				}
 				case 5:
 				{
-					return ("The Adventure Continues Again");	
+					return ("Forest Heart");	
 				}
 				case 6:
 				{
-					return ("The Plot Twists Again");	
-				}
-				case 7:
-				{
-					return ("The Adventure Concludes");	
+					return ("The Real Fight");	
 				}
 			}
 		}
@@ -234,31 +292,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Letter From An Owl");	
+					return ("Tower Courtyard");	
 				}
 				case 2:
 				{
-					return ("Sparkling Gates");	
+					return ("Flammable Fire");	
 				}
 				case 3:
 				{
-					return ("Palace Of Magic");	
+					return ("Freezing Frost");	
 				}
 				case 4:
 				{
-					return ("Unusual Companions");	
+					return ("Elevator");	
 				}
 				case 5:
 				{
-					return ("Wizard Tournament");	
+					return ("Archmage");	
 				}
 				case 6:
 				{
-					return ("It's Not Over Yet");	
-				}
-				case 7:
-				{
-					return ("Power Of Magic");	
+					return ("On Top Of The Arcane Tower");	
 				}
 			}
 		}
@@ -290,10 +344,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("Empire Of Water");	
 				}
-				case 7:
-				{
-					return ("Return What Was Taken");	
-				}
 			}
 		}
 		case CLASS_CLOCKWORK:
@@ -323,10 +373,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				case 6:
 				{
 					return ("Accident");	
-				}
-				case 7:
-				{
-					return ("Memories Are To Be Remembered");	
 				}
 			}
 		}
@@ -358,10 +404,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("Moment Of Hesitation");	
 				}
-				case 7:
-				{
-					return ("Break Of Dawn");	
-				}
 			}
 		}
 		case CLASS_SPACE:
@@ -392,10 +434,6 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				{
 					return ("Thank You");	
 				}
-				case 7:
-				{
-					return ("Goodbye");	
-				}
 			}
 		}
 	}
@@ -406,19 +444,35 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	int progress = getClassProgress(class);
 	int x = 0;
 	int z = 0;
+	bool doClass = false;
+	
 	if(progress > 0){
+		doClass = true;
+	}
+	
+	for(i = (30 * class) + 7;<30 * (class + 1)){
+		if(getCardCountCollection(i) > 0 || getCardCountDeck(i) > 0){
+			doClass = true;
+			break;
+		}
+	}
+	
+	if(doClass){
 		ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
 		trPaintTerrain(10 * class, 0, 10 + 10 * class, 43, 0, 73, false); // CityTileWaterPool
 		trPaintTerrain(1 + 10 * class, 0, 9 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(1 + 10 * class, 22, 9 + 10 * class, 42, terrainType, terrainSubType, false);	
-		// Cards		
+		/* Cards */	
 		x = 3 + 20 * class; z = 37;
 		for(i = 30 * class;<30 * (class + 1)){
+			if(progress < 1 && i < (30 * class) + 7){
+				continue;
+			}
 			if(i == 14 + 30 * class){
-				// First Legendary
+				/* First Legendary */	
 				CollectionCard(i,9 + 20 * class,35);
 			} else if(i == 29 + 30 * class){
-				// Second Legendary
+				/* Second Legendary */	
 				CollectionCard(i,13 + 20 * class,35);
 			} else {
 				CollectionCard(i,x,z);
@@ -432,43 +486,46 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			}
 		}	
 		
-		z = 41;
-		// Commanders
-		if(getDeckCommander() ==  (2 * class)){
-			trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
-			z = z + 44;
-		}
-		CollectionCommander(2 * class, 5 + 20 * class, z);
-		if(progress > 7){
-			if(getDeckCommander() == (2 * class + 1)){
+		if(progress > 0){
+			z = 41;
+			/* Commanders */	
+			if(getDeckCommander() ==  (2 * class)){
 				trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 				z = z + 44;
 			}
-			CollectionCommander(2 * class + 1, 17 + 20 * class, z);
-		}
-		// Missions
-		x = 11 + 20 * class; z = 91;
-		for(i=1;<=xsMin(progress,7)){
-			trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
-			trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeName(GetMissionTitle(class,i));
-			trUnitChangeProtoUnit("Outpost");
-			trSetSelectedScale(1.0, 0.3, 1.0);
-			yAddToDatabase("allUnits", "class" + class + "Mission" + i);
-			yAddUpdateVar("allUnits", "proto", kbGetProtoUnitID("Cinematic Block"));
-			z = z + 4;
-		}
-		if(progress < 7){
-			trArmyDispatch("1,10", "Dwarf", 1, 0, 0, 0, 180, true);
-			trArmySelect("1,10");
-			trUnitChangeProtoUnit("Garrison Flag Sky Passage");
-			trUnitTeleport(x,0,z - 4);
+			CollectionCommander(2 * class, 5 + 20 * class, z);
+			if(progress > 6){
+				z = 41;
+				if(getDeckCommander() == (2 * class + 1)){
+					trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
+					z = z + 44;
+				}
+				CollectionCommander(2 * class + 1, 17 + 20 * class, z);
+			}
+			
+			/* Missions */	
+			x = 11 + 20 * class; z = 91;
+			for(i=1;<=xsMin(progress,6)){
+				trQuestVarSet("class" + class + "Mission" + i, trGetNextUnitScenarioNameNumber());
+				trArmyDispatch("1,10", "Dwarf", 1, x, 0, z, 180, true);
+				trArmySelect("1,10");
+				trUnitChangeName(GetMissionTitle(class,i));
+				trUnitChangeProtoUnit("Outpost");
+				trSetSelectedScale(1.0, 0.3, 1.0);
+				yAddToDatabase("allUnits", "class" + class + "Mission" + i);
+				yAddUpdateVar("allUnits", "proto", kbGetProtoUnitID("Cinematic Block"));
+				z = z + 4;
+			}
+			if(progress < 7){
+				trArmyDispatch("1,10", "Dwarf", 1, 0, 0, 0, 180, true);
+				trArmySelect("1,10");
+				trUnitChangeProtoUnit("Garrison Flag Sky Passage");
+				trUnitTeleport(x,0,z - 4);
+			}
 		}
 	}	
 }
 
-string collectionMission = "";
 string collectionReward = "";
 
 void CollectionGodPowers(){
@@ -509,7 +566,12 @@ inactive
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
-
+	trChatHistoryClear();
+	yDatabasePointerDefault("allUnits");
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits", true);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	}
 	yClearDatabase("allUnits");	
 	trQuestVarSet("activePlayer", 1);
 	trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
@@ -557,11 +619,14 @@ inactive
 	{
 		case LEFT_CLICK:
 		{
+			uiClearSelection();
 			trQuestVarSet("p1click", 0);
-			CollectionGodPowers();
-			xsEnableRule("CollectionSelect");
 			trClearCounterDisplay();
-			trSoundPlayDialog("default", "1", -1, false, " : ", "");
+			trSoundPlayDialog("default", "1", -1, false, " : ", "");	
+			CollectionGodPowers();	
+			trQuestVarSet("selectionTryAgain", 0);
+			xsDisableRule("CollectionSelect");
+			trDelayedRuleActivation("CollectionSelect");						
 		}
 		case RIGHT_CLICK:
 		{		
@@ -630,38 +695,52 @@ rule CollectionSelect
 highFrequency
 inactive
 {
-	int id = yDatabaseNext("allUnits", true);
-	if (trUnitIsSelected()) {
-		xsDisableRule("CollectionSelect");
-		trVectorSetUnitPos("temp","allUnits");
-		if(trVectorQuestVarGetZ("temp") < 90){
-			displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
-		} else {
-			trQuestVarSet("canPressEnter", 0);	
-			collectionMission = "";
-			collectionReward = "";
-			for(class=0;<6){
-				for(i=1;<=xsMin(getClassProgress(class),7)){
-					if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
-						if(getClassProgress(class) == i){
-							trQuestVarSet("missionHardmode", 0);
-							collectionMission = GetMissionTitle(class,i);
-							collectionReward = "Reward: Class Pack";					
-						} else {
-							trQuestVarSet("missionHardmode", 1);
-							collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-							collectionReward = "Reward: Random Pack";
+	if ((trTimeMS()-(cActivationTime*1000)) > 470){
+		bool nothing = true;
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			int id = yDatabaseNext("allUnits", true);
+			if (trUnitIsSelected()) {
+				trVectorSetUnitPos("temp","allUnits");
+				if(trVectorQuestVarGetZ("temp") < 90){
+					displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
+					} else {
+						trQuestVarSet("canPressEnter", 0);	
+						collectionMission = "";
+				collectionReward = "";
+				for(class=0;<6){
+					for(i=1;<=xsMin(getClassProgress(class),6)){
+						if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
+							int cards = 3;
+							if(i > 1){
+								cards = 6;
+							}
+							if(getClassProgress(class) == i){
+								trQuestVarSet("missionHardmode", 0);
+								collectionMission = GetMissionTitle(class,i);
+								collectionReward = "Reward: " + cards + " Class Cards";					
+							} else {
+								trQuestVarSet("missionHardmode", 1);
+								collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+								collectionReward = "Reward: " + cards + " Random Cards";
+							}
+							trQuestVarSet("missionSelection", i);
+							trQuestVarSet("missionClass", class);
+							xsEnableRule("CollectionEnter");
+							trQuestVarSet("canPressEnter", 1);	
+							CollectionGodPowers();
 						}
-						trQuestVarSet("missionSelection", i);
-						trQuestVarSet("missionClass", class);
-						xsEnableRule("CollectionEnter");
-						trQuestVarSet("canPressEnter", 1);	
-						CollectionGodPowers();
-						break;
 					}
 				}
 			}
+			nothing = false;
+			break;
 		}
+	}
+				xsDisableRule("CollectionSelect");
+	if(nothing && trQuestVarGet("selectionTryAgain") < 3){
+		trQuestVarSet("selectionTryAgain", trQuestVarGet("selectionTryAgain") + 1);
+		trDelayedRuleActivation("CollectionSelect");	
+	}
 	}
 }
 
@@ -679,6 +758,7 @@ inactive
 				xsDisableRule("CollectionEnter");
 				trClearCounterDisplay();
 				trSoundPlayDialog("default", "1", -1, false, " : ", "");
+				trCounterAbort("deckCount");
 				trCounterAbort("mission");
 				trCounterAbort("reward");
 				xsDisableRule("CollectionClick");
@@ -715,8 +795,9 @@ inactive
 {
 	if (trCheckGPActive("rain", 1)) {
 		if (trQuestVarGet("p1rain") == 0) {
-			trQuestVarSet("p1rain", 1);
-			dataSave();
+			trQuestVarSet("p1rain", 1);	
+			trChatHistoryClear();
+			dataSave();			
 			map("mouse1down", "game", "");
 			map("mouse2up", "game", "");
 			map("space", "game", "");

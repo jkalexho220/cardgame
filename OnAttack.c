@@ -16,10 +16,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_WINDSONG:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				addCardToHand(p, 0, SPELL_SING, true);
-				updateHandPlayable(p);
-			}
+			generateCard(p, 0, SPELL_SING, true);
 		}
 		case ATTACK_BLOCK_DEATH:
 		{
@@ -42,15 +39,86 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 					trUnitChangeName("("+1*mGetVarByQV("p"+p+"hand","cost")+") " + trStringQuestVarGet("spell_"+spell+"_name"));
 				}
 			}
-			updateHandPlayable();
+			updateHandPlayable(p);
+		}
+		case ATTACK_OVERKILL_HEALS:
+		{
+			trUnitSelectClear();
+			trUnitSelect(""+attacker);
+			if(mGetVar(attacker, "health") > 0 && mGetVar(target, "health") <= 0){
+				mSetVar(attacker, "health", mGetVar(attacker, "health") + 2);
+				deployAtTile(0, "Regeneration SFX", 1*mGetVar(attacker, "tile"));
+				trSoundPlayFN("colossuseat.wav","1",-1,"","");
+				trSoundPlayFN("meatgather1.wav","1",-1,"","");
+			}
+		}
+		case ATTACK_RALLY:
+		{
+			if(trQuestVarGet("activePlayer") == p){
+				trUnitSelectClear();
+				trUnitSelect(""+attacker);
+				trMutateSelected(kbGetProtoUnitID("General Melagius"));
+				trUnitOverrideAnimation(39, 0, 0, 1, -1);
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits", true);
+					if (mGetVarByQV("allUnits", "player") == p && mGetVarByQV("allUnits", "spell") == 0) {
+						trUnitHighlight(0.1, false);
+						mSetVarByQV("allUnits", "attack", mGetVarByQV("allUnits", "attack") + 1);
+						deployAtTile(0, "Arkantos Boost SFX", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+				if(trQuestVarGet("chats_GeneralStore_0") == 0){
+					trQuestVarSet("chats_GeneralStore_0", 1);
+					ChatLog(0, "<color={Playercolor("+p+")}>General Store</color>: To battle!");	
+				}				
+			}
+		}
+		case ATTACK_SPELL_DAMAGE:
+		{
+			if(trQuestVarGet("activePlayer") == (3-p)){
+				trUnitSelectClear();
+				trUnitSelect(""+attacker);
+				trUnitOverrideAnimation(50, 0, 0, 1, -1);
+				trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") + 1);
+				trQuestVarSet("p"+p+"spellDamageNonOracle", trQuestVarGet("p"+p+"spellDamageNonOracle") + 1);
+				if(trQuestVarGet("chats_FireMage_0") == 0){
+					trQuestVarSet("chats_FireMage_0", 1);
+					ChatLog(0, "<color={Playercolor("+p+")}>Fire Mage</color>: You are only making me stronger!");
+					trSoundPlayFN("pha2.wav","1",-1,"","");	
+				}
+			}
+		}
+		case ATTACK_ARCANE_MISSLE:
+		{		
+			yClearDatabase("randomEnemy");	
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (mGetVarByQV("allUnits", "player") == (3-p)) {
+					yAddToDatabase("randomEnemy", "allUnits");
+				}
+			}
+			trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("randomEnemy"), true);
+			for(x=trQuestVarGet("temp"); >0) {
+				yDatabaseNext("randomEnemy");
+			}
+			if (HasKeyword(LIGHTNING, 1*mGetVar(attacker, "keywords"))) {
+				// too lazy to test this
+				//lightning(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"), false);
+				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));
+			} else {
+				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));				
+			}
+			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("randomEnemy", "tile"));
+		}
+		case ATTACK_DRAW_CARD_ENEMY_COST:
+		{
+			drawCard(p);
+			mSetVarByQV("next", "cost", xsMax(0, mGetVarByQV("next", "cost") - trCountUnitsInArea("128",(3-p),"Unit",45)));
 		}
 		case ATTACK_GET_ARCANE:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
-				addCardToHand(p, 0, 1*trQuestVarGet("spellChosen"), false);
-				updateHandPlayable(p);
-			}
+			trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+			generateCard(p, 0, 1*trQuestVarGet("spellChosen"));
 		}
 		case ATTACK_YEET:
 		{
@@ -91,10 +159,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_ZOMBIE:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				addCardToHand(p, kbGetProtoUnitID("Minion"), 0, false);
-				updateHandPlayable(p);
-			}
+			generateCard(p, 1*kbGetProtoUnitID("Minion"));
 		}
 		case ATTACK_SUMMON_ZOMBIE:
 		{
@@ -124,10 +189,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_FENRIS:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
-				addCardToHand(p, kbGetProtoUnitID("Ornlu"), 0, false);
-				updateHandPlayable(p);
-			}
+			generateCard(p, 1*kbGetProtoUnitID("Ornlu"));
 		}
 		case ATTACK_ANIMATE_TOWER:
 		{

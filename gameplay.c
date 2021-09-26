@@ -107,6 +107,9 @@ bool attackUnitAtCursor(int p = 0) {
 	if (target == -1) {
 		return(false);
 	}
+	if (HasKeyword(STEALTH, 1*mGetVar(target, "keywords"))) {
+		return(false);
+	}
 	if ((mGetVar(target, "player") == 3 - p) || (mGetVar(a, "proto") == kbGetProtoUnitID("Hoplite"))) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
@@ -457,15 +460,15 @@ inactive
 						if (HasKeyword(GUARD, 1*mGetVarByQV("activeUnit", "keywords"))) {
 							tileGuard(tile, false);
 						}
-
+						
 						trVectorSetUnitPos("moveDestination", "moveTile");
 						trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
 						trUnitSelectClear();
 						trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 						trUnitMoveToVector("moveDestination");
-						
-						mSetVarByQV("activeUnit", "action", ACTION_MOVED);
 						trQuestVarSet("moving", 0);
+	
+						mSetVarByQV("activeUnit", "action", ACTION_MOVED);
 						trQuestVarSet("gameplayPhase", GAMEPLAY_MOVING);
 						xsEnableRule("gameplay_03_moveComplete");
 						xsDisableRule("gameplay_02_work");
@@ -492,6 +495,8 @@ inactive
 	if (trQuestVarGet("moving") == 0) {
 		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 11 ||
 			kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 10) {
+			trQuestVarSet("moving", 1);
+		} else if((trTime()-cActivationTime) > 1) {
 			trQuestVarSet("moving", 1);
 		}
 	} else if (trQuestVarGet("moving") == 1) {
