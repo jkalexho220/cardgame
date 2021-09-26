@@ -391,6 +391,7 @@ active
 		if (trQuestVarGet("spyTimeout") >= 5) {
 			trQuestVarSet("spyTimeout", 0);
 			trQuestVarCopy("zspyFoundpointer", "zspyFindpointer");
+			trQuestVarCopy("spyFound", "spyFind");
 		}
 	}
 }
