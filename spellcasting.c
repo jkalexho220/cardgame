@@ -1166,6 +1166,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
+		case SPELL_CHOOSE_DIRECTION:
+		{
+			castAddDirection("spellDirection", "spellCaster", true);
+			castInstructions("Choose a direction to aim the Directional Cannon");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -2296,6 +2301,19 @@ inactive
 			{
 				trSoundPlayFN("wall.wav","1",-1,"","");
 				xsEnableRule("spell_fortify_activate");
+			}
+			case SPELL_CHOOSE_DIRECTION:
+			{
+				trVectorSetUnitPos("start", "spellCaster");
+				trVectorSetUnitPos("end", "spellDirection");
+				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				mSetVarByQV("spellCaster", "laserDirx", trQuestVarGet("dirx"));
+				mSetVarByQV("spellCaster", "laserDirz", trQuestVarGet("dirz"));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+				trUnitHighlight(0.5, false);
+				trSoundPlayFN("storehouse.wav","1",-1,"","");
 			}
 		}
 

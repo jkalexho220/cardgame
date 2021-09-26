@@ -23,12 +23,12 @@ const int COMMANDER_ROGERS = 0;
 const int COMMANDER_VENLESH = 1;
 const int COMMANDER_NANO = 2;
 const int COMMANDER_NOTTUD = 3;
-const int COMMANDER_REACH = 4;
-const int COMMANDER_SCRAGINS = 5;
+const int COMMANDER_SCRAGINS = 4;
+const int COMMANDER_REACH = 5;
 const int COMMANDER_ROXAS = 6;
 const int COMMANDER_YEEBAAGOOON = 7;
-const int COMMANDER_ZENOPHOBIA = 8;
-const int COMMANDER_ANRAHEIR = 9;
+const int COMMANDER_ANRAHEIR = 8;
+const int COMMANDER_ZENOPHOBIA = 9;
 const int COMMANDER_NICK = 10;
 const int COMMANDER_GOD = 11;
 
@@ -126,7 +126,7 @@ const int SPELL_DEMON_EAT = 56;
 const int SPELL_SCORPION_STING = 57;
 
 // Clockwork
-const int SPELL_SONG_OF_REST = 58;
+const int SPELL_CHOOSE_DIRECTION = 58;
 const int SPELL_SCRAP_METAL = 59;
 const int SPELL_MAGNETIZE = 60;
 const int SPELL_ELECTRIC_GRID = 61;
@@ -144,6 +144,7 @@ const int SPELL_ASSEMBLY_LINE = 72;
 const int SPELL_POWER_SUIT = 73;
 const int SPELL_BORROWED_TIME = 74;
 const int SPELL_FORTIFY = 75;
+const int SPELL_SONG_OF_REST = 76;
 
 /*
 OnAttack events (bit positions)
@@ -171,8 +172,9 @@ const int ATTACK_RALLY = 19;
 const int ATTACK_ARCANE_MISSLE = 20;
 const int ATTACK_SPELL_DAMAGE = 21;
 const int ATTACK_DRAW_CARD_ENEMY_COST = 22;
+const int ATTACK_SUMMON_TREE = 23;
 
-const int ATTACK_EVENT_COUNT = 23;
+const int ATTACK_EVENT_COUNT = 24;
 
 /*
 OnDeath events (bit positions)
@@ -189,9 +191,10 @@ const int DEATH_POISON_MIST = 9;
 const int DEATH_DARKNESS_RETURNS = 10;
 const int DEATH_SUMMON_RANDOM = 11;
 const int DEATH_GET_SCRAP = 12;
-const int DEATH_GET_TREASURE = 12;
+const int DEATH_GET_TREASURE = 13;
+const int DEATH_SUMMON_BEETLE = 14;
 
-const int DEATH_EVENT_COUNT = 14;
+const int DEATH_EVENT_COUNT = 15;
 
 
 /*
@@ -959,7 +962,7 @@ runImmediately
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
-	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 1, 2, 2, Keyword(FURIOUS) + Keyword(AMBUSH) + Keyword(CHARGE));
+	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
 	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
@@ -1101,7 +1104,7 @@ runImmediately
 	// 105-109
 	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied minion Lightning.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Fire Siphon",			6, "Doom Engine",			1, 5, 1, 2, Keyword(ARMORED)); // At the start of your turn, grant me +1 attack.
+	CardSetup("Fire Siphon",			3, "Directional Cannon",	2, 5, 0, 0); // Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.
 	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a minion with all of its adjacent allied minions, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied minion +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
 	// 110-114
@@ -1125,6 +1128,8 @@ runImmediately
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Minion",					0, "Zombie",			1, 1, 1, 1, Keyword(CHARGE), true);
 	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(AMBUSH), true);
+	CardSetup("Scarab",					5, "Man-Eating Beetle",	5, 5, 1, 1, Keyword(ETHEREAL), true);
+	CardSetup("Walking Woods Marsh",	3, "Zombie Tree",		2, 4, 2, 1, 0, true);
 	
 	// 120-124
 	CardSetup("Spearman",				1, "Cultist",				1, 1, 2, 1); // Death: Summon a Zombie on my tile.
@@ -1139,13 +1144,13 @@ runImmediately
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
-	CardSetup("Dryad",					3, "Plaguewalker",			2, 6, 2, 1, Keyword(DECAY)); // Death: Give Decay to all adjacent minions.
+	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent minions.
 	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2, Keyword(DECAY)); // At the start of your turn, draw a card and give it Fleeting.
-	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // Your opponent's spells cost 1 more.
+	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // At the end of your turn, deal 1 damage to all units with Decay.
 	CardSetup("Pharaoh",				5, "Dark Summoner",			2, 3, 2, 2, Keyword(AIRDROP) + Keyword(BEACON) + Keyword(HEALER));
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
 	// 135-139
-	CardSetup("Scorpion Man",			6, "Stinger",				4, 3, 2, 1); // Play: Teleport an enemy minion to a tile next to me.
+	CardSetup("Spider Egg",				3, "Festering Egg",			0, 3, 0, 0, Keyword(DECAY)); // Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.
 	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A minion attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied minion to draw 2 cards.", SPELL_TYPE_OTHER);
 	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied minion and an enemy.", SPELL_TYPE_OTHER);
@@ -1239,7 +1244,7 @@ runImmediately
 	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random minion from your deck on my tile.");
 	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
 	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
-	CardEvents("Fire Siphon", 0, 0,										"At the start of your turn, grant me +1 attack.");
+	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
@@ -1250,18 +1255,18 @@ runImmediately
 	CardEvents("Satyr", Keyword(ATTACK_GET_ZOMBIE), 0, 					"Attack: Create a Zombie.");
 	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
 	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an ally and grant me its attack and health.");
-	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Whenever I kill an enemy, summon a Zombie on their tile.");
+	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
 	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
 	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent minions.");
 	CardEvents("Theocrat", 0, 0,										"At the start of your turn, draw a card and give it Fleeting.");
-	CardEvents("Argus", 0, 0,											"Your opponent's spells cost 1 more.");
+	CardEvents("Argus", 0, 0,											"At the end of your turn, deal 1 damage to all units with Decay.");
 	CardEvents("Guardian", 0, Keyword(DEATH_DARKNESS_RETURNS),			"Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deck.");
 	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
-	CardEvents("Scorpion Man", 0, 0,									"Play: Teleport an enemy minion to a tile next to me.");
+	CardEvents("Spider Egg", 0, Keyword(DEATH_SUMMON_BEETLE),			"Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.");
 	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
-	CardEvents("Scout", 0, 0,											"Play: Your opponent draws a card.");
+	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_ZOMBIE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");

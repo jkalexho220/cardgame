@@ -1,6 +1,8 @@
 bool OnTurnStart(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
+	int tile = 0;
+	int target = 0;
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Phoenix Egg"):
@@ -22,7 +24,43 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
-			mSetVar(unit, "attack", 1 + mGetVar(unit, "attack"));
+			trQuestVarSet("dirx", mGetVar(unit, "laserDirx"));
+			trQuestVarSet("dirz", mGetVar(unit, "laserDirz"));
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+			trSoundPlayFN("sky passage.wav","1",-1,"","");
+			trQuestVarSet("next", deployAtTile(0, "Dwarf", 1*mGetVar(unit, "tile")));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("next"), true);
+			trUnitHighlight(1.0, false);
+			trSetSelectedScale(10, 0, 60);
+			trSetUnitOrientation(xsVectorSet(0.0 - trQuestVarGet("dirx"), 0, 0.0 - trQuestVarGet("dirz")), xsVectorSet(0,1,0), true);
+			trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
+			yAddToDatabase("directionalLasers", "next");
+			yAddUpdateVar("directionalLasers", "timeout", trTimeMS() + 500);
+			xsEnableRule("directional_lasers");
+
+			bool found = true;
+			tile = mGetVar(unit, "tile");
+			while (found) {
+				found = false;
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
+				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("dirx") * 6);
+				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("dirz") * 6);
+				for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+					trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+x, tile)));
+					if (zDistanceBetweenVectorsSquared("current", "pos") < 9) {
+						found = true;
+						tile = zGetVarByIndex("tiles", "neighbor"+x, tile);
+						break;
+					}
+				}
+				if (found) {
+					target = zGetVarByIndex("tiles", "occupant", tile);
+					startAttack(unit, target, false, false);
+				}
+			}
 			return (true);
 		}
 		case kbGetProtoUnitID("Audrey"):

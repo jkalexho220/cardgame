@@ -747,7 +747,7 @@ inactive
 		xsDisableRule("gameplay_05_attackComplete");
 		xsDisableRule("gameplay_10_summon");
 		xsDisableRule("MissionEnd");
-		xsDisableRule("turn_01_end");
+		xsDisableRule("turn_02_end");
 		xsDisableRule("SelectCommander");		
 		for(x=zGetBankCount("tiles"); >0) {
 			highlightTile(zBankNext("tiles"), 0.1);

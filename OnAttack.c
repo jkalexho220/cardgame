@@ -167,6 +167,12 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				deathSummonQueue(1*mGetVar(target, "tile"), p, "Minion");
 			}
 		}
+		case ATTACK_SUMMON_TREE:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				deathSummonQueue(1*mGetVar(target, "tile"), p, "Walking Woods Marsh");
+			}
+		}
 		case ATTACK_POISON:
 		{
 			if ((mGetVar(target, "spell") == SPELL_NONE) && (mGetVar(target, "health") > 0)) {

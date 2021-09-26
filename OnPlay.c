@@ -336,6 +336,14 @@ void OnPlay(int unit = 0) {
 		{
 			trSoundPlayFN("wonder.wav","1",-1,"","");
 		}
+		case kbGetProtoUnitID("Fire Siphon"):
+		{
+			trQuestVarSet("spellCaster", unit);
+			mSetVar(unit, "laserDirx", -0.707107);
+			mSetVar(unit, "laserDirz", -0.707107);
+			trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
+			chooseSpell(SPELL_CHOOSE_DIRECTION);
+		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 	if (HasKeyword(MAGNETIC, 1*mGetVar(unit, "keywords"))) {

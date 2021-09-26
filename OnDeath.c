@@ -103,6 +103,10 @@ bool OnDeath(int event = -1, int unit = 0){
 			}
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(proto));
 		}
+		case DEATH_SUMMON_BEETLE:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Scarab");
+		}
 	}
 	return (checkAgain);
 }
@@ -145,7 +149,9 @@ void removeDeadUnits() {
 			proto = mGetVarByQV("allUnits", "proto");
 			if ((kbProtoUnitIsUnitType(proto, 937)) ||
 				(proto == kbGetProtoUnitID("Lampades")) ||
-				(proto == kbGetProtoUnitID("Carcinos"))) {
+				(proto == kbGetProtoUnitID("Carcinos")) ||
+				(proto == kbGetProtoUnitID("Scarab")) ||
+				(proto == kbGetProtoUnitID("Spider Egg"))) {
 				trDamageUnitPercent(-100);
 				trUnitChangeProtoUnit("Spy Eye");
 				trUnitSelectClear();

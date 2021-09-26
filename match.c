@@ -162,100 +162,110 @@ inactive
 				trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
 			}
 		}
-		if ((trTime()-cActivationTime) >= trQuestVarGet("turnStartDelay")) {
-			if (trQuestVarGet("turnStartDone") == 0) {
-				trQuestVarSet("turnStartDone", 1);
-				trQuestVarSet("turnEnd", 0);
-				trPlayerKillAllGodPowers(p);
-				yClearDatabase("turnStart");	
-				xsSetContextPlayer(p);
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					yDatabaseNext("allUnits");
-					if (mGetVarByQV("allUnits", "player") == p) {
-						if (mGetVarByQV("allUnits", "stunTime") > 0) {
-							mSetVarByQV("allUnits", "stunTime", mGetVarByQV("allUnits", "stunTime") - 1);
-							if (mGetVarByQV("allUnits", "stunTime") == 0) {
-								mSetVarByQV("allUnits", "action", ACTION_READY);
-								trUnitSelectClear();
-								trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
-								trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
-							} else {
-								mSetVarByQV("allUnits", "action", ACTION_STUNNED);
-							}
-						} else {
-							mSetVarByQV("allUnits", "action", ACTION_READY);
-						}
-						if (HasKeyword(REGENERATE, 1*mGetVarByQV("allUnits", "keywords"))) {
-							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
-							trDamageUnitPercent(-100);
-							mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
-						}
-						// Start of turn effects
-						yAddToDatabase("turnStart", "allUnits");					
+		trQuestVarSet("activePlayer", p);
+		trQuestVarSet("turnEnd", 0);
+		trPlayerKillAllGodPowers(p);
+		yClearDatabase("turnStart");	
+		xsSetContextPlayer(p);
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if (mGetVarByQV("allUnits", "player") == p) {
+				if (mGetVarByQV("allUnits", "stunTime") > 0) {
+					mSetVarByQV("allUnits", "stunTime", mGetVarByQV("allUnits", "stunTime") - 1);
+					if (mGetVarByQV("allUnits", "stunTime") == 0) {
+						mSetVarByQV("allUnits", "action", ACTION_READY);
+						trUnitSelectClear();
+						trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
+						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
 					} else {
-						mSetVarByQV("allUnits", "action", ACTION_DONE);
+						mSetVarByQV("allUnits", "action", ACTION_STUNNED);
 					}
-				}				
-			}
-			bool delay = false;
-			for(x=yGetDatabaseCount("turnStart"); >0) {
-				yDatabaseNext("turnStart");
-				yRemoveFromDatabase("turnStart");
-				if(OnTurnStart(1*trQuestVarGet("turnStart")) == true){
-					delay = true;
-					break;
+				} else {
+					mSetVarByQV("allUnits", "action", ACTION_READY);
 				}
-			}
-			if(delay){
-				trQuestVarSet("turnStartDelay", 1);
+				if (HasKeyword(REGENERATE, 1*mGetVarByQV("allUnits", "keywords"))) {
+					trUnitSelectClear();
+					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
+					trDamageUnitPercent(-100);
+					mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
+				}
+				// Start of turn effects
+				yAddToDatabase("turnStart", "allUnits");					
 			} else {
-				trQuestVarSet("turnStartDelay", 0);
-				trQuestVarSet("turnStartDone", 0);
-				trSoundPlayFN("fanfare.wav","1",-1,"","");
-	
-				trTechGodPower(p, "create gold", 1);
-				trTechGodPower(p, "animal magnetism", 1);
-				trTechGodPower(p, "rain", 1);
-				trTechGodPower(p, "nidhogg", 1);
-		
-				if(Multiplayer){
-					trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
-				} else if (p == 2) {
-					trQuestVarSet("botPhase", 0);
-					trQuestVarSet("botThinking", 0);
-					xsEnableRule("Bot_00_turn_start");
-				}
-				
-				/*
-				Guardian of the Sea expires
-				*/
-				if (trQuestVarGet("p"+p+"guardianOfTheSea") == 1) {
-					trQuestVarSet("p"+p+"guardianOfTheSea", 0);
-					mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
-				}
-
-				trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
-				trQuestVarSet("p"+p+"manaTax", 0);
-				trQuestVarSet("activePlayer", p);
-				trQuestVarSet("p"+p+"click", 0);
-				highlightReady(100);
-
-				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
-
-				updateMana();
-				removeDeadUnits();
-				updateAuras();
-				xsEnableRule("gameplay_01_select");
-				xsEnableRule("turn_01_end");
-				xsDisableRule("turn_00_start");
+				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
 		}
+
+		/*
+		Guardian of the Sea expires
+		*/
+		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 1) {
+			trQuestVarSet("p"+p+"guardianOfTheSea", 0);
+			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
+		}
+		trQuestVarSet("turnStartDelay", trTimeMS() + 500);
+		xsEnableRule("turn_01_resolve_turn_start");
+		xsDisableRule("turn_00_start");
 	}
+}
+		
+
+rule turn_01_resolve_turn_start
+highFrequency
+inactive
+{
+	if (trTimeMS() > trQuestVarGet("turnStartDelay")) {
+		int p = trQuestVarGet("activePlayer");
+		bool delay = false;
+		for(x=yGetDatabaseCount("turnStart"); >0) {
+			yDatabaseNext("turnStart");
+			yRemoveFromDatabase("turnStart");
+			if(OnTurnStart(1*trQuestVarGet("turnStart")) == true){
+				delay = true;
+				break;
+			}
+		}
+		if(delay){
+			trQuestVarSet("turnStartDelay", trTimeMS() + 500);
+		} else {
+			trSoundPlayFN("fanfare.wav","1",-1,"","");
+
+			trTechGodPower(p, "create gold", 1);
+			trTechGodPower(p, "animal magnetism", 1);
+			trTechGodPower(p, "rain", 1);
+			trTechGodPower(p, "nidhogg", 1);
+	
+			if(Multiplayer){
+				trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
+			} else if (p == 2) {
+				trQuestVarSet("botPhase", 0);
+				trQuestVarSet("botThinking", 0);
+				xsEnableRule("Bot_00_turn_start");
+			}
+			
+			
+
+			trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
+			trQuestVarSet("p"+p+"manaTax", 0);
+			
+			trQuestVarSet("p"+p+"click", 0);
+			highlightReady(100);
+
+			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
+
+			updateMana();
+			removeDeadUnits();
+			updateAuras();
+			xsEnableRule("gameplay_01_select");
+			xsEnableRule("turn_02_end");
+			xsDisableRule("turn_01_resolve_turn_start");
+		}
+	}
+
 }
 
 
-rule turn_01_end
+rule turn_02_end
 highFrequency
 inactive
 {
@@ -286,6 +296,7 @@ inactive
 		/*
 		End of turn effects
 		*/
+		trQuestVarSet("mindflayerDamage", trCountUnitsInArea("128",p,"Argus",45));
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (mGetVarByQV("allUnits", "victory") > 0) {
@@ -296,8 +307,11 @@ inactive
 				}
 				mSetVarByQV("allUnits", "victoryAmbush", 0);
 			}
-			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
-				damageUnit(1*trQuestVarGet("allUnits"), 1);
+			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords"))) {
+				if (mGetVarByQV("allUnits", "player") == p) {
+					damageUnit(1*trQuestVarGet("allUnits"), 1);
+				}
+				damageUnit(1*trQuestVarGet("allUnits"), trQuestVarGet("mindflayerDamage"));
 			}
 
 			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Hero Chinese Immortal")){
@@ -317,6 +331,12 @@ inactive
 							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
 						}
 						damageUnit(1*trQuestVarGet("allUnits"), 2);
+					}
+					case kbGetProtoUnitID("Argus"):
+					{
+						trUnitSelectClear();
+						trUnitSelect(""+1*trQuestVarGet("allUnits"));
+						trUnitOverrideAnimation(40,0,0,1,-1);
 					}
 				}
 			}
@@ -394,6 +414,6 @@ inactive
 			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 		}
 		trDelayedRuleActivation("turn_00_start");
-		xsDisableRule("turn_01_end");
+		xsDisableRule("turn_02_end");
 	}
 }
