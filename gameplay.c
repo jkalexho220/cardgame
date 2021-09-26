@@ -582,6 +582,7 @@ inactive
 						trUnitHighlight(0.1, false);
 						yClearDatabase("targets");
 					}
+					trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);
 					trQuestVarSet("p"+p+"click", 0);
 					xsDisableRule("gameplay_04_attack");
 				}
