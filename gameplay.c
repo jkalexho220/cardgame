@@ -621,6 +621,9 @@ inactive
 			yClearDatabase("targets");
 		}
 
+		removeDeadUnits();
+		refreshGuardAll();
+
 		if (trQuestVarGet("turnEnd") == 0) {
 			if (HasKeyword(FURIOUS, 1*mGetVarByQV("activeUnit", "keywords")) &&
 				mGetVarByQV("activeUnit", "action") < ACTION_FURY &&
@@ -636,9 +639,6 @@ inactive
 				highlightReady(100);
 			}
 		}
-
-		removeDeadUnits();
-		refreshGuardAll();
 		
 		xsDisableRule("gameplay_05_attackComplete");
 	}
