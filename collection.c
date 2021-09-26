@@ -63,9 +63,11 @@ bool ValidateCollection(){
 		trQuestVarSet("class2", trQuestVarGet("class1"));
 	}
 	
+	string cardsInDeckColor = "";
 	if(trQuestVarGet("cardsInDeck") != 40){
 		ChatLog(1, "ERROR! Not 40 cards in deck! " + 1*trQuestVarGet("cardsInDeck") + "/40");
 		valid = false;
+		cardsInDeckColor = "<color={Playercolor(2)}>";
 	}
 	
 	if(trQuestVarGet("classesInDeck") > 2){
@@ -84,7 +86,7 @@ bool ValidateCollection(){
 	}
 	
 	trCounterAbort("deckCount");
-	trCounterAddTime("deckCount", -1, -9999999, "Deck: " + 1*trQuestVarGet("cardsInDeck") + "/40");
+	trCounterAddTime("deckCount", -1, -9999999, cardsInDeckColor+"Deck: " + 1*trQuestVarGet("cardsInDeck") + "/40");
 	
 	return (valid);
 }

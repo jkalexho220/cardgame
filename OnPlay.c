@@ -56,9 +56,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Hero Chinese Immortal"):
 		{
 			mSetVar(unit, "scale", 2);
-			trUnitSelectClear();
-			trUnitSelect(""+unit);
-			trSetSelectedScale(2, 2, 2);
+			scaleUnit(unit);
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("archeryrange.wav","1",-1,"","");
 			if(trQuestVarGet("chats_Immortal_0") == 0){
