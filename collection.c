@@ -111,7 +111,7 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
-		trSetSelectedScale(0.75, xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.5, 0.75);
+		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
 		trUnitSetAnimationPath(1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 
@@ -132,7 +132,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case COMMANDER_VENLESH:
 		{
-			return (kbGetProtoUnitID("Hero Greek Heracles"));
+			return (kbGetProtoUnitID("Lancer Hero"));
 		}
 		case COMMANDER_NANO:
 		{
@@ -152,7 +152,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case COMMANDER_ROXAS:
 		{
-			return (kbGetProtoUnitID("Hero Greek Polyphemus"));
+			return (kbGetProtoUnitID("Arkantos God"));
 		}
 		case COMMANDER_YEEBAAGOOON:
 		{
@@ -208,7 +208,19 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case 908:
 		{
+			return (kbGetProtoUnitID("King Folstag"));
+		}
+		case 909:
+		{
+			return (kbGetProtoUnitID("Hero Boar"));
+		}
+		case 910:
+		{
 			return (kbGetProtoUnitID("Setna"));
+		}
+		case 911:
+		{
+			return (kbGetProtoUnitID("Circe"));
 		}
 	}
 	ThrowError("CommanderToProtounit");
@@ -256,7 +268,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				}
 				case 3:
 				{
-					return ("I Am Shoe");	
+					return ("Carbon-Free Antivirus");	
 				}
 				case 4:
 				{
@@ -278,27 +290,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Letter From An Owl");	
+					return ("Tower Courtyard");	
 				}
 				case 2:
 				{
-					return ("Sparkling Gates");	
+					return ("Flammable Fire");	
 				}
 				case 3:
 				{
-					return ("Palace Of Magic");	
+					return ("Freezing Frost");	
 				}
 				case 4:
 				{
-					return ("Unusual Companions");	
+					return ("Elevator");	
 				}
 				case 5:
 				{
-					return ("Wizard Tournament");	
+					return ("Archmage");	
 				}
 				case 6:
 				{
-					return ("It's Not Over Yet");	
+					return ("On Top Of The Arcane Tower");	
 				}
 			}
 		}
@@ -481,6 +493,7 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			}
 			CollectionCommander(2 * class, 5 + 20 * class, z);
 			if(progress > 6){
+				z = 41;
 				if(getDeckCommander() == (2 * class + 1)){
 					trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 					z = z + 44;
@@ -511,7 +524,6 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	}	
 }
 
-string collectionMission = "";
 string collectionReward = "";
 
 void CollectionGodPowers(){
@@ -553,9 +565,10 @@ inactive
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 	trChatHistoryClear();
-	for(p=1;<=2){
-		trCounterAbort("mana"+p);
-		trCounterAbort("handAndDeck"+p);
+	yDatabasePointerDefault("allUnits");
+	for(x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits", true);
+		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("allUnits");	
 	trQuestVarSet("activePlayer", 1);
@@ -682,27 +695,31 @@ inactive
 {
 	if ((trTimeMS()-(cActivationTime*1000)) > 470){
 		bool nothing = true;
-	for(x=yGetDatabaseCount("allUnits"); >0) {
-		int id = yDatabaseNext("allUnits", true);
-		if (trUnitIsSelected()) {
-			trVectorSetUnitPos("temp","allUnits");
-			if(trVectorQuestVarGetZ("temp") < 90){
-				displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
-			} else {
-				trQuestVarSet("canPressEnter", 0);	
-				collectionMission = "";
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			int id = yDatabaseNext("allUnits", true);
+			if (trUnitIsSelected()) {
+				trVectorSetUnitPos("temp","allUnits");
+				if(trVectorQuestVarGetZ("temp") < 90){
+					displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
+					} else {
+						trQuestVarSet("canPressEnter", 0);	
+						collectionMission = "";
 				collectionReward = "";
 				for(class=0;<6){
 					for(i=1;<=xsMin(getClassProgress(class),6)){
 						if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
+							int cards = 3;
+							if(i > 1){
+								cards = 6;
+							}
 							if(getClassProgress(class) == i){
 								trQuestVarSet("missionHardmode", 0);
 								collectionMission = GetMissionTitle(class,i);
-								collectionReward = "Reward: Class Pack";					
+								collectionReward = "Reward: " + cards + " Class Cards";					
 							} else {
 								trQuestVarSet("missionHardmode", 1);
 								collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-								collectionReward = "Reward: Random Pack";
+								collectionReward = "Reward: " + cards + " Random Cards";
 							}
 							trQuestVarSet("missionSelection", i);
 							trQuestVarSet("missionClass", class);
@@ -722,11 +739,6 @@ inactive
 		trQuestVarSet("selectionTryAgain", trQuestVarGet("selectionTryAgain") + 1);
 		trDelayedRuleActivation("CollectionSelect");	
 	}
-	/*
-	if ((trTimeMS()-(cActivationTime*1000)) > 1470){
-		xsDisableRule("CollectionSelect");
-	}
-	*/
 	}
 }
 

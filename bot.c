@@ -143,13 +143,20 @@ inactive
 							yRemoveFromDatabase("castTargets");
 						}
 					}
-				} else if(1*trQuestVarGet("botSpell") == SPELL_PISTOL_SHOT){
+				} else if((1*trQuestVarGet("botSpell") == SPELL_PISTOL_SHOT) || (1*trQuestVarGet("botSpell") == SPELL_PYROBALL)){
+					trQuestVarSet("value", -1);
+					trQuestVarSet("valueTarget", -1);
 					yDatabasePointerDefault("castTargets");
 					for(x=yGetDatabaseCount("castTargets"); >0) {
 						yDatabaseNext("castTargets");
-						if(mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") < 9){
-							yRemoveFromDatabase("castTargets");
+						if(trQuestVarGet("value") < (mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"))){				
+							trQuestVarSet("value", mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"));
+							trQuestVarSet("valueTarget", trQuestVarGet("castTargets"));
 						}
+					}
+					yClearDatabase("castTargets");
+					if((trQuestVarGet("value") > 9) || (mGetVarByQV("valueTarget", "attack") >= mGetVarByQV("p2commander", "health"))){
+						yAddToDatabase("castTargets", "valueTarget");
 					}
 				} else if(1*trQuestVarGet("botSpell") == SPELL_ELECTROSURGE){
 					yDatabasePointerDefault("castTargets");
@@ -229,7 +236,7 @@ inactive
 				if(yGetDatabaseCount("p2hand") > 2){
 					yClearDatabase("castTiles");
 				}
-			} else if(1*trQuestVarGet("botSpell") == SPELL_VICTORY){
+			} else if((1*trQuestVarGet("botSpell") == SPELL_VICTORY) || (1*trQuestVarGet("botSpell") == SPELL_BOOTS_TREASURE) || (1*trQuestVarGet("botSpell") == SPELL_WEAPONS_TREASURE) || (1*trQuestVarGet("botSpell") == SPELL_SHIELDS_TREASURE)){
 				if(trCountUnitsInArea("128",2,"Unit",45) < 3){
 					yClearDatabase("castTiles");
 				}

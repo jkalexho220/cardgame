@@ -1,6 +1,7 @@
 const int TERRAIN_GRASSLAND = 0;
 const int TERRAIN_DESERT = 1;
 const int TERRAIN_SNOW = 2;
+const int TERRAIN_TOWER = 3;
 
 const int T_GRASS_25 = 2;
 const int T_GRASS_50 = 3;
@@ -16,6 +17,8 @@ const int T_FOREST_PALM = 86;
 const int T_SNOW_A = 41;
 const int T_NORSE_ROAD = 66;
 const int T_FOREST_SNOW = 88;
+
+const int T_CITY_TILE = 70;
 
 const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
@@ -201,6 +204,15 @@ void chooseTerrainTheme(int terrain = 0) {
 			TODO: Terrain mixing for snow
 			*/
 		}
+		case TERRAIN_TOWER:
+		{
+			trStringQuestVarSet("treeType", "Columns");
+			trQuestVarSet("treeTile", T_GREEK_ROAD);
+			trPaintTerrain(0, 0, 59, 59, 0, T_CITY_TILE, false);
+			/*
+			TODO: Terrain mixing for snow
+			*/
+		}
 	}
 }
 
@@ -337,6 +349,8 @@ runImmediately
 	xsDisableRule("initializeBoardStuff");
 }
 
+string collectionMission = "";
+
 rule initializeBoard
 inactive
 {
@@ -369,8 +383,8 @@ inactive
 	
 	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
 	
-	if(trQuestVarGet("dontPlaceRandomStuff") == 0){	
-		chooseTerrainTheme(TERRAIN_GRASSLAND);
+	if(trQuestVarGet("zenoMakeRandomStuffPlease") >= 0){	
+		chooseTerrainTheme(trQuestVarGet("zenoMakeRandomStuffPlease"));
 		setupImpassableTerrain();		
 	}
 	for(y=yGetDatabaseCount("customBoard"); >0) {
@@ -389,13 +403,15 @@ inactive
 				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("modz"));
 				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),trQuestVarGet("heading"), true);
 				trArmySelect("1,10");
-				trUnitConvert(0);
+				trUnitChangeName(collectionMission);
+				trUnitConvert(0);			
 			}
 		} else {
 			trQuestVarSet("customBoard", deployAtTile(0, kbGetProtoUnitName(1*yGetVar("customBoard", "proto")), 1*yGetVar("customBoard", "tile")));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
 			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
+			trUnitChangeName(collectionMission);
 		}		
 		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
 			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));	
@@ -403,6 +419,8 @@ inactive
 		zSetVarByIndex("tiles", "terrain", 1*yGetVar("customBoard", "tile"), 1*yGetVar("customBoard", "terrain"));
 	}
 	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
+	
+	trFadeOutAllSounds(0.0);
 
 	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
 	trQuestVarCopy("p1startPosz", "p1startposx");

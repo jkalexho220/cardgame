@@ -17,6 +17,21 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
+	if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p" + p + "commander"))) == kbGetProtoUnitID("Shaba Ka")){
+		trQuestVarSetFromRand("temp", 1, 3, true);			
+		if(trQuestVarGet("temp") == 1){
+			generateCard(p, 0, SPELL_BOOTS_TREASURE);	
+		} else if(trQuestVarGet("temp") == 2){
+			generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
+		} else {
+			generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
+		}
+		if(trQuestVarGet("chats_Kemsyt_0") == 0){
+			trQuestVarSet("chats_Kemsyt_0", 1);
+			ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
+			trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
+		}
+	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):
@@ -25,7 +40,7 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("beargrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 			if(trQuestVarGet("chats_Bear_0") == 0){
 				trQuestVarSet("chats_Bear_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Growl!!");
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Growl!!!");
 			}
 		}
 		case kbGetProtoUnitID("Bondi"):
@@ -40,6 +55,10 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hero Chinese Immortal"):
 		{
+			mSetVar(unit, "scale", 2);
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			trSetSelectedScale(2, 2, 2);
 			trSoundPlayFN("herocreation.wav","1",-1,"","");
 			trSoundPlayFN("archeryrange.wav","1",-1,"","");
 			if(trQuestVarGet("chats_Immortal_0") == 0){
@@ -140,7 +159,8 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hetairoi"):
 		{
-			generateCard(p, 0, SPELL_MAP);
+			done = false;
+			chooseSpell(SPELL_MAP);
 		}
 		case kbGetProtoUnitID("Peltast"):
 		{
@@ -234,7 +254,9 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Behemoth"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
-			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));	
+			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
+			scaleUnit(unit);
 		}
 		case kbGetProtoUnitID("Hippocampus"):
 		{
@@ -312,9 +334,24 @@ void OnPlay(int unit = 0) {
 			chooseSpell(SPELL_SUMMON_ONE);
 			done = false;
 		}
-		case kbGetProtoUnitID("Scout"):
+		case kbGetProtoUnitID("Tower Mirror"):
 		{
-			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
+			trSoundPlayFN("wonder.wav","1",-1,"","");
+		}
+	}
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
+	if (HasKeyword(MAGNETIC, 1*mGetVar(unit, "keywords"))) {
+		for(x=yGetDatabaseCount("allUnits"); >0) {
+			yDatabaseNext("allUnits");
+			if ((trQuestVarGet("allUnits") == unit) || (mGetVarByQV("allUnits", "player") == 3 - p)) {
+				continue;
+			} else if (HasKeyword(MAGNETIC, 1*mGetVarByQV("allUnits", "keywords")) &&
+				zDistanceToVectorSquared("allUnits", "pos") < 40) {
+				done = false;
+				trQuestVarSet("spellCaster", unit);
+				chooseSpell(SPELL_MAGNETIZE);
+				break;
+			}
 		}
 	}
 	if (done) {

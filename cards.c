@@ -3,6 +3,9 @@ void ThrowError(string message = "Zeno you made bug again!"){
 	trShowWinLose(message, "xpack\xtaunts\en\999 theme.mp3");
 }
 
+const int STATE_ALIVE = 0;
+const int STATE_DEAD = 1;
+
 /*
 Classes
 */
@@ -43,12 +46,16 @@ const int SPELL_TYPE_OTHER = 2;
 const int SPELL_INTIMIDATE = 999;
 const int SPELL_GROUND_STOMP = 998;
 const int SPELL_PISTOL_SHOT = 997;
-const int SPELL_RELOAD = 996;
-const int SPELL_POISON_CLOUD = 995;
-const int SPELL_NATURE_ANGRY = 994;
-const int SPELL_ELVEN_APOCALYPSE = 993;
-const int SPELL_MIRROR_REFLECTION = 992;
-const int SPELL_PYROBALL = 991;
+const int SPELL_BOOTS_TREASURE = 996;
+const int SPELL_WEAPONS_TREASURE = 995;
+const int SPELL_SHIELDS_TREASURE = 994;
+const int SPELL_RELOAD = 993;
+const int SPELL_POISON_CLOUD = 992;
+const int SPELL_NATURE_ANGRY = 991;
+const int SPELL_ELVEN_APOCALYPSE = 990;
+const int SPELL_FROST_BREATH = 989;
+const int SPELL_PYROBALL = 988;
+const int SPELL_MIRROR_REFLECTION = 987;
 
 // Adventurer
 const int SPELL_FIRST_AID = 2;
@@ -120,6 +127,23 @@ const int SPELL_SCORPION_STING = 57;
 
 // Clockwork
 const int SPELL_SONG_OF_REST = 58;
+const int SPELL_SCRAP_METAL = 59;
+const int SPELL_MAGNETIZE = 60;
+const int SPELL_ELECTRIC_GRID = 61;
+const int SPELL_ZAP_GUN = 62;
+const int SPELL_GEAR_FACTORY = 63;
+const int SPELL_COMPRESS = 64;
+const int SPELL_UPGRADE = 65;
+const int SPELL_PROFITEERING = 66;
+const int SPELL_WARNING_SHOT = 67;
+const int SPELL_PORTABLE_SPELL_SHIELD = 68;
+const int SPELL_REWIND = 69;
+const int SPELL_TIME_POCKET = 70;
+const int SPELL_BANHAMMER = 71;
+const int SPELL_ASSEMBLY_LINE = 72;
+const int SPELL_POWER_SUIT = 73;
+const int SPELL_BORROWED_TIME = 74;
+const int SPELL_FORTIFY = 75;
 
 /*
 OnAttack events (bit positions)
@@ -141,11 +165,14 @@ const int ATTACK_SUMMON_ZOMBIE = 13;
 const int ATTACK_POISON = 14;
 const int ATTACK_GET_MINION = 15;
 const int ATTACK_GET_FENRIS = 16;
+const int ATTACK_ANIMATE_TOWER = 17;
+const int ATTACK_OVERKILL_HEALS = 18;
+const int ATTACK_RALLY = 19;
+const int ATTACK_ARCANE_MISSLE = 20;
+const int ATTACK_SPELL_DAMAGE = 21;
+const int ATTACK_DRAW_CARD_ENEMY_COST = 22;
 
-const int ATTACK_OVERKILL_HEALS = 17;
-const int ATTACK_RALLY = 18;
-
-const int ATTACK_EVENT_COUNT = 19;
+const int ATTACK_EVENT_COUNT = 23;
 
 /*
 OnDeath events (bit positions)
@@ -160,8 +187,11 @@ const int DEATH_SUMMON_SHADOW = 7;
 const int DEATH_GET_ATTACK = 8;
 const int DEATH_POISON_MIST = 9;
 const int DEATH_DARKNESS_RETURNS = 10;
+const int DEATH_SUMMON_RANDOM = 11;
+const int DEATH_GET_SCRAP = 12;
+const int DEATH_GET_TREASURE = 12;
 
-const int DEATH_EVENT_COUNT = 11;
+const int DEATH_EVENT_COUNT = 14;
 
 
 /*
@@ -184,10 +214,12 @@ const int HEALER = 13;
 const int DECAY = 14;
 const int FLYING = 15;
 const int OVERFLOW = 16;
-const int STEALTH = 17;
-const int IMPORTANT = 18;
+const int MAGNETIC = 17;
+const int CONDUCTOR = 18;
+const int STEALTH = 19;
+const int IMPORTANT = 20;
 
-const int NUM_KEYWORDS = 19;
+const int NUM_KEYWORDS = 21;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -209,6 +241,8 @@ string GetKeywordName(int bitPosition=0){
 		case DECAY: return("Decay");
 		case FLYING: return("Flying");
 		case OVERFLOW: return("Overflow");
+		case MAGNETIC: return("Magnetic");
+		case CONDUCTOR: return("Conductor");
 		case STEALTH: return("Stealth");
 		case IMPORTANT: return("Important");
 	}
@@ -235,6 +269,8 @@ string GetKeywordDescription(int bitPosition=0){
 		case DECAY: return("I take 1 damage at the end of your turn.");
 		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
 		case OVERFLOW: return("Cost is reduced by your Manaflow.");
+		case MAGNETIC: return("When played next to another Magnetic minion, you can combine them, adding attack, health, and keywords.");
+		case CONDUCTOR: return("Allied Lightning effects can pass through me.");
 		case STEALTH: return("I cannot be targeted until I take damage.");
 		case IMPORTANT: return("If my Commander dies I become the new Commander.");
 	}
@@ -257,6 +293,60 @@ Given a key and a keywords integer, returns true if the keywords integer has the
 bool HasKeyword(int key = 0, int keywords = 0) {
 	return(GetBit(keywords, key));
 }
+
+
+int getCardClass(int index = 0) {
+	return(1*xsFloor(index / 30));
+}
+
+int CardToProto(int card = 0) {
+	return(1*trQuestVarGet("CardToProto"+card));
+}
+
+int CardToSpell(int card = 0) {
+	return(1*trQuestVarGet("CardToSpell"+card));
+}
+
+int ProtoToCard(int proto = 0) {
+	return(1*trQuestVarGet("ProtoToCard"+proto));
+}
+
+int SpellToCard(int spell = 0) {
+	return(1*trQuestVarGet("SpellToCard"+spell));
+}
+
+int getCardCountCollection(int index = 0) {
+	return(1*trQuestVarGet("card_"+index+"_count") - trQuestVarGet("card_"+index+"_countInDeck"));
+}
+
+int getCardCountDeck(int index = 0) {
+	return(1*trQuestVarGet("card_"+index+"_countInDeck"));
+}
+
+void setCardCountCollection(int index = 0, int count = 0) {
+	trQuestVarSet("card_"+index+"_count", count);
+}
+
+void setCardCountDeck(int index = 0, int count = 0) {
+	trQuestVarSet("card_"+index+"_countInDeck", count);
+}
+
+void setDeckCommander(int commander = 0) {
+	trQuestVarSet("commander", commander);
+}
+
+int getDeckCommander() {
+	return(1*trQuestVarGet("commander"));
+}
+
+void setClassProgress(int class = 0, int progress = 0) {
+	trQuestVarSet("class"+class+"progress", progress);
+}
+
+int getClassProgress(int class = 0) {
+	return(1*trQuestVarGet("class"+class+"progress"));
+}
+
 
 /* 
 Given the class and spell type, returns the statue animation
@@ -358,6 +448,36 @@ int GetSpellAnimation(int class = 0, int type = 0){
 	ThrowError("GetSpellAnimation");
 }
 
+string getCardClassIcon(int card = 0) {
+	switch(getCardClass(card))
+	{
+		case CLASS_ADVENTURER:
+		{
+			return("icons\building specialist icons 64");
+		}
+		case CLASS_ARCANE:
+		{
+			return("icons\improvement focus icons 64");
+		}
+		case CLASS_NAGA:
+		{
+			return("icons\improvement poseidons secret icons 64");
+		}
+		case CLASS_CLOCKWORK:
+		{
+			return("icons\improvement engineers icon 64");
+		}
+		case CLASS_EVIL:
+		{
+			return("icons\god power ancestors icon 64");
+		}
+		case CLASS_SPACE:
+		{
+			return("icons\god power eclipse icon 64");
+		}
+	}
+}
+
 string colorizeStat(int name = 0, string s = "Attack", string d = "ATK") {
 	int diff = mGetVar(name, s) - trQuestVarGet("card_"+1*mGetVar(name, "proto")+"_"+s);
 	string val = "";
@@ -382,9 +502,11 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	string message = "";
 	int keywords = trQuestVarGet("card_"+proto+"_keywords");
 	message = trStringQuestVarGet("card_"+proto+"_ability");
+	int card = ProtoToCard(proto);
 	if (spell > 1) {
 		keywords = trQuestVarGet("spell_"+spell+"_keywords");
 		message = trStringQuestVarGet("spell_"+spell+"_description");
+		card = SpellToCard(proto);
 	}
 	
 	if (spell <= SPELL_COMMANDER) {
@@ -427,7 +549,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 		}
 	}
 
-	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, "");
+	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, getCardClassIcon(card));
 }
 
 void updateMana() {
@@ -475,6 +597,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 	}
 
+	int card = ProtoToCard(proto);
 	int old = xsGetContextPlayer();
 	int p = mGetVar(name, "player");
 	int discount = 0;
@@ -533,6 +656,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
 	} else {
+		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
 
 		discount = trQuestVarGet("p"+p+"spellDiscount");
@@ -555,7 +679,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 	}
 
 	updateMana();
-	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, "");
+	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, getCardClassIcon(card));
 
 	xsSetContextPlayer(old);
 }
@@ -581,6 +705,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
 		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
 		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetVar(next, "scale", 1);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
 		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
@@ -593,6 +718,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "player", p);
 	mSetVar(next, "spell", spell);
 	mSetVar(next, "played", 1);
+	mSetVar(next, "state", STATE_ALIVE);
 
 	trMutateSelected(proto);
 	trUnitConvert(p);
@@ -607,9 +733,10 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "",
 	trQuestVarSet("spell_"+spell+"_type", type);
 	trQuestVarSet("spell_"+spell+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, type));
 
+	// This is so that the uncollectable card is assigned to the right class
+	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
 		trQuestVarSet("cardToSpell"+1*trQuestVarGet("cardIndex"), spell);
-		trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
@@ -631,11 +758,13 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		ThrowError("That's not a unit. Method: CardSetup");
 	}
 
+	// this is so that the uncollectable card is assigned to the right class
+	trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
-		trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
+
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -723,10 +852,12 @@ runImmediately
 		trForbidProtounit(p, "Villager Atlantean Hero");
 		trForbidProtounit(p, "Settlement Level 1");
 		trForbidProtounit(p, "Guild");
+		trForbidProtounit(p, "Siege Tower");
 		trForbidProtounit(p, "Manor");
 		trForbidProtounit(p, "Dock");
 		trForbidProtounit(p, "Wall Connector");
 		trForbidProtounit(p, "Temple");
+		trForbidProtounit(p, "Ulfsark");
 		trModifyProtounit("Minion", p, 8, -99); // minion lifespan
 	}
 
@@ -735,30 +866,45 @@ runImmediately
 	*/
 	zBankInit("p1unitBank", 1, 63);
 	zBankInit("p2unitBank", 64, 64);
-	zBankInit("allUnitsBank", 1, 128);
+	zBankInit("allUnitsBank", 1, 127);
 
 	CardSetup("Automaton",		0, "Training Dummy", 		0, 10, 0, 0, 0, true);
 	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
 	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("General Melagius", Keyword(ATTACK_RALLY), 0,	"Attack: If it's my turn, give allied minions +1 Attack.");
-	CardSetup("Shaba Ka",				0, "Mister Pirate", 			6, 20, 2, 1, Keyword(BEACON) + Keyword(AMBUSH), true);
-	CardSetup("Hero Chinese Immortal",	0, "Forest Protector",		2, 20, 2, 1, Keyword(BEACON) + Keyword(DEADLY), true);
+	CardSetup("Shaba Ka",				0, "Mister Pirate", 			2, 20, 2, 1, Keyword(BEACON), true);
+	CardEvents("Shaba Ka", 0, 0,	"After I play a minion create a random Treasure.");
+	CardSetup("Qilin",					0, "Forest Protector",		2, 40, 2, 1, Keyword(BEACON), true);
+	CardEvents("Qilin", Keyword(ATTACK_DRAW_CARD_ENEMY_COST), 0, 	"Attack: Draw a card. Reduce its cost by the number of enemies.");
 	CardSetup("Audrey",					0, "Vora",					2, 20, 0, 1, Keyword(BEACON) + Keyword(DEADLY), true);
+	CardEvents("Audrey", 0, 0,	"I gain Regenerate on Turn 5.");
 	
-	CardSetup("Pharaoh Secondary",		0, "Fire Mage", 			2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);
-	CardSetup("Setna",					0, "Old Mage", 				2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);
+	CardSetup("Pharaoh Secondary",		0, "Fire Mage", 			2, 20, 2, 2, Keyword(BEACON), true);
+	CardEvents("Pharaoh Secondary", Keyword(ATTACK_SPELL_DAMAGE), 0, 	"After I counterattack, I gain +1 Spell Damage.");
+	CardSetup("King Folstag",			0, "Frost Mage", 			3, 30, 2, 1, Keyword(BEACON) + Keyword(ARMORED), true);
+	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
+	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
+	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
+	CardSetup("Setna",					0, "Archmage", 				2, 20, 2, 2, Keyword(BEACON), true);
+	CardEvents("Setna", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
+	CardSetup("Circe",					0, "Archmage's Mom", 		2, 40, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
+	CardEvents("Circe", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
 
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Boots Treasure", 		2, SPELL_BOOTS_TREASURE, 	"Give your minions Pathfinder.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Weapons Treasure", 		4, SPELL_WEAPONS_TREASURE, 	"Give your minions +2 Attack.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Shields Treasure", 		6, SPELL_SHIELDS_TREASURE, 	"Give your minions +3 Health.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 		"Kill a minion. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Reload", 				5, SPELL_RELOAD, 			"Draw a card.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a minion on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
 	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 			"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Poison Cloud", 			4, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy minions. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Descend From Treetops",	3, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Qilin",					0, "Forest Protector",		4, 40, 2, 1, Keyword(BEACON) + Keyword(GUARD), true);
+	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
+	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
 	CardSetup("Golem",					6, "Arcane Golem",			7, 9, 2, 1, 0, true);
@@ -768,8 +914,8 @@ runImmediately
 	CardSetup("Griffon",				4, "Soaring Griffy",		3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
 	CardSetup("Apep",					4, "Lurking Crocky",		6, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
 	CardSetup("Bear",					6, "Hungry Bear",			9, 7, 2, 1, 0, true);
-	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Attack: Excess damage heals me.");
-	CardSetup("Pirate Ship",			10, "Pirate Ship",			0, 40, 0, 0, 0, true);
+	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Whenever I kill an enemy I gain +2 Health.");
+	CardSetup("Pirate Ship",			10, "Stuck Pirate Ship",			0, 40, 0, 0, 0, true);
 	CardEvents("Pirate Ship", 0, 0, 						"Turn Start: Secretly choose an enemy tile, next turn deal 8 Damage there.");
 	
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
@@ -793,9 +939,8 @@ runImmediately
 	ADVENTURER
 	*/
 	// Created cards
-	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
-	CardSetup("Hero Greek Heracles",	0, "Venlesh", 			2, 20, 2, 1, Keyword(BEACON), true);
-	SpellSetup("Explorer's Map", 		2, SPELL_MAP, 			"Grant an allied minion +1 Speed and Pathfinder", SPELL_TYPE_DEFENSIVE, 0, true);
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Lancer Hero",			0, "Venlesh", 			2, 20, 3, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
@@ -928,45 +1073,50 @@ runImmediately
 	CLOCKWORK
 	*/
 	// Created cards
-	CardSetup("Eitri",					0, "Roxas", 			4, 40, 1, 1, Keyword(BEACON) + Keyword(DECAY), true);
-	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 		0, 15, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
+	CardSetup("Arkantos God",			0, "Roxas", 				2, 1, 2, 1, Keyword(BEACON), true);
+	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 			0, 20, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
+	SpellSetup("Scrap Metal",			0, SPELL_SCRAP_METAL,		"Gain 1 mana this turn.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Outpost",				0, "Lightning Rod",			0, 3, 0, 0, Keyword(CONDUCTOR) + Keyword(AIRDROP), true);
+	CardSetup("Guild",					4, "Gear Factory",			0, 6, 0, 0, 0, true); // At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.
+	CardSetup("Wall Connector",			0, "Iron Wall",				0, 3, 0, 0, Keyword(AIRDROP) + Keyword(FLEETING), true);
 
 	// 90-94
 	SpellSetup("Repair",		 		3, SPELL_SONG_OF_REST,		"Restore 6 health to your Commander. Draw a card.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("Fortify",		 		3, SPELL_FORTIFY,			"Fill your hand with Iron Walls.", SPELL_TYPE_OTHER);
+	CardSetup("Dwarf",					1, "Iron Scavenger",		1, 1, 2, 1); // Death: Add a Scrap Metal to your hand.
+	CardSetup("Portable Ram",			2, "Circuit Squad",			1, 3, 2, 1, Keyword(ARMORED) + Keyword(CONDUCTOR)); 
+	CardSetup("Petrobolos",				3, "Scrap Launcher",		1, 2, 1, 3); // Attack: Stun my target.
 	// 95-99
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Maceman Hero",			3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
+	CardSetup("Javelin Cavalry",		3, "Profit Hunter",			2, 1, 3, 2, Keyword(CHARGE));
+	CardSetup("Automaton SPC",			2, "Gearwalker",			2, 2, 2, 1, Keyword(MAGNETIC));
+	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your minions cost 1 less.
+	CardSetup("Ballista",				4, "Mechanized Bow",		3, 1, 1, 3, Keyword(MAGNETIC));
 	// 100-104 (LEGENDARY at 104)
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	CardSetup("Helepolis",				5, "Troop Transport",		2, 5, 1, 1); // Death: Summon a random minion from your deck on my tile.
+	CardSetup("Colossus",				8, "Steam Giant",			6, 8, 1, 1, Keyword(MAGNETIC) + Keyword(GUARD));
+	CardSetup("Battle Boar",			5, "Bulldozer",				4, 4, 2, 1, Keyword(MAGNETIC) + Keyword(CHARGE));
+	CardSetup("Ape of Set",				2, "Robot Monkey",			1, 1, 2, 1, Keyword(MAGNETIC)); // Death: I attack all adjacent units.
+	CardSetup("Tower Mirror",			10, "Thunder Cannon",		8, 8, 0, 3, Keyword(LIGHTNING));
 	// 105-109
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied minion Lightning.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Fire Siphon",			6, "Doom Engine",			1, 5, 1, 2, Keyword(ARMORED)); // At the start of your turn, grant me +1 attack.
+	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a minion with all of its adjacent allied minions, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied minion +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
 	// 110-114
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Portable Spell Shield",	2, SPELL_PORTABLE_SPELL_SHIELD,			"Give an allied minion Armored and Ward.", SPELL_TYPE_OTHER);
+	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
-	CardSetup("Militia",				0, "PLACEHOLDER",			9, 9, 9, 9);
+	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy minion. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
+	SpellSetup("Assembly Line",			3, SPELL_ASSEMBLY_LINE,		"Shuffle a copy of your hand into your deck. Draw a card.", SPELL_TYPE_OTHER);
+	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Borrowed Time",			20, SPELL_BORROWED_TIME,	"Gain an extra turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
+	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
+
 	/*
 	OTHERWORLD
 	*/
@@ -1010,7 +1160,7 @@ runImmediately
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 2, 2, 2); // Attack: If my target is a minion, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied minion to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied minion and an enemy minion swap spaces.", SPELL_TYPE_OTHER);
-	CardSetup("Scout",					1, "Doomsayer",				3, 3, 3, 1); // Play: Your opponent draws a card.
+	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a minion, give it Decay.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
 	/*
 	SPACE
@@ -1030,7 +1180,6 @@ runImmediately
 		Proto | OnAttack | OnDeath | Description
 	*/
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Create a Fleeting Windsong.");
-	CardEvents("Hero Greek Heracles", 0, 0, 							"Pass: Put 2 Forest Rangers on top of your deck.");
 	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
 	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
@@ -1039,7 +1188,7 @@ runImmediately
 	CardEvents("Hero Greek Ajax", 0, 0, 								"Play: Summon a random 1-cost minion from your deck.");
 	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"Minions I kill don't trigger their Death effect.");
 	CardEvents("Physician", Keyword(ATTACK_SING), 0, 					"When I heal an ally that has acted, grant them another action.");
-	CardEvents("Hetairoi", 0, 0, 										"Play: Create an Explorer's Map.");
+	CardEvents("Hetairoi", 0, 0, 										"Play: Give an allied minion +1 speed and Pathfinder.");
 	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
@@ -1082,10 +1231,19 @@ runImmediately
 	CardEvents("Hero Greek Polyphemus", 0, 0, 							"Your Commander has Furious.");
 	
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
-	
+	CardEvents("Arkantos God", 0, 0,									"I have +1 health for each card in your deck.");
+
+	CardEvents("Dwarf", 0, Keyword(DEATH_GET_SCRAP),					"Death: Add a Scrap Metal to your hand.");
+	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
+	CardEvents("Throwing Axeman", 0, 0,									"Your minions cost 1 less.");
+	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random minion from your deck on my tile.");
+	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
+	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
+	CardEvents("Fire Siphon", 0, 0,										"At the start of your turn, grant me +1 attack.");
+	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
+
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
-
 	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
 	CardEvents("Axeman", 0, Keyword(DEATH_GET_ATTACK),					"Play and Death: Give your Commander +1 attack this turn.");
 	CardEvents("Anubite", 0, 0,											"Play: Deal 3 damage to your Commander.");
@@ -1102,6 +1260,7 @@ runImmediately
 	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
 	CardEvents("Scorpion Man", 0, 0,									"Play: Teleport an enemy minion to a tile next to me.");
 	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
+	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Scout", 0, 0,											"Play: Your opponent draws a card.");
 
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
@@ -1115,63 +1274,5 @@ runImmediately
 	
 	
 	xsDisableRule("initializeCards");
-}
-
-int getCardClass(int index = 0) {
-	return(1*xsFloor(index / 30));
-}
-/*
-we don't need this function. Just call dataSave() in dataLoad.c;
-*/
-void saveDeck() {
-	
-}
-
-int CardToProto(int card = 0) {
-	return(1*trQuestVarGet("CardToProto"+card));
-}
-
-int CardToSpell(int card = 0) {
-	return(1*trQuestVarGet("CardToSpell"+card));
-}
-
-int ProtoToCard(int proto = 0) {
-	return(1*trQuestVarGet("ProtoToCard"+proto));
-}
-
-int SpellToCard(int spell = 0) {
-	return(1*trQuestVarGet("SpellToCard"+spell));
-}
-
-int getCardCountCollection(int index = 0) {
-	return(1*trQuestVarGet("card_"+index+"_count") - trQuestVarGet("card_"+index+"_countInDeck"));
-}
-
-int getCardCountDeck(int index = 0) {
-	return(1*trQuestVarGet("card_"+index+"_countInDeck"));
-}
-
-void setCardCountCollection(int index = 0, int count = 0) {
-	trQuestVarSet("card_"+index+"_count", count);
-}
-
-void setCardCountDeck(int index = 0, int count = 0) {
-	trQuestVarSet("card_"+index+"_countInDeck", count);
-}
-
-void setDeckCommander(int commander = 0) {
-	trQuestVarSet("commander", commander);
-}
-
-int getDeckCommander() {
-	return(1*trQuestVarGet("commander"));
-}
-
-void setClassProgress(int class = 0, int progress = 0) {
-	trQuestVarSet("class"+class+"progress", progress);
-}
-
-int getClassProgress(int class = 0) {
-	return(1*trQuestVarGet("class"+class+"progress"));
 }
 

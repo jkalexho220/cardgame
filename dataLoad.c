@@ -115,7 +115,7 @@ void dataSave() {
 }
 
 void showLoadProgress(int p = 0) {
-	trSoundPlayFN("default","1",-1,""+100 * p / 22,"");
+	trSoundPlayFN("default","1",-1,""+100 * p / 22,"icons\god power reverse time icons 64");
 }
 
 rule data_load_00
@@ -182,7 +182,7 @@ inactive
 		trForbidProtounit(2, "Swordsman Hero");
 		ChatLog(1, "Mode:Singleplayer");
 		// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
-		if(trGetScenarioUserData(0) == 0){
+		if(trGetScenarioUserData(0) <= 0){
 			xsEnableRule("CinPrologue00");
 		} else {
 			xsEnableRule("Collection");

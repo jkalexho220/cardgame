@@ -290,6 +290,8 @@ inactive
 					cost = mGetVar(unit, "cost");
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+					} else {
+						cost = cost - trQuestVarGet("p"+p+"minionDiscount");
 					}
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 						cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -688,10 +690,12 @@ inactive
 					
 					teleportToTile(unit, tile);
 
-					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - mGetVar(unit, "cost"));
+					int cost = mGetVar(unit, "cost");
+					cost = xsMax(0, cost - trQuestVarGet("p"+p+"minionDiscount"));
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
-						trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + xsMin(mGetVar(unit, "cost"), trQuestVarGet("p"+p+"manaflow")));
+						cost = xsMax(0, mGetVar(unit, "cost") - trQuestVarGet("p"+p+"manaflow"));
 					}
+					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - cost);
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 
 					if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords")) == true) {
@@ -706,6 +710,7 @@ inactive
 					updateAuras();
 
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
+					zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 					yRemoveFromDatabase("p"+p+"hand");
 					yRemoveUpdateVar("p"+p+"hand", "pos");
 

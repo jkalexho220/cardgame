@@ -322,7 +322,7 @@ inactive
 {
 	if ((trTime()-cActivationTime) >= 4){
 		trOverlayTextColour(255, 255, 0);
-		trOverlayText("H E A V E N   G A M E S", 4.7, 500, 200, 1000);
+		trOverlayText("~ H E A V E N   G A M E S ~", 4.7, 516, 200, 1000);
 		trSoundPlayFN("xsentinelbirth.wav", "3", -1, "","");
 		trSoundPlayFN("cinematics\32_in\music.mp3", "15", -1, "","");
 		trModifyProtounit("Hero Greek Jason", 1, 1, 9999999999999999999.0);
@@ -330,6 +330,7 @@ inactive
 		trModifyProtounit("Hero Greek Jason", 1, 1, 10);
 		xsDisableRule("CinPrologue11");
 		xsEnableRule("CinPrologue12");
+		trUIFadeToColor(0,0,0,1000,6000,true);
    }
 }
 
@@ -338,15 +339,31 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 7){
+		trPaintTerrain(0, 0, 60, 60, 5, 4, false);
 		int next = trGetNextUnitScenarioNameNumber();
 		for(i=trQuestVarGet("idsStart");<next){
 			trUnitSelectClear();trUnitSelect(""+i);
 			trUnitDestroy();
 		}
-		trLetterBox(false);
 		xsDisableRule("CinPrologue12");
 		trQuestVarSet("missionSelection", -1);
-		trQuestVarSet("missionClass", -1);
+		trQuestVarSet("missionClass", -1);		
+		trQuestVarSet("newCommanderType", kbGetProtoUnitID("Hero Greek Jason"));
+		xsEnableRule("CinPrologue13");
+		xsEnableRule("NewCommander0");
+		trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
+		trLetterBox(false);
+		trShowImageDialog("icons/god power meteor icon", "Great Evil approaches! You must bring together the scattered Forumers!");	
+		trSoundPlayFN("xnew_objective.wav","1",-1,"","");
+	}
+}
+
+rule CinPrologue13
+highFrequency
+inactive
+{
+	if (trQuestVarGet("newCommanderType") == 0){
+		xsDisableRule("CinPrologue13");
 		xsEnableRule("MissionBegin");
 	}
 }

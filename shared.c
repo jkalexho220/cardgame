@@ -662,6 +662,7 @@ runImmediately
 		trModifyProtounit("Nidhogg", p, 2, -20);
 		trTechSetStatus(p, 7, 4); // heavy infantry
 		trTechSetStatus(p, 476, 4); // iron all
+		trTechSetStatus(p, 412, 4); // Iron wall
 	}
 
 	// Disable god powers
@@ -677,6 +678,14 @@ runImmediately
 	trPlayerSetDiplomacy(2, 0, "Neutral");
 	trPlayerSetDiplomacy(2, 1, "Enemy");
 	trPlayerSetDiplomacy(1, 2, "Enemy");
+
+	// Positions for pack cards
+	trVectorQuestVarSet("packPos0", xsVectorSet(117, 0, 7));
+	trVectorQuestVarSet("packPos1", xsVectorSet(117, 0, 3));
+	trVectorQuestVarSet("packPos2", xsVectorSet(113, 0, 3));
+	trVectorQuestVarSet("packPos3", xsVectorSet(115, 0, 9));
+	trVectorQuestVarSet("packPos4", xsVectorSet(111, 0, 9));
+	trVectorQuestVarSet("packPos5", xsVectorSet(111, 0, 5));
 
 	xsDisableRule("initializeEverything");
 }

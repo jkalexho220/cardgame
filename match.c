@@ -54,6 +54,7 @@ inactive
 			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
 		} else {
 			trQuestVarSet("p2done", 1);
+			xsEnableRule("MissionEnd");
 		}
 
 		xsEnableRule("match_02_mulligan");
@@ -129,6 +130,7 @@ inactive
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
+				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 			} else {
 				transferUnit("temp", "p"+p+"hand");
 			}
@@ -151,7 +153,15 @@ highFrequency
 inactive
 {
 	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") + trQuestVarGet("bossSpell") == 0) {
-		int p = 3 - trQuestVarGet("activePlayer");
+		int p = trQuestVarGet("activePlayer");
+		if (trQuestVarGet("p"+p+"borrowedTime") > 0) {
+			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
+		} else {
+			p = 3 - p;
+			if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
+				trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+			}
+		}
 		if ((trTime()-cActivationTime) >= trQuestVarGet("turnStartDelay")) {
 			if (trQuestVarGet("turnStartDone") == 0) {
 				trQuestVarSet("turnStartDone", 1);
@@ -209,7 +219,9 @@ inactive
 				trTechGodPower(p, "rain", 1);
 				trTechGodPower(p, "nidhogg", 1);
 		
-				if(Multiplayer == false && p == 2){
+				if(Multiplayer){
+					trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
+				} else if (p == 2) {
 					trQuestVarSet("botPhase", 0);
 					trQuestVarSet("botThinking", 0);
 					xsEnableRule("Bot_00_turn_start");
@@ -222,9 +234,7 @@ inactive
 					trQuestVarSet("p"+p+"guardianOfTheSea", 0);
 					mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), ARMORED));
 				}
-				if (p == 1) {
-					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
-				}
+
 				trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
 				trQuestVarSet("p"+p+"manaTax", 0);
 				trQuestVarSet("activePlayer", p);
@@ -233,14 +243,9 @@ inactive
 
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 
-				if(Multiplayer){
-					trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
-				}
-
 				updateMana();
 				removeDeadUnits();
 				updateAuras();
-
 				xsEnableRule("gameplay_01_select");
 				xsEnableRule("turn_01_end");
 				xsDisableRule("turn_00_start");
@@ -294,11 +299,25 @@ inactive
 			if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords")) && mGetVarByQV("allUnits", "player") == p) {
 				damageUnit(1*trQuestVarGet("allUnits"), 1);
 			}
+
 			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Hero Chinese Immortal")){
 				if(mGetVarByQV("allUnits", "player") == p){
 					mSetVarByQV("allUnits", "range", 2);
 				} else {
 					mSetVarByQV("allUnits", "range", 1);
+				}
+			}
+			
+			if (1*mGetVarByQV("allUnits", "player") == p) {
+				switch(1*mGetVarByQV("allUnits", "proto"))
+				{
+					case kbGetProtoUnitID("Guild"):
+					{
+						if (yGetDatabaseCount("p"+p+"hand") < 10) {
+							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
+						}
+						damageUnit(1*trQuestVarGet("allUnits"), 2);
+					}
 				}
 			}
 		}
@@ -366,6 +385,7 @@ inactive
 					type = mGetVarByQV("p"+p+"hand", "spell");
 					ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + type + "_name"));
 				}
+				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+p+"hand");
 				yRemoveUpdateVar("p"+p+"hand", "pos");
 			}

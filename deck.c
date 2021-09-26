@@ -26,6 +26,7 @@ void updateHandPlayable(int p = 0) {
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	int cost = 0;
+	trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
 	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45) - trCountUnitsInArea("128",3-p,"Argus",45));
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
@@ -97,8 +98,9 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 
 	// Find an empty position in the hand to place the unit.
 	for(x=zGetBankCount("p"+p+"handPos"); >0) {
-		int hand = zBankNext("p"+p+"handPos");
-		if (trCountUnitsInArea(""+hand,p,"All",2) - trCountUnitsInArea(""+hand,p,"Victory Marker",2)  == 0) {
+		zBankNext("p"+p+"handPos");
+		if (zGetVar("p"+p+"handPos", "occupied") == 0) {
+			zSetVar("p"+p+"handPos", "occupied", 1);
 			yAddUpdateVar("p"+p+"hand", "pos", trQuestVarGet("p"+p+"handPos"));
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));
@@ -122,7 +124,7 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 	if (spell > SPELL_NONE) {
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("next"), true);
-		float scale = xsSqrt(trQuestVarGet("spell_"+spell+"_cost")) * 0.5;
+		float scale = 0.2 + xsSqrt(trQuestVarGet("spell_"+spell+"_cost")) * 0.4;
 		trSetSelectedScale(0.75, scale, 0.75);
 		trUnitSetAnimationPath(1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
@@ -168,6 +170,7 @@ void drawCard(int p = 0, bool fleeting = false) {
 		yRemoveFromDatabase("p"+p+"deck");
 		yRemoveUpdateVar("p"+p+"deck", "spell");
 
+		updateRoxasHealth(p);
 		updateHandPlayable(p);
 		updateMana();
 	}

@@ -20,13 +20,30 @@ bool OnTurnStart(int unit = 0) {
 			drawCard(p, true);
 			return (true);
 		}
+		case kbGetProtoUnitID("Fire Siphon"):
+		{
+			mSetVar(unit, "attack", 1 + mGetVar(unit, "attack"));
+			return (true);
+		}
+		case kbGetProtoUnitID("Audrey"):
+		{
+			if(trQuestVarGet("maxMana") == 5){
+				mSetVar(unit, "keywords", SetBit(1*mGetVar(unit, "keywords"), REGENERATE));
+				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+				if(trQuestVarGet("chats_Audrey_0") == 0){
+					trQuestVarSet("chats_Audrey_0", 1);
+					ChatLog(0, "<color={Playercolor("+p+")}>Vora</color>: *plant noises*");
+				}					
+				return (true);				
+			}	
+		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			if(trQuestVarGet("pirateShipTarget" + unit) > -1){
-				trSoundPlayFN("meteorbighit.wav","1",-1,"","");
+				trSoundPlayFN("meteorbighit.wav","1",-1,"","");		
 				deployAtTile(0, "Meteor Impact Ground", 1*trQuestVarGet("pirateShipTarget" + unit));
 				int occupant = zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("pirateShipTarget" + unit));
-				ChatLog(0, "~~~" + occupant);
+				damageUnit(occupant, 8);
 				if(occupant < 1){
 					if(trQuestVarGet("chats_PirateShip_1") == 0){
 						trQuestVarSet("chats_PirateShip_1", 1);
@@ -136,6 +153,7 @@ bool OnTurnStart(int unit = 0) {
 				} else {
 					ChatLog((3-p), "Discarded " + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+(3-p)+"hand", "spell") + "_name"));
 				}
+				zSetVarByIndex("p"+(3-p)+"handPos", "occupied", 1*yGetVar("p"+(3-p)+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+(3-p)+"hand");
 				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");
 				if(trQuestVarGet("chats_Monument3_1") == 0){
