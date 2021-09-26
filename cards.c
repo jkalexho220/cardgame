@@ -912,8 +912,8 @@ runImmediately
 	CardSetup("Hero Chinese Immortal",	7, "Elven Champion",		5, 9, 2, 1, Keyword(GUARD) + Keyword(WARD), true);
 	CardEvents("Hero Chinese Immortal", 0, 0, 				"I have +1 Range during opponent's turn.");
 	CardSetup("Griffon",				4, "Soaring Griffy",		3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
-	CardSetup("Apep",					4, "Lurking Crocky",		6, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
-	CardSetup("Bear",					6, "Hungry Bear",			9, 7, 2, 1, 0, true);
+	CardSetup("Apep",					4, "Lurking Crocky",		4, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
+	CardSetup("Bear",					6, "Hungry Bear",			7, 7, 2, 1, 0, true);
 	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Whenever I kill an enemy I gain +2 Health.");
 	CardSetup("Pirate Ship",			10, "Stuck Pirate Ship",			0, 40, 0, 0, 0, true);
 	CardEvents("Pirate Ship", 0, 0, 						"Turn Start: Secretly choose an enemy tile, next turn deal 8 Damage there.");
