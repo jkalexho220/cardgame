@@ -38,9 +38,9 @@ Spells
 const int SPELL_NONE = 0;
 const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
 
-const int SPELL_TYPE_OFFENSIVE = 0;
 const int SPELL_TYPE_DEFENSIVE = 1;
 const int SPELL_TYPE_OTHER = 2;
+const int SPELL_TYPE_OFFENSIVE = 3;
 
 // Story
 const int SPELL_INTIMIDATE = 999;
