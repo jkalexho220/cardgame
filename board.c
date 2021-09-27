@@ -2,6 +2,8 @@ const int TERRAIN_GRASSLAND = 0;
 const int TERRAIN_DESERT = 1;
 const int TERRAIN_SNOW = 2;
 const int TERRAIN_TOWER = 3;
+const int TERRAIN_CAVE = 4;
+const int TERRAIN_MARSH = 5;
 
 const int T_GRASS_25 = 2;
 const int T_GRASS_50 = 3;
@@ -19,6 +21,14 @@ const int T_NORSE_ROAD = 66;
 const int T_FOREST_SNOW = 88;
 
 const int T_CITY_TILE = 70;
+
+const int T_FOREST_JUNGLE = 95;
+const int T_FOREST_MARSH = 94;
+const int T_MARSH_A = 58;
+const int T_CLIFF_JUNGLE_B = 24;
+
+const int T_HADES_BUILDABLE = 84;
+const int T_HADES_FOREST = 92;
 
 const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
@@ -102,7 +112,7 @@ void findAvailableTiles(int id = 0, int distance = 1, string db = "", bool ghost
 		if (trQuestVarGet("search"+pop+"distance") > 0) {
 			for (x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 				neighbor = zGetVarByIndex("tiles", "neighbor"+x, tile);
-				if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
+				if ((zGetVarByIndex("tiles", "searched", neighbor) == 0) && neighbor < trQuestVarGet("ztilesend")) {
 					zSetVarByIndex("tiles", "searched", neighbor, 1);
 					// Add to fringe if it can be moved through.
 					if(1*zGetVarByIndex("tiles", "terrain", neighbor) != TILE_OCCUPIED){
@@ -148,6 +158,8 @@ void chooseTerrainTheme(int terrain = 0) {
 	int tile = 0;
 	int val = 0;
 	int neighbor = 0;
+	bool done = false;
+	trQuestVarSet("treeScale", 1);
 	switch(terrain)
 	{
 		case TERRAIN_GRASSLAND:
@@ -158,6 +170,7 @@ void chooseTerrainTheme(int terrain = 0) {
 				zBankNext("tiles");
 				zSetVar("tiles", "searched", 0);
 			}
+			// Drawing random patches of dirt
 			for(i=trQuestVarGet("dimension"); >0) {
 				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
 				zSetVarByIndex("tiles", "searched", 1*trQuestVarGet("tile"), 1);
@@ -213,6 +226,63 @@ void chooseTerrainTheme(int terrain = 0) {
 			TODO: Terrain mixing for snow
 			*/
 		}
+		case TERRAIN_CAVE:
+		{
+			trStringQuestVarSet("treeType", "Stalagmite");
+			trQuestVarSet("treeTile", T_HADES_FOREST);
+			trPaintTerrain(0, 0, 59, 59, 0, T_HADES_BUILDABLE, false);
+			for(i=zGetBankCount("tiles"); >0) {
+				zBankNext("tiles");
+				zSetVar("tiles", "searched", 0);
+			}
+			// Drawing random strings of terrain
+			for(i=trQuestVarGet("dimension"); >0) {
+				done = false;
+				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
+				tile = 1*trQuestVarGet("tile");
+				zSetVarByIndex("tiles", "searched", tile, 1);
+				while(done == false) {
+					paintTile(tile, 3, 0);
+					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
+					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
+						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
+						trQuestVarSet("tile", neighbor);
+					} else {
+						done = true;
+					}
+				}
+			}
+		}
+		case TERRAIN_MARSH:
+		{
+			trStringQuestVarSet("treeType", "Marsh Tree");
+			trQuestVarSet("treeTile", T_FOREST_MARSH);
+			trQuestVarSet("treeScale", 1.5);
+			trPaintTerrain(0, 0, 59, 59, 0, T_MARSH_A, false);
+			for(i=zGetBankCount("tiles"); >0) {
+				zBankNext("tiles");
+				zSetVar("tiles", "searched", 0);
+			}
+			// Drawing random strings of terrain
+			for(i=trQuestVarGet("dimension"); >0) {
+				done = false;
+				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
+				tile = 1*trQuestVarGet("tile");
+				zSetVarByIndex("tiles", "searched", tile, 1);
+				while(done == false) {
+					paintTile(tile, 0, T_CLIFF_JUNGLE_B);
+					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
+					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
+						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
+						trQuestVarSet("tile", neighbor);
+					} else {
+						done = true;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -229,6 +299,8 @@ void paintTreesOnTile(int tile = 0) {
 		x = trQuestVarGet("posx") + trQuestVarGet("modx");
 		z = trQuestVarGet("posz") + trQuestVarGet("modz");
 		trArmyDispatch("1,10",trStringQuestVarGet("treeType"),1,x,0,z,trQuestVarGet("heading"), true);
+		trArmySelect("1,10");
+		trSetSelectedScale(trQuestVarGet("treeScale"), trQuestVarGet("treeScale"), trQuestVarGet("treeScale"));
 	}
 }
 

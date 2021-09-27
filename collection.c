@@ -225,7 +225,8 @@ int CommanderToProtounit(int commander = 0){
 			return (kbGetProtoUnitID("Circe"));
 		}
 	}
-	ThrowError("CommanderToProtounit");
+	return (commander);
+	//ThrowError("CommanderToProtounit");
 }
 
 void CollectionCommander(int commander = 0, int x = 0, int z = 0){
@@ -382,27 +383,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Nothing Left But Revenge");	
+					return ("The Old Lands");	
 				}
 				case 2:
 				{
-					return ("Eyes Behind The Veil");	
+					return ("Den of Spiders");	
 				}
 				case 3:
 				{
-					return ("The Master Answered");	
+					return ("Nightfall");	
 				}
 				case 4:
 				{
-					return ("Sky Melts Downwards");	
+					return ("Crossing Over");	
 				}
 				case 5:
 				{
-					return ("Air Turns To Formless Flesh");	
+					return ("The Otherworld");	
 				}
 				case 6:
 				{
-					return ("Moment Of Hesitation");	
+					return ("Zeno's Paradox");	
 				}
 			}
 		}

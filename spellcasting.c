@@ -493,6 +493,9 @@ inactive
 								break;
 							}
 						}
+						if (tile >= trQuestVarGet("ztilesend")) {
+							found = false;
+						}
 					}
 				}
 			}

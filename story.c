@@ -1,3 +1,34 @@
+/*
+These are functions are called to play the storyline
+CinematicReset();
+CinematicAdd("icons/infantry g hoplite icon 64", "pen island");
+CinematicStart();
+*/
+
+void CinematicReset() {
+	trQuestVarSet("cinematicStep", 0);
+	trQuestVarSet("cinematicLength", 0);
+}
+
+/*
+i = icon
+s = string text
+*/
+void CinematicAdd(string i = "", string s = "") {
+	trQuestVarSet("cinematicLength", 1 + trQuestVarGet("cinematicLength"));
+	trStringQuestVarSet("cinematicImage"+1*trQuestVarGet("cinematicLength"), i);
+	trStringQuestVarSet("cinematicText"+1*trQuestVarGet("cinematicLength"), s);
+}
+
+/*
+m = music filename
+*/
+void CinematicStart(string m = "") {
+	trMusicPlay(m, "1", 0);
+	xsEnableRule("Story_Cinematic_Play");
+}
+
+
 void AddToCustomBoard(int tile = 0, int terrain = 0, string proto = "", int count = 1, int heading = 45, int scale = 1){
 	yAddToDatabase("customBoard", "thisDoesNotMatterRight");
 	yAddUpdateVar("customBoard", "tile", tile);
@@ -121,7 +152,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_PARTY_UP);
 						addCardToDeck(2, "", SPELL_DUEL);
 						addCardToDeck(2, "", SPELL_VICTORY);
-					}						
+					}				
 				}
 				case 3:
 				{
@@ -548,11 +579,45 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 5);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Tartarian Gate"));
+					for(x=0;<10){
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Dryad");
+					}	
+					for(x=0;<5){
+						addCardToDeck(2, "", SPELL_FINAL_FRENZY);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+						addCardToDeck(2, "Mummy");
+					}	
+					for(x=0;<3){
+						addCardToDeck(2, "Shade");
+						addCardToDeck(2, "", SPELL_DUEL);
+					}
 				}
 				case 2:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_CAVE);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Einheriar"));
+					for(x=0;<10){
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Dryad");
+					}	
+					for(x=0;<5){
+						addCardToDeck(2, "", SPELL_FINAL_FRENZY);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+						addCardToDeck(2, "Mummy");
+					}	
+					for(x=0;<3){
+						addCardToDeck(2, "Shade");
+						addCardToDeck(2, "", SPELL_DUEL);
+					}
 				}
 				case 3:
 				{
@@ -739,7 +804,6 @@ inactive
 		trPlayerKillAllGodPowers(2);
 		trUIFadeToColor(0,0,0,1000,1000,true);
 		xsDisableRule("Bot1");
-		xsDisableRule("Bot2");
 		xsDisableRule("gameplay_01_select");
 		xsDisableRule("gameplay_02_work");
 		xsDisableRule("gameplay_03_moveComplete");
@@ -1192,6 +1256,27 @@ inactive
    }
 }
 
+rule Story_Cinematic_Play
+highFrequency
+inactive
+{
+	trQuestVarSet("cinematicStep", 1 + trQuestVarGet("cinematicStep"));
+	int x = trQuestVarGet("cinematicStep");
+	trShowImageDialog(trStringQuestVarGet("cinematicImage"+x), trStringQuestVarGet("cinematicText"+x));
+	xsDisableSelf();
+	trDelayedRuleActivation("Story_Cinematic_Next");
+}
+
+rule Story_Cinematic_Next
+highFrequency
+inactive
+{
+	if (trQuestVarGet("cinematicStep") < trQuestVarGet("cinematicLength")) {
+		trDelayedRuleActivation("Story_Cinematic_Play");
+	}
+	xsDisableSelf();
+}
+
 rule StoryTutorial0
 highFrequency
 inactive
@@ -1416,4 +1501,21 @@ inactive
 		trShowImageDialog("icons/Special G Circe Icon 64", "*You feel a large amount of fear!*");	
 		trSoundPlayFN("xattackwarning.wav","1",-1,"","");	
    }
+}
+
+// Otherworld Missions
+
+rule StoryClass4Mission1
+highFrequency
+inactive
+{
+	xsDisableSelf();
+	CinematicReset();
+	CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
+	CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
+	CinematicAdd("icons/hero g jason icon 64", "What? Who are you ?");
+	CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
+	CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
+	CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+	CinematicStart();
 }

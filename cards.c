@@ -932,6 +932,10 @@ runImmediately
 	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane minion and play a random Arcane spell.");
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
+
+	CardSetup("Tartarian Gate",			5, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true); 
+	CardEvents("Tartarian Gate", 0, 0,	"At the start of your turn, draw a card and set its cost to 0.");
+
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
@@ -1002,7 +1006,7 @@ runImmediately
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a minion.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
-	CardSetup("Priest",					4, "Magic Teacher",		1, 2, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
+	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
 	CardSetup("Swordsman Hero",			3, "Spellsword",		0, 3, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
@@ -1039,7 +1043,7 @@ runImmediately
 	// 60-64
 	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
-	CardSetup("Archer Atlantean",		4, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
+	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive minion.
 	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
 	// 65-69
@@ -1062,7 +1066,7 @@ runImmediately
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
-	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Archer Atlantean",		4, "Undercity Sniper",		1, 3, 2, 3); // Whenever your Commander attacks an enemy, I attack it too.
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
 	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
@@ -1135,7 +1139,7 @@ runImmediately
 	CardSetup("Spearman",				1, "Cultist",				1, 1, 2, 1); // Death: Summon a Zombie on my tile.
 	CardSetup("Shade",					2, "Vengeful Spirit",		1, 2, 2, 1, Keyword(GUARD) + Keyword(DEADLY));
 	CardSetup("Axeman",					2, "Executioner",			3, 1, 2, 1); // Play and Death: Give your Commander +1 attack this turn.
-	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE));
+	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied minion to draw 2 cards.", SPELL_TYPE_OTHER);
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
 	CardSetup("Prodromos",				3, "Pillager",				3, 1, 3, 1); // Death: Draw a card.
@@ -1152,7 +1156,7 @@ runImmediately
 	// 135-139
 	CardSetup("Spider Egg",				3, "Festering Egg",			0, 3, 0, 0, Keyword(DECAY)); // Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.
 	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A minion attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
-	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied minion to draw 2 cards.", SPELL_TYPE_OTHER);
+	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE));
 	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied minion and an enemy.", SPELL_TYPE_OTHER);
 	SpellSetup("Death Approaches",		4, SPELL_DEATH_APPROACHES,	"Summon a 4|3 Shadow Elemental with Ambush on a tile next to the enemy Commander.", SPELL_TYPE_OTHER);
 	// 140-144
@@ -1266,7 +1270,7 @@ runImmediately
 	CardEvents("Spider Egg", 0, Keyword(DEATH_SUMMON_BEETLE),			"Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.");
 	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
-	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_ZOMBIE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
+	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 
 	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");

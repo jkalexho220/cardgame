@@ -63,6 +63,14 @@ bool OnTurnStart(int unit = 0) {
 			}
 			return (true);
 		}
+		case kbGetProtoUnitID("Tartarian Gate"):
+		{
+			target = yGetDatabaseCount("p"+p+"hand");
+			drawCard(p);
+			if (target < 10) {
+				mSetVarByQV("next", "cost", 0);
+			}
+		}
 		case kbGetProtoUnitID("Audrey"):
 		{
 			if(trQuestVarGet("maxMana") == 5){
