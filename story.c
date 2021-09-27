@@ -938,11 +938,8 @@ inactive
 					}
 				}
 				/* Reward Pack Cards */
-				if(trQuestVarGet("missionSelection") == 1){
-					trQuestVarSet("newCardsCount", 3);
-				} else {
-					trQuestVarSet("newCardsCount", 6);
-				}
+				trVectorQuestVarSet("packPos", xsVectorSet(105, 0, 1));
+				trQuestVarSet("newCardsCount", 2 + trQuestVarGet("missionSelection"));
 				
 				xsEnableRule("NewCards0");
 				xsEnableRule("CollectionClick");
@@ -986,7 +983,8 @@ inactive
 						}
 					}			
 					trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
-					trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("packPos" + i),0,trVectorQuestVarGetZ("packPos" + i),315,true);
+					trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("packPos"),0,trVectorQuestVarGetZ("packPos"),315,true);
+					trVectorQuestVarSet("packPos", xsVectorSet(trVectorQuestVarGetX("packPos") + 2, 0, trVectorQuestVarGetZ("packPos") + 2));
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("next"), true);
 					trUnitChangeProtoUnit("Cinematic Block");
@@ -1041,7 +1039,6 @@ inactive
 		trFadeOutAllSounds(0.0);
 		trFadeOutMusic(0.0);
 		MusicLow();
-		trArmyDispatch("1,10","Rugs",1,109,0,1,0,true);
 	}
 }
 
@@ -1079,7 +1076,6 @@ inactive
 		trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 		xsEnableRule("NewCardsEffect_");
 	} else {
-		unitTransform("Rugs", "Fireball Launch Damage Effect");
 		xsEnableRule("NewCardsClick");
 	}
 	xsDisableRule("NewCardsEffect");
@@ -1123,7 +1119,8 @@ inactive
 				if(yGetVar("allUnits","legendary") == 1){
 					trCameraShake(1.0, 0.1);
 					trSoundPlayFN("meteorbighit.wav","1",-1,"","");
-					DeploySober("Meteor Impact Ground", "packPos" + 1*yGetVar("allUnits","pos"));
+					trVectorSetUnitPos("temp", "allUnits");
+					DeploySober("Meteor Impact Ground", "temp");
 					trSoundPlayFN("Heaven Games\legendary.wav", "3", -1, "","");
 				}
 				trQuestVarSet("newCardsCount", trQuestVarGet("newCardsCount") - 1);
