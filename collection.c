@@ -176,54 +176,6 @@ int CommanderToProtounit(int commander = 0){
 		{
 			return (kbGetProtoUnitID("Caravan Atlantean"));
 		}
-		case 900:
-		{
-			return (kbGetProtoUnitID("Automaton"));
-		}
-		case 901:
-		{
-			return (kbGetProtoUnitID("Bear"));
-		}
-		case 902:
-		{
-			return (kbGetProtoUnitID("General Melagius"));
-		}
-		case 903:
-		{
-			return (kbGetProtoUnitID("Shaba Ka"));
-		}
-		case 904:
-		{
-			return (kbGetProtoUnitID("Qilin"));
-		}
-		case 905:
-		{
-			return (kbGetProtoUnitID("Audrey"));
-		}
-		case 906:
-		{
-			return (kbGetProtoUnitID("Golem"));
-		}
-		case 907:
-		{
-			return (kbGetProtoUnitID("Pharaoh Secondary"));
-		}
-		case 908:
-		{
-			return (kbGetProtoUnitID("King Folstag"));
-		}
-		case 909:
-		{
-			return (kbGetProtoUnitID("Hero Boar"));
-		}
-		case 910:
-		{
-			return (kbGetProtoUnitID("Setna"));
-		}
-		case 911:
-		{
-			return (kbGetProtoUnitID("Circe"));
-		}
 	}
 	return (commander);
 	//ThrowError("CommanderToProtounit");

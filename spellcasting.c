@@ -801,8 +801,8 @@ void chooseSpell(int spell = 0, int card = -1) {
 		}
 		case SPELL_TEAMWORK:
 		{
-			castAddUnit("spellTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castAddUnit("cheerTarget", p, false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_DEFENDER:
 		{
@@ -1179,6 +1179,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
+		case SPELL_TAVERN_BRAWL:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on a tile to cast. Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1441,21 +1446,8 @@ inactive
 			}
 			case SPELL_TEAMWORK:
 			{
-				trSoundPlayFN("specialist.wav","1",-1,"","");
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
-				trVectorSetUnitPos("pos", "spellTarget");
-				trQuestVarSet("spellTarget", checkGuard(1*trQuestVarGet("spellTarget")));
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					activeUnit = yDatabaseNext("allUnits");
-					if (mGetVar(activeUnit, "player") == p) {
-						dist = zDistanceToVectorSquared("allUnits", "pos");
-						if (dist < xsPow(mGetVar(activeUnit, "range") * 6 + 1, 2)) {
-							startAttack(activeUnit, 1*trQuestVarGet("spellTarget"), false, true);
-						}
-					}
-				}
-				done = false;
-				xsEnableRule("spell_attack_complete");
+				xsEnableRule("cheer_activate"); // this trigger is placed in OnPlay lol
 			}
 			case SPELL_DEFENDER:
 			{
@@ -2334,6 +2326,24 @@ inactive
 						mSetVarByQV("next", "keywords", Keyword(DECAY) + Keyword(AIRDROP));
 					}
 				}
+			}
+			case SPELL_TAVERN_BRAWL:
+			{
+				trSoundPlayFN("specialist.wav","1",-1,"","");
+				trSoundPlayFN("chaos.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					activeUnit = yDatabaseNext("allUnits");
+					trQuestVarSet("pointer", yGetPointer("allUnits"));
+					trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("allUnits") - 1, true);
+					for(y=trQuestVarGet("temp"); > 1) {
+						yDatabaseNext("allUnits");
+					}
+					target = yDatabaseNext("allUnits");
+					startAttack(activeUnit, target, HasKeyword(AMBUSH, 1*mGetVar(activeUnit, "keywords")), true);
+					ySetPointer("allUnits", trQuestVarGet("pointer"));
+				}
+				done = false;
+				xsEnableRule("spell_attack_complete");
 			}
 		}
 

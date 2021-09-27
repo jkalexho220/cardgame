@@ -70,6 +70,7 @@ bool OnTurnStart(int unit = 0) {
 			if (target < 10) {
 				mSetVarByQV("next", "cost", 0);
 			}
+			return(true);
 		}
 		case kbGetProtoUnitID("Audrey"):
 		{
@@ -82,6 +83,35 @@ bool OnTurnStart(int unit = 0) {
 				}					
 				return (true);				
 			}	
+		}
+		case kbGetProtoUnitID("Shaba Ka"):
+		{
+			trQuestVarSet("p1count", 0);
+			trQuestVarSet("p2count", 0);
+			if(trQuestVarGet("chats_Kemsyt_0") == 0){
+				trQuestVarSet("chats_Kemsyt_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
+				trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
+			}
+			for (x=yGetDatabaseCount("allUnits"); >0)  {
+				yDatabaseNext("allUnits");
+				p = yGetVar("allUnits", "player");
+				trQuestVarSet("p"+p+"count", 1 + trQuestVarGet("p"+p+"count"));
+			}
+			if (trQuestVarGet("p1count") > trQuestVarGet("p2count")) {
+				p = 1;
+			} else {
+				p = 2;
+			}
+			trQuestVarSetFromRand("temp", 1, 3, true);
+			if(trQuestVarGet("temp") == 1){
+				generateCard(p, 0, SPELL_BOOTS_TREASURE);	
+			} else if(trQuestVarGet("temp") == 2){
+				generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
+			} else {
+				generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
+			}
+			return(true);
 		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{

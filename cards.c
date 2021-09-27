@@ -58,7 +58,7 @@ const int SPELL_PYROBALL = 988;
 const int SPELL_MIRROR_REFLECTION = 987;
 
 
-
+const int SPELL_TAVERN_BRAWL = 801;
 const int SPELL_SPIDER_LAIR = 800;
 // Heap
 
@@ -882,7 +882,7 @@ runImmediately
 	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("General Melagius", Keyword(ATTACK_RALLY), 0,	"Attack: If it's my turn, give allied minions +1 Attack.");
 	CardSetup("Shaba Ka",				0, "Mister Pirate", 			2, 20, 2, 1, Keyword(BEACON), true);
-	CardEvents("Shaba Ka", 0, 0,	"After I play a minion create a random Treasure.");
+	CardEvents("Shaba Ka", 0, 0,	"At the start of your turn, the player with the most units gets a random treasure.");
 	CardSetup("Qilin",					0, "Forest Protector",		2, 40, 2, 1, Keyword(BEACON), true);
 	CardEvents("Qilin", Keyword(ATTACK_DRAW_CARD_ENEMY_COST), 0, 	"Attack: Draw a card. Reduce its cost by the number of enemies.");
 	CardSetup("Audrey",					0, "Vora",					2, 20, 0, 1, Keyword(BEACON) + Keyword(DEADLY), true);
@@ -913,6 +913,8 @@ runImmediately
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
 
+
+	SpellSetup("Tavern Brawl",			4, SPELL_TAVERN_BRAWL,		"Every unit attacks another one at random, regardless of distance.", SPELL_TYPE_OTHER, 0, true);
 
 	SpellSetup("Bug Infestation",		2, SPELL_SPIDER_LAIR,		"Add 3 Festering Eggs to your hand. They cost 0 and have Airdrop.", SPELL_TYPE_OTHER, 0, true);
 	
@@ -984,7 +986,7 @@ runImmediately
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"Draw 3 cards that cost 1 Mana.", SPELL_TYPE_OTHER);
-	SpellSetup("Teamwork", 				3, SPELL_TEAMWORK, 		"Choose an enemy minion. All allies within range attack it.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Activate an allied minion's Play effect.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)

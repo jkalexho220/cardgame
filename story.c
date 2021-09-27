@@ -75,7 +75,7 @@ void SetupMission(int class = 0, int mission = 0){
 			AddToCustomBoard(254, TILE_EMPTY, "Wood Pile 3", 1, 105, 2);
 			/* Opponent */
 			InitBot(BOT_PERSONALITY_TRAINING);
-			trQuestVarSet("p2commanderType", 900);
+			trQuestVarSet("p2commanderType", kbGetProtoUnitID("Automaton"));
 			for(x=0;<40){
 				addCardToDeck(2, "Swordsman");
 			}	
@@ -125,7 +125,7 @@ void SetupMission(int class = 0, int mission = 0){
 					AddToCustomBoard(155, TILE_IMPASSABLE, "Berry Bush", 3);
 					AddToCustomBoard(177, TILE_IMPASSABLE, "Berry Bush", 3);			
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 901);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Bear"));
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_INTIMIDATE);
 					}				
@@ -137,22 +137,23 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 6);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 902);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("General Melagius"));
 					for(x=0;<6){
 						addCardToDeck(2, "Swordsman");
 						addCardToDeck(2, "Bondi");
 						addCardToDeck(2, "Toxotes");
 					}	
-					for(x=0;<5){
+					for(x=0;<4){
 						addCardToDeck(2, "", SPELL_DEFENDER);
 						addCardToDeck(2, "Trident Soldier");
 					}	
 					for(x=0;<3){
 						addCardToDeck(2, "Huskarl");
+						addCardToDeck(2, "Hero Greek Ajax");
 						addCardToDeck(2, "", SPELL_PARTY_UP);
 						addCardToDeck(2, "", SPELL_DUEL);
 						addCardToDeck(2, "", SPELL_VICTORY);
-					}				
+					}
 				}
 				case 3:
 				{
@@ -161,7 +162,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 6);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 904);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
 					for(x=0;<6){
 						addCardToDeck(2, "Wolf");
 						addCardToDeck(2, "Apep");
@@ -283,7 +284,7 @@ void SetupMission(int class = 0, int mission = 0){
 					}
 					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 903);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Shaba Ka"));
 					for(x=0;<6){
 						addCardToDeck(2, "Bondi");
 						addCardToDeck(2, "Khopesh");
@@ -304,7 +305,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 905);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Audrey"));
 					for(x=0;<10){
 						addCardToDeck(2, "Audrey Water");
 					}
@@ -337,7 +338,7 @@ void SetupMission(int class = 0, int mission = 0){
 						}
 					}
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 904);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
 					for(x=0;<5){
 						addCardToDeck(2, "Wolf");
 						addCardToDeck(2, "Ornlu");
@@ -383,7 +384,7 @@ void SetupMission(int class = 0, int mission = 0){
 					AddToCustomBoard(174, TILE_OCCUPIED, "Columns", 1, 45, 2);
 					AddToCustomBoard(172, TILE_OCCUPIED, "Columns", 1, 45, 2);											
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 906);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Golem"));
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_GROUND_STOMP);
 					}		
@@ -395,7 +396,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 7);		
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 907);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Pharaoh Secondary"));
 					for(x=0;<5){
 						addCardToDeck(2, "Slinger");
 						addCardToDeck(2, "Monument");	
@@ -419,7 +420,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 908);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("King Folstag"));
 					for(x=0;<6){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Monument");	
@@ -440,7 +441,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 2);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 909);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Boar"));
 					for(x=0;<4){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Centaur");						
@@ -464,7 +465,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);							
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 910);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Setna"));
 					for(x=0;<3){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Slinger");
@@ -493,7 +494,7 @@ void SetupMission(int class = 0, int mission = 0){
 						AddToCustomBoard(x, TILE_OCCUPIED, "Mist", 1, 0, 1);	
 					}					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 911);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Circe"));
 					for(x=0;<3){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Slinger");

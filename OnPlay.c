@@ -17,21 +17,6 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
-	if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p" + p + "commander"))) == kbGetProtoUnitID("Shaba Ka")){
-		trQuestVarSetFromRand("temp", 1, 3, true);			
-		if(trQuestVarGet("temp") == 1){
-			generateCard(p, 0, SPELL_BOOTS_TREASURE);	
-		} else if(trQuestVarGet("temp") == 2){
-			generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
-		} else {
-			generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
-		}
-		if(trQuestVarGet("chats_Kemsyt_0") == 0){
-			trQuestVarSet("chats_Kemsyt_0", 1);
-			ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
-			trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
-		}
-	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):
@@ -365,4 +350,12 @@ void OnPlay(int unit = 0) {
 		xsEnableRule("gameplay_01_select");
 		highlightReady(999999);
 	}
+}
+
+rule cheer_activate
+highFrequency
+inactive
+{
+	xsDisableSelf();
+	OnPlay(1*trQuestVarGet("cheerTarget"));
 }
