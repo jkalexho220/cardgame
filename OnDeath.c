@@ -106,6 +106,8 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_SUMMON_BEETLE:
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Scarab");
+			trQuestVarSetFromRand("sound", 1, 2, true);
+			trSoundPlayFN("spiders"+1*trQuestVarGet("sound")+".wav","1",-1,"","");
 		}
 	}
 	return (checkAgain);

@@ -584,7 +584,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Tartarian Gate"));
-					for(x=0;<10){
+					for(x=0;<8){
 						addCardToDeck(2, "Walking Woods Marsh");
 						addCardToDeck(2, "Dryad");
 					}	
@@ -592,11 +592,14 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_FINAL_FRENZY);
 						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
 						addCardToDeck(2, "Mummy");
-					}	
+					}
 					for(x=0;<3){
 						addCardToDeck(2, "Shade");
 						addCardToDeck(2, "", SPELL_DUEL);
+						addCardToDeck(2, "", SPELL_DEFENDER);
 					}
+					trQuestVarSet("p2class1", 4);
+					trQuestVarSet("p2class2", 0);
 				}
 				case 2:
 				{
@@ -605,23 +608,48 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_CAVE);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Einheriar"));
-					for(x=0;<10){
-						addCardToDeck(2, "Walking Woods Marsh");
-						addCardToDeck(2, "Dryad");
+					for(x=0;<6){
+						addCardToDeck(2, "", SPELL_SOUL_SIPHON);
+						addCardToDeck(2, "", SPELL_RUNE_OF_DARKNESS);
+						addCardToDeck(2, "Prodromos");
+						addCardToDeck(2, "Spearman");
 					}	
-					for(x=0;<5){
-						addCardToDeck(2, "", SPELL_FINAL_FRENZY);
-						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
-						addCardToDeck(2, "Mummy");
+					for(x=0;<9){
+						addCardToDeck(2, "", SPELL_SPIDER_LAIR);
 					}	
 					for(x=0;<3){
-						addCardToDeck(2, "Shade");
-						addCardToDeck(2, "", SPELL_DUEL);
+						addCardToDeck(2, "", SPELL_POISON_CLOUD);
+						addCardToDeck(2, "", SPELL_BLOOD_PRICE);
+						addCardToDeck(2, "Argus");
 					}
+					trQuestVarSet("p2class1", 4);
+					trQuestVarSet("p2class2", 4);
 				}
 				case 3:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 7);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Achilles"));
+					for(x=0;<6){
+						addCardToDeck(2, "Bogsveigir");
+						addCardToDeck(2, "Dryad");
+						addCardToDeck(2, "Manticore");
+					}	
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_DOOM);
+						addCardToDeck(2, "", SPELL_METEOR);
+						addCardToDeck(2, "Argus");
+						addCardToDeck(2, "", SPELL_EXPLOSION);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+						addCardToDeck(2, "Mummy");
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Axeman");
+						addCardToDeck(2, "Tartarian Gate");
+					}
+					trQuestVarSet("p2class1", 4);
+					trQuestVarSet("p2class2", 1);
 				}
 				case 4:
 				{
@@ -760,12 +788,11 @@ inactive
 			setDeckCommander(0);
 		} else {
 			trOverlayText(collectionMission, 4.7, 500, 200, 1000);
-			if(trQuestVarGet("missionHardmode") == 0){
-				xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
-			} else {
+			if(trQuestVarGet("missionHardmode") == 1){
 				trQuestVarSet("p2commander", -1);
 				xsEnableRule("HardmodeCommander");
 			}
+			xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
 			if(trQuestVarGet("missionClass") == 0 && trQuestVarGet("missionSelection") == 3){
 				xsEnableRule("StoryClass0Mission3_");
 			}
@@ -1513,9 +1540,77 @@ inactive
 	CinematicReset();
 	CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
 	CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-	CinematicAdd("icons/hero g jason icon 64", "What? Who are you ?");
+	CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
 	CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
 	CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
 	CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
 	CinematicStart();
+}
+
+rule StoryClass4Mission2
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "So where is Zenophobia?");
+		CinematicAdd("icons/hero g perseus icon 64", "He is in the Otherworld.");
+		CinematicAdd("icons/hero g jason icon 64", "What?! We have to go there to meet him?!");
+		CinematicAdd("icons/hero g perseus icon 64", "That is correct.");
+		CinematicAdd("icons/hero g jason icon 64", "Can't he come out here instead? I really don't want to face more of those things.");
+		CinematicAdd("icons/hero g perseus icon 64", "It depends on his mood, really.");
+		CinematicStart();
+		mSetVarByQV("p2commander", "health", 12);
+		mSetVarByQV("p2commander", "attack", 1);
+		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
+		if (trQuestVarGet("missionHardmode") == 1) {
+			for(x=3; >0) {
+				trQuestVarSetFromRand("temp", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend") - 1, true);
+				int tile = trQuestVarGet("temp");
+				while (zGetVarByIndex("tiles", "occupant", tile) + zGetVarByIndex("tiles", "terrain", tile) > 0) {
+					trQuestVarSetFromRand("temp", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend") - 1, true);
+					tile = trQuestVarGet("temp");
+				}
+				summonAtTile(tile, 2, kbGetProtoUnitID("Spider Egg"));
+			}
+		}
+	}
+}
+
+rule StoryClass4Mission3
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g perseus icon 64", "This is bad. Night approaches. We must hurry.");
+		CinematicAdd("icons/hero g jason icon 64", "What happens when night falls?");
+		CinematicAdd("icons/hero g perseus icon 64", "You don't want to know. Let's just get to the portal as soon as possible.");
+		CinematicStart();
+		mSetVarByQV("p2commander", "health", 20);
+		mSetVarByQV("p2commander", "attack", 2);
+		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
+		trSetLighting("dusk", 0.1);
+		xsEnableRule("StoryClass4Mission3_Decay");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			for(x=3; >0) {
+				addCardToDeck(2, "Tartarian Gate");
+			}
+			summonAtTile(222, 2, kbGetProtoUnitID("Argus"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Argus"));
+		}
+	}
+}
+
+rule StoryClass4Mission3_Decay
+highFrequency
+inactive
+{
+	if (trQuestVarGet("activePlayer") == 2) {
+		xsDisableSelf();
+		OnPlay(1*trQuestVarGet("p2commander"));
+		ChatLog(1, "<color={Playercolor(2)}>You have been inflicted with Decay!</color>");
+	}
 }

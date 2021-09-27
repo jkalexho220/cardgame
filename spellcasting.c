@@ -1174,6 +1174,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddDirection("spellDirection", "spellCaster", true);
 			castInstructions("Choose a direction to aim the Directional Cannon");
 		}
+		case SPELL_SPIDER_LAIR:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -2318,6 +2323,18 @@ inactive
 				trUnitHighlight(0.5, false);
 				trSoundPlayFN("storehouse.wav","1",-1,"","");
 			}
+			case SPELL_SPIDER_LAIR:
+			{
+				trSoundPlayFN("spiderscast.wav","1",-1,"","");
+				for (x=3; >0) {
+					target = yGetDatabaseCount("p"+p+"hand");
+					generateCard(p, kbGetProtoUnitID("Spider Egg"), 0, false);
+					if (target < 10) {
+						mSetVarByQV("next", "cost", 0);
+						mSetVarByQV("next", "keywords", Keyword(DECAY) + Keyword(AIRDROP));
+					}
+				}
+			}
 		}
 
 		if (trQuestVarGet("selectedCard") >= 0) {
@@ -2816,6 +2833,14 @@ inactive
 					if (yDatabaseNext("p"+p+"deck") == mGetVarByQV("spellTarget", "proto")) {
 						yRemoveFromDatabase("p"+p+"deck");
 						yRemoveUpdateVar("p"+p+"deck", "spell");
+					}
+				}
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits", true);
+					if (mGetVarByQV("allUnits", "player") == p) {
+						if (mGetVarByQV("allUnits", "proto") == mGetVarByQV("spellTarget", "proto")) {
+							damageUnit(1*trQuestVarGet("allUnits"), 100);
+						}
 					}
 				}
 			}

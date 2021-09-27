@@ -57,6 +57,11 @@ const int SPELL_FROST_BREATH = 989;
 const int SPELL_PYROBALL = 988;
 const int SPELL_MIRROR_REFLECTION = 987;
 
+
+
+const int SPELL_SPIDER_LAIR = 800;
+// Heap
+
 // Adventurer
 const int SPELL_FIRST_AID = 2;
 const int SPELL_FOOD = 3;
@@ -907,6 +912,9 @@ runImmediately
 	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
+
+
+	SpellSetup("Bug Infestation",		2, SPELL_SPIDER_LAIR,		"Add 3 Festering Eggs to your hand. They cost 0 and have Airdrop.", SPELL_TYPE_OTHER, 0, true);
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
@@ -933,7 +941,7 @@ runImmediately
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
 
-	CardSetup("Tartarian Gate",			5, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true); 
+	CardSetup("Tartarian Gate",			4, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true); 
 	CardEvents("Tartarian Gate", 0, 0,	"At the start of your turn, draw a card and set its cost to 0.");
 
 	//Pick a card. Any card.
