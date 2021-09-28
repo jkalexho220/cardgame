@@ -646,7 +646,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
 						addCardToDeck(2, "Mummy");
 						addCardToDeck(2, "Walking Woods Marsh");
-						addCardToDeck(2, "Axeman");
+						addCardToDeck(2, "Theris");
 						addCardToDeck(2, "Tartarian Gate");
 					}
 					trQuestVarSet("p2class1", 4);
@@ -654,11 +654,73 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 4:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 8);
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 2, 7, false);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_HADES_BUILDABLE);
+					trQuestVarSet("customTerrainEmptyNot", T_HADES_FOREST);
+					/* Walls */
+					AddToCustomBoard(285, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					AddToCustomBoard(244, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					AddToCustomBoard(209, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					for (x=180; >= 165) {
+						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					}
+					for (x=188; >= 183) {
+						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					}
+
+					summonAtTile(236, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(219, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(248, 2, kbGetProtoUnitID("Tartarian Gate"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+
+					for(x=0;<6){
+						addCardToDeck(2, "Fire Giant");
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Dryad");
+						addCardToDeck(2, "Argus");
+						addCardToDeck(2, "Venom Pet");
+						addCardToDeck(2, "Pharaoh");
+					}
+					for(x=0; <20) {
+						addCardToDeck(2, "Anubite");
+						addCardToDeck(2, "Minion");
+					}
+					trQuestVarSet("p2class1", 4);
+					trQuestVarSet("p2class1", 2);
 				}
 				case 5:
 				{
-					trQuestVarSet("dimension", 8);		
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Theris"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Theris"));
+
+
+					for(x=0;<6){
+						addCardToDeck(2, "Female");
+						addCardToDeck(2, "Archer Atlantean");
+					}
+
+					for(x=0;<3) {
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "Bireme");
+						addCardToDeck(2, "Hippocampus");
+						addCardToDeck(2, "Scylla");
+						addCardToDeck(2, "Mummy");
+						addCardToDeck(2, "Apep");
+						addCardToDeck(2, "Sea Turtle");
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+					}
+					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+					addCardToDeck(2, "Hero Greek Achilles");
+					trQuestVarSet("p2class1", 4);
+					trQuestVarSet("p2class2", 2);
 				}
 				case 6:
 				{
@@ -789,10 +851,6 @@ inactive
 			setDeckCommander(0);
 		} else {
 			trOverlayText(collectionMission, 4.7, 500, 200, 1000);
-			if(trQuestVarGet("missionHardmode") == 1){
-				trQuestVarSet("p2commander", -1);
-				xsEnableRule("HardmodeCommander");
-			}
 			xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
 			if(trQuestVarGet("missionClass") == 0 && trQuestVarGet("missionSelection") == 3){
 				xsEnableRule("StoryClass0Mission3_");
@@ -915,6 +973,7 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 3){
+		trSetLighting("default", 0.1);
 		CleanBoard();
 		if(trQuestVarGet("newCards") == 1){
 			if(trQuestVarGet("missionSelection") < 0){
@@ -1270,16 +1329,6 @@ inactive
 	}
 }
 
-rule HardmodeCommander
-highFrequency
-inactive
-{
-	if (trQuestVarGet("p2commander") >= 0){
-		xsDisableRule("HardmodeCommander");		
-		mSetVarByQV("p2commander", "attack", mGetVarByQV("p2commander", "attack") * 2);
-		mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health") * 2);
-   }
-}
 
 rule Story_Cinematic_Play
 highFrequency
@@ -1394,6 +1443,11 @@ inactive
 		xsDisableRule("StoryClass0Mission2");		
 		trShowImageDialog("icons/scenario x general icons 64", "Hello civilian! We will take your money to fund the army. Standard procedure.");	
 		trSoundPlayFN("xpack\xdialog\en\xgen005.mp3", "2", -1, "","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			for (x=6; >0) {
+				addCardToDeck(2, "Hero Greek Ajax");
+			}
+		}
    }
 }
 
@@ -1534,15 +1588,22 @@ rule StoryClass4Mission1
 highFrequency
 inactive
 {
-	xsDisableSelf();
-	CinematicReset();
-	CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-	CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-	CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-	CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-	CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-	CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
-	CinematicStart();
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
+		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
+		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
+		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
+		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
+		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicStart();
+		if (trQuestVarGet("missionHardmode") == 1) {
+			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+		}
+	}	
 }
 
 rule StoryClass4Mission2
@@ -1571,7 +1632,9 @@ inactive
 					tile = trQuestVarGet("temp");
 				}
 				summonAtTile(tile, 2, kbGetProtoUnitID("Spider Egg"));
+				addCardToDeck(2, "", SPELL_DOMINANCE);
 			}
+			shuffleDeck(2);
 		}
 	}
 }
@@ -1594,10 +1657,12 @@ inactive
 		xsEnableRule("StoryClass4Mission3_Decay");
 		if (trQuestVarGet("missionHardmode") == 1) {
 			for(x=3; >0) {
+				addCardToDeck(2, "", SPELL_DOMINANCE);
 				addCardToDeck(2, "Tartarian Gate");
 			}
 			summonAtTile(222, 2, kbGetProtoUnitID("Argus"));
 			summonAtTile(223, 2, kbGetProtoUnitID("Argus"));
+			shuffleDeck(2);
 		}
 	}
 }
@@ -1610,5 +1675,54 @@ inactive
 		xsDisableSelf();
 		OnPlay(1*trQuestVarGet("p2commander"));
 		ChatLog(1, "<color={Playercolor(2)}>You have been inflicted with Decay!</color>");
+	}
+}
+
+
+rule StoryClass4Mission4
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "Uhh, Anraheir? It's night time!");
+		CinematicAdd("icons/hero g perseus icon 64", "The portal is just up ahead! Let's go!");
+		CinematicStart();
+		trSetLighting("night", 0.1);
+		teleportToTile(1*trQuestVarGet("p2commander"), 128);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(230, 2, kbGetProtoUnitID("Tartarian Gate"));
+			summonAtTile(254, 2, kbGetProtoUnitID("Tartarian Gate"));
+		}
+		
+		deployAtTile(0, "Well of Urd", 128);
+		trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
+	}
+}
+
+
+rule StoryClass4Mission5
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "This is the Otherworld?");
+		CinematicAdd("icons/hero g perseus icon 64", "Yes. Try not to make sense of anything. This place is filled with madness, after all.");
+		CinematicAdd("icons/infantry g hoplite icon 64", "Yo, Anraheir! Got time for a playtest?");
+		CinematicAdd("icons/hero g jason icon 64", "It's Zenophobia!");
+		CinematicAdd("icons/hero g perseus icon 64", "No, that's a fake! He never asks me to playtest!");
+		CinematicStart();
+		mSetVarByQV("p2commander", "health", 30);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Bireme"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Bireme"));
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			shuffleDeck(2);
+		}
 	}
 }

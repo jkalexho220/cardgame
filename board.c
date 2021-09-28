@@ -4,6 +4,7 @@ const int TERRAIN_SNOW = 2;
 const int TERRAIN_TOWER = 3;
 const int TERRAIN_CAVE = 4;
 const int TERRAIN_MARSH = 5;
+const int TERRAIN_HEAVEN = 6;
 
 const int T_GRASS_25 = 2;
 const int T_GRASS_50 = 3;
@@ -29,6 +30,10 @@ const int T_CLIFF_JUNGLE_B = 24;
 
 const int T_HADES_BUILDABLE = 84;
 const int T_HADES_FOREST = 92;
+
+const int T_OLYMPUS_A = 50;
+const int T_OLYMPUS_TILE = 53;
+
 
 const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
@@ -245,9 +250,9 @@ void chooseTerrainTheme(int terrain = 0) {
 					paintTile(tile, 3, 0);
 					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
 					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
-					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 1) {
 						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
-						trQuestVarSet("tile", neighbor);
+						tile = neighbor;
 					} else {
 						done = true;
 					}
@@ -274,9 +279,38 @@ void chooseTerrainTheme(int terrain = 0) {
 					paintTile(tile, 0, T_CLIFF_JUNGLE_B);
 					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
 					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 1) {
+						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
+						tile = neighbor;
+					} else {
+						done = true;
+					}
+				}
+			}
+		}
+		case TERRAIN_HEAVEN:
+		{
+			trStringQuestVarSet("treeType", "Columns");
+			trQuestVarSet("treeTile", T_OLYMPUS_TILE);
+			trPaintTerrain(0, 0, 59, 59, 0, T_OLYMPUS_A, false); // shoreline atlantean b
+			for(i=zGetBankCount("tiles"); >0) {
+				zBankNext("tiles");
+				zSetVar("tiles", "searched", 0);
+			}
+			// Drawing random strings of terrain
+			for(i=trQuestVarGet("dimension"); >0) {
+				done = false;
+				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
+				tile = 1*trQuestVarGet("tile");
+				deployAtTile(0, "Mist", tile);
+				zSetVarByIndex("tiles", "searched", tile, 1);
+				while(done == false) {
+					paintTile(tile, 4, 15);
+					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
+					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
 					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
 						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
-						trQuestVarSet("tile", neighbor);
+						tile = neighbor;
 					} else {
 						done = true;
 					}
@@ -301,6 +335,9 @@ void paintTreesOnTile(int tile = 0) {
 		trArmyDispatch("1,10",trStringQuestVarGet("treeType"),1,x,0,z,trQuestVarGet("heading"), true);
 		trArmySelect("1,10");
 		trSetSelectedScale(trQuestVarGet("treeScale"), trQuestVarGet("treeScale"), trQuestVarGet("treeScale"));
+		if (trQuestVarGet("treeTile") == T_OLYMPUS_TILE) {
+			trUnitSetAnimationPath("1,0,0,0,0,0,0");
+		}
 	}
 }
 

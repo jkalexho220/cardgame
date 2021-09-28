@@ -102,8 +102,6 @@ void teleportToTile(int name = 0, int tile = 0) {
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
 
-
-
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	trQuestVarSet("next", CardInstantiate(p, proto, SPELL_NONE));
 	teleportToTile(1*trQuestVarGet("next"), tile);

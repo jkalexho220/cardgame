@@ -109,6 +109,19 @@ bool OnDeath(int event = -1, int unit = 0){
 			trQuestVarSetFromRand("sound", 1, 2, true);
 			trSoundPlayFN("spiders"+1*trQuestVarGet("sound")+".wav","1",-1,"","");
 		}
+		case DEATH_DAMAGE_ENEMY:
+		{
+			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+(3-p)+"commander", "tile"));
+			damageUnit(1*trQuestVarGet("p"+(3-p)+"commander"), 2);
+		}
+		case DEATH_REDUCE_COST:
+		{
+			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				mSetVarByQV("p"+p+"hand", "cost", mGetVarByQV("p"+p+"hand", "cost") - 1);
+			}
+			trSoundPlayFN("flamingweapons.wav","1",-1,"","");
+		}
 	}
 	return (checkAgain);
 }

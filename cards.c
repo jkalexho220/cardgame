@@ -58,6 +58,7 @@ const int SPELL_PYROBALL = 988;
 const int SPELL_MIRROR_REFLECTION = 987;
 
 
+const int SPELL_DOMINANCE = 802;
 const int SPELL_TAVERN_BRAWL = 801;
 const int SPELL_SPIDER_LAIR = 800;
 // Heap
@@ -198,8 +199,10 @@ const int DEATH_SUMMON_RANDOM = 11;
 const int DEATH_GET_SCRAP = 12;
 const int DEATH_GET_TREASURE = 13;
 const int DEATH_SUMMON_BEETLE = 14;
+const int DEATH_DAMAGE_ENEMY = 15;
+const int DEATH_REDUCE_COST = 16;
 
-const int DEATH_EVENT_COUNT = 15;
+const int DEATH_EVENT_COUNT = 17;
 
 
 /*
@@ -914,9 +917,7 @@ runImmediately
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
 
 
-	SpellSetup("Tavern Brawl",			4, SPELL_TAVERN_BRAWL,		"Every unit attacks another one at random, regardless of distance.", SPELL_TYPE_OTHER, 0, true);
-
-	SpellSetup("Bug Infestation",		2, SPELL_SPIDER_LAIR,		"Add 3 Festering Eggs to your hand. They cost 0 and have Airdrop.", SPELL_TYPE_OTHER, 0, true);
+	
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
@@ -943,8 +944,23 @@ runImmediately
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
 
+	SpellSetup("Chaos",					4, SPELL_TAVERN_BRAWL,		"Every unit attacks another one at random, regardless of distance.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Dominance",				3, SPELL_DOMINANCE,			"Your Commander gains +1 attack and then attacks an enemy.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Infestation",			2, SPELL_SPIDER_LAIR,		"Add 3 Festering Eggs to your hand. They cost 0 and have Airdrop.", SPELL_TYPE_OTHER, 0, true);
+
 	CardSetup("Tartarian Gate",			4, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true); 
 	CardEvents("Tartarian Gate", 0, 0,	"At the start of your turn, draw a card and set its cost to 0.");
+
+	CardSetup("Invisible Target",		0, "Destination",			0, 999, 0, 0, Keyword(WARD) + Keyword(REGENERATE), true);
+
+	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true); 
+	CardEvents("Theris", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
+
+	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL), true);
+	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
+
+	CardSetup("Female",					2, "Princess Arsch",		1, 2, 2, 1, Keyword(WARD), true);
+	CardEvents("Female", 0, Keyword(DEATH_DAMAGE_ENEMY), "Play: Give your Commander +2 health. Death: Deal 2 damage to the enemy Commander.");
 
 	//Pick a card. Any card.
 	/*
@@ -986,7 +1002,7 @@ runImmediately
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"Draw 3 cards that cost 1 Mana.", SPELL_TYPE_OTHER);
-	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Activate an allied minion's Play effect.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
@@ -1069,7 +1085,7 @@ runImmediately
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(REGENERATE) + Keyword(ARMORED));
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
 	// 75-79
-	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Grant your Commander +2 attack this turn.
+	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Give your Commander another action if they have already acted.
 	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
@@ -1244,7 +1260,7 @@ runImmediately
 	CardEvents("Behemoth", 0, 0,										"Play: I gain {Manaflow} attack and health.");
 	CardEvents("Servant", Keyword(ATTACK_PUSH), 0,						"Attack: Push my target away from me.");
 	CardEvents("Heka Gigantes", 0, 0,									"All your minions have Overflow.");
-	CardEvents("Hippikon", 0, 0,										"Play: Grant your Commander +2 attack this turn.");
+	CardEvents("Hippikon", 0, 0,										"Play: Give your Commander another action if they have already acted.");
 	CardEvents("Kraken", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to its owner's hand.");
 	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 1 Manaflow this turn.");
 	CardEvents("Hero Greek Polyphemus", 0, 0, 							"Your Commander has Furious.");

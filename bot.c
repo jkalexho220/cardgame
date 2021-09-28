@@ -107,12 +107,12 @@ inactive
 						yDatabaseNext("allUnits", true);
 						if (mGetVarByQV("allUnits", "action") == ACTION_READY && mGetVarByQV("allUnits", "player") == 2) {
 							int currentUnitCost = mGetVarByQV("allUnits", "cost");
-							if ((currentUnitCost > maxUnitCost) &&
-								currentUnitCost <= trQuestVarGet("botMoveOptions")){
+							if (currentUnitCost <= trQuestVarGet("botMoveOptions")){
 								maxUnitCost = currentUnitCost;
 								trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));				
 								trVectorSetUnitPos("botClickPos", "allUnits");
 								trVectorSetUnitPos("botMovePos", "allUnits");
+								break;
 							}	
 						}
 					}
@@ -350,6 +350,8 @@ inactive
 					// If the target dies, then currentScore = 2 * (target's attack + cost)
 					if (currentScore >= 0) {
 						currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
+					} else if (mGetVarByQV("targets", "player") == 2) {
+						continue; // Zenophobia doesn't attack allies that he can't kill
 					}
 					// If the target can counterattack, we subtract its attack from currentScore
 					if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {			

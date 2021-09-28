@@ -1184,6 +1184,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
+		case SPELL_DOMINANCE:
+		{
+			castAddUnit("spellTarget", 3 - p, false);
+			castInstructions("Choose an enemy minion. Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1447,6 +1452,7 @@ inactive
 			case SPELL_TEAMWORK:
 			{
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
+				mSetVarByQV("cheerTarget", "attack", 1 + mGetVarByQV("cheerTarget", "attack"));
 				xsEnableRule("cheer_activate"); // this trigger is placed in OnPlay lol
 			}
 			case SPELL_DEFENDER:
@@ -2314,6 +2320,14 @@ inactive
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
 				trUnitHighlight(0.5, false);
 				trSoundPlayFN("storehouse.wav","1",-1,"","");
+			}
+			case SPELL_DOMINANCE:
+			{
+				trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+				mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+				startAttack(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("spellTarget"));
+				done = false;
+				xsEnableRule("spell_attack_complete");
 			}
 			case SPELL_SPIDER_LAIR:
 			{

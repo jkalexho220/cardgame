@@ -226,8 +226,10 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hippikon"):
 		{
-			trQuestVarSet("p"+p+"yeebBonus", 2 + trQuestVarGet("p"+p+"yeebBonus"));
-			mSetVarByQV("p"+p+"commander", "attack", 2 + mGetVarByQV("p"+p+"commander", "attack"));
+			if (mGetVarByQV("p"+p+"commander", "action") < ACTION_SLEEPING) {
+				mSetVarByQV("p"+p+"commander", "action", ACTION_READY);
+			}
+			trSoundPlayFN("militarycreate.wav","1",-1,"","");
 			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
 		}
 		case kbGetProtoUnitID("Myrmidon"):
@@ -328,6 +330,15 @@ void OnPlay(int unit = 0) {
 			mSetVar(unit, "laserDirz", -0.707107);
 			trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
 			chooseSpell(SPELL_CHOOSE_DIRECTION);
+		}
+		case kbGetProtoUnitID("Theris"):
+		{
+			drawCard(p);
+		}
+		case kbGetProtoUnitID("Female"):
+		{
+			mSetVarByQV("p"+p+"commander", "health", 2 + mGetVarByQV("p"+p+"commander", "health"));
+			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));

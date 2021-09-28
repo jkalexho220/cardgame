@@ -22,6 +22,10 @@ bool OnTurnStart(int unit = 0) {
 			drawCard(p, true);
 			return (true);
 		}
+		case kbGetProtoUnitID("Bireme"):
+		{
+			trQuestVarSet("p"+p+"manaTax", trQuestVarGet("p"+p+"manaTax") - 1);
+		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
 			trQuestVarSet("dirx", mGetVar(unit, "laserDirx"));
@@ -65,6 +69,7 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Tartarian Gate"):
 		{
+			mSetVar(unit, "action", ACTION_SLEEPING);
 			target = yGetDatabaseCount("p"+p+"hand");
 			drawCard(p);
 			if (target < 10) {
@@ -156,6 +161,15 @@ bool OnTurnStart(int unit = 0) {
 			}
 			trQuestVarSet("pirateShipTarget" + unit, trQuestVarGet("pirateShipTargets"));
 			return (true);
+		}
+		case kbGetProtoUnitID("Invisible Target"):
+		{
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
+			mSetVar(unit, "action", ACTION_SLEEPING);
+			if (zDistanceToVectorSquared("p1commander", "pos") < 64) {
+				damageUnit(unit, 9999);
+				trSoundPlayFN("favordump.wav","1",-1,"","");
+			}
 		}
 		case kbGetProtoUnitID("Monument"):
 		{
