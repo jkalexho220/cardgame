@@ -724,7 +724,23 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 6:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarCopy("p2commanderType", "p1commanderType");
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Bireme"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Bireme"));
+
+					for(x=yGetDatabaseCount("p1deck"); >0) {
+						yDatabaseNext("p1deck");
+						yAddToDatabase("p2deck", "p1deck");
+						yTransferUpdateVar("p2deck", "p1deck", "spell");
+						yTransferUpdateVar("p2deck", "p1deck", "proto");
+					}
+					for(x=0;<6) {
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+					}
 				}
 			}
 		}
@@ -867,6 +883,7 @@ inactive
 		shuffleDeck(1);
 
 		SetupMission(trQuestVarGet("missionClass"), trQuestVarGet("missionSelection"));
+		trQuestVarSet("missionComplete", 0);
 		xsEnableRule("initializeBoard");
 		xsDisableRule("MissionBegin");		
    }
@@ -976,6 +993,7 @@ inactive
 		trSetLighting("default", 0.1);
 		CleanBoard();
 		if(trQuestVarGet("newCards") == 1){
+			trQuestVarSet("missionComplete", 1);
 			if(trQuestVarGet("missionSelection") < 0){
 				xsDisableRule("StoryTutorial1");
 				xsDisableRule("StoryTutorial2");
@@ -1603,7 +1621,23 @@ inactive
 			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 		}
+		xsEnableRule("StoryClass4Mission1_end");
 	}	
+}
+
+rule StoryClass4Mission1_end
+highFrequency
+inactive
+{
+	if (trQuestVarGet("missionComplete") == 1) {
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "What were those? Creepy!");
+		CinematicAdd("icons/hero g perseus icon 64", "They are Zombie Trees. This forest is home to many denizens of the Otherworld.");
+		CinematicAdd("icons/hero g jason icon 64", "The Otherworld? What's that?");
+		CinematicAdd("icons/hero g perseus icon 64", "It is the realm where madness and nightmares reside. Sometimes they cross over to our dimension.");
+		CinematicAdd("icons/hero g perseus icon 64", "Fortunately, Zenophobia has established a barrier around this forest to contain them.");
+		CinematicStart();
+	}
 }
 
 rule StoryClass4Mission2
@@ -1694,6 +1728,10 @@ inactive
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(230, 2, kbGetProtoUnitID("Tartarian Gate"));
 			summonAtTile(254, 2, kbGetProtoUnitID("Tartarian Gate"));
+			for(x=20; >0) {
+				addCardToDeck(2, "Theris");
+			}
+			shuffleDeck(2);
 		}
 		
 		deployAtTile(0, "Well of Urd", 128);
@@ -1722,6 +1760,32 @@ inactive
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
+			shuffleDeck(2);
+		}
+	}
+}
+
+rule StoryClass4Mission6
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g perseus icon 64", "No, that's a fake! He never asks me to playtest!");
+		CinematicAdd("icons/hero g jason icon 64", "It's Zenophobia!");
+		CinematicAdd("icons/infantry g hoplite icon 64", "Yo, Anraheir! Got time for a playtest?");
+		CinematicAdd("icons/hero g perseus icon 64", "Yes. Try not to make sense of anything. This place is filled with madness, after all.");
+		CinematicAdd("icons/hero g jason icon 64", "This is the Otherworld?");
+		CinematicStart();
+		mSetVarByQV("p2commander", "health", 30);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Bireme"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Bireme"));
+			for(x=0;<6) {
+				addCardToDeck(2, "Theris");
+				addCardToDeck(2, "", SPELL_DOMINANCE);
+			}
 			shuffleDeck(2);
 		}
 	}
