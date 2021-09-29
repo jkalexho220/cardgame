@@ -1637,6 +1637,7 @@ inactive
 		CinematicAdd("icons/hero g perseus icon 64", "It is the realm where madness and nightmares reside. Sometimes they cross over to our dimension.");
 		CinematicAdd("icons/hero g perseus icon 64", "Fortunately, Zenophobia has established a barrier around this forest to contain them.");
 		CinematicStart();
+		xsDisableSelf();
 	}
 }
 
@@ -1788,5 +1789,22 @@ inactive
 			}
 			shuffleDeck(2);
 		}
+		xsEnableRule("StoryClass4Mission6_end");
+	}
+}
+
+rule StoryClass4Mission6_end
+highFrequency
+inactive
+{
+	if (trQuestVarGet("missionComplete") == 1) {
+		CinematicReset();
+		CinematicAdd("icons/infantry g hoplite icon 64", "Whew! Thank goodness you broke that paradox! I've been trapped for months!");
+		CinematicAdd("icons/hero g perseus icon 64", "That's a lie. You were just too lazy to get out.");
+		CinematicAdd("icons/infantry g hoplite icon 64", "Perhaps. But in any case, I know why you're here.");
+		CinematicAdd("icons/hero g jason icon 64", "You do? Will you help me then?");
+		CinematicAdd("icons/infantry g hoplite icon 64", "Certainly. It's an excellent distraction from all my unfinished work.");
+		CinematicStart();
+		xsDisableSelf();
 	}
 }
