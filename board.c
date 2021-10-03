@@ -5,6 +5,7 @@ const int TERRAIN_TOWER = 3;
 const int TERRAIN_CAVE = 4;
 const int TERRAIN_MARSH = 5;
 const int TERRAIN_HEAVEN = 6;
+const int TERRAIN_SCRAPYARD = 7;
 
 const int T_GRASS_25 = 2;
 const int T_GRASS_50 = 3;
@@ -34,6 +35,7 @@ const int T_HADES_FOREST = 92;
 const int T_OLYMPUS_A = 50;
 const int T_OLYMPUS_TILE = 53;
 
+const int T_BLUE_TILE = 73;
 
 const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
@@ -165,12 +167,13 @@ void chooseTerrainTheme(int terrain = 0) {
 	int neighbor = 0;
 	bool done = false;
 	trQuestVarSet("treeScale", 1);
+	trQuestVarSet("terrainTheme", terrain);
 	switch(terrain)
 	{
 		case TERRAIN_GRASSLAND:
 		{
 			trStringQuestVarSet("treeType", "Tundra Tree");
-			trQuestVarSet("treeTile", T_FOREST_PINE);
+			trQuestVarSet("treeSubTile", T_FOREST_PINE);
 			for(i=zGetBankCount("tiles"); >0) {
 				zBankNext("tiles");
 				zSetVar("tiles", "searched", 0);
@@ -207,7 +210,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_DESERT:
 		{
 			trStringQuestVarSet("treeType", "Palm");
-			trQuestVarSet("treeTile", T_FOREST_PALM);
+			trQuestVarSet("treeSubTile", T_FOREST_PALM);
 			trPaintTerrain(0, 0, 59, 59, 0, T_SAND_D, false);
 			/*
 			TODO: Terrain mixing for sand
@@ -216,7 +219,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_SNOW:
 		{
 			trStringQuestVarSet("treeType", "Pine Snow");
-			trQuestVarSet("treeTile", T_FOREST_SNOW);
+			trQuestVarSet("treeSubTile", T_FOREST_SNOW);
 			trPaintTerrain(0, 0, 59, 59, 0, T_SNOW_A, false);
 			/*
 			TODO: Terrain mixing for snow
@@ -225,7 +228,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_TOWER:
 		{
 			trStringQuestVarSet("treeType", "Columns");
-			trQuestVarSet("treeTile", T_GREEK_ROAD);
+			trQuestVarSet("treeSubTile", T_GREEK_ROAD);
 			trPaintTerrain(0, 0, 59, 59, 0, T_CITY_TILE, false);
 			/*
 			TODO: Terrain mixing for snow
@@ -234,7 +237,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_CAVE:
 		{
 			trStringQuestVarSet("treeType", "Stalagmite");
-			trQuestVarSet("treeTile", T_HADES_FOREST);
+			trQuestVarSet("treeSubTile", T_HADES_FOREST);
 			trPaintTerrain(0, 0, 59, 59, 0, T_HADES_BUILDABLE, false);
 			for(i=zGetBankCount("tiles"); >0) {
 				zBankNext("tiles");
@@ -262,7 +265,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_MARSH:
 		{
 			trStringQuestVarSet("treeType", "Marsh Tree");
-			trQuestVarSet("treeTile", T_FOREST_MARSH);
+			trQuestVarSet("treeSubTile", T_FOREST_MARSH);
 			trQuestVarSet("treeScale", 1.5);
 			trPaintTerrain(0, 0, 59, 59, 0, T_MARSH_A, false);
 			for(i=zGetBankCount("tiles"); >0) {
@@ -291,7 +294,7 @@ void chooseTerrainTheme(int terrain = 0) {
 		case TERRAIN_HEAVEN:
 		{
 			trStringQuestVarSet("treeType", "Columns");
-			trQuestVarSet("treeTile", T_OLYMPUS_TILE);
+			trQuestVarSet("treeSubTile", T_OLYMPUS_TILE);
 			trPaintTerrain(0, 0, 59, 59, 0, T_OLYMPUS_A, false); // shoreline atlantean b
 			for(i=zGetBankCount("tiles"); >0) {
 				zBankNext("tiles");
@@ -317,6 +320,34 @@ void chooseTerrainTheme(int terrain = 0) {
 				}
 			}
 		}
+		case TERRAIN_SCRAPYARD:
+		{
+			trStringQuestVarSet("treeType", "Destroyed Buildings Small");
+			trQuestVarSet("treeSubTile", 70);
+			trPaintTerrain(0, 0, 59, 59, 5, 3, false); // mining ground
+			for(i=zGetBankCount("tiles"); >0) {
+				zBankNext("tiles");
+				zSetVar("tiles", "searched", 0);
+			}
+			// Drawing random strings of terrain
+			for(i=trQuestVarGet("dimension"); >0) {
+				done = false;
+				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
+				tile = 1*trQuestVarGet("tile");
+				zSetVarByIndex("tiles", "searched", tile, 1);
+				while(done == false) {
+					paintTile(tile, 0, T_SAND_D);
+					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
+					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
+						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
+						tile = neighbor;
+					} else {
+						done = true;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -324,19 +355,32 @@ void paintTreesOnTile(int tile = 0) {
 	int x = 0;
 	int z = 0;
 	zSetVarByIndex("tiles", "terrain", tile, TILE_IMPASSABLE);
-	paintTile(tile, 0, 1*trQuestVarGet("treeTile"));
-	for(i=4; >0) {
-		trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
-		trQuestVarSetFromRand("modx", -2, 2, true);
-		trQuestVarSetFromRand("modz", -2, 2, true);
-		trQuestVarSetFromRand("heading",0, 360, true);
-		x = trQuestVarGet("posx") + trQuestVarGet("modx");
-		z = trQuestVarGet("posz") + trQuestVarGet("modz");
-		trArmyDispatch("1,10",trStringQuestVarGet("treeType"),1,x,0,z,trQuestVarGet("heading"), true);
-		trArmySelect("1,10");
-		trSetSelectedScale(trQuestVarGet("treeScale"), trQuestVarGet("treeScale"), trQuestVarGet("treeScale"));
-		if (trQuestVarGet("treeTile") == T_OLYMPUS_TILE) {
-			trUnitSetAnimationPath("1,0,0,0,0,0,0");
+	paintTile(tile, 1*trQuestVarGet("treeTile"), 1*trQuestVarGet("treeSubTile"));
+	if (trQuestVarGet("terrainTheme") == TERRAIN_SCRAPYARD) {
+		trQuestVarSet("next", deployAtTile(0, "Broken Siege Weapons", tile));
+		trQuestVarSetFromRand("rand", 0, 2, true);
+		trQuestVarSetFromRand("heading", 0, 6.28, false);
+		trUnitSelectClear();
+		trUnitSelect(""+1*trQuestVarGet("next"), true);
+		trUnitSetAnimationPath(""+1*trQuestVarGet("rand")+",0,0,0,0,0,0");
+		trSetUnitOrientation(xsVectorSet(Math_sin(trQuestVarGet("heading")), 0, Math_cos(trQuestVarGet("heading"))), xsVectorSet(0,1,0), true);
+	} else {
+		for(i=4; >0) {
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
+			trQuestVarSetFromRand("modx", -2, 2, true);
+			trQuestVarSetFromRand("modz", -2, 2, true);
+			trQuestVarSetFromRand("heading",0, 360, true);
+			x = trQuestVarGet("posx") + trQuestVarGet("modx");
+			z = trQuestVarGet("posz") + trQuestVarGet("modz");
+			trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
+			trArmyDispatch("1,10",trStringQuestVarGet("treeType"),1,x,0,z,trQuestVarGet("heading"), true);
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("next"), true);
+			trUnitConvert(0);
+			trSetSelectedScale(trQuestVarGet("treeScale"), trQuestVarGet("treeScale"), trQuestVarGet("treeScale"));
+			if (trQuestVarGet("terrainTheme") == TERRAIN_HEAVEN) {
+				trUnitSetAnimationPath("1,0,0,0,0,0,0");
+			}
 		}
 	}
 }
@@ -479,7 +523,11 @@ inactive
 
 	for(x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
-		zSetVar("tiles", "terrain", TILE_EMPTY);
+		if (trQuestVarGet("dungeonMode") == 1) {
+			zSetVar("tiles", "terrain", TILE_OCCUPIED);
+		} else {
+			zSetVar("tiles", "terrain", TILE_EMPTY);
+		}
 		trUnitSelectClear();
 		for(y=0; < zGetVar("tiles", "borderCount")) {
 			trUnitSelectByID(1*zGetVar("tiles", "border"+y));
@@ -493,8 +541,8 @@ inactive
 	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
 	
 	if(trQuestVarGet("zenoMakeRandomStuffPlease") >= 0){	
-		chooseTerrainTheme(trQuestVarGet("zenoMakeRandomStuffPlease"));
-		setupImpassableTerrain();		
+		chooseTerrainTheme(1*trQuestVarGet("zenoMakeRandomStuffPlease"));
+		setupImpassableTerrain();
 	}
 	for(y=yGetDatabaseCount("customBoard"); >0) {
 		yDatabaseNext("customBoard");	
@@ -523,8 +571,10 @@ inactive
 			trUnitChangeName(collectionMission);
 		}		
 		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
-			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));	
-		}	
+			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));
+		} else {
+			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptySpecial"));
+		}
 		zSetVarByIndex("tiles", "terrain", 1*yGetVar("customBoard", "tile"), 1*yGetVar("customBoard", "terrain"));
 	}
 	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());

@@ -259,7 +259,7 @@ void castEnd() {
 					case kbGetProtoUnitID("Petsuchos"):
 					{
 						spyEffect("Einheriar Boost SFX");
-						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
 					case kbGetProtoUnitID("Hero Greek Bellerophon"):
@@ -775,7 +775,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SING:
 		{
 			castAddSing("spellTarget", p);
-			castInstructions("Choose an allied minion that has already acted. Right click to cancel.");
+			castInstructions("Choose an ally that has already acted. Right click to cancel.");
 		}
 		case SPELL_MAP:
 		{
@@ -1692,6 +1692,8 @@ inactive
 				mSetVar(activeUnit, "health", mGetVar(target, "health"));
 				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
 				mSetVar(activeUnit, "range", mGetVar(target, "range"));
+				mSetVar(activeUnit, "laserDirx", mGetVar(target, "laserDirx"));
+				mSetVar(activeUnit, "laserDirz", mGetVar(target, "laserDirz"));
 				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
 				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
 				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
@@ -2507,7 +2509,7 @@ rule spell_attack_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) || 
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");

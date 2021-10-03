@@ -305,27 +305,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("An Invention Like Any Other");	
+					return ("The Scrapyard");	
 				}
 				case 2:
 				{
-					return ("Life");	
+					return ("Profit Raid");	
 				}
 				case 3:
 				{
-					return ("Junkyard Is To Be Explored");	
+					return ("Sneak Mission");	
 				}
 				case 4:
 				{
-					return ("Creator");	
+					return ("A Dastardly Trap");	
 				}
 				case 5:
 				{
-					return ("A Friend Like No Other");	
+					return ("Minigames Z");	
 				}
 				case 6:
 				{
-					return ("Accident");	
+					return ("The Final Boss?");	
 				}
 			}
 		}

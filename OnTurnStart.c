@@ -26,6 +26,12 @@ bool OnTurnStart(int unit = 0) {
 		{
 			trQuestVarSet("p"+p+"manaTax", trQuestVarGet("p"+p+"manaTax") - 1);
 		}
+		case kbGetProtoUnitID("Eitri"):
+		{
+			for(x=yGetDatabaseCount("p"+p+"hand"); <9) {
+				addCardToHand(p, 0, SPELL_SCRAP_METAL, false);
+			}
+		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
 			trQuestVarSet("dirx", mGetVar(unit, "laserDirx"));

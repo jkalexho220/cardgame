@@ -243,6 +243,10 @@ inactive
 					}
 				}
 
+				if (1*trQuestVarGet("botSpell") == SPELL_SCRAP_METAL) {
+					trQuestVarSet("botManaOptions", trQuestVarGet("p2mana") + 1);
+				}
+
 				if (yGetDatabaseCount("castTiles") > 0) {
 					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTiles"), true);
 					for(x=trQuestVarGet("botRandom"); >0) {
@@ -313,7 +317,7 @@ inactive
 						trVectorSetUnitPos("pos", "reachable");
 						for(y=yGetDatabaseCount("allUnits"); >0) {
 							yDatabaseNext("allUnits");
-							if (yGetVar("allUnits", "player") == 1) {
+							if (mGetVarByQV("allUnits", "player") == 1) {
 								if (zDistanceToVector("allUnits", "pos") < 1.0 + 6.0*mGetVarByQV("allUnits", "range")) {
 									currentScore = currentScore - mGetVarByQV("allUnits", "attack");
 								}

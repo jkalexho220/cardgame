@@ -127,33 +127,35 @@ bool OnDeath(int event = -1, int unit = 0){
 }
 
 void removeDeadUnits() {
-	bool checkAgain = true;
+	bool checkAgain = false;
 	int pointer = 0;
 	int p = 0;
-	while(checkAgain){
-		checkAgain = false;
-		yDatabasePointerDefault("allUnits");
-		for(y=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
-			if (mGetVarByQV("allUnits", "health") <= 0 && mGetVarByQV("allUnits", "OnDeath") > 0) {
-				pointer = yGetPointer("allUnits");
-				/*
-				OnDeath events.
-				*/
-				int events = 1*mGetVarByQV("allUnits", "OnDeath");
-				mSetVarByQV("allUnits", "OnDeath", 0);	
-				int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
-				for(x=DEATH_EVENT_COUNT - 1; >=0) {
-					if (events >= n) {							
-						checkAgain = OnDeath(x, 1*trQuestVarGet("allUnits")) || checkAgain;
-						events = events - n;
-					}
-					n = n / 2;
+	checkAgain = false;
+	yDatabasePointerDefault("allUnits");
+	for(y=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (mGetVarByQV("allUnits", "health") <= 0 && mGetVarByQV("allUnits", "OnDeath") > 0) {
+			pointer = yGetPointer("allUnits");
+			/*
+			OnDeath events.
+			*/
+			int events = 1*mGetVarByQV("allUnits", "OnDeath");
+			mSetVarByQV("allUnits", "OnDeath", 0);	
+			int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
+			for(x=DEATH_EVENT_COUNT - 1; >=0) {
+				if (events >= n) {							
+					checkAgain = OnDeath(x, 1*trQuestVarGet("allUnits")) || checkAgain;
+					events = events - n;
 				}
-				ySetPointer("allUnits", pointer);
+				n = n / 2;
 			}
+			ySetPointer("allUnits", pointer);
 		}
 	}
+	if (checkAgain) {
+		xsEnableRule("chain_reaction_death");
+	}
+	
 	trQuestVarSet("p1deathCount", 0);
 	trQuestVarSet("p2deathCount", 0);
 	int proto = 0;
@@ -185,8 +187,6 @@ void removeDeadUnits() {
 			p = mGetVarByQV("allUnits", "player");
 			trQuestVarSet("p"+p+"deathCount", 1 + trQuestVarGet("p"+p+"deathCount"));
 			mSetVarByQV("allUnits", "stunSFX", 0);
-			yAddToDatabase("deadUnits", "allUnits");
-			yAddUpdateVar("deadUnits", "timeout", trTimeMS() + 2000);
 			yRemoveFromDatabase("allUnits");
 		}
 	}
@@ -211,6 +211,7 @@ void removeDeadUnits() {
 	for(p=2; >0) {
 		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ANRAHEIR) {
 			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"deathCount"));
+			updateHandPlayable(p);
 		}
 	}
 
@@ -267,6 +268,16 @@ void returnToHand(int unit = 0) {
 		ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("card_" + proto + "_Name"));
 		mSetVar(unit, "health", 0);
 		damageUnit(unit, 999);
+		removeDeadUnits();
+	}
+}
+
+rule chain_reaction_death
+highFrequency
+inactive
+{
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
+		xsDisableSelf();
 		removeDeadUnits();
 	}
 }

@@ -224,6 +224,19 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			yAddUpdateVar("mirrorTowerLasers", "timeout", trTimeMS() + 1500);
 			xsEnableRule("attack_animate_mirror_laser");
 		}
+		case ATTACK_TEAMWORK:
+		{
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+attacker));
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (HasKeyword(ATTACK_TEAMWORK, 1*mGetVarByQV("allUnits", "OnAttack")) == false) { // no infinite loops for you
+					if ((mGetVarByQV("allUnits", "player") == p) && (zDistanceToVectorSquared("allUnits", "pos") < 64)) {
+						startAttack(1*trQuestVarGet("allUnits"), target);
+					}
+				}
+			}
+			deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
+		}
 	}
 }
 
