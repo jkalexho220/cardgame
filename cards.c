@@ -962,7 +962,7 @@ runImmediately
 	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
 
 	CardSetup("Javelin Cavalry",		3, "Profit Hunter",			3, 2, 3, 2, Keyword(CHARGE), true);
-	CardEvents("Javelin Cavalry", Keyword(ATTACK_SING), 0, "Attack: Add a Fleeting Windsong to your hand.");
+	CardEvents("Javelin Cavalry", Keyword(ATTACK_SING), 0, "Attack: Give your Commander another action if he has already acted.");
 
 	CardSetup("Chieroballista",			4, "Gatling Gun",			3, 4, 2, 2, Keyword(FURIOUS), true);
 	CardSetup("Crossbowman",			2, "Security Sniper",		1, 3, 2, 3, Keyword(AIRDROP) + Keyword(LIGHTNING), true);

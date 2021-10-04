@@ -237,6 +237,12 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			}
 			deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
 		}
+		case ATTACK_SING:
+		{
+			if (mGetVarByQV("p"+p+"commander", "action") < ACTION_SLEEPING) {
+				mSetVarByQV("p"+p+"commander", "action", ACTION_READY);
+			}
+		}
 	}
 }
 

@@ -688,14 +688,15 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Eitri"));
 					for(x=0;<6){
 						addCardToDeck(2, "Helepolis");
-						addCardToDeck(2, "Tower Mirror");
 						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
 						addCardToDeck(2, "", SPELL_CLASS_TIME);
 					}
 					for(x=0; <3) {
 						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);
 						addCardToDeck(2, "", SPELL_DOMINANCE);
-						addCardToDeck(2, "", SPELL_PYROBALL);
+						addCardToDeck(2, "Javelin Cavalry");
+						addCardToDeck(2, "Chieroballista");
+						addCardToDeck(2, "Tower Mirror");
 						addCardToDeck(2, "", SPELL_WARNING_SHOT);
 						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
 					}
@@ -726,7 +727,26 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 6:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);
+					for(x=0;<6) {
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "Eitri");
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
+					}
+					for(x=0;<3) {
+						addCardToDeck(2, "", SPELL_WARNING_SHOT);
+						addCardToDeck(2, "Javelin Cavalry");
+						addCardToDeck(2, "", SPELL_BANHAMMER);
+						addCardToDeck(2, "Crossbowman");
+						addCardToDeck(2, "Maceman Hero");
+						addCardToDeck(2, "Chieroballista");
+						addCardToDeck(2, "Portable Ram");
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Priest");
+					}
+					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 			}
 		}
@@ -809,9 +829,9 @@ void SetupMission(int class = 0, int mission = 0){
 				{
 					trQuestVarSet("dimension", 8);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 2, 7, false);
+					trPaintTerrain(0, 0, 60, 60, 2, 2, false);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
-					trQuestVarSet("customTerrainEmpty", T_HADES_BUILDABLE);
+					trQuestVarSet("customTerrainEmpty", T_SAND_D);
 					trQuestVarSet("customTerrainEmptyNot", T_HADES_FOREST);
 					/* Walls */
 					AddToCustomBoard(285, TILE_OCCUPIED, "Bolder Rolling Small", 1);
@@ -1066,6 +1086,8 @@ inactive
 		xsDisableRule("gameplay_05_attackComplete");
 		xsDisableRule("gameplay_10_summon");
 		xsDisableRule("MissionEnd");
+		xsDisableRule("turn_00_start");
+		xsDisableRule("turn_01_resolve_turn_start");
 		xsDisableRule("turn_02_end");
 		xsDisableRule("SelectCommander");		
 		for(x=zGetBankCount("tiles"); >0) {

@@ -397,3 +397,47 @@ inactive
 		xsDisableSelf();
 	}
 }
+
+
+rule StoryClass3Mission6
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2drawCards") > 0) {
+		xsDisableSelf();
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
+		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
+		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
+		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
+		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
+		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicStart();
+		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "attack", 1);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+		}
+		xsEnableRule("StoryClass3Mission6_end");
+	}	
+}
+
+rule StoryClass3Mission6_end
+highFrequency
+inactive
+{
+	if (trQuestVarGet("missionComplete") == 1) {
+		CinematicReset();
+		CinematicAdd("icons/hero g jason icon 64", "What were those? Creepy!");
+		CinematicAdd("icons/hero g perseus icon 64", "They are Zombie Trees. This forest is home to many denizens of the Otherworld.");
+		CinematicAdd("icons/hero g jason icon 64", "The Otherworld? What's that?");
+		CinematicAdd("icons/hero g perseus icon 64", "It is the realm where madness and nightmares reside. Sometimes they cross over to our dimension.");
+		CinematicAdd("icons/hero g perseus icon 64", "Fortunately, Zenophobia has established a barrier around this forest to contain them.");
+		CinematicStart();
+		xsDisableSelf();
+	} else if (PlayerDefeated(1)) {
+		xsDisableSelf();
+	}
+}
