@@ -746,6 +746,9 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Prisoner");
 						addCardToDeck(2, "Priest");
 					}
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Eitri"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 			}
@@ -997,6 +1000,7 @@ void CleanBoard(){
 	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
+		mSetVarByQV("allUnits", "played", 0);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
 		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("allUnits", "tile"), 0);
@@ -1064,7 +1068,7 @@ inactive
 }
 
 bool PlayerDefeated(int p = 1){
-	return (mGetVarByQV("p"+p+"commander", "health") <= 0);
+	return (trQuestVarGet("p"+p+"defeated") == 1);
 }
 
 rule MissionEnd

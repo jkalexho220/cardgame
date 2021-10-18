@@ -162,12 +162,18 @@ void removeDeadUnits() {
 	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
+		if (trQuestVarGet("allUnits") >= 128) {
+			ThrowError("removeDeadUnits() - Invalid unit! " + 1*trQuestVarGet("allUnits"));
+		}
 		if (mGetVarByQV("allUnits", "health") <= 0) {
 			proto = mGetVarByQV("allUnits", "proto");
 			if ((kbProtoUnitIsUnitType(proto, 937)) ||
 				(proto == kbGetProtoUnitID("Lampades")) ||
 				(proto == kbGetProtoUnitID("Carcinos")) ||
 				(proto == kbGetProtoUnitID("Scarab")) ||
+				(proto == kbGetProtoUnitID("Arkantos God")) ||
+				(proto == kbGetProtoUnitID("Eitri")) ||
+				(proto == kbGetProtoUnitID("Ape of Set")) ||
 				(proto == kbGetProtoUnitID("Spider Egg"))) {
 				trDamageUnitPercent(-100);
 				trUnitChangeProtoUnit("Spy Eye");
@@ -176,7 +182,7 @@ void removeDeadUnits() {
 				trMutateSelected(1*mGetVarByQV("allUnits", "proto"));
 				trUnitOverrideAnimation(6, 0, 0, 1, -1);
 			} else {
-				trDamageUnitPercent(100);
+				trUnitDelete(false);
 			}
 			
 			int tile = mGetVarByQV("allUnits", "tile");
@@ -235,6 +241,13 @@ void removeDeadUnits() {
 		}
 	}
 	updateAuras();
+
+	if (mGetVarByQV("p1commander", "health") <= 0) {
+		trQuestVarSet("p1defeated", 1);
+	}
+	if (mGetVarByQV("p2commander", "health") <= 0) {
+		trQuestVarSet("p2defeated", 1);
+	}
 }
 
 

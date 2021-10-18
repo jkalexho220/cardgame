@@ -19,6 +19,8 @@ inactive
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
 
 		shuffleDeck(p);
+
+		trQuestVarSet("p"+p+"defeated", 0);
 	}
 
 	// Ravens
@@ -54,7 +56,6 @@ inactive
 			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
 		} else {
 			trQuestVarSet("p2done", 1);
-			xsEnableRule("MissionEnd");
 		}
 
 		xsEnableRule("match_02_mulligan");
@@ -416,4 +417,16 @@ inactive
 		trDelayedRuleActivation("turn_00_start");
 		xsDisableRule("turn_02_end");
 	}
+}
+
+rule match_end
+highFrequency
+inactive
+{
+	if (Multiplayer) {
+		// multiplayer stuff
+	} else {
+		xsEnableRule("MissionEnd");
+	}
+	xsDisableSelf();
 }

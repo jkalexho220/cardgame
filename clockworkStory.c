@@ -8,12 +8,11 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of clockwork landscape.");
+		CinematicAdd("HeavenGames\rogers", "Next up is Yeebaagooon...");
+		CinematicAdd("HeavenGames\roxas", "Did you just say Yeebaagooon? What business do you have with that villain?");
+		CinematicAdd("HeavenGames\rogers", "Villain? The Yeebaagooon I know isn't a villain.");
+		CinematicAdd("HeavenGames\roxas", "Oh, you must be working for him then. Die!");
 		CinematicStart();
 		if (trQuestVarGet("missionHardmode") == 1) {
 			addCardToDeck(2, "", SPELL_DOMINANCE);
@@ -30,11 +29,13 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "What were those? Creepy!");
-		CinematicAdd("icons/hero g perseus icon 64", "They are Zombie Trees. This forest is home to many denizens of the Otherworld.");
-		CinematicAdd("icons/hero g jason icon 64", "The Otherworld? What's that?");
-		CinematicAdd("icons/hero g perseus icon 64", "It is the realm where madness and nightmares reside. Sometimes they cross over to our dimension.");
-		CinematicAdd("icons/hero g perseus icon 64", "Fortunately, Zenophobia has established a barrier around this forest to contain them.");
+		CinematicAdd("HeavenGames\roxas", "Dammit! How could this be?");
+		CinematicAdd("HeavenGames\rogers", "I'm not going to kill you. Just explain this villain business.");
+		CinematicAdd("HeavenGames\roxas", "What? Aren't you here to assassinate me?");
+		CinematicAdd("HeavenGames\rogers", "No! I just need Yeebaagooon's help with something.");
+		CinematicAdd("HeavenGames\roxas", "Does that involve Yeebaagooon leaving to join you?");
+		CinematicAdd("HeavenGames\rogers", "Uh, probably.");
+		CinematicAdd("HeavenGames\roxas", "Excellent! I will help you reach Yeebaagooon.");
 		CinematicStart();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
@@ -50,12 +51,11 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("HeavenGames\roxas", "This land was once a lush green valley. But then Yeebaagooon came and estabilshed the Evil Profit Company.");
+		CinematicAdd("HeavenGames\roxas", "Now, it is a wasteland filled with factories that build his robot army.");
+		CinematicAdd("HeavenGames\roxas", "But strangely, some of us have gained sentience and have formed a resistance. This is one of our bases.");
+		CinematicAdd("HeavenGames\robot", "Commander Roxas! We have trouble! The Profit Patrol are attacking!");
+		CinematicAdd("HeavenGames\roxas", "What? To battle stations!");
 		CinematicStart();
 		teleportToTile(1*trQuestVarGet("p1commander"), 132);
 		teleportToTile(1*trQuestVarGet("p2commander"), 152);
@@ -140,12 +140,10 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("HeavenGames\roxas", "You have proven your strength and honesty. I will lead you to Yeebaagooon.");
+		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of the tower entrance.");
+		CinematicAdd("HeavenGames\roxas", "This is the incinerator of the Evil Profit Company.");
+		CinematicAdd("HeavenGames\roxas", "No one guards this place. We can sneak in if we're careful.");
 		CinematicStart();
 		teleportToTile(1*trQuestVarGet("p2commander"), 233);
 	}	
@@ -159,18 +157,32 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("icons\infantry g hoplite icon 64", "Insert panel introducing throwaway villain");
 		CinematicStart();
 		mSetVarByQV("p2commander", "health", 20);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(128, 2, kbGetProtoUnitID("Tower Mirror"));
 		}
+		xsEnableRule("StoryClass3Mission4_end");
 	}	
+}
+
+
+rule StoryClass3Mission4_end
+highFrequency
+inactive
+{
+	if (trQuestVarGet("missionComplete") == 1) {
+		CinematicReset();
+		CinematicAdd("HeavenGames\underling", "Boss! The tower has been infiltrated by a robot and a swordsman!");
+		CinematicAdd("HeavenGames\yeebaagooon", "Hm, that swordsman looks familiar. What was his name again? Royce? Ronald?");
+		CinematicAdd("HeavenGames\underling", "Are they your guests sir?");
+		CinematicAdd("HeavenGames\yeebaagooon", "No. But let's send them an invitation anyway.");
+		CinematicStart();
+		xsDisableSelf();
+	} else if (PlayerDefeated(1)) {
+		xsDisableSelf();
+	}
 }
 
 rule StoryClass3Mission5
@@ -180,12 +192,11 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("icons\infantry g hoplite icon 64", "insert image of yeebaagooon screen");
+		CinematicAdd("HeavenGames\yeebaagooon", "Welcome, Ronald! And you, robot man, whatever your name is.");
+		CinematicAdd("HeavenGames\rogers", "It's Rogers, actually.");
+		CinematicAdd("HeavenGames\roxas", "You bastard! Show yourself instead of hiding behind that screen!");
+		CinematicAdd("HeavenGames\yeebaagooon", "How rude. I'm inviting you to a match of Minigames Z. Enjoy!");
 		CinematicStart();
 		damageUnit(1*trQuestVarGet("p1commander"), 18);
 		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p2commander", "tile"), 0);
@@ -273,6 +284,7 @@ inactive
 				SummonLaser(140, 139);
 				mSetVar(summonAtTile(130, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				mSetVar(summonAtTile(141, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
+				mSetVar(summonAtTile(146, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				addCardToHand(1, kbGetProtoUnitID("Minion"), 0, true);
 				addCardToHand(1, kbGetProtoUnitID("Battle Boar"), 0, true);
 			}
@@ -386,12 +398,7 @@ inactive
 	if (trQuestVarGet("missionComplete") == 1) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("HeavenGames\yeebaagooon", "Well done! You can take the elevator straight to the presidential suite.");
 		CinematicStart();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -406,19 +413,22 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "They said I could find Zenophobia here, but is he really in this dreary place?");
-		CinematicAdd("icons/hero g perseus icon 64", "Halt! State your business!");
-		CinematicAdd("icons/hero g jason icon 64", "What? Who are you?");
-		CinematicAdd("icons/hero g perseus icon 64", "I am Anraheir, guardian of these lands. Now state your business!");
-		CinematicAdd("icons/hero g jason icon 64", "I am Rogers. I need to meet with Zenophobia and request his help.");
-		CinematicAdd("icons/hero g perseus icon 64", "Zenophobia you say? Well you're in luck. I'm one of his agents. I can guide you to him.");
+		CinematicAdd("HeavenGames\yeebaagooon", "Welcome, Royce!");
+		CinematicAdd("HeavenGames\roxas", "Yeebaagooon! At last, I will topple your rein-");
+		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of yeeb zapping roxas");
+		CinematicAdd("HeavenGames\yeebaagooon", "Dispose of him.");
+		CinematicAdd("HeavenGames\underling", "Yessir");
+		CinematicAdd("HeavenGames\rogers", "What? Wait! Don't kill him! He's a playable character!");
+		CinematicAdd("HeavenGames\yeebaagooon", "Foolish. Not even playable characters are safe from me.");
+		CinematicAdd("HeavenGames\yeebaagooon", "If you want me to spare him, then prove yourself.");
 		CinematicStart();
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "attack", 1);
 		if (trQuestVarGet("missionHardmode") == 1) {
-			addCardToDeck(2, "", SPELL_DOMINANCE);
-			addCardToDeck(2, "", SPELL_DOMINANCE);
-			addCardToDeck(2, "", SPELL_DOMINANCE);
+			for(x=6; >0) {
+				addCardToDeck(2, "", SPELL_DOMINANCE);
+				addCardToDeck(2, "", SPELL_BANHAMMER);
+			}
 		}
 		xsEnableRule("StoryClass3Mission6_end");
 	}	
@@ -430,11 +440,12 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicReset();
-		CinematicAdd("icons/hero g jason icon 64", "What were those? Creepy!");
-		CinematicAdd("icons/hero g perseus icon 64", "They are Zombie Trees. This forest is home to many denizens of the Otherworld.");
-		CinematicAdd("icons/hero g jason icon 64", "The Otherworld? What's that?");
-		CinematicAdd("icons/hero g perseus icon 64", "It is the realm where madness and nightmares reside. Sometimes they cross over to our dimension.");
-		CinematicAdd("icons/hero g perseus icon 64", "Fortunately, Zenophobia has established a barrier around this forest to contain them.");
+		CinematicAdd("HeavenGames\yeebaagooon", "Congratulations. The annoying robot lives another day.");
+		CinematicAdd("HeavenGames\rogers", "Alright. Will you hear me out now? I need your help to save the world.");
+		CinematicAdd("HeavenGames\yeebaagooon", "Saving the world? From what?");
+		CinematicAdd("HeavenGames\rogers", "Insert thing we are trying to stop here");
+		CinematicAdd("HeavenGames\yeebaagooon", "Well this won't do. Can't have some upstart trying to destroy the world before I do.");
+		CinematicAdd("HeavenGames\yeebaagooon", "I shall assist you in this endeavor. Rejoice.");
 		CinematicStart();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
