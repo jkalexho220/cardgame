@@ -176,56 +176,9 @@ int CommanderToProtounit(int commander = 0){
 		{
 			return (kbGetProtoUnitID("Caravan Atlantean"));
 		}
-		case 900:
-		{
-			return (kbGetProtoUnitID("Automaton"));
-		}
-		case 901:
-		{
-			return (kbGetProtoUnitID("Bear"));
-		}
-		case 902:
-		{
-			return (kbGetProtoUnitID("General Melagius"));
-		}
-		case 903:
-		{
-			return (kbGetProtoUnitID("Shaba Ka"));
-		}
-		case 904:
-		{
-			return (kbGetProtoUnitID("Qilin"));
-		}
-		case 905:
-		{
-			return (kbGetProtoUnitID("Audrey"));
-		}
-		case 906:
-		{
-			return (kbGetProtoUnitID("Golem"));
-		}
-		case 907:
-		{
-			return (kbGetProtoUnitID("Pharaoh Secondary"));
-		}
-		case 908:
-		{
-			return (kbGetProtoUnitID("King Folstag"));
-		}
-		case 909:
-		{
-			return (kbGetProtoUnitID("Hero Boar"));
-		}
-		case 910:
-		{
-			return (kbGetProtoUnitID("Setna"));
-		}
-		case 911:
-		{
-			return (kbGetProtoUnitID("Circe"));
-		}
 	}
-	ThrowError("CommanderToProtounit");
+	return (commander);
+	//ThrowError("CommanderToProtounit");
 }
 
 void CollectionCommander(int commander = 0, int x = 0, int z = 0){
@@ -352,27 +305,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("An Invention Like Any Other");	
+					return ("The Scrapyard");	
 				}
 				case 2:
 				{
-					return ("Life");	
+					return ("Profit Raid");	
 				}
 				case 3:
 				{
-					return ("Junkyard Is To Be Explored");	
+					return ("Sneak Mission");	
 				}
 				case 4:
 				{
-					return ("Creator");	
+					return ("A Dastardly Trap");	
 				}
 				case 5:
 				{
-					return ("A Friend Like No Other");	
+					return ("Minigames Z");	
 				}
 				case 6:
 				{
-					return ("Accident");	
+					return ("The Final Boss?");	
 				}
 			}
 		}
@@ -382,27 +335,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Nothing Left But Revenge");	
+					return ("The Old Lands");	
 				}
 				case 2:
 				{
-					return ("Eyes Behind The Veil");	
+					return ("Den of Spiders");	
 				}
 				case 3:
 				{
-					return ("The Master Answered");	
+					return ("Nightfall");	
 				}
 				case 4:
 				{
-					return ("Sky Melts Downwards");	
+					return ("Crossing Over");	
 				}
 				case 5:
 				{
-					return ("Air Turns To Formless Flesh");	
+					return ("The Otherworld");	
 				}
 				case 6:
 				{
-					return ("Moment Of Hesitation");	
+					return ("Zeno's Paradox");	
 				}
 			}
 		}

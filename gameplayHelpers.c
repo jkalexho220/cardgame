@@ -102,8 +102,6 @@ void teleportToTile(int name = 0, int tile = 0) {
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
 
-
-
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	trQuestVarSet("next", CardInstantiate(p, proto, SPELL_NONE));
 	teleportToTile(1*trQuestVarGet("next"), tile);
@@ -545,7 +543,8 @@ void updateAuras() {
 	int card = 0;
 	for(p=2; >0) {
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
-		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45) - trCountUnitsInArea("128",3-p,"Argus",45));
+		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
+		// trCountUnitsInArea("128",3-p,"Argus",45) we can use a different unit for this effect
 		trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
 		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 0) {
 			if (trCountUnitsInArea("128",p,"Trident Soldier Hero", 45) > 0) {
@@ -662,5 +661,25 @@ active
 				}
 			}
 		}
+	}
+}
+
+rule directional_lasers
+highFrequency
+inactive
+{
+	if (yGetDatabaseCount("directionalLasers") > 0) {
+		yDatabaseNext("directionalLasers", true);
+		float scale = yGetVar("directionalLasers", "timeout") - trTimeMS();
+		if (scale > 0) {
+			scale = scale / 50;
+			trSetSelectedScale(scale, 0, 60);
+		} else {
+			trUnitDestroy();
+			yRemoveFromDatabase("directionalLasers");
+			yRemoveUpdateVar("directionalLasers", "timeout");
+		}
+	} else {
+		xsDisableRule("directional_lasers");
 	}
 }

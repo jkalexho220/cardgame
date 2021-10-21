@@ -27,7 +27,7 @@ void updateHandPlayable(int p = 0) {
 	}
 	int cost = 0;
 	trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
-	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45) - trCountUnitsInArea("128",3-p,"Argus",45));
+	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
 		cost = mGetVarByQV("p"+p+"hand", "cost");

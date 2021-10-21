@@ -1,3 +1,34 @@
+/*
+These are functions are called to play the storyline
+CinematicReset();
+CinematicAdd("icons/infantry g hoplite icon 64", "pen island");
+CinematicStart();
+*/
+
+void CinematicReset() {
+	trQuestVarSet("cinematicStep", 0);
+	trQuestVarSet("cinematicLength", 0);
+}
+
+/*
+i = icon
+s = string text
+*/
+void CinematicAdd(string i = "", string s = "") {
+	trQuestVarSet("cinematicLength", 1 + trQuestVarGet("cinematicLength"));
+	trStringQuestVarSet("cinematicImage"+1*trQuestVarGet("cinematicLength"), i);
+	trStringQuestVarSet("cinematicText"+1*trQuestVarGet("cinematicLength"), s);
+}
+
+/*
+m = music filename
+*/
+void CinematicStart(string m = "") {
+	trMusicPlay(m, "1", 0);
+	xsEnableRule("Story_Cinematic_Play");
+}
+
+
 void AddToCustomBoard(int tile = 0, int terrain = 0, string proto = "", int count = 1, int heading = 45, int scale = 1){
 	yAddToDatabase("customBoard", "thisDoesNotMatterRight");
 	yAddUpdateVar("customBoard", "tile", tile);
@@ -8,6 +39,19 @@ void AddToCustomBoard(int tile = 0, int terrain = 0, string proto = "", int coun
 	yAddUpdateVar("customBoard", "scale", scale);
 }
 
+int SummonLaser(int tile = 0, int target = 0) {
+	int siphon = summonAtTile(tile, 2, kbGetProtoUnitID("Fire Siphon"));
+	trVectorQuestVarSet("start", kbGetBlockPosition(""+tile));
+	trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
+	trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+	mSetVar(siphon, "laserDirx", trQuestVarGet("dirx"));
+	mSetVar(siphon, "laserDirz", trQuestVarGet("dirz"));
+	trUnitSelectClear();
+	trUnitSelect(""+siphon);
+	trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+	return(siphon);
+}
+
 void SetupMission(int class = 0, int mission = 0){
 	yClearDatabase("p2deck");
 	yClearDatabase("customBoard");
@@ -15,6 +59,8 @@ void SetupMission(int class = 0, int mission = 0){
 	trQuestVarSet("customTerrainEmpty", 0);
 	trQuestVarSet("customTerrainEmptyNot", 0);
 	InitBot(BOT_PERSONALITY_DEFAULT);
+	trQuestVarSet("dungeonMode", 0);
+	trQuestVarSet("p2class1", class);
 	switch(class)
 	{
 		case -1:
@@ -44,7 +90,7 @@ void SetupMission(int class = 0, int mission = 0){
 			AddToCustomBoard(254, TILE_EMPTY, "Wood Pile 3", 1, 105, 2);
 			/* Opponent */
 			InitBot(BOT_PERSONALITY_TRAINING);
-			trQuestVarSet("p2commanderType", 900);
+			trQuestVarSet("p2commanderType", kbGetProtoUnitID("Automaton"));
 			for(x=0;<40){
 				addCardToDeck(2, "Swordsman");
 			}	
@@ -94,7 +140,7 @@ void SetupMission(int class = 0, int mission = 0){
 					AddToCustomBoard(155, TILE_IMPASSABLE, "Berry Bush", 3);
 					AddToCustomBoard(177, TILE_IMPASSABLE, "Berry Bush", 3);			
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 901);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Bear"));
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_INTIMIDATE);
 					}				
@@ -106,22 +152,23 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 6);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 902);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("General Melagius"));
 					for(x=0;<6){
 						addCardToDeck(2, "Swordsman");
 						addCardToDeck(2, "Bondi");
 						addCardToDeck(2, "Toxotes");
 					}	
-					for(x=0;<5){
+					for(x=0;<4){
 						addCardToDeck(2, "", SPELL_DEFENDER);
 						addCardToDeck(2, "Trident Soldier");
 					}	
 					for(x=0;<3){
 						addCardToDeck(2, "Huskarl");
+						addCardToDeck(2, "Hero Greek Ajax");
 						addCardToDeck(2, "", SPELL_PARTY_UP);
 						addCardToDeck(2, "", SPELL_DUEL);
 						addCardToDeck(2, "", SPELL_VICTORY);
-					}						
+					}
 				}
 				case 3:
 				{
@@ -130,7 +177,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 6);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 904);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
 					for(x=0;<6){
 						addCardToDeck(2, "Wolf");
 						addCardToDeck(2, "Apep");
@@ -252,7 +299,7 @@ void SetupMission(int class = 0, int mission = 0){
 					}
 					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 903);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Shaba Ka"));
 					for(x=0;<6){
 						addCardToDeck(2, "Bondi");
 						addCardToDeck(2, "Khopesh");
@@ -273,7 +320,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 905);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Audrey"));
 					for(x=0;<10){
 						addCardToDeck(2, "Audrey Water");
 					}
@@ -306,7 +353,7 @@ void SetupMission(int class = 0, int mission = 0){
 						}
 					}
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 904);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
 					for(x=0;<5){
 						addCardToDeck(2, "Wolf");
 						addCardToDeck(2, "Ornlu");
@@ -352,7 +399,7 @@ void SetupMission(int class = 0, int mission = 0){
 					AddToCustomBoard(174, TILE_OCCUPIED, "Columns", 1, 45, 2);
 					AddToCustomBoard(172, TILE_OCCUPIED, "Columns", 1, 45, 2);											
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 906);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Golem"));
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_GROUND_STOMP);
 					}		
@@ -364,7 +411,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 7);		
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 907);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Pharaoh Secondary"));
 					for(x=0;<5){
 						addCardToDeck(2, "Slinger");
 						addCardToDeck(2, "Monument");	
@@ -388,7 +435,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 908);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("King Folstag"));
 					for(x=0;<6){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Monument");	
@@ -409,7 +456,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 2);	
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 909);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Boar"));
 					for(x=0;<4){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Centaur");						
@@ -433,7 +480,7 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);							
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 910);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Setna"));
 					for(x=0;<3){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Slinger");
@@ -462,7 +509,7 @@ void SetupMission(int class = 0, int mission = 0){
 						AddToCustomBoard(x, TILE_OCCUPIED, "Mist", 1, 0, 1);	
 					}					
 					/* Opponent */
-					trQuestVarSet("p2commanderType", 911);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Circe"));
 					for(x=0;<3){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Slinger");
@@ -518,27 +565,191 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_SCRAPYARD);
+					trQuestVarSet("p2commanderType", COMMANDER_ROXAS);
+					for(x=0;<6) {
+						addCardToDeck(2, "Automaton SPC");
+						addCardToDeck(2, "Dwarf");
+						addCardToDeck(2, "Throwing Axeman");
+					}
+					for(x=0;<3) {
+						addCardToDeck(2, "Battle Boar");
+						addCardToDeck(2, "", SPELL_REWIND);
+						addCardToDeck(2, "Ballista");
+						addCardToDeck(2, "Colossus");
+						addCardToDeck(2, "Petrobolos");
+						addCardToDeck(2, "", SPELL_GEAR_FACTORY);
+						addCardToDeck(2, "", SPELL_PORTABLE_SPELL_SHIELD);
+					}
+					addCardToDeck(2, "", SPELL_POWER_SUIT);
+					trQuestVarSet("p2class2", CLASS_CLOCKWORK);
 				}
 				case 2:
 				{
 					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("storyMissionBotMana", 0);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trPaintTerrain(0, 0, 59, 59, 5, 3, false); // mining ground
+					trQuestVarSet("customTerrainEmpty", T_SAND_D);
+					trQuestVarSet("customTerrainEmptyNot", T_EGYPTIAN_ROAD);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Cinematic Block"));
+					AddToCustomBoard(157, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(158, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(159, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+
+					AddToCustomBoard(153, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(150, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+
+					AddToCustomBoard(164, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(163, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+					AddToCustomBoard(151, TILE_OCCUPIED, "Destroyed Buildings Small", 1);
+
+					summonAtTile(142, 1, kbGetProtoUnitID("Onager"));
+					summonAtTile(138, 1, kbGetProtoUnitID("Onager"));
+					summonAtTile(146, 1, kbGetProtoUnitID("Onager"));
+					summonAtTile(130, 1, kbGetProtoUnitID("Throwing Axeman"));
+					summonAtTile(134, 1, kbGetProtoUnitID("Priest"));
+
+					zSetVarByIndex("tiles", "occupant", 282, 0);
+					zSetVarByIndex("tiles", "occupant", 219, 0);
+					trQuestVarSet("objectiveObelisk", summonAtTile(128, 1, kbGetProtoUnitID("Outpost")));
+					mSetVarByQV("objectiveObelisk", "health", 10);
+					mSetVarByQV("objectiveObelisk", "spell", SPELL_COMMANDER);
+					for(x=0; <6) {
+						addCardToDeck(2, "Crossbowman");
+						addCardToDeck(2, "", SPELL_WARNING_SHOT);
+						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
+						addCardToDeck(2, "", SPELL_PORTABLE_SPELL_SHIELD);
+					}
 				}
 				case 3:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("dungeonMode", 1);
+					trPaintTerrain(0, 0, 59, 59, 2, 13, false); // black rock
+					InitBot(BOT_PERSONALITY_TRAINING);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", 0);
+					trQuestVarSet("customTerrainEmptySpecial", T_BLUE_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_BLUE_TILE);
+					
+					mSetVar(SummonLaser(181, 180), "attack", 5);
+					AddToCustomBoard(208, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(207, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(206, TILE_EMPTY, "Cinematic Block", 0);
+					mSetVar(SummonLaser(216, 186), "attack", 5);
+					AddToCustomBoard(178, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(156, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(157, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(158, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(142, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(132, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(143, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(160, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(212, TILE_EMPTY, "Cinematic Block", 0);
+					for(x=188; >=183) {
+						AddToCustomBoard(x, TILE_EMPTY, "Cinematic Block", 0);
+					}
+					mSetVar(SummonLaser(212, 184), "attack", 5);
+					mSetVar(SummonLaser(145, 163), "attack", 5);
+					AddToCustomBoard(171, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(169, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(167, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(147, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(150, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(148, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(152, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(173, TILE_EMPTY, "Cinematic Block", 0);
+					AddToCustomBoard(200, TILE_EMPTY, "Cinematic Block", 0);
+					mSetVar(SummonLaser(137, 151), "attack", 5);
+					mSetVar(SummonLaser(135, 149), "attack", 5);
+
+					mSetVar(SummonLaser(130, 136), "attack", 5);
+					mSetVar(SummonLaser(139, 138), "attack", 5);
+					mSetVar(SummonLaser(154, 153), "attack", 5);
+					mSetVar(SummonLaser(175, 174), "attack", 5);
+
+					summonAtTile(193, 2, kbGetProtoUnitID("Servant"));
+					deployAtTile(0, "Garrison Flag Sky Passage", 200);
+					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+					yClearDatabase("p1deck");
+					for(x=40; >0) {
+						addCardToDeck(1, "", SPELL_SCRAP_METAL);
+						addCardToDeck(2, "", SPELL_SCRAP_METAL);
+					}
 				}
 				case 4:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Eitri"));
+					for(x=0;<6){
+						addCardToDeck(2, "Helepolis");
+						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
+					}
+					for(x=0; <3) {
+						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "Javelin Cavalry");
+						addCardToDeck(2, "Chieroballista");
+						addCardToDeck(2, "Tower Mirror");
+						addCardToDeck(2, "", SPELL_WARNING_SHOT);
+						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
+					}
+
+					SummonLaser(218, 217);
+					SummonLaser(195, 171);
+					SummonLaser(191, 167);
+					SummonLaser(190, 166);
+					SummonLaser(194, 170);
+					SummonLaser(198, 199);
+					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 				case 5:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 3);	
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Cinematic Block"));
+					trPaintTerrain(0, 0, 59, 59, 2, 13, false); // black rock
+					InitBot(BOT_PERSONALITY_TRAINING);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_BLUE_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_BLUE_TILE);
+					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
+					yClearDatabase("p1deck");
+					for(x=40; >0) {
+						addCardToDeck(1, "", SPELL_BORROWED_TIME);
+						addCardToDeck(2, "Monkey");
+					}
 				}
 				case 6:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);
+					for(x=0;<6) {
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "Eitri");
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
+					}
+					for(x=0;<3) {
+						addCardToDeck(2, "", SPELL_WARNING_SHOT);
+						addCardToDeck(2, "Javelin Cavalry");
+						addCardToDeck(2, "", SPELL_BANHAMMER);
+						addCardToDeck(2, "Crossbowman");
+						addCardToDeck(2, "Maceman Hero");
+						addCardToDeck(2, "Chieroballista");
+						addCardToDeck(2, "Portable Ram");
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Priest");
+					}
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Eitri"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
+					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 			}
 		}
@@ -548,27 +759,164 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 5);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Tartarian Gate"));
+					for(x=0;<8){
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Dryad");
+					}	
+					for(x=0;<5){
+						addCardToDeck(2, "", SPELL_FINAL_FRENZY);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+						addCardToDeck(2, "Mummy");
+					}
+					for(x=0;<3){
+						addCardToDeck(2, "Shade");
+						addCardToDeck(2, "", SPELL_DUEL);
+						addCardToDeck(2, "", SPELL_DEFENDER);
+					}
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
 				}
 				case 2:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_CAVE);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Einheriar"));
+					for(x=0;<6){
+						addCardToDeck(2, "", SPELL_SOUL_SIPHON);
+						addCardToDeck(2, "", SPELL_RUNE_OF_DARKNESS);
+						addCardToDeck(2, "Prodromos");
+						addCardToDeck(2, "Spearman");
+					}	
+					for(x=0;<9){
+						addCardToDeck(2, "", SPELL_SPIDER_LAIR);
+					}	
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_POISON_CLOUD);
+						addCardToDeck(2, "", SPELL_BLOOD_PRICE);
+						addCardToDeck(2, "Argus");
+					}
+					trQuestVarSet("p2class2", CLASS_EVIL);
 				}
 				case 3:
 				{
-					trQuestVarSet("dimension", 8);	
+					/* Arena */
+					trQuestVarSet("dimension", 7);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Achilles"));
+					for(x=0;<6){
+						addCardToDeck(2, "Bogsveigir");
+						addCardToDeck(2, "Dryad");
+						addCardToDeck(2, "Manticore");
+					}	
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_DOOM);
+						addCardToDeck(2, "", SPELL_METEOR);
+						addCardToDeck(2, "Argus");
+						addCardToDeck(2, "", SPELL_EXPLOSION);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+						addCardToDeck(2, "Mummy");
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "Tartarian Gate");
+					}
+					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 				case 4:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 8);
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 2, 2, false);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_SAND_D);
+					trQuestVarSet("customTerrainEmptyNot", T_HADES_FOREST);
+					/* Walls */
+					AddToCustomBoard(285, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					AddToCustomBoard(244, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					AddToCustomBoard(209, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					for (x=180; >= 165) {
+						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					}
+					for (x=188; >= 183) {
+						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					}
+
+					summonAtTile(236, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(219, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(248, 2, kbGetProtoUnitID("Tartarian Gate"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+
+					for(x=0;<6){
+						addCardToDeck(2, "Fire Giant");
+						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "Dryad");
+						addCardToDeck(2, "Argus");
+						addCardToDeck(2, "Wadjet");
+						addCardToDeck(2, "Pharaoh");
+					}
+					for(x=0; <20) {
+						addCardToDeck(2, "Anubite");
+						addCardToDeck(2, "Minion");
+					}
+					trQuestVarSet("p2class1", CLASS_NAGA);
 				}
 				case 5:
 				{
-					trQuestVarSet("dimension", 8);		
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Theris"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Theris"));
+
+
+					for(x=0;<6){
+						addCardToDeck(2, "Female");
+						addCardToDeck(2, "Archer Atlantean");
+					}
+
+					for(x=0;<3) {
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "Bireme");
+						addCardToDeck(2, "Hippocampus");
+						addCardToDeck(2, "Scylla");
+						addCardToDeck(2, "Mummy");
+						addCardToDeck(2, "Apep");
+						addCardToDeck(2, "Sea Turtle");
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+					}
+					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+					addCardToDeck(2, "Hero Greek Achilles");
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 6:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarCopy("p2commanderType", "p1commanderType");
+
+					summonAtTile(190, 2, kbGetProtoUnitID("Bireme"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Bireme"));
+
+					for(x=yGetDatabaseCount("p1deck"); >0) {
+						yDatabaseNext("p1deck");
+						yAddToDatabase("p2deck", "p1deck");
+						yTransferUpdateVar("p2deck", "p1deck", "spell");
+						yTransferUpdateVar("p2deck", "p1deck", "proto");
+					}
+					for(x=0;<6) {
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+					}
+					trQuestVarCopy("p2class1", "p1class1");
+					trQuestVarCopy("p2class2", "p1class2");
 				}
 			}
 		}
@@ -630,6 +978,7 @@ void CleanBoard(){
 		trQuestVarSet("p"+p+"extraManaflow", 0);	
 		trQuestVarSet("p"+p+"spellDamageNonOracle", 0);	
 		trQuestVarSet("p"+p+"yeebbonus", 0);
+		trQuestVarSet("p"+p+"roxasHealth", 0);
 		trQuestVarSet("p"+p+"guardianOfTheSea", 0);		
 		for(x=zGetBankCount("p"+p+"handPos"); >0) {
 			zBankNext("p"+p+"handPos");
@@ -651,6 +1000,7 @@ void CleanBoard(){
 	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
+		mSetVarByQV("allUnits", "played", 0);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		tileGuard(1*mGetVarByQV("allUnits", "tile"), false);
 		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("allUnits", "tile"), 0);
@@ -695,12 +1045,7 @@ inactive
 			setDeckCommander(0);
 		} else {
 			trOverlayText(collectionMission, 4.7, 500, 200, 1000);
-			if(trQuestVarGet("missionHardmode") == 0){
-				xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
-			} else {
-				trQuestVarSet("p2commander", -1);
-				xsEnableRule("HardmodeCommander");
-			}
+			xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
 			if(trQuestVarGet("missionClass") == 0 && trQuestVarGet("missionSelection") == 3){
 				xsEnableRule("StoryClass0Mission3_");
 			}
@@ -716,15 +1061,14 @@ inactive
 		shuffleDeck(1);
 
 		SetupMission(trQuestVarGet("missionClass"), trQuestVarGet("missionSelection"));
+		trQuestVarSet("missionComplete", 0);
 		xsEnableRule("initializeBoard");
 		xsDisableRule("MissionBegin");		
    }
 }
 
 bool PlayerDefeated(int p = 1){
-	trUnitSelectClear();
-	trUnitSelect(""+1*trQuestVarGet("p" + p + "commander"), true);
-	return (trUnitDead());
+	return (trQuestVarGet("p"+p+"defeated") == 1);
 }
 
 rule MissionEnd
@@ -739,7 +1083,6 @@ inactive
 		trPlayerKillAllGodPowers(2);
 		trUIFadeToColor(0,0,0,1000,1000,true);
 		xsDisableRule("Bot1");
-		xsDisableRule("Bot2");
 		xsDisableRule("gameplay_01_select");
 		xsDisableRule("gameplay_02_work");
 		xsDisableRule("gameplay_03_moveComplete");
@@ -747,7 +1090,9 @@ inactive
 		xsDisableRule("gameplay_05_attackComplete");
 		xsDisableRule("gameplay_10_summon");
 		xsDisableRule("MissionEnd");
-		xsDisableRule("turn_01_end");
+		xsDisableRule("turn_00_start");
+		xsDisableRule("turn_01_resolve_turn_start");
+		xsDisableRule("turn_02_end");
 		xsDisableRule("SelectCommander");		
 		for(x=zGetBankCount("tiles"); >0) {
 			highlightTile(zBankNext("tiles"), 0.1);
@@ -823,8 +1168,10 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) >= 3){
+		trSetLighting("default", 0.1);
 		CleanBoard();
 		if(trQuestVarGet("newCards") == 1){
+			trQuestVarSet("missionComplete", 1);
 			if(trQuestVarGet("missionSelection") < 0){
 				xsDisableRule("StoryTutorial1");
 				xsDisableRule("StoryTutorial2");
@@ -1178,15 +1525,26 @@ inactive
 	}
 }
 
-rule HardmodeCommander
+
+rule Story_Cinematic_Play
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p2commander") >= 0){
-		xsDisableRule("HardmodeCommander");		
-		mSetVarByQV("p2commander", "attack", mGetVarByQV("p2commander", "attack") * 2);
-		mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health") * 2);
-   }
+	trQuestVarSet("cinematicStep", 1 + trQuestVarGet("cinematicStep"));
+	int x = trQuestVarGet("cinematicStep");
+	trShowImageDialog(trStringQuestVarGet("cinematicImage"+x), trStringQuestVarGet("cinematicText"+x));
+	xsDisableSelf();
+	trDelayedRuleActivation("Story_Cinematic_Next");
+}
+
+rule Story_Cinematic_Next
+highFrequency
+inactive
+{
+	if (trQuestVarGet("cinematicStep") < trQuestVarGet("cinematicLength")) {
+		trDelayedRuleActivation("Story_Cinematic_Play");
+	}
+	xsDisableSelf();
 }
 
 rule StoryTutorial0
@@ -1281,6 +1639,11 @@ inactive
 		xsDisableRule("StoryClass0Mission2");		
 		trShowImageDialog("icons/scenario x general icons 64", "Hello civilian! We will take your money to fund the army. Standard procedure.");	
 		trSoundPlayFN("xpack\xdialog\en\xgen005.mp3", "2", -1, "","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			for (x=6; >0) {
+				addCardToDeck(2, "Hero Greek Ajax");
+			}
+		}
    }
 }
 

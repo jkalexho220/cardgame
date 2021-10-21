@@ -86,11 +86,11 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'gadgetUnreal', 'trGetScenarioUserData', 'uiLookAtUnit', 'uiClearSelection', 'uiCreateNumberGroup', 'kbLookAtAllUnitsOnMap',
 			'trTimeMS', 'trChatSendToPlayer', 'uiTransformSelectedUnit', 'trBlockAllSounds', 'xsDisableSelf', 'trUnblockAllSounds', 
 			'trSetCurrentScenarioUserData','trModeEnter', 'exit', 'musicToggleBattleMode', 'trEventSetHandler', 'kbProtoUnitIsUnitType',
-			'trShowImageDialog', 'trUnitSetHeading', 'trFadeOutMusic', 'trUnitTypeIsSelected', 'trUnitSetHP'}
+			'trShowImageDialog', 'trUnitSetHeading', 'trFadeOutMusic', 'trUnitTypeIsSelected', 'trUnitSetHP', 'trUnitDelete'}
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
-	files = ['shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c']
+	files = ['shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c', 'clockworkStory.c', 'otherworldStory.c']
 
 	named = True
 	FILE_2 = 'cardGameAll.xml'

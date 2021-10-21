@@ -259,7 +259,7 @@ void castEnd() {
 					case kbGetProtoUnitID("Petsuchos"):
 					{
 						spyEffect("Einheriar Boost SFX");
-						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
 					case kbGetProtoUnitID("Hero Greek Bellerophon"):
@@ -492,6 +492,9 @@ inactive
 								found = true;
 								break;
 							}
+						}
+						if (tile >= trQuestVarGet("ztilesend")) {
+							found = false;
 						}
 					}
 				}
@@ -772,7 +775,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SING:
 		{
 			castAddSing("spellTarget", p);
-			castInstructions("Choose an allied minion that has already acted. Right click to cancel.");
+			castInstructions("Choose an ally that has already acted. Right click to cancel.");
 		}
 		case SPELL_MAP:
 		{
@@ -798,8 +801,8 @@ void chooseSpell(int spell = 0, int card = -1) {
 		}
 		case SPELL_TEAMWORK:
 		{
-			castAddUnit("spellTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castAddUnit("cheerTarget", p, false);
+			castInstructions("Choose an allied minion. Right click to cancel.");
 		}
 		case SPELL_DEFENDER:
 		{
@@ -1166,6 +1169,26 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
+		case SPELL_CHOOSE_DIRECTION:
+		{
+			castAddDirection("spellDirection", "spellCaster", true);
+			castInstructions("Choose a direction to aim the Directional Cannon");
+		}
+		case SPELL_SPIDER_LAIR:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_TAVERN_BRAWL:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on a tile to cast. Right click to cancel.");
+		}
+		case SPELL_DOMINANCE:
+		{
+			castAddUnit("spellTarget", 3 - p, false);
+			castInstructions("Choose an enemy minion. Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1428,21 +1451,9 @@ inactive
 			}
 			case SPELL_TEAMWORK:
 			{
-				trSoundPlayFN("specialist.wav","1",-1,"","");
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
-				trVectorSetUnitPos("pos", "spellTarget");
-				trQuestVarSet("spellTarget", checkGuard(1*trQuestVarGet("spellTarget")));
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					activeUnit = yDatabaseNext("allUnits");
-					if (mGetVar(activeUnit, "player") == p) {
-						dist = zDistanceToVectorSquared("allUnits", "pos");
-						if (dist < xsPow(mGetVar(activeUnit, "range") * 6 + 1, 2)) {
-							startAttack(activeUnit, 1*trQuestVarGet("spellTarget"), false, true);
-						}
-					}
-				}
-				done = false;
-				xsEnableRule("spell_attack_complete");
+				mSetVarByQV("cheerTarget", "attack", 1 + mGetVarByQV("cheerTarget", "attack"));
+				xsEnableRule("cheer_activate"); // this trigger is placed in OnPlay lol
 			}
 			case SPELL_DEFENDER:
 			{
@@ -1681,6 +1692,8 @@ inactive
 				mSetVar(activeUnit, "health", mGetVar(target, "health"));
 				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
 				mSetVar(activeUnit, "range", mGetVar(target, "range"));
+				mSetVar(activeUnit, "laserDirx", mGetVar(target, "laserDirx"));
+				mSetVar(activeUnit, "laserDirz", mGetVar(target, "laserDirz"));
 				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
 				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
 				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
@@ -2297,6 +2310,57 @@ inactive
 				trSoundPlayFN("wall.wav","1",-1,"","");
 				xsEnableRule("spell_fortify_activate");
 			}
+			case SPELL_CHOOSE_DIRECTION:
+			{
+				trVectorSetUnitPos("start", "spellCaster");
+				trVectorSetUnitPos("end", "spellDirection");
+				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				mSetVarByQV("spellCaster", "laserDirx", trQuestVarGet("dirx"));
+				mSetVarByQV("spellCaster", "laserDirz", trQuestVarGet("dirz"));
+				trUnitSelectClear();
+				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
+				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+				trUnitHighlight(0.5, false);
+				trSoundPlayFN("storehouse.wav","1",-1,"","");
+			}
+			case SPELL_DOMINANCE:
+			{
+				trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+				mSetVarByQV("p"+p+"commander", "attack", 1 + mGetVarByQV("p"+p+"commander", "attack"));
+				startAttack(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("spellTarget"));
+				done = false;
+				xsEnableRule("spell_attack_complete");
+			}
+			case SPELL_SPIDER_LAIR:
+			{
+				trSoundPlayFN("spiderscast.wav","1",-1,"","");
+				for (x=3; >0) {
+					target = yGetDatabaseCount("p"+p+"hand");
+					generateCard(p, kbGetProtoUnitID("Spider Egg"), 0, false);
+					if (target < 10) {
+						mSetVarByQV("next", "cost", 0);
+						mSetVarByQV("next", "keywords", Keyword(DECAY) + Keyword(AIRDROP));
+					}
+				}
+			}
+			case SPELL_TAVERN_BRAWL:
+			{
+				trSoundPlayFN("specialist.wav","1",-1,"","");
+				trSoundPlayFN("chaos.wav","1",-1,"","");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					activeUnit = yDatabaseNext("allUnits");
+					trQuestVarSet("pointer", yGetPointer("allUnits"));
+					trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("allUnits") - 1, true);
+					for(y=trQuestVarGet("temp"); > 1) {
+						yDatabaseNext("allUnits");
+					}
+					target = yDatabaseNext("allUnits");
+					startAttack(activeUnit, target, HasKeyword(AMBUSH, 1*mGetVar(activeUnit, "keywords")), true);
+					ySetPointer("allUnits", trQuestVarGet("pointer"));
+				}
+				done = false;
+				xsEnableRule("spell_attack_complete");
+			}
 		}
 
 		if (trQuestVarGet("selectedCard") >= 0) {
@@ -2445,7 +2509,7 @@ rule spell_attack_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) || 
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");
@@ -2795,6 +2859,14 @@ inactive
 					if (yDatabaseNext("p"+p+"deck") == mGetVarByQV("spellTarget", "proto")) {
 						yRemoveFromDatabase("p"+p+"deck");
 						yRemoveUpdateVar("p"+p+"deck", "spell");
+					}
+				}
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits", true);
+					if (mGetVarByQV("allUnits", "player") == p) {
+						if (mGetVarByQV("allUnits", "proto") == mGetVarByQV("spellTarget", "proto")) {
+							damageUnit(1*trQuestVarGet("allUnits"), 100);
+						}
 					}
 				}
 			}

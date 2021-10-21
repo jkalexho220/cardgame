@@ -1,6 +1,8 @@
 bool OnTurnStart(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
+	int tile = 0;
+	int target = 0;
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Phoenix Egg"):
@@ -20,10 +22,66 @@ bool OnTurnStart(int unit = 0) {
 			drawCard(p, true);
 			return (true);
 		}
+		case kbGetProtoUnitID("Bireme"):
+		{
+			trQuestVarSet("p"+p+"manaTax", trQuestVarGet("p"+p+"manaTax") - 1);
+		}
+		case kbGetProtoUnitID("Eitri"):
+		{
+			for(x=yGetDatabaseCount("p"+p+"hand"); <9) {
+				addCardToHand(p, 0, SPELL_SCRAP_METAL, false);
+			}
+		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
-			mSetVar(unit, "attack", 1 + mGetVar(unit, "attack"));
+			trQuestVarSet("dirx", mGetVar(unit, "laserDirx"));
+			trQuestVarSet("dirz", mGetVar(unit, "laserDirz"));
+			trUnitSelectClear();
+			trUnitSelect(""+unit);
+			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+			trSoundPlayFN("sky passage.wav","1",-1,"","");
+			trQuestVarSet("next", deployAtTile(0, "Dwarf", 1*mGetVar(unit, "tile")));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("next"), true);
+			trUnitHighlight(1.0, false);
+			trSetSelectedScale(10, 0, 60);
+			trSetUnitOrientation(xsVectorSet(0.0 - trQuestVarGet("dirx"), 0, 0.0 - trQuestVarGet("dirz")), xsVectorSet(0,1,0), true);
+			trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
+			yAddToDatabase("directionalLasers", "next");
+			yAddUpdateVar("directionalLasers", "timeout", trTimeMS() + 500);
+			xsEnableRule("directional_lasers");
+
+			bool found = true;
+			tile = mGetVar(unit, "tile");
+			while (found) {
+				found = false;
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
+				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("dirx") * 6);
+				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("dirz") * 6);
+				for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+					trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+x, tile)));
+					if (zDistanceBetweenVectorsSquared("current", "pos") < 9) {
+						found = true;
+						tile = zGetVarByIndex("tiles", "neighbor"+x, tile);
+						break;
+					}
+				}
+				if (found) {
+					target = zGetVarByIndex("tiles", "occupant", tile);
+					startAttack(unit, target, false, false);
+				}
+			}
 			return (true);
+		}
+		case kbGetProtoUnitID("Tartarian Gate"):
+		{
+			mSetVar(unit, "action", ACTION_SLEEPING);
+			target = yGetDatabaseCount("p"+p+"hand");
+			drawCard(p);
+			if (target < 10) {
+				mSetVarByQV("next", "cost", 0);
+			}
+			return(true);
 		}
 		case kbGetProtoUnitID("Audrey"):
 		{
@@ -36,6 +94,35 @@ bool OnTurnStart(int unit = 0) {
 				}					
 				return (true);				
 			}	
+		}
+		case kbGetProtoUnitID("Shaba Ka"):
+		{
+			trQuestVarSet("p1count", 0);
+			trQuestVarSet("p2count", 0);
+			if(trQuestVarGet("chats_Kemsyt_0") == 0){
+				trQuestVarSet("chats_Kemsyt_0", 1);
+				ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
+				trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
+			}
+			for (x=yGetDatabaseCount("allUnits"); >0)  {
+				yDatabaseNext("allUnits");
+				p = yGetVar("allUnits", "player");
+				trQuestVarSet("p"+p+"count", 1 + trQuestVarGet("p"+p+"count"));
+			}
+			if (trQuestVarGet("p1count") > trQuestVarGet("p2count")) {
+				p = 1;
+			} else {
+				p = 2;
+			}
+			trQuestVarSetFromRand("temp", 1, 3, true);
+			if(trQuestVarGet("temp") == 1){
+				generateCard(p, 0, SPELL_BOOTS_TREASURE);	
+			} else if(trQuestVarGet("temp") == 2){
+				generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
+			} else {
+				generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
+			}
+			return(true);
 		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
@@ -80,6 +167,15 @@ bool OnTurnStart(int unit = 0) {
 			}
 			trQuestVarSet("pirateShipTarget" + unit, trQuestVarGet("pirateShipTargets"));
 			return (true);
+		}
+		case kbGetProtoUnitID("Invisible Target"):
+		{
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
+			mSetVar(unit, "action", ACTION_SLEEPING);
+			if (zDistanceToVectorSquared("p1commander", "pos") < 64) {
+				damageUnit(unit, 9999);
+				trSoundPlayFN("favordump.wav","1",-1,"","");
+			}
 		}
 		case kbGetProtoUnitID("Monument"):
 		{

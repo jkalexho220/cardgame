@@ -167,6 +167,12 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				deathSummonQueue(1*mGetVar(target, "tile"), p, "Minion");
 			}
 		}
+		case ATTACK_SUMMON_TREE:
+		{
+			if (mGetVar(target, "health") <= 0) {
+				deathSummonQueue(1*mGetVar(target, "tile"), p, "Walking Woods Marsh");
+			}
+		}
 		case ATTACK_POISON:
 		{
 			if ((mGetVar(target, "spell") == SPELL_NONE) && (mGetVar(target, "health") > 0)) {
@@ -217,6 +223,25 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			yAddUpdateVar("mirrorTowerLasers", "length", zDistanceBetweenVectors3d("start", "end") * 1.25);
 			yAddUpdateVar("mirrorTowerLasers", "timeout", trTimeMS() + 1500);
 			xsEnableRule("attack_animate_mirror_laser");
+		}
+		case ATTACK_TEAMWORK:
+		{
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+attacker));
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if (HasKeyword(ATTACK_TEAMWORK, 1*mGetVarByQV("allUnits", "OnAttack")) == false) { // no infinite loops for you
+					if ((mGetVarByQV("allUnits", "player") == p) && (zDistanceToVectorSquared("allUnits", "pos") < 64)) {
+						startAttack(1*trQuestVarGet("allUnits"), target);
+					}
+				}
+			}
+			deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
+		}
+		case ATTACK_SING:
+		{
+			if (mGetVarByQV("p"+p+"commander", "action") < ACTION_SLEEPING) {
+				mSetVarByQV("p"+p+"commander", "action", ACTION_READY);
+			}
 		}
 	}
 }

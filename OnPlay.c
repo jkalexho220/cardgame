@@ -17,21 +17,6 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
-	if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p" + p + "commander"))) == kbGetProtoUnitID("Shaba Ka")){
-		trQuestVarSetFromRand("temp", 1, 3, true);			
-		if(trQuestVarGet("temp") == 1){
-			generateCard(p, 0, SPELL_BOOTS_TREASURE);	
-		} else if(trQuestVarGet("temp") == 2){
-			generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
-		} else {
-			generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
-		}
-		if(trQuestVarGet("chats_Kemsyt_0") == 0){
-			trQuestVarSet("chats_Kemsyt_0", 1);
-			ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
-			trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
-		}
-	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):
@@ -241,8 +226,10 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Hippikon"):
 		{
-			trQuestVarSet("p"+p+"yeebBonus", 2 + trQuestVarGet("p"+p+"yeebBonus"));
-			mSetVarByQV("p"+p+"commander", "attack", 2 + mGetVarByQV("p"+p+"commander", "attack"));
+			if (mGetVarByQV("p"+p+"commander", "action") < ACTION_SLEEPING) {
+				mSetVarByQV("p"+p+"commander", "action", ACTION_READY);
+			}
+			trSoundPlayFN("militarycreate.wav","1",-1,"","");
 			deployAtTile(0, "Hero Birth", 1*mGetVarByQV("p"+p+"commander", "tile"));
 		}
 		case kbGetProtoUnitID("Myrmidon"):
@@ -336,6 +323,23 @@ void OnPlay(int unit = 0) {
 		{
 			trSoundPlayFN("wonder.wav","1",-1,"","");
 		}
+		case kbGetProtoUnitID("Fire Siphon"):
+		{
+			trQuestVarSet("spellCaster", unit);
+			mSetVar(unit, "laserDirx", -0.707107);
+			mSetVar(unit, "laserDirz", -0.707107);
+			trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
+			chooseSpell(SPELL_CHOOSE_DIRECTION);
+		}
+		case kbGetProtoUnitID("Theris"):
+		{
+			drawCard(p);
+		}
+		case kbGetProtoUnitID("Female"):
+		{
+			mSetVarByQV("p"+p+"commander", "health", 2 + mGetVarByQV("p"+p+"commander", "health"));
+			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 	if (HasKeyword(MAGNETIC, 1*mGetVar(unit, "keywords"))) {
@@ -357,4 +361,12 @@ void OnPlay(int unit = 0) {
 		xsEnableRule("gameplay_01_select");
 		highlightReady(999999);
 	}
+}
+
+rule cheer_activate
+highFrequency
+inactive
+{
+	xsDisableSelf();
+	OnPlay(1*trQuestVarGet("cheerTarget"));
 }
