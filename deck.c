@@ -144,6 +144,11 @@ void drawCard(int p = 0, bool fleeting = false) {
 		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has no more cards! " + 1*trQuestVarGet("p"+p+"fatigue") + " damage");
 		trQuestVarSetFromRand("sound", 1, 5, true);
 		trSoundPlayFN("lightningstrike"+1*trQuestVarGet("sound")+".wav","1",-1,"","");
+		if (mGetVarByQV("p"+p+"commander", "health") <= 0) {
+			trQuestVarSet("p"+p+"drawCards", 0);
+			trQuestVarSet("p"+p+"defeated", 1);
+			xsEnableRule("match_end");
+		}
 	} else {
 		int proto = yDatabaseNext("p"+p+"deck");
 		if (yGetDatabaseCount("p"+p+"hand") < 10) {

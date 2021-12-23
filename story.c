@@ -536,26 +536,146 @@ void SetupMission(int class = 0, int mission = 0){
 				case 1:
 				{
 					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Scylla"));
+					trPaintTerrain(0, 0, 59, 59, 5, 2, false); // ice c
+					for(x=0;<4) {
+						addCardToDeck(2, "Wadjet");
+						addCardToDeck(2, "Jormund Elver");
+						addCardToDeck(2, "Medusa");
+						addCardToDeck(2, "Cyclops");
+						addCardToDeck(2, "", SPELL_SEA_EMBRACE);
+						addCardToDeck(2, "Nereid");
+						addCardToDeck(2, "Hydra");
+						addCardToDeck(2, "", SPELL_TELETIDE);
+						addCardToDeck(2, "", SPELL_WRATH_OF_SEA);
+						addCardToDeck(2, "", SPELL_DROWN);
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 2:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 3);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Man O War"));
+					trPaintTerrain(0, 0, 59, 59, 5, 2, false); // ice c
+					for(x=0;<20) {
+						addCardToDeck(2, "Man O War");
+						addCardToDeck(2, "", SPELL_ELECTROSURGE);
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 3:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 6);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_ATLANTIS);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Polyphemus"));
+					for(x=0;<4) {
+						addCardToDeck(2, "Wadjet");
+						addCardToDeck(2, "Hippikon");
+						addCardToDeck(2, "", SPELL_TELETIDE);
+						addCardToDeck(2, "Medusa");
+					}
+					for(x=0;<4) {
+						addCardToDeck(2, "Man O War");
+						addCardToDeck(2, "", SPELL_SEA_EMBRACE);
+						addCardToDeck(2, "Leviathan");
+						addCardToDeck(2, "Hydra");
+						addCardToDeck(2, "Sea Turtle");					
+						addCardToDeck(2, "", SPELL_DROWN);
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 4:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 5);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_ATLANTIS);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Kraken"));
+					for(x=0;<10) {
+						addCardToDeck(2, "Wadjet");
+						addCardToDeck(2, "Medusa");
+						addCardToDeck(2, "Jormund Elver");
+						addCardToDeck(2, "", SPELL_KRAKEN_HUG);
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 5:
 				{
-					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("dimension", 7);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_ATLANTIS);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Servant"));
+					for(x=0;<10) {
+						addCardToDeck(2, "Servant");
+						addCardToDeck(2, "", SPELL_WATER_CANNON);
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+					}
+					for(x=0;<2) {
+						addCardToDeck(2, "Nereid");
+						addCardToDeck(2, "", SPELL_TIDAL_WAVE);
+						addCardToDeck(2, "", SPELL_FLUSH);
+						addCardToDeck(2, "", SPELL_DEEP_DIVE);
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 6:
 				{
 					trQuestVarSet("dimension", 8);	
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trPaintTerrain(0, 0, 59, 59, 0, 72, false); // atlantis coral
+					trQuestVarSet("p1commanderType", COMMANDER_REACH);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Cinematic Block"));
+					AddToCustomBoard(284, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(243, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(208, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(207, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(206, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(205, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(204, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(203, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(202, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(201, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(200, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(199, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(198, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(196, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(194, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(168, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(148, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(135, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);					
+					AddToCustomBoard(258, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(220, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(189, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(191, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(193, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(195, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(197, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(218, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(217, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(216, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(215, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(214, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(213, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(212, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(211, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(182, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(159, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					AddToCustomBoard(142, TILE_OCCUPIED, "Wall Connector", 1, 0, 2);
+					for(x=0;<40) {
+						addCardToDeck(2, "", SPELL_NICKS_PORTAL);		
+					}
+					for(x=0;<20) {		
+						addCardToDeck(2, "", SPELL_SPARK);
+						addCardToDeck(2, "", SPELL_METEOR);	
+						addCardToDeck(2, "", SPELL_EXPLOSION);
+					}
+					for(x=0;<10) {
+						addCardToDeck(2, "", SPELL_ZENOS_PARADOX);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);	
+						addCardToDeck(2, "", SPELL_TIME_POCKET);
+						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);						
+					}
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 			}
 		}
@@ -987,6 +1107,7 @@ void CleanBoard(){
 		yDatabasePointerDefault("p"+p+"hand");
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
+			mSetVarByQV("p"+p+"hand", "played", 0);
 			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		}
 		yClearDatabase("p"+p+"hand");
@@ -1195,6 +1316,7 @@ inactive
 				/* Reward Pack Cards */
 				trVectorQuestVarSet("packPos", xsVectorSet(105, 0, 1));
 				trQuestVarSet("newCardsCount", 2 + trQuestVarGet("missionSelection"));
+				trVectorQuestVarSet("packPos", xsVectorSet(trVectorQuestVarGetX("packPos")+(8-trQuestVarGet("newCardsCount")),0,trVectorQuestVarGetZ("packPos")+(8-trQuestVarGet("newCardsCount"))));
 				
 				xsEnableRule("NewCards0");
 				xsEnableRule("CollectionClick");

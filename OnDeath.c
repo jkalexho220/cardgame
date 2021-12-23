@@ -244,9 +244,11 @@ void removeDeadUnits() {
 
 	if (mGetVarByQV("p1commander", "health") <= 0) {
 		trQuestVarSet("p1defeated", 1);
+		xsEnableRule("match_end");
 	}
 	if (mGetVarByQV("p2commander", "health") <= 0) {
 		trQuestVarSet("p2defeated", 1);
+		xsEnableRule("match_end");
 	}
 }
 

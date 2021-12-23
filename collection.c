@@ -275,27 +275,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Odd Catch");	
+					return ("Waves");	
 				}
 				case 2:
 				{
-					return ("Storm Approaching");	
+					return ("Underwater");	
 				}
 				case 3:
 				{
-					return ("Roaring Waves");	
+					return ("Reef");	
 				}
 				case 4:
 				{
-					return ("Dreaming Whirlpool");	
+					return ("Bubbles");	
 				}
 				case 5:
 				{
-					return ("Go With The Flow");	
+					return ("Deep Gate");	
 				}
 				case 6:
 				{
-					return ("Empire Of Water");	
+					return ("Deep Palace");	
 				}
 			}
 		}
