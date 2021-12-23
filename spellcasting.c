@@ -762,6 +762,21 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 0, trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage") > 0);
 			castInstructions("Choose a minion. Right click to cancel.");
 		}
+		case SPELL_KRAKEN_HUG:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_WATER_PRESSURE:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion.");
+		}
+		case SPELL_OXYGEN_TANK:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
 		case SPELL_SPARK:
 		{
 			castAddUnit("spellTarget", 0);
@@ -1189,6 +1204,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 3 - p, false);
 			castInstructions("Choose an enemy minion. Right click to cancel.");
 		}
+		case SPELL_NICKS_PORTAL:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1390,6 +1410,30 @@ inactive
 				trUnitMoveToVector("spellProjectileEnd");
 				done = false;
 				xsEnableRule("spell_projectile_complete");
+			}
+			case SPELL_KRAKEN_HUG:
+			{
+				trSoundPlayFN("krakendeath.wav","1",-1,"","");
+				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				trQuestVarSet("p"+(3-p)+"drawCards", 8*trCountUnitsInArea("128",(3-p),"Unit",45));
+			}
+			case SPELL_WATER_PRESSURE:
+			{
+				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				trSoundPlayFN("underminebirth.wav","1",-1,"","");
+				trSoundPlayFN("underminebirth.wav","1",-1,"","");
+				trSoundPlayFN("underminebirth.wav","1",-1,"","");
+				trSoundPlayFN("underminebirth.wav","1",-1,"","");
+				deployAtTile(0, "Meteor Impact Water", 1*mGetVarByQV("spellTarget", "tile"));
+				mSetVarByQV("spellTarget", "attack", 1);
+				mSetVarByQV("spellTarget", "health", 1);
+			}
+			case SPELL_OXYGEN_TANK:
+			{
+				trSoundPlayFN("garrison.wav","1",-1,"","");
+				trSoundPlayFN("gaiatreesprout2.wav","1",-1,"","");
+				trSoundPlayFN("villagercreate.wav","1",-1,"","");
+				addCardToDeck(p, "", SPELL_OXYGEN_TANK);
 			}
 			case SPELL_SPARK:
 			{
@@ -2360,6 +2404,38 @@ inactive
 				}
 				done = false;
 				xsEnableRule("spell_attack_complete");
+			}
+			case SPELL_NICKS_PORTAL:
+			{
+				trSoundPlayFN("vortexstart.wav","1",-1,"","");				
+				yClearDatabase("nickTiles");			
+				for (z=zGetBankCount("tiles"); >0) {
+					zBankNext("tiles");
+					if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
+						if (zGetVar("tiles", "ward") == 0) {
+							yAddToDatabase("nickTiles", "tiles");
+						}
+					}
+				}				
+				trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
+				for(x=trQuestVarGet("nickRandom"); >0) {
+					yDatabaseNext("nickTiles");
+				}	
+				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("nickTiles"));				
+				bool go = true;		
+				while(go){
+					trQuestVarSetFromRand("nickClass", 0, 4, true);
+					trQuestVarSetFromRand("nickCard", 7, 29, true);
+					ChatLog(0,""+1*trQuestVarGet("nickCard")+" card class "+1*trQuestVarGet("nickClass"));
+					trQuestVarSet("nickProto", CardToProto(1*(trQuestVarGet("nickCard") + 30 * trQuestVarGet("nickClass"))));
+					if(trQuestVarGet("nickProto") != kbGetProtoUnitID("Statue of Lightning")){
+						go = false;
+					}
+				}			
+				target = summonAtTile(1*trQuestVarGet("nickTiles"),p,1*trQuestVarGet("nickProto"));
+				if(HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) == false){
+					mSetVar(target, "action", ACTION_SLEEPING);					
+				}
 			}
 		}
 

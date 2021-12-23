@@ -6,6 +6,7 @@ const int TERRAIN_CAVE = 4;
 const int TERRAIN_MARSH = 5;
 const int TERRAIN_HEAVEN = 6;
 const int TERRAIN_SCRAPYARD = 7;
+const int TERRAIN_ATLANTIS = 8;
 
 const int T_GRASS_25 = 2;
 const int T_GRASS_50 = 3;
@@ -337,6 +338,35 @@ void chooseTerrainTheme(int terrain = 0) {
 				zSetVarByIndex("tiles", "searched", tile, 1);
 				while(done == false) {
 					paintTile(tile, 0, T_SAND_D);
+					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
+					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
+					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {
+						zSetVarByIndex("tiles", "searched", neighbor, 1 + zGetVarByIndex("tiles", "searched", neighbor));
+						tile = neighbor;
+					} else {
+						done = true;
+					}
+				}
+			}
+		}
+		case TERRAIN_ATLANTIS:
+		{
+			trStringQuestVarSet("treeType", "Fountain");
+			trQuestVarSet("treeTile", 3);
+			trQuestVarSet("treeSubTile", 10);
+			trPaintTerrain(0, 0, 59, 59, 0, 71, false); // atlantis
+			for(i=zGetBankCount("tiles"); >0) {
+				zBankNext("tiles");
+				zSetVar("tiles", "searched", 0);
+			}
+			// Drawing random strings of terrain
+			for(i=trQuestVarGet("dimension"); >0) {
+				done = false;
+				trQuestVarSetFromRand("tile", trQuestVarGet("ztilesstart"), trQuestVarGet("ztilesend"), true);
+				tile = 1*trQuestVarGet("tile");
+				zSetVarByIndex("tiles", "searched", tile, 1);
+				while(done == false) {
+					paintTile(tile, 0, 72);
 					trQuestVarSetFromRand("rand", 0, zGetVarByIndex("tiles", "neighborCount", tile), true);
 					neighbor = zGetVarByIndex("tiles", "neighbor"+1*trQuestVarGet("rand"), tile);
 					if (zGetVarByIndex("tiles", "searched", neighbor) < 2) {

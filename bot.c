@@ -167,6 +167,14 @@ inactive
 								yRemoveFromDatabase("castTargets");
 							}
 						}
+					} else if(1*trQuestVarGet("botSpell") == SPELL_WATER_PRESSURE){
+						yDatabasePointerDefault("castTargets");
+						for(x=yGetDatabaseCount("castTargets"); >0) {
+							yDatabaseNext("castTargets");
+							if(mGetVarByQV("castTargets", "attack") < 2 && mGetVarByQV("castTargets", "health") < 2){
+								yRemoveFromDatabase("castTargets");
+							}
+						}
 					}
 					
 				} else if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_DEFENSIVE){

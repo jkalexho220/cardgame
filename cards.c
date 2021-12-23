@@ -56,7 +56,9 @@ const int SPELL_ELVEN_APOCALYPSE = 990;
 const int SPELL_FROST_BREATH = 989;
 const int SPELL_PYROBALL = 988;
 const int SPELL_MIRROR_REFLECTION = 987;
-
+const int SPELL_KRAKEN_HUG = 986;
+const int SPELL_WATER_PRESSURE = 985;
+const int SPELL_OXYGEN_TANK = 984;
 
 const int SPELL_DOMINANCE = 802;
 const int SPELL_TAVERN_BRAWL = 801;
@@ -151,6 +153,9 @@ const int SPELL_POWER_SUIT = 73;
 const int SPELL_BORROWED_TIME = 74;
 const int SPELL_FORTIFY = 75;
 const int SPELL_SONG_OF_REST = 76;
+
+// SPACE
+const int SPELL_NICKS_PORTAL = 77;
 
 /*
 OnAttack events (bit positions)
@@ -917,8 +922,10 @@ runImmediately
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
 
-
-	
+	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
+	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a minion's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
+	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
@@ -1212,15 +1219,24 @@ runImmediately
 	SPACE
 	*/
 	// Created cards
-	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
-	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
+	//CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
+	//CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
 	
-	// 150-154
+	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
+	/*
+	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_name", "Nickonhawk's Portal");
+	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_cost", 3);
+	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_description", "Summon a random minion on a random tile.");
+	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_type", SPELL_TYPE_OTHER);
+	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, SPELL_TYPE_OTHER));
+	trQuestVarSet("spellToCard"+SPELL_NICKS_PORTAL, trQuestVarGet("cardIndex"));
+	*/
+	/* 150-154
 	// 155-159
 	// 160-164 (LEGENDARY at 164)
 	// 165-169
 	// 170-174
-	// 175-179 (LEGENDARY at 179)
+	// 175-179 (LEGENDARY at 179) */
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
@@ -1310,16 +1326,8 @@ runImmediately
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 
-	CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
-	CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
-
-	/*
-	Spells
-				Name 	Cost 	Spell
-	*/
-	
-	
+	//CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
+	//CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");	
 	
 	xsDisableRule("initializeCards");
 }
-
