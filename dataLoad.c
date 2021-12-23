@@ -115,7 +115,7 @@ void dataSave() {
 }
 
 void showLoadProgress(int p = 0) {
-	trSoundPlayFN("default","1",-1,""+100 * p / 22,"icons\god power reverse time icons 64");
+	trSoundPlayFN("default","1",-1,"Loading Data:"+100 * p / 22,"icons\god power reverse time icons 64");
 }
 
 rule data_load_00
@@ -277,6 +277,8 @@ rule data_load_01_load_classes
 highFrequency
 inactive
 {
+	trLetterBox(false);
+	trBlockAllSounds(true);
 	int c = 6 * trQuestVarGet("class1") + trQuestVarGet("class2");
 	if (trCurrentPlayer() == 2) {
 		c = c + 64;
@@ -294,6 +296,9 @@ inactive
 	}
 	uiTransformSelectedUnit("Swordsman Hero");
 	xsDisableSelf();
+	trForceNonCinematicModels(true);
+	trLetterBox(true);
+	showLoadProgress(1*trQuestVarGet("progress"));
 }
 
 rule data_load_02_detect_classes
@@ -343,6 +348,8 @@ inactive
 {
 	int p = trCurrentPlayer();
 	if (trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0) {
+		trLetterBox(false);
+		trBlockAllSounds(true);
 		int c = trQuestVarGet("commander");
 		if (p == 2) {
 			c = c + 64;
@@ -362,6 +369,9 @@ inactive
 			uiTransformSelectedUnit("Swordsman Hero");
 		}
 		xsDisableSelf();
+		trForceNonCinematicModels(true);
+		trLetterBox(true);
+		showLoadProgress(1*trQuestVarGet("progress"));
 	}
 }
 
@@ -422,6 +432,8 @@ inactive
 	int p = trCurrentPlayer();
 	if ((trQuestVarGet("loadNext") == 1) && 
 		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0)) {
+		trLetterBox(false);
+		trBlockAllSounds(true);
 		trQuestVarSet("loadNext", 0);
 		int c = trQuestVarGet("classProgress");
 		int d = 0;
@@ -468,6 +480,9 @@ inactive
 			}
 		}
 		uiTransformSelectedUnit("Swordsman Hero");
+		trForceNonCinematicModels(true);
+		trLetterBox(true);
+		showLoadProgress(1*trQuestVarGet("progress"));
 	}
 }
 
