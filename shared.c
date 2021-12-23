@@ -51,10 +51,13 @@ void trStringQuestVarSet(string name = "", string value = "") {
 }
 
 string trStringQuestVarGet(string name="") {
-	int old = xsGetContextPlayer();
-	xsSetContextPlayer(0);
-	string val = kbArmyGetName(1*trQuestVarGet("string"+name));
-	xsSetContextPlayer(old);
+	string val = "";
+	if (trQuestVarGet("string"+name) > 0) {
+		int old = xsGetContextPlayer();
+		xsSetContextPlayer(0);
+		val = kbArmyGetName(1*trQuestVarGet("string"+name));
+		xsSetContextPlayer(old);
+	}
 	return(val);
 }
 
