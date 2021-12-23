@@ -461,6 +461,24 @@ int GetSpellAnimation(int class = 0, int type = 0){
 				}
 			}
 		}
+		case CLASS_SPACE:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (9);	// Kronos
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (11); // Oranos
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (11); // Oranos
+				}
+			}
+		}
 	}
 	ThrowError("GetSpellAnimation");
 }
@@ -852,8 +870,8 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 rule initializeCards
 highFrequency
 active
-runImmediately
 {
+	trQuestVarSet("cardsReady", 0);
 	for(p=1;<cNumberPlayers){
 		trForbidProtounit(p, "Archer Atlantean Hero");
 		trForbidProtounit(p, "Javelin Cavalry Hero");
@@ -924,7 +942,7 @@ runImmediately
 
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
 	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a minion's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
+	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);		
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
@@ -980,6 +998,14 @@ runImmediately
 	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
 
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_01");
+}
+
+rule initializeCards_01
+inactive
+highFrequency
+{
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
@@ -1029,6 +1055,14 @@ runImmediately
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 2 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_02");
+}
+
+rule initializeCards_02
+inactive
+highFrequency
+{
 	/*
 	ARCANE
 	*/
@@ -1075,7 +1109,14 @@ runImmediately
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
 	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 3, 2); // At the start of your turn, both players draw a card.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_03");
+}
 
+rule initializeCards_03
+inactive
+highFrequency
+{
 	/*
 	NAGA
 	*/
@@ -1120,6 +1161,15 @@ runImmediately
 	SpellSetup("Drown",					7, SPELL_DROWN,		 		"Shuffle a minion into your deck.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
+
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_04");
+}
+
+rule initializeCards_04
+inactive
+highFrequency
+{
 	/*
 	CLOCKWORK
 	*/
@@ -1167,7 +1217,14 @@ runImmediately
 	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Borrowed Time",			20, SPELL_BORROWED_TIME,	"Gain an extra turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_05");
+}
 
+rule initializeCards_05
+inactive
+highFrequency
+{
 	/*
 	OTHERWORLD
 	*/
@@ -1215,32 +1272,45 @@ runImmediately
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied minion and an enemy minion swap spaces.", SPELL_TYPE_OTHER);
 	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a minion, give it Decay.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_06");
+	//trDelayedRuleActivation("initializeCards_07");
+}
+
+
+rule initializeCards_06
+inactive
+highFrequency
+{
 	/*
 	SPACE
 	*/
 	// Created cards
-	//CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
-	//CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
-	
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
 	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
-	/*
-	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_name", "Nickonhawk's Portal");
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_cost", 3);
-	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_description", "Summon a random minion on a random tile.");
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_type", SPELL_TYPE_OTHER);
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, SPELL_TYPE_OTHER));
-	trQuestVarSet("spellToCard"+SPELL_NICKS_PORTAL, trQuestVarGet("cardIndex"));
-	*/
-	/* 150-154
+	// 150-154
+	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER);
 	// 155-159
 	// 160-164 (LEGENDARY at 164)
 	// 165-169
 	// 170-174
-	// 175-179 (LEGENDARY at 179) */
+	// 175-179 (LEGENDARY at 179) 
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_07");
+	
+}
+
+rule initializeCards_07
+inactive
+highFrequency
+{
+	trQuestVarSet("cardsReady", 1);
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
 		Proto | OnAttack | OnDeath | Description
 	*/
+		
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Create a Fleeting Windsong.");
 	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
@@ -1329,5 +1399,5 @@ runImmediately
 	//CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
 	//CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");	
 	
-	xsDisableRule("initializeCards");
+	xsDisableSelf();
 }

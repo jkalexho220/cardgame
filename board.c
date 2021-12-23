@@ -393,7 +393,7 @@ void paintTreesOnTile(int tile = 0) {
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("next"), true);
 		trUnitSetAnimationPath(""+1*trQuestVarGet("rand")+",0,0,0,0,0,0");
-		trSetUnitOrientation(xsVectorSet(Math_sin(trQuestVarGet("heading")), 0, Math_cos(trQuestVarGet("heading"))), xsVectorSet(0,1,0), true);
+		trSetUnitOrientation(xsVectorSet(xsSin(trQuestVarGet("heading")), 0, xsCos(trQuestVarGet("heading"))), xsVectorSet(0,1,0), true);
 	} else {
 		for(i=4; >0) {
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));

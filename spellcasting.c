@@ -2792,7 +2792,7 @@ inactive
 		trQuestVarSet("laserCurDistSquared", zDistanceBetweenVectorsSquared("laserPos", "laserStart"));
 		if (trQuestVarGet("laserCurDistSquared") > trQuestVarGet("laserNextDistSquared")) {
 			trQuestVarSet("laserCurDist", xsSqrt(trQuestVarGet("laserCurDistSquared")));
-			trQuestVarSet("laserAngle", Math_atan(10.0 / trQuestVarGet("laserCurDist")) - 0.02);
+			trQuestVarSet("laserAngle", xsAtan(10.0 / trQuestVarGet("laserCurDist")) - 0.02);
 
 			trQuestVarSet("laserNextDist", 10.0 * xsCos(trQuestVarGet("laserAngle")) / xsSin(trQuestVarGet("laserAngle")));
 			trQuestVarSet("laserNextDistSquared", xsPow(trQuestVarGet("laserNextDist"), 2));

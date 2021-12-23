@@ -1,7 +1,61 @@
 bool Multiplayer = false;
 
+const float PI = 3.141592;
+
 bool playerIsPlaying(int p = 0) {
 	return(kbIsPlayerHuman(p) == true && kbIsPlayerResigned(p) == false);
+}
+
+
+void trVectorQuestVarSet(string VQVname = "", vector QVv = vector(-1,-1,-1)) {
+	if (VQVname == "") return;
+	trQuestVarSet(""+VQVname+"X", xsVectorGetX(QVv));
+	trQuestVarSet(""+VQVname+"Y", xsVectorGetY(QVv));
+	trQuestVarSet(""+VQVname+"Z", xsVectorGetZ(QVv));
+}
+
+vector trVectorQuestVarGet(string name = "") {
+	if (name == "") { return(vector(-1,-1,-1)); }
+	vector ret = xsVectorSet(trQuestVarGet(name+"X"),trQuestVarGet(name+"Y"),trQuestVarGet(name+"Z"));
+	return(ret);
+}
+
+float trVectorQuestVarGetX(string VQVname = "") {
+	if (VQVname == "") return(-1);
+	return(trQuestVarGet(""+VQVname+"X"));
+}
+
+float trVectorQuestVarGetY(string VQVname = "") {
+	if (VQVname == "") return(-1);
+	return(trQuestVarGet(""+VQVname+"Y"));
+}
+
+float trVectorQuestVarGetZ(string VQVname = "") {
+	if (VQVname == "") return(-1);
+	return(trQuestVarGet(""+VQVname+"Z"));
+}
+
+void trVectorQuestVarEcho(string VQVname = "") {
+	if (VQVname == "") return;
+	trChatSend(0, ""+VQVname+": "+trVectorQuestVarGet(VQVname));
+}
+
+void trStringQuestVarSet(string name = "", string value = "") {
+	int old = xsGetContextPlayer();
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("string"+name) > 0) {
+		kbArmyDestroy(1*trQuestVarGet("string"+name));
+	}
+	trQuestVarSet("string"+name, kbArmyCreate(value));
+	xsSetContextPlayer(old);
+}
+
+string trStringQuestVarGet(string name="") {
+	int old = xsGetContextPlayer();
+	xsSetContextPlayer(0);
+	string val = kbArmyGetName(1*trQuestVarGet("string"+name));
+	xsSetContextPlayer(old);
+	return(val);
 }
 
 /* 
@@ -124,11 +178,11 @@ float zDistanceToVector(string qv = "", string v = "") {
 }
 
 void trVectorSetFromAngle(string qv = "", float angle = 0) {
-	trVectorQuestVarSet(qv,xsVectorSet(Math_sin(angle), 0, Math_cos(angle)));
+	trVectorQuestVarSet(qv,xsVectorSet(xsSin(angle), 0, xsCos(angle)));
 }
 
 float angleBetweenVectors(string from = "", string to = "") {
-	float a = Math_atan((trQuestVarGet(to+"X")-trQuestVarGet(from+"X"))/(trQuestVarGet(to+"Z")-trQuestVarGet(from+"Z")));
+	float a = xsAtan((trQuestVarGet(to+"X")-trQuestVarGet(from+"X"))/(trQuestVarGet(to+"Z")-trQuestVarGet(from+"Z")));
 	if (trVectorQuestVarGetZ(from) > trVectorQuestVarGetZ(to)) {
 	    if (trVectorQuestVarGetX(from) > trVectorQuestVarGetX(to)) {
 			a = a - PI;

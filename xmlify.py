@@ -61,8 +61,8 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'trDamageUnitsInArea', 'trCameraCut', 'trUnitSetAnimation', 'trPlayerTechTreeEnabledGodPowers', 
 			'trGetUnitScenarioNameNumber', 'trUnitIsOwnedBy', 'trCounterAddTime', 'trMutateSelected', 'xsMin', 
 			'trChatSend', 'trUnitIsSelected', 'kbGetProtoUnitName', 'trUnitSetStance', 'trForceNonCinematicModels', 
-			'trLetterBox', 'trUnitDead', 'Math_atan', 'trUnitPercentDamaged', 'trDamageUnitPercent', 'trCamTrackLoad', 
-			'trTechGodPower', 'xsCos', 'trModifyProtounit', 'Math_cos', 'while', 'trPlayerSetDiplomacy', 
+			'trLetterBox', 'trUnitDead', 'trUnitPercentDamaged', 'trDamageUnitPercent', 'trCamTrackLoad', 
+			'trTechGodPower', 'xsCos', 'trModifyProtounit', 'while', 'trPlayerSetDiplomacy', 
 			'trSetUnitOrientation', 'trMessageSetText', 'kbUnitGetAnimationActionType', 'trUnitHighlight', 'trUnitConvert', 
 			'xsVectorSet', 'trVectorQuestVarGetZ', 'map', 'if', 'trSetUnitIdleProcessing', 
 			'trCountUnitsInArea', 'trArmyDispatch', 'trTime', 'xsEnableRule', 'trUnitDestroy', 'trPlayerUnitCountSpecific', 
@@ -78,7 +78,7 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'kbUnitGetTargetUnitID', 'ambientColor', 'trUIFadeToColor', 'trClearCounterDisplay', 'trUnitChangeProtoUnit', 
 			'switch', 'trVectorQuestVarGetY', 'trQuestVarCopy', 'trUnitAlive', 'trSetSelectedScale', 'trUnitDoWorkOnUnit', 
 			'kbGetUnitBaseTypeID', 'trImmediateUnitGarrison', 'trStringQuestVarSet', 'trOverlayTextColour', 'trUnitSelectByID', 
-			'trOverlayText', 'Math_sin', 'trUnitMoveToPoint', 'trSetFogAndBlackmap', 'xsMax', 'trForbidProtounit', 'xsGetContextPlayer', 
+			'trOverlayText', 'trUnitMoveToPoint', 'trSetFogAndBlackmap', 'xsMax', 'trForbidProtounit', 'xsGetContextPlayer', 
 			'trSetPlayerWon', 'trEndGame', 'trSetPlayerDefeated', 'trUnitChangeName', 'trChatSendSpoofed', 'trUnitSetAnimationPath',
 			'trMusicPlayCurrent', 'trVectorQuestVarGet', 'trUnitEjectContained', 'trObjectiveSetID', 'trUIFlash', 'kbUnitGetCurrentHitpoints', 
 			'trMusicStop', 'uiFindType', 'xsRound', 'xsFloor', 'trChatHistoryClear', 'trSetCivilizationNameOverride', 'kbIsPlayerResigned',
@@ -86,11 +86,13 @@ functions = {' ', 'xsPow', 'trQuestVarGet', 'trQuestVarSet', '', 'trSetDisableGP
 			'gadgetUnreal', 'trGetScenarioUserData', 'uiLookAtUnit', 'uiClearSelection', 'uiCreateNumberGroup', 'kbLookAtAllUnitsOnMap',
 			'trTimeMS', 'trChatSendToPlayer', 'uiTransformSelectedUnit', 'trBlockAllSounds', 'xsDisableSelf', 'trUnblockAllSounds', 
 			'trSetCurrentScenarioUserData','trModeEnter', 'exit', 'musicToggleBattleMode', 'trEventSetHandler', 'kbProtoUnitIsUnitType',
-			'trShowImageDialog', 'trUnitSetHeading', 'trFadeOutMusic', 'trUnitTypeIsSelected', 'trUnitSetHP', 'trUnitDelete', 'uiMessageBox'}
+			'trShowImageDialog', 'trUnitSetHeading', 'trFadeOutMusic', 'trUnitTypeIsSelected', 'trUnitSetHP', 'trUnitDelete', 'uiMessageBox',
+			'kbArmyDestroy', 'kbArmyGetName', 'xsAtan', 'xsVectorGetX', 'kbArmyCreate', 'xsVectorGetY', 'xsVectorGetZ'}
 unknowns = {''}
 ln = 1
 if FILE_1 == 'all':
 	files = ['shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c', 'clockworkStory.c', 'otherworldStory.c', 'nagaStory.c']
+	#files = ['shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c', 'gameplayHelpers.c']
 
 	named = True
 	FILE_2 = 'cardGameAll.xml'
