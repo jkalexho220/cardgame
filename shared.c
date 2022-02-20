@@ -665,6 +665,8 @@ runImmediately
     trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
+
+	gadgetUnreal("GodPowers");
 	
 	for(p=2; >0) {
 		modularCounterInit("chat" + p + "Log", 5);
