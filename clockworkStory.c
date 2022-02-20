@@ -328,7 +328,8 @@ inactive
 				SummonLaser(146, 137);
 				SummonLaser(138, 136);
 				SummonLaser(142, 132);
-				summonAtTile(128, 1, kbGetProtoUnitID("Throwing Axeman"));
+				mSetVar(summonAtTile(128, 1, kbGetProtoUnitID("Throwing Axeman")), "action", ACTION_READY);
+
 				addCardToHand(1, 0, SPELL_EXPLOSION, true);
 				addCardToHand(1, 0, SPELL_DOUBLEBLAST, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);

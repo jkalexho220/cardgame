@@ -153,7 +153,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("bossSpell") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("bossSpell") + trQuestVarGet("chainReactionDeath") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop")) &&) {
 		int p = trQuestVarGet("activePlayer");
 		if (trQuestVarGet("p"+p+"borrowedTime") > 0) {
 			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);

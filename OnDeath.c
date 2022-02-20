@@ -154,6 +154,9 @@ void removeDeadUnits() {
 	}
 	if (checkAgain) {
 		xsEnableRule("chain_reaction_death");
+		trQuestVarSet("chainReactionDeath", 1);
+	} else {
+		trQuestVarSet("chainReactionDeath", 0);
 	}
 	
 	trQuestVarSet("p1deathCount", 0);
