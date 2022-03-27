@@ -741,6 +741,10 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
 		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
 		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetVar(next, "tile", 0);
+		mSetVar(next, "stunTime", 0);
+		mSetVar(next, "stunSFX", 0);
+		mSetVar(next, "victory", 0);
 		mSetVar(next, "scale", 1);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
