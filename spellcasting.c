@@ -36,7 +36,7 @@ in the quest vars.
 void castAddUnit(string qv = "", int p = 0, bool commander = true) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	if (commander) {
 		trQuestVarSet("cast"+x+"commander", SPELL_COMMANDER);
 	} else {
@@ -50,7 +50,7 @@ void castAddUnit(string qv = "", int p = 0, bool commander = true) {
 void castAddBackstabUnit(string qv = "", int p = 0) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	
 	trQuestVarSet("cast"+x+"type", CAST_BACKSTAB);
 	trQuestVarSet("cast"+x+"player", p);
@@ -60,7 +60,7 @@ void castAddBackstabUnit(string qv = "", int p = 0) {
 void castAddSing(string qv = "", int p = 0) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_SING);
 	trQuestVarSet("cast"+x+"player", p);
 	trStringQuestVarSet("cast"+x+"qv", qv);
@@ -69,7 +69,7 @@ void castAddSing(string qv = "", int p = 0) {
 void castAddConvertUnit(string qv = "", int p = 0) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	
 	trQuestVarSet("cast"+x+"type", CAST_CONVERT);
 	trQuestVarSet("cast"+x+"player", p);
@@ -79,7 +79,7 @@ void castAddConvertUnit(string qv = "", int p = 0) {
 void castAddAdjacentUnit(string qv = "", int p = 0, string src = "", bool commander = true) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	if (commander) {
 		trQuestVarSet("cast"+x+"commander", SPELL_COMMANDER);
 	} else {
@@ -107,7 +107,7 @@ ghost = true if ignore impassable terrain
 void castAddTile(string qv = "", bool ghost = false) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_TILE);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 	if (ghost) {
@@ -123,7 +123,7 @@ qv = name of the quest var to store the selected tile
 void castAddSummonLocations(string qv = "") {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_SUMMON_LOCATIONS);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 }
@@ -135,11 +135,11 @@ src = name of quest var holding the unit at the center
 void castAddAdjacentTile(string qv = "", string src = "") {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_TILE);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 	trQuestVarSet("cast"+x+"unit", 1*trQuestVarGet(src));
-
+	
 }
 
 /*
@@ -150,7 +150,7 @@ only highlight targets that are within range of the attacker.
 void castAddTarget(string qv = "", string attacker = "") {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_TARGET);
 	trStringQuestVarSet("cast"+x+"start", attacker);
 	trStringQuestVarSet("cast"+x+"qv", qv);
@@ -165,7 +165,7 @@ in the allUnits database.
 void castAddDirection(string qv = "", string start = "", bool unit = false) {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_DIRECTION);
 	if (unit) {
 		trQuestVarSet("cast"+x+"unit", 1);
@@ -184,7 +184,7 @@ only highlight targets that are within range of the magnetizer.
 void castAddMagnetize(string qv = "", string unit = "") {
 	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
 	int x = trQuestVarGet("castPush");
-
+	
 	trQuestVarSet("cast"+x+"type", CAST_MAGNETIZE);
 	trStringQuestVarSet("cast"+x+"start", unit);
 	trStringQuestVarSet("cast"+x+"qv", qv);
@@ -218,7 +218,7 @@ void castEnd() {
 	xsEnableRule("gameplay_01_select");
 	highlightReady(999999);
 	int cost = 0;
-
+	
 	if (trQuestVarGet("selectedCard") >= 0) {
 		int p = trQuestVarGet("activePlayer");
 		int unit = yGetUnitAtIndex("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
@@ -239,9 +239,9 @@ void castEnd() {
 		zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 		yRemoveFromDatabase("p"+p+"hand");
 		yRemoveUpdateVar("p"+p+"hand", "pos");
-
+		
 		updateHandPlayable(p);
-
+		
 		/*
 		Effects that occur whenever a spell is cast
 		*/
@@ -530,12 +530,12 @@ inactive
 					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) || (p == 0)) {
-						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {		
+						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trVectorSetUnitPos("spellProjectileStart", "allUnits");
 							trVectorQuestVarSet("temp", kbGetBlockPosition("128"));
 							trVectorQuestVarSet("temp", xsVectorSet(trVectorQuestVarGetX("temp") - trVectorQuestVarGetX("spellProjectileStart"), 0, trVectorQuestVarGetZ("temp")  - trVectorQuestVarGetZ("spellProjectileStart")));
 							trVectorQuestVarSet("spellProjectileEnd", kbGetBlockPosition("128"));
-							trVectorQuestVarSet("spellProjectileEnd", xsVectorSet(trVectorQuestVarGetX("spellProjectileEnd") + trVectorQuestVarGetX("temp"), 0, trVectorQuestVarGetZ("spellProjectileEnd")  + trVectorQuestVarGetZ("temp")));					
+							trVectorQuestVarSet("spellProjectileEnd", xsVectorSet(trVectorQuestVarGetX("spellProjectileEnd") + trVectorQuestVarGetX("temp"), 0, trVectorQuestVarGetZ("spellProjectileEnd")  + trVectorQuestVarGetZ("temp")));
 							zBankNext("tiles");
 							trQuestVarSet("temp", trQuestVarGet("tiles"));
 							for (x=zGetBankCount("tiles"); >0) {
@@ -543,15 +543,15 @@ inactive
 								if (zDistanceToVectorSquared("tiles", "spellProjectileEnd") < zDistanceToVectorSquared("temp", "spellProjectileEnd")) {
 									trQuestVarSet("temp", trQuestVarGet("tiles"));
 								}
-							}		
+							}
 							if(zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("temp")) + zGetVarByIndex("tiles", "terrain", 1*trQuestVarGet("temp")) == 0){
 								trUnitSelectClear();
 								trUnitSelect(""+1*trQuestVarGet("allUnits"));
 								yAddToDatabase("castTargets", "allUnits");
 								if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 									trUnitHighlight(999999, false);
-								}	
-							}	
+								}
+							}
 						}
 					}
 				}
@@ -561,13 +561,13 @@ inactive
 		if (yGetDatabaseCount("castTargets") + yGetDatabaseCount("castTiles") == 0) {
 			if (trCurrentPlayer() == 1*trQuestVarGet("activePlayer")) {
 				trMessageSetText("No valid targets.", -1);
-			}		
+			}
 		}
 	} else {
 		trQuestVarSet("castDone", CASTING_DONE);
 	}
-
-
+	
+	
 	xsDisableRule("spellcast_00_process");
 }
 
@@ -1306,7 +1306,7 @@ inactive
 			{
 				addCardToDeck(p, "", SPELL_RELOAD);
 				ySetPointer("p"+p+"deck", yGetDatabaseCount("p"+p+"deck"));
-				trSoundPlayFN("shockwave.wav","1",-1,"","");				
+				trSoundPlayFN("shockwave.wav","1",-1,"","");
 				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
@@ -1333,8 +1333,8 @@ inactive
 							if (HasKeyword(DECAY, 1*mGetVarByQV("allUnits", "keywords"))) {
 								damageUnit(1*trQuestVarGet("allUnits"), 5 + trQuestVarGet("p"+p+"spellDamage"));
 							} else {
-								mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));	
-							}											
+								mSetVarByQV("allUnits", "keywords", SetBit(1*mGetVarByQV("allUnits", "keywords"), DECAY));
+							}
 						}
 					}
 				}
@@ -1351,7 +1351,7 @@ inactive
 								damageUnit(1*trQuestVarGet("allUnits"), 3 + trQuestVarGet("p"+p+"spellDamage"));
 							} else {
 								stunUnit(1*trQuestVarGet("allUnits"));
-							}											
+							}
 						}
 					}
 				}
@@ -1482,7 +1482,7 @@ inactive
 				activeUnit = trQuestVarGet("allyTarget");
 				target = trQuestVarGet("enemyTarget");
 				target = checkGuard(target);
-
+				
 				startAttack(activeUnit, target, HasKeyword(AMBUSH, 1*mGetVar(activeUnit, "keywords")), true);
 				startAttack(target, activeUnit, false, true);
 				done = false;
@@ -1695,7 +1695,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(zGetUnitVector("healerPos", "targetPos"), xsVectorSet(0,1,0), true);
-				trUnitOverrideAnimation(50, 0, 0, 1, -1);
+				trUnitOverrideAnimation(50, 0, false, true, -1);
 				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("spellTarget", "tile"));
 				healUnit(1*trQuestVarGet("spellTarget"), 3);
 			}
@@ -1745,7 +1745,7 @@ inactive
 				deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(activeUnit, "tile"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
-				trUnitOverrideAnimation(39,0,0,1,-1);
+				trUnitOverrideAnimation(39,0,false,true,-1);
 				trUnitSelectClear();
 				trUnitSelect(""+activeUnit);
 				trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVar(activeUnit, "proto")));
@@ -1779,7 +1779,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
-				trUnitOverrideAnimation(40, 0, 0, 1, -1);
+				trUnitOverrideAnimation(40, 0, false, true, -1);
 				stunUnit(1*trQuestVarGet("spellTarget"));
 			}
 			case SPELL_LAMPADES_CONVERT:
@@ -1790,7 +1790,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
-				trUnitOverrideAnimation(37, 0, 0, 1, -1);
+				trUnitOverrideAnimation(37, 0, false, true, -1);
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				trUnitConvert(p);
@@ -1948,7 +1948,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
-				trUnitOverrideAnimation(39, 0, 0, 1, -1);
+				trUnitOverrideAnimation(39, 0, false, true, -1);
 				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
 				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("spellTile"));
 				trSoundPlayFN("relicselect.wav","1",-1,"","");
@@ -1984,65 +1984,65 @@ inactive
 						}
 					}
 				}
-
+				
 				trVectorQuestVarSet("laserEnd", kbGetBlockPosition(""+tile));
 				
 				tile = mGetVarByQV("spellTarget", "tile");
-
+				
 				trQuestVarSet("laserProj", deployAtTile(p, "Dwarf", tile));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);
 				trMutateSelected(kbGetProtoUnitID("Relic"));
-
+				
 				trQuestVarSet("laserAimer", deployAtTile(p, "Dwarf", tile));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
 				trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);
 				trImmediateUnitGarrison(""+1*trQuestVarGet("laserAimer"));
 				trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
 				trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
-
+				
 				trQuestVarSet("laserPhoenix", deployAtTile(p, "Phoenix", tile));
 				trVectorSetUnitPos("phoenixPos", "laserPhoenix");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
-				trUnitOverrideAnimation(15,0,1,1,-1);
+				trUnitOverrideAnimation(15,0,true,true,-1);
 				trMutateSelected(kbGetProtoUnitID("Hero Greek Ajax"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				trMutateSelected(kbGetProtoUnitID("Relic"));
 				trImmediateUnitGarrison(""+1*trQuestVarGet("laserPhoenix"));
 				trMutateSelected(1*mGetVarByQV("spellTarget", "proto"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);
 				trMutateSelected(kbGetProtoUnitID("Phoenix"));
-
+				
 				trQuestVarSet("laserMeteorite", deployAtTile(p, "Dwarf", tile));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);
 				trMutateSelected(kbGetProtoUnitID("Meteorite"));
-				trUnitOverrideAnimation(6,0,1,1,-1);
+				trUnitOverrideAnimation(6,0,true,true,-1);
 				trMutateSelected(kbGetProtoUnitID("Relic"));
-
+				
 				trQuestVarSet("laserGround", deployAtTile(p, "Dwarf", tile));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 				trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);
 				trImmediateUnitGarrison(""+1*trQuestVarGet("laserGround"));
 				trMutateSelected(kbGetProtoUnitID("Meteorite"));
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 				trMutateSelected(kbGetProtoUnitID("Rocket"));
@@ -2051,7 +2051,7 @@ inactive
 				// laser stuff
 				
 				trQuestVarSet("laserStartY", 10.0);
-
+				
 				trQuestVarSet("laserStepx", 2.0*trQuestVarGet("dirX"));
 				trQuestVarSet("laserStepz", 2.0*trQuestVarGet("dirZ"));
 				trQuestVarSet("laserNormalX", trQuestVarGet("dirZ"));
@@ -2060,24 +2060,24 @@ inactive
 				trQuestVarSet("laserStepDist", 0);
 				trQuestVarCopy("laserSFXX", "laserStartX");
 				trQuestVarCopy("laserSFXZ", "laserStartZ");
-
+				
 				trQuestVarSet("laserheading", 57.295779 * angleBetweenVectors("dir", "laserStep"));
-
-
+				
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
 				trUnitTeleport(trQuestVarGet("laserStartx"), 10.0, trQuestVarGet("laserStartz"));
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
 				
 				trQuestVarSet("laserAngle", 1.550796);
-
+				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);
 				trSetSelectedScale(1,1,1);
-
+				
 				trQuestVarSet("bossSpell", 2);
 				trQuestVarSet("bossNext", trTimeMS() + 1000);
-
+				
 				zSetProtoUnitStat("Wadjet Spit", p, 1, 8);
 				xsEnableRule("spell_world_splitter_activate");
 			}
@@ -2407,8 +2407,8 @@ inactive
 			}
 			case SPELL_NICKS_PORTAL:
 			{
-				trSoundPlayFN("vortexstart.wav","1",-1,"","");				
-				yClearDatabase("nickTiles");			
+				trSoundPlayFN("vortexstart.wav","1",-1,"","");
+				yClearDatabase("nickTiles");
 				for (z=zGetBankCount("tiles"); >0) {
 					zBankNext("tiles");
 					if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
@@ -2416,13 +2416,13 @@ inactive
 							yAddToDatabase("nickTiles", "tiles");
 						}
 					}
-				}				
+				}
 				trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
 				for(x=trQuestVarGet("nickRandom"); >0) {
 					yDatabaseNext("nickTiles");
-				}	
-				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("nickTiles"));				
-				bool go = true;		
+				}
+				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("nickTiles"));
+				bool go = true;
 				while(go){
 					trQuestVarSetFromRand("nickClass", 0, 4, true);
 					trQuestVarSetFromRand("nickCard", 7, 29, true);
@@ -2431,21 +2431,21 @@ inactive
 					if(trQuestVarGet("nickProto") != kbGetProtoUnitID("Statue of Lightning")){
 						go = false;
 					}
-				}			
+				}
 				target = summonAtTile(1*trQuestVarGet("nickTiles"),p,1*trQuestVarGet("nickProto"));
 				if(HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) == false){
-					mSetVar(target, "action", ACTION_SLEEPING);					
+					mSetVar(target, "action", ACTION_SLEEPING);
 				}
 			}
 		}
-
+		
 		if (trQuestVarGet("selectedCard") >= 0) {
 			if (trCurrentPlayer() == 3 - trQuestVarGet("activePlayer")) {
 				trMessageSetText("("+1*trQuestVarGet("spell_"+spell+"_cost")+")"+trStringQuestVarGet("spell_"+spell+"_name")+": "+trStringQuestVarGet("spell_"+spell+"_description"), -1);
 			}
 			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> cast " + trStringQuestVarGet("spell_"+1*trQuestVarGet("currentSpell")+"_name"));
 		}
-
+		
 		if (done) {
 			castEnd();
 		} else {
@@ -2504,7 +2504,7 @@ inactive
 				generateCard(p, CardToProto(card), CardToSpell(card));
 			}
 		}
-		xsDisableRule("spell_copy_homework_activate");	
+		xsDisableRule("spell_copy_homework_activate");
 	}
 }
 
@@ -2520,7 +2520,7 @@ inactive
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_apocalypse_activate");
-	}	
+	}
 }
 
 rule spell_fortify_activate
@@ -2534,7 +2534,7 @@ inactive
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_fortify_activate");
-	}	
+	}
 }
 
 rule spell_mirror_image_activate
@@ -2585,7 +2585,7 @@ rule spell_attack_complete
 highFrequency
 inactive
 {
-	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) || 
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) ||
 		(trTime() > cActivationTime + 3)) {
 		castEnd();
 		xsDisableRule("spell_attack_complete");
@@ -2596,7 +2596,7 @@ rule spell_snipe_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) || 
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) ||
 		(trTime() > cActivationTime + 3)) {
 		int tile = mGetVarByQV("spelltarget", "tile");
 		deployAtTile(0, "Arkantos God Out", tile);
@@ -2657,7 +2657,7 @@ inactive
 		switch(1*trQuestVarGet("currentSpell"))
 		{
 			case SPELL_PISTOL_SHOT:
-			{				
+			{
 				trSoundPlayFN("arrowonwood1.wav","1",-1,"","");
 				trSoundPlayFN("arrowonwood2.wav","1",-1,"","");
 				trSoundPlayFN("arrowonflesh3.wav","1",-1,"","");
@@ -2667,8 +2667,8 @@ inactive
 			}
 			case SPELL_MIRROR_REFLECTION:
 			{
-				trSoundPlayFN("restorationbirth.wav","1",-1,"","");			
-
+				trSoundPlayFN("restorationbirth.wav","1",-1,"","");
+				
 				zBankNext("tiles");
 				trQuestVarSet("temp", trQuestVarGet("tiles"));
 				for (x=zGetBankCount("tiles"); >0) {
@@ -2681,7 +2681,7 @@ inactive
 				deployAtTile(0, "Osiris Box Glow", 1*trQuestVarGet("temp"));
 				int activeUnit = summonAtTile(1*trQuestVarGet("temp"), 1*mGetVarByQV("spellTarget", "player"), 1*mGetVarByQV("spellTarget", "proto"));
 				if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == false){
-					mSetVar(activeUnit, "action", ACTION_SLEEPING);					
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				}
 				mSetVar(activeUnit, "attack", mGetVarByQV("spellTarget", "attack"));
 				mSetVar(activeUnit, "health", mGetVarByQV("spellTarget", "health"));
@@ -2719,11 +2719,11 @@ inactive
 				addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
 			} else {
 				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
-			}		
+			}
 			mSetVarByQV("next", "cost", 0);
 		}
 		xsDisableRule("spell_elven_apocalypse_activate");
-	}	
+	}
 }
 
 rule spell_electric_grid_activate
@@ -2763,13 +2763,13 @@ inactive
 			trQuestVarSet("laserNextDist", 10.0 * xsCos(trQuestVarGet("laserAngle")) / xsSin(trQuestVarGet("laserAngle")));
 			trQuestVarSet("laserNextDistSquared", xsPow(trQuestVarGet("laserNextDist"), 2));
 			trQuestVarSet("speed", 60.0 * (trQuestVarGet("laserNextDist") - trQuestVarGet("laserCurDist")));
-
+			
 			zSetProtoUnitStat("Wadjet Spit", p, 1, trQuestVarGet("speed"));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 			trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
 			trUnitMoveToPoint(trQuestVarGet("laserEndx"),0,trQuestVarGet("laserEndz"), -1);
-
+			
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);
 			trUnitHighlight(3.0, false);
@@ -2787,19 +2787,19 @@ inactive
 		}
 	} else if (trQuestVarGet("bossSpell") == 3) {
 		trVectorQuestVarSet("laserPos", kbGetBlockPosition(""+1*trQuestVarGet("laserGround"), true));
-
+		
 		// adjust speed;
 		trQuestVarSet("laserCurDistSquared", zDistanceBetweenVectorsSquared("laserPos", "laserStart"));
 		if (trQuestVarGet("laserCurDistSquared") > trQuestVarGet("laserNextDistSquared")) {
 			trQuestVarSet("laserCurDist", xsSqrt(trQuestVarGet("laserCurDistSquared")));
 			trQuestVarSet("laserAngle", xsAtan(10.0 / trQuestVarGet("laserCurDist")) - 0.02);
-
+			
 			trQuestVarSet("laserNextDist", 10.0 * xsCos(trQuestVarGet("laserAngle")) / xsSin(trQuestVarGet("laserAngle")));
 			trQuestVarSet("laserNextDistSquared", xsPow(trQuestVarGet("laserNextDist"), 2));
 			trQuestVarSet("speed", 60.0 * (trQuestVarGet("laserNextDist") - trQuestVarGet("laserCurDist")));
 			zSetProtoUnitStat("Wadjet Spit", p, 1, trQuestVarGet("speed"));
 		}
-
+		
 		if (trQuestVarGet("laserCurDist") > trQuestVarGet("laserStepDist") + 2.0) {
 			bool f = true;
 			while(trQuestVarGet("laserStepDist") < trQuestVarGet("laserCurDist")) {
@@ -2813,14 +2813,14 @@ inactive
 			trArmySelect("1,10");
 			trUnitChangeProtoUnit("Tartarian Gate flame");
 		}
-
+		
 		// adjust aim;
 		trVectorQuestVarSet("laserAim", zGetUnitVector3d("laserStart", "laserPos", -1.0));
 		trVectorQuestVarSet("laserAim2", crossProduct("laserAim", "laserNormal"));
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
 		trSetUnitOrientation(trVectorQuestVarGet("laserAim"), trVectorQuestVarGet("laserAim2"), true);
-
+		
 		if (trTimeMS() > trQuestVarGet("laserEndTime")) {
 			laserEnd();
 		}
@@ -2904,7 +2904,7 @@ inactive
 					trMutateSelected(kbGetProtoUnitID("Relic"));
 					trImmediateUnitGarrison(""+1*trQuestVarGet("hammerPos"+x));
 					trMutateSelected(kbGetProtoUnitID("Thor hammer"));
-
+					
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("hammerPos"+x), true);
 					trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));

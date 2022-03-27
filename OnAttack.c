@@ -30,7 +30,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		{
 			trUnitSelectClear();
 			trUnitSelect(""+attacker);
-			trUnitOverrideAnimation(52,0,0,1,-1);
+			trUnitOverrideAnimation(52,0,false,true,-1);
 			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 				yDatabaseNext("p"+p+"hand", true);
 				if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
@@ -58,7 +58,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trUnitSelectClear();
 				trUnitSelect(""+attacker);
 				trMutateSelected(kbGetProtoUnitID("General Melagius"));
-				trUnitOverrideAnimation(39, 0, 0, 1, -1);
+				trUnitOverrideAnimation(39, 0, false, true, -1);
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits", true);
 					if (mGetVarByQV("allUnits", "player") == p && mGetVarByQV("allUnits", "spell") == 0) {
@@ -69,8 +69,8 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 				if(trQuestVarGet("chats_GeneralStore_0") == 0){
 					trQuestVarSet("chats_GeneralStore_0", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>General Store</color>: To battle!");	
-				}				
+					ChatLog(0, "<color={Playercolor("+p+")}>General Store</color>: To battle!");
+				}
 			}
 		}
 		case ATTACK_SPELL_DAMAGE:
@@ -78,19 +78,19 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			if(trQuestVarGet("activePlayer") == (3-p)){
 				trUnitSelectClear();
 				trUnitSelect(""+attacker);
-				trUnitOverrideAnimation(50, 0, 0, 1, -1);
+				trUnitOverrideAnimation(50, 0, false, true, -1);
 				trQuestVarSet("p"+p+"spellDamage", trQuestVarGet("p"+p+"spellDamage") + 1);
 				trQuestVarSet("p"+p+"spellDamageNonOracle", trQuestVarGet("p"+p+"spellDamageNonOracle") + 1);
 				if(trQuestVarGet("chats_FireMage_0") == 0){
 					trQuestVarSet("chats_FireMage_0", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Fire Mage</color>: You are only making me stronger!");
-					trSoundPlayFN("pha2.wav","1",-1,"","");	
+					trSoundPlayFN("pha2.wav","1",-1,"","");
 				}
 			}
 		}
 		case ATTACK_ARCANE_MISSLE:
-		{		
-			yClearDatabase("randomEnemy");	
+		{
+			yClearDatabase("randomEnemy");
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == (3-p)) {
@@ -106,7 +106,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				//lightning(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"), false);
 				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 			} else {
-				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));				
+				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 			}
 			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("randomEnemy", "tile"));
 		}
@@ -216,7 +216,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trQuestVarSet("temp", trQuestVarGet("dir2x"));
 			trQuestVarSet("dir2x", 0.0 - trQuestVarGet("dir2z"));
 			trQuestVarSet("dir2z", trQuestVarGet("temp"));
-
+			
 			trSetUnitOrientation(trVectorQuestVarGet("dir1"), trVectorQuestVarGet("dir2"), true);
 			trUnitHighlight(3.0, false);
 			yAddToDatabase("mirrorTowerLasers", "next");

@@ -50,7 +50,7 @@ bool OnTurnStart(int unit = 0) {
 			yAddToDatabase("directionalLasers", "next");
 			yAddUpdateVar("directionalLasers", "timeout", trTimeMS() + 500);
 			xsEnableRule("directional_lasers");
-
+			
 			bool found = true;
 			tile = mGetVar(unit, "tile");
 			while (found) {
@@ -91,9 +91,9 @@ bool OnTurnStart(int unit = 0) {
 				if(trQuestVarGet("chats_Audrey_0") == 0){
 					trQuestVarSet("chats_Audrey_0", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Vora</color>: *plant noises*");
-				}					
-				return (true);				
-			}	
+				}
+				return (true);
+			}
 		}
 		case kbGetProtoUnitID("Shaba Ka"):
 		{
@@ -116,18 +116,18 @@ bool OnTurnStart(int unit = 0) {
 			}
 			trQuestVarSetFromRand("temp", 1, 3, true);
 			if(trQuestVarGet("temp") == 1){
-				generateCard(p, 0, SPELL_BOOTS_TREASURE);	
+				generateCard(p, 0, SPELL_BOOTS_TREASURE);
 			} else if(trQuestVarGet("temp") == 2){
-				generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
+				generateCard(p, 0, SPELL_WEAPONS_TREASURE);
 			} else {
-				generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
+				generateCard(p, 0, SPELL_SHIELDS_TREASURE);
 			}
 			return(true);
 		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			if(trQuestVarGet("pirateShipTarget" + unit) > -1){
-				trSoundPlayFN("meteorbighit.wav","1",-1,"","");		
+				trSoundPlayFN("meteorbighit.wav","1",-1,"","");
 				deployAtTile(0, "Meteor Impact Ground", 1*trQuestVarGet("pirateShipTarget" + unit));
 				int occupant = zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("pirateShipTarget" + unit));
 				damageUnit(occupant, 8);
@@ -135,17 +135,17 @@ bool OnTurnStart(int unit = 0) {
 					if(trQuestVarGet("chats_PirateShip_1") == 0){
 						trQuestVarSet("chats_PirateShip_1", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Damn, we missed!");
-					}		
+					}
 				} else if(1*mGetVar(occupant, "tile") == p){
 					if(trQuestVarGet("chats_PirateShip_2") == 0){
 						trQuestVarSet("chats_PirateShip_2", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Oops! Sorry about that!");
-					}					
+					}
 				} else {
 					if(trQuestVarGet("chats_PirateShip_3") == 0){
 						trQuestVarSet("chats_PirateShip_3", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: We got them good!");
-					}					
+					}
 				}
 			} else {
 				if(trQuestVarGet("chats_PirateShip_4") == 0){
@@ -153,12 +153,12 @@ bool OnTurnStart(int unit = 0) {
 					ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Cannons be ready to fire!");
 				}
 			}
-			yClearDatabase("pirateShipTargets");	
+			yClearDatabase("pirateShipTargets");
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits", true);
 				if(mGetVarByQV("allUnits", "player") == 3 - p){
 					trQuestVarSet("temp", mGetVarByQV("allUnits", "tile"));
-					yAddToDatabase("pirateShipTargets", "temp");	
+					yAddToDatabase("pirateShipTargets", "temp");
 				}
 			}
 			trQuestVarSetFromRand("pirateShipRandom", 1, yGetDatabaseCount("pirateShipTargets"), true);
@@ -213,12 +213,12 @@ bool OnTurnStart(int unit = 0) {
 				if(trQuestVarGet("chats_Monument2_1") == 0){
 					trQuestVarSet("chats_Monument2_1", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Exemplary outfit. Congratulations.");
-				}	
+				}
 			} else {
 				if(trQuestVarGet("chats_Monument2_2") == 0){
 					trQuestVarSet("chats_Monument2_2", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Outfit issues detected. Addressing.");
-				}	
+				}
 			}
 			return (true);
 		}
@@ -232,7 +232,7 @@ bool OnTurnStart(int unit = 0) {
 				}
 				//addCardToDeck(3-p, kbGetProtoUnitName(1*mGetVarByQV("p"+(3-p)+"hand", "proto")), mGetVarByQV("p"+(3-p)+"hand", "spell"));
 				trQuestVarSetFromRand("soundRandom", 1, 3, true);
-				trSoundPlayFN("swing" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");	
+				trSoundPlayFN("swing" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 				trVectorSetUnitPos("pos", "p"+(3-p)+"hand");
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+(3-p)+"hand", "pos"));
@@ -255,13 +255,13 @@ bool OnTurnStart(int unit = 0) {
 				if(trQuestVarGet("chats_Monument3_1") == 0){
 					trQuestVarSet("chats_Monument3_1", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Assisting guest with luggage.");
-				}	
+				}
 			} else {
 				if(trQuestVarGet("chats_Monument3_2") == 0){
 					trQuestVarSet("chats_Monument3_2", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Guest is free of luggage.");
-				}	
-			}		
+				}
+			}
 			return (true);
 		}
 		case kbGetProtoUnitID("Monument 4"):
@@ -269,12 +269,12 @@ bool OnTurnStart(int unit = 0) {
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(trQuestVarGet("chats_Monument4_1") == 0){
 				trQuestVarSet("chats_Monument4_1", 1);
@@ -325,18 +325,18 @@ bool OnTurnStart(int unit = 0) {
 					ChatLog((3-p), "Discarded " + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+(3-p)+"hand", "spell") + "_name"));
 				}
 				yRemoveFromDatabase("p"+(3-p)+"hand");
-				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");				
+				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");
 			}
-
+			
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("gaiasparkle" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");

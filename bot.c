@@ -64,7 +64,7 @@ inactive
 				if (trQuestVarGet("botChooseHand") + trQuestVarGet("botChooseUnit") == 0) {
 					trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
 					xsDisableRule("Bot1");
-				// If choose hand
+					// If choose hand
 				} else if (trQuestVarGet("botChooseHand") > trQuestVarGet("botChooseUnit")) {
 					trQuestVarSet("botSpell", -1);
 					trQuestVarSet("botProto", -1);
@@ -86,20 +86,20 @@ inactive
 								trVectorSetUnitPos("botClickPos", "p2hand");
 								spell = 1*mGetVarByQV("p2hand", "spell");
 								proto = 1*mGetVarByQV("p2hand", "proto");
-							}	
+							}
 						}
 					}
 					if(maxCardCost > -1){
-						// Bot Click Left	
+						// Bot Click Left
 						trQuestVarSet("botClick", LEFT_CLICK);
 						if (spell > 0) {
-							trQuestVarSet("botSpell", spell);		
+							trQuestVarSet("botSpell", spell);
 						}
 						trQuestVarSet("botProto", proto);
 					} else {
 						trQuestVarSet("botManaOptions", -1);
 					}
-				// bot select unit
+					// bot select unit
 				} else {
 					trQuestVarSet("botActiveUnit", 0);
 					int maxUnitCost = -1;
@@ -109,11 +109,11 @@ inactive
 							int currentUnitCost = mGetVarByQV("allUnits", "cost");
 							if (currentUnitCost <= trQuestVarGet("botMoveOptions")){
 								maxUnitCost = currentUnitCost;
-								trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));				
+								trQuestVarSet("botActiveUnit", trQuestVarGet("allUnits"));
 								trVectorSetUnitPos("botClickPos", "allUnits");
 								trVectorSetUnitPos("botMovePos", "allUnits");
 								break;
-							}	
+							}
 						}
 					}
 					if(maxUnitCost > -1){
@@ -124,7 +124,7 @@ inactive
 					}
 				}
 			}
-
+			
 			case GAMEPLAY_SPELL_UNIT:
 			{
 				if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE){
@@ -150,7 +150,7 @@ inactive
 						yDatabasePointerDefault("castTargets");
 						for(x=yGetDatabaseCount("castTargets"); >0) {
 							yDatabaseNext("castTargets");
-							if(trQuestVarGet("value") < (mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"))){				
+							if(trQuestVarGet("value") < (mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"))){
 								trQuestVarSet("value", mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"));
 								trQuestVarSet("valueTarget", trQuestVarGet("castTargets"));
 							}
@@ -186,7 +186,7 @@ inactive
 						}
 					}
 				}
-
+				
 				if (yGetDatabaseCount("castTargets") > 0) {
 					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTargets"), true);
 					for(x=trQuestVarGet("botRandom"); >0) {
@@ -201,7 +201,7 @@ inactive
 					trQuestVarSet("botTimeNext", trTimeMS());
 				}
 			}
-
+			
 			case GAMEPLAY_SPELL_TILE:
 			{
 				if (1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE) {
@@ -232,7 +232,7 @@ inactive
 						}
 					}
 				}
-
+				
 				if(1*trQuestVarGet("botSpell") == SPELL_GROUND_STOMP){
 					if(trCountUnitsInArea(""+1*trQuestVarGet("p2commander"),1,"Unit",9) < 1){
 						yClearDatabase("castTiles");
@@ -250,11 +250,11 @@ inactive
 						yClearDatabase("castTiles");
 					}
 				}
-
+				
 				if (1*trQuestVarGet("botSpell") == SPELL_SCRAP_METAL) {
 					trQuestVarSet("botManaOptions", trQuestVarGet("p2mana") + 1);
 				}
-
+				
 				if (yGetDatabaseCount("castTiles") > 0) {
 					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("castTiles"), true);
 					for(x=trQuestVarGet("botRandom"); >0) {
@@ -280,11 +280,11 @@ inactive
 							yRemoveFromDatabase("summonLocations");
 						}
 					}
-				}		
+				}
 				// Bot tries to play a unit but there are no tiles where to summon it, skip playing cards
 				if(yGetDatabaseCount("summonLocations") == 0){
 					trQuestVarSet("botManaOptions", trQuestVarGet("botManaOptions") - 1);
-					// Bot Click Right 
+					// Bot Click Right
 					trQuestVarSet("botClick", RIGHT_CLICK);
 				} else {
 					trQuestVarSetFromRand("botRandom", 1, yGetDatabaseCount("summonLocations"), true);
@@ -331,7 +331,7 @@ inactive
 								}
 							}
 						}
-
+						
 						/*
 						If it's still the best tile, update
 						*/
@@ -341,13 +341,13 @@ inactive
 						}
 					}
 				}
-
+				
 				int bestTarget = 0;
 				int bestTargetScore = -1000;
 				currentScore = 0;
 				trVectorSetUnitPos("pos", "botActiveUnit");
 				for (x=yGetDatabaseCount("targets"); >0) {
-					yDatabaseNext("targets");	
+					yDatabaseNext("targets");
 					if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
 						continue;
 					}
@@ -358,7 +358,7 @@ inactive
 						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
 							currentScore = currentScore - 1;
 						}
-					}				
+					}
 					// If the target dies, then currentScore = 2 * (target's attack + cost)
 					if (currentScore >= 0) {
 						currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
@@ -366,7 +366,7 @@ inactive
 						continue; // Zenophobia doesn't attack allies that he can't kill
 					}
 					// If the target can counterattack, we subtract its attack from currentScore
-					if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {			
+					if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
 						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
 							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
 						} else {
@@ -374,7 +374,7 @@ inactive
 								currentScore = currentScore - mGetVarByQV("targets", "attack");
 								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
 									currentScore = currentScore + 1;
-								}							
+								}
 							}
 						}
 					}
@@ -383,7 +383,7 @@ inactive
 						bestTarget = trQuestVarGet("targets");
 					}
 				}
-
+				
 				trQuestVarSet("botClick", RIGHT_CLICK);
 				if (bestTargetScore > bestTileScore) {
 					trVectorQuestVarSet("botClickPos", kbGetBlockPosition(""+bestTarget,true));
@@ -399,7 +399,7 @@ inactive
 					trQuestVarSet("botMoveOptions", trQuestVarGet("botMoveOptions") - 1);
 					trQuestVarSet("botTimeNext", trTimeMS());
 				}
-			}	
+			}
 		}
 		if (trQuestVarGet("botClick") >= 0) {
 			trVectorQuestVarSet("p2clickPos", trVectorQuestVarGet("botClickPos"));

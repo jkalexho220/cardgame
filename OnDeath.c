@@ -1,4 +1,4 @@
-bool deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
+void deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
 	int push = modularCounterNext("deathSummonPush");
 	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
 	trQuestVarSet("deathSummon"+push+"player", p);
@@ -82,7 +82,7 @@ bool OnDeath(int event = -1, int unit = 0){
 			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
-				if (trQuestVarGet("allUnits") == unit) { 
+				if (trQuestVarGet("allUnits") == unit) {
 					continue;
 				} else if (zDistanceToVectorSquared("allUnits", "pos") < 40) {
 					startAttack(unit, 1*trQuestVarGet("allUnits"), false, false);
@@ -140,10 +140,10 @@ void removeDeadUnits() {
 			OnDeath events.
 			*/
 			int events = 1*mGetVarByQV("allUnits", "OnDeath");
-			mSetVarByQV("allUnits", "OnDeath", 0);	
-			int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);	
+			mSetVarByQV("allUnits", "OnDeath", 0);
+			int n = 1*xsPow(2, DEATH_EVENT_COUNT - 1);
 			for(x=DEATH_EVENT_COUNT - 1; >=0) {
-				if (events >= n) {							
+				if (events >= n) {
 					checkAgain = OnDeath(x, 1*trQuestVarGet("allUnits")) || checkAgain;
 					events = events - n;
 				}
@@ -183,7 +183,7 @@ void removeDeadUnits() {
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("allUnits"));
 				trMutateSelected(1*mGetVarByQV("allUnits", "proto"));
-				trUnitOverrideAnimation(6, 0, 0, 1, -1);
+				trUnitOverrideAnimation(6, 0, false, true, -1);
 			} else {
 				trUnitDelete(false);
 			}
@@ -199,7 +199,7 @@ void removeDeadUnits() {
 			yRemoveFromDatabase("allUnits");
 		}
 	}
-
+	
 	for (x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
 		switch(1*mGetVarByQV("allUnits", "proto"))
@@ -216,15 +216,15 @@ void removeDeadUnits() {
 			}
 		}
 	}
-
+	
 	for(p=2; >0) {
 		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ANRAHEIR) {
 			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"deathCount"));
 			updateHandPlayable(p);
 		}
 	}
-
-	/* 
+	
+	/*
 	summon units from deathrattles on a first-come-first-served basis
 	If multiple summons conflict on the same tile, the first one gets it.
 	*/
@@ -233,8 +233,8 @@ void removeDeadUnits() {
 	while ((trQuestVarGet("deathSummonPush") == trQuestVarGet("deathSummonPop")) == false) {
 		pop = modularCounterNext("deathSummonPop");
 		if (zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("deathSummon"+pop+"tile")) == 0) {
-			unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"), 
-				1*trQuestVarGet("deathSummon"+pop+"player"), 
+			unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"),
+				1*trQuestVarGet("deathSummon"+pop+"player"),
 				1*trQuestVarGet("deathSummon"+pop+"proto"));
 			if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords"))) {
 				mSetVar(unit, "action", ACTION_READY);
@@ -244,7 +244,7 @@ void removeDeadUnits() {
 		}
 	}
 	updateAuras();
-
+	
 	if (mGetVarByQV("p1commander", "health") <= 0) {
 		trQuestVarSet("p1defeated", 1);
 		xsEnableRule("match_end");

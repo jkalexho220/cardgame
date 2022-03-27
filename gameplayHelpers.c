@@ -69,7 +69,7 @@ void transferUnit(string to = "", string from = "") {
 
 void teleportToTile(int name = 0, int tile = 0) {
 	int p = mGetVar(name, "player");
-
+	
 	if (HasKeyword(GUARD, 1*mGetVar(name, "keywords"))) {
 		if (mGetVar(name, "tile") > 0) {
 			tileGuard(1*mGetVar(name, "tile"), false);
@@ -77,7 +77,7 @@ void teleportToTile(int name = 0, int tile = 0) {
 		tileGuard(tile, true);
 	}
 	
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(p);
@@ -92,12 +92,12 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trUnitSelect(""+name);
 	trMutateSelected(1*mGetVar(name, "proto"));
 	scaleUnit(name);
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(0);
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-
+	
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
@@ -107,7 +107,7 @@ int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	teleportToTile(1*trQuestVarGet("next"), tile);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"));
-	trUnitOverrideAnimation(18,0,0,1,-1);
+	trUnitOverrideAnimation(18,0,false,true,-1);
 	yAddToDatabase("allUnits", "next");
 	return(1*trQuestVarGet("next"));
 }
@@ -143,7 +143,7 @@ the tiles that are reachable by that unit.
 void highlightReachable(int name = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	int tile = findNearestTile("pos");
-	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", 
+	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable",
 		(HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")) || HasKeyword(FLYING, 1*mGetVar(name, "keywords"))));
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
@@ -213,7 +213,7 @@ void damageUnit(int index = 0, float dmg = 0) {
 		dmg = xsMax(0, dmg - 1);
 	}
 	if (1*mGetVar(index, "proto") == kbGetProtoUnitID("Golem") && zModulo(2,dmg) == 1) {
-		return();
+		return;
 	}
 	if(dmg > 0 && HasKeyword(STEALTH, 1*mGetVar(index, "keywords"))){
 		mSetVar(index, "keywords", mGetVar(index, "keywords") - Keyword(STEALTH));
@@ -232,12 +232,11 @@ void damageUnit(int index = 0, float dmg = 0) {
 				if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
 					damageUnit(1*trQuestVarGet("allUnits"), dmg);
 					ySetPointer("allUnits", pointer);
-					return();
+					return;
 				}
 			}
 			ySetPointer("allUnits", pointer);
 		}
-		ySetPointer("allUnits", pointer);
 	}
 	xsSetContextPlayer(p);
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
@@ -271,7 +270,7 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 		pop = modularCounterNext("lightningPop");
 		unit = trQuestVarGet("lightning" + pop);
 		tile = mGetVar(unit, "tile");
-
+		
 		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 			neighbor = 1*zGetVarByIndex("tiles", "neighbor"+x, tile);
 			if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
@@ -432,20 +431,20 @@ void pushUnit(int name = 0, string dir = "") {
 	zSetVarByIndex("tiles", "occupant", tile, 0);
 	tileGuard(tile, false);
 	refreshGuardAll();
-
+	
 	trUnitSelectClear();
 	trUnitSelect(""+container, true);
 	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
 	trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
-
+	
 	trUnitSelectClear();
 	trUnitSelect(""+name);
-	trUnitOverrideAnimation(24,0,1,1,-1);
+	trUnitOverrideAnimation(24,0,true,true,-1);
 	trMutateSelected(kbGetProtoUnitID("Relic"));
 	trImmediateUnitGarrison(""+container);
 	trMutateSelected(1*mGetVar(name, "proto"));
-
-
+	
+	
 	/*
 	Find destination
 	*/
@@ -558,7 +557,7 @@ void updateAuras() {
 		} else {
 			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
 		}
-
+		
 		/*
 		Scylla discounts
 		*/

@@ -15,7 +15,7 @@ void trVectorQuestVarSet(string VQVname = "", vector QVv = vector(-1,-1,-1)) {
 }
 
 vector trVectorQuestVarGet(string name = "") {
-	if (name == "") { return(vector(-1,-1,-1)); }
+if (name == "") { return(vector(-1,-1,-1)); }
 	vector ret = xsVectorSet(trQuestVarGet(name+"X"),trQuestVarGet(name+"Y"),trQuestVarGet(name+"Z"));
 	return(ret);
 }
@@ -61,7 +61,7 @@ string trStringQuestVarGet(string name="") {
 	return(val);
 }
 
-/* 
+/*
 Given a quest var that stores a unit name, store
 the unit's position in the vector.
 */
@@ -117,7 +117,7 @@ void zInitProtoUnitStat(string r = "", int p = 0, int f = 0, float v = 0.0) {
 }
 
 void zSetProtoUnitStat(string r = "", int p = 0, int f = 0, float v = 0.0) {
-	for(zsps=0; >1){}
+for(zsps=0; >1){}
 	zsps = kbGetProtoUnitID(r);
 	trModifyProtounit(r, p, f, 0.0 + v - trQuestVarGet("p"+p+"pf"+zsps+"f"+f));
 	trQuestVarSet("p"+p+"pf"+zsps+"f"+f, 0.0 + v);
@@ -187,13 +187,13 @@ void trVectorSetFromAngle(string qv = "", float angle = 0) {
 float angleBetweenVectors(string from = "", string to = "") {
 	float a = xsAtan((trQuestVarGet(to+"X")-trQuestVarGet(from+"X"))/(trQuestVarGet(to+"Z")-trQuestVarGet(from+"Z")));
 	if (trVectorQuestVarGetZ(from) > trVectorQuestVarGetZ(to)) {
-	    if (trVectorQuestVarGetX(from) > trVectorQuestVarGetX(to)) {
+		if (trVectorQuestVarGetX(from) > trVectorQuestVarGetX(to)) {
 			a = a - PI;
-	    } else {
+		} else {
 			a = a + PI;
-	    }
-  	}
-  	return(a);
+		}
+	}
+	return(a);
 }
 
 vector zGetUnitVector(string start = "", string end = "", float mod = 1.0) {
@@ -221,10 +221,10 @@ vector crossProduct(string a = "", string b = "") {
 	return(ret);
 }
 
-/* 
-A shitty binary search algorithm to approximate the intersection of a line with 
+/*
+A shitty binary search algorithm to approximate the intersection of a line with
 the circle specified by the center vector and radius. Behavior is undefined if start
-vector is outside the circle.  
+vector is outside the circle.
 Did this to avoid using trig as much as possible because trig is expensive.
 */
 vector intersectionWithCircle(string start = "", string end = "", string center = "", float radius = 0) {
@@ -274,8 +274,34 @@ int peekModularCounterNext(string name = "") {
 	return(0 + trQuestVarGet("counter" + name + "fake"));
 }
 
-/* 
-Initializes a database of units given a starting value and length. 
+/*
+Shows the Chat Log
+*/
+void ChatLogShow(){
+	trChatHistoryClear();
+	for(p=2; >0) {
+		if (trCurrentPlayer() == p) {
+			for (i = 5; >0) {
+				trChatSend(0, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
+			}
+		}
+	}
+}
+
+/*
+Adds a new message in the Chat Log and shows it
+*/
+void ChatLog(int p = 1, string message = ""){
+	if (p == 0) {
+		trStringQuestVarSet("chat1Log" + modularCounterNext("chat1Log"), message);
+		trStringQuestVarSet("chat2Log" + modularCounterNext("chat2Log"), message);
+	} else {
+		trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
+	}
+	ChatLogShow();
+}
+/*
+Initializes a database of units given a starting value and length.
 Units are selected using trUnitSelectByID, which is O(1), as opposed
 to trUnitSelect, which is O(n).
 Variables are associated with the unit value rather than the index in
@@ -323,54 +349,87 @@ float zGetVar(string name = "", string var = "") {
 
 /* Gets the variable of the bank item given by index */
 float zGetVarByIndex(string name = "", string var = "", int index = 0) {
-	return(trQuestVarGet("z"+name+"i"+index+"v"+var));	
+	return(trQuestVarGet("z"+name+"i"+index+"v"+var));
 }
 
 int zGetBankCount(string name = "") {
-	return(trQuestVarGet("z"+name+"end") - trQuestVarGet("z"+name+"start"));
+	return(1*trQuestVarGet("z"+name+"end") - trQuestVarGet("z"+name+"start"));
 }
 
 /* Adds a unit specified by the quest var 'from' to the database 'to' */
 void yAddToDatabase(string to = "", string from = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + to + "count");
-   	trQuestVarSet("zdatalite" + to + "index"+zdatacount, trQuestVarGet(from));
-   	trQuestVarSet("zdatalite" + to + "count", zdatacount+1);
+	trQuestVarSet("zdatalite" + to + "index"+zdatacount, trQuestVarGet(from));
+	trQuestVarSet("zdatalite" + to + "count", zdatacount+1);
 }
 
 int yGetDatabaseCount(string db = "") {
-	return(trQuestVarGet("zdatalite" + db + "count"));
+	return(1*trQuestVarGet("zdatalite" + db + "count"));
 }
 
-void mSetVar(int name = 0, string var = "", float val = 0) {
-	trQuestVarSet("unit"+name+""+var, val);
+void mSetVar(int name = 0, string var = "", int val = 0) {
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mInt,129,var));
+	}
+	aiPlanSetUserVariableInt(ARRAYS,1*trQuestVarGet("m"+var),name,val);
+	
 }
 
-void mSetVarByQV(string qv = "", string var = "", float val = 0) {
-	mSetVar(1*trQuestVarGet(qv), var, val);
+void mSetVarByQV(string qv = "", string var = "", int val = 0) {
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mInt,129,var));
+	}
+	aiPlanSetUserVariableInt(ARRAYS,1*trQuestVarGet("m"+var),1*trQuestVarGet(qv),val);
 }
 
 void mSetString(int name = 0, string var = "", string val = "") {
-	trStringQuestVarSet("unit"+name+""+var, val);
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mString,129,var));
+	}
+	aiPlanSetUserVariableString(ARRAYS,1*trQuestVarGet("m"+var),name,val);
 }
 
 void mSetStringByQV(string qv = "", string var = "", string val = "") {
-	mSetString(1*trQuestVarGet(qv), var, val);
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mString,129,var));
+	}
+	aiPlanSetUserVariableString(ARRAYS,1*trQuestVarGet("m"+var),1*trQuestVarGet(qv),val);
 }
 
-float mGetVar(int name = 0, string var = "") {
-	return(trQuestVarGet("unit" + name + "" + var));
+int mGetVar(int name = 0, string var = "") {
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mInt,129,var));
+	}
+	return(aiPlanGetUserVariableInt(ARRAYS,1*trQuestVarGet("m"+var),name));
 }
 
-float mGetVarByQV(string qv = "", string var = "") {
-	return(mGetVar(1*trQuestVarGet(qv), var));
+int mGetVarByQV(string qv = "", string var = "") {
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mInt,129,var));
+	}
+	return(aiPlanGetUserVariableInt(ARRAYS,1*trQuestVarGet("m"+var),1*trQuestVarGet(qv)));
 }
 
 string mGetString(int name = 0, string var = "") {
-	return(trStringQuestVarGet("unit"+name+""+var));
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mString,129,var));
+	}
+	return(aiPlanGetUserVariableString(ARRAYS,1*trQuestVarGet("m"+var),name));
 }
 
 string mGetStringByQV(string qv = "", string var = "") {
-	return(mGetString(1*trQuestVarGet(qv), var));
+	xsSetContextPlayer(0);
+	if (trQuestVarGet("m"+var) <= 0) {
+		trQuestVarSet("m"+var, zNewArray(mString,129,var));
+	}
+	return(aiPlanGetUserVariableString(ARRAYS,1*trQuestVarGet("m"+var),1*trQuestVarGet(qv)));
 }
 
 /*
@@ -378,7 +437,7 @@ Gets the next unit in the database 'db'. Variables are associated with the
 database index rather than the value.
 */
 int yDatabaseNext(string db = "", bool select = false) {
-	for(zdatapointer=0;>1){}
+for(zdatapointer=0;>1){}
 	trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "pointer")-1);
 	if (0 > trQuestVarGet("zdatalite" + db + "pointer")) {
 		trQuestVarSet("zdatalite" + db + "pointer", trQuestVarGet("zdatalite" + db + "count")-1);
@@ -430,7 +489,7 @@ variable associated in this database.
 void yRemoveFromDatabase(string db = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count") - 1;
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
-	trQuestVarSet("zdatalite" + db + "index"+zdataremove, 
+	trQuestVarSet("zdatalite" + db + "index"+zdataremove,
 		trQuestVarGet("zdatalite" + db + "index"+zdatacount));
 	trQuestVarSet("zdatalite" + db + "count", zdatacount);
 }
@@ -438,7 +497,7 @@ void yRemoveFromDatabase(string db = "") {
 void yRemoveUpdateString(string db = "", string attr = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count");
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
-	trStringQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr, 
+	trStringQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr,
 		trStringQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));
 	trStringQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, " ");
 }
@@ -446,7 +505,7 @@ void yRemoveUpdateString(string db = "", string attr = "") {
 void yRemoveUpdateVar(string db = "", string attr = "") {
 	int zdatacount = trQuestVarGet("zdatalite" + db + "count");
 	int zdataremove = trQuestVarGet("zdatalite" + db + "pointer");
-	trQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr, 
+	trQuestVarSet("zdatalite" + db + "" + zdataremove + "" + attr,
 		trQuestVarGet("zdatalite" + db + "" + zdatacount + "" + attr));
 	trQuestVarSet("zdatalite" + db + "" + zdatacount + "" + attr, 0);
 }
@@ -454,14 +513,14 @@ void yRemoveUpdateVar(string db = "", string attr = "") {
 void yTransferUpdateVar(string to = "", string from = "", string attr = "") {
 	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
-	trQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
+	trQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr,
 		trQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
 }
 
 void yTransferUpdateString(string to = "", string from = "", string attr = "") {
 	int zdatato = trQuestVarGet("zdatalite" + to + "count") - 1;
 	int zdatafrom = trQuestVarGet("zdatalite" + from + "pointer");
-	trStringQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr, 
+	trStringQuestVarSet("zdatalite" + to + ""  + zdatato + "" + attr,
 		trStringQuestVarGet("zdatalite" + from + ""  + zdatafrom + "" + attr));
 }
 
@@ -512,15 +571,15 @@ void ySetVarByIndex(string db = "", string attr = "", int index = 0, float value
 }
 
 int yGetUnitAtIndex(string db = "", int index = 0) {
-	return(trQuestVarGet("zdatalite"+db+"index"+index));
+	return(1*trQuestVarGet("zdatalite"+db+"index"+index));
 }
 
-int ySetUnitAtIndex(string db = "", int index = 0, int value = 0) {
+void ySetUnitAtIndex(string db = "", int index = 0, int value = 0) {
 	trQuestVarSet("zdatalite"+db+"index"+index, value);
 }
 
 int yGetPointer(string db = "") {
-	return(trQuestVarGet("zdatalite"+db+"pointer"));
+	return(1*trQuestVarGet("zdatalite"+db+"pointer"));
 }
 
 void ySetPointer(string db = "", int val = 0) {
@@ -535,7 +594,7 @@ void yClearDatabase(string db = "") {
 }
 
 
-/* 
+/*
 Starting from NextUnitScenarioNameNumber and going backwards until the quest var 'qv',
 looks for the specified protounit. If none found, returns -1. Otherwise, returns the
 unit name.
@@ -592,33 +651,6 @@ void DeploySober(string p="", string v=""){
 }
 
 /*
-Shows the Chat Log
-*/
-void ChatLogShow(){
-	trChatHistoryClear();
-	for(p=2; >0) {
-		if (trCurrentPlayer() == p) {
-			for (i = 5; >0) {
-				trChatSend(0, trStringQuestVarGet("chat" + p + "Log" + modularCounterNext("chat"+p+"log")));
-			}
-		}
-	}
-}
-
-/*
-Adds a new message in the Chat Log and shows it
-*/
-void ChatLog(int p = 1, string message = ""){
-	if (p == 0) {
-		trStringQuestVarSet("chat1Log" + modularCounterNext("chat1Log"), message);
-		trStringQuestVarSet("chat2Log" + modularCounterNext("chat2Log"), message);
-	} else {
-		trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
-	}
-	ChatLogShow();
-}
-
-/*
 Bit functions
 n - number, p - position
 */
@@ -642,7 +674,7 @@ int SetBit(int n=0, int p=0){
 	}
 	return (r);
 }
-		
+
 int ClearBit(int n=0, int p=0){
 	int r = 0;
 	for(i=0;<30){
@@ -660,12 +692,12 @@ active
 runImmediately
 {
 	// Set idle processing to false so the game doesn't lag from trying to process 128 murmillos
-	trSetUnitIdleProcessing(false); 
+	trSetUnitIdleProcessing(false);
 	trUIFadeToColor(0,0,0,0,0,true);
-    trSetObscuredUnits(false);
+	trSetObscuredUnits(false);
 	trSetCivAndCulture(1, 9, 3); // Set P1 to Kronos
 	trSetCivAndCulture(2, 9, 3); // Set P2 to Kronos
-
+	
 	gadgetUnreal("GodPowers");
 	
 	for(p=2; >0) {
@@ -677,43 +709,43 @@ runImmediately
 		Multiplayer = false; // or kick?
 	}
 	xsEnableRule("data_load_00");
-
+	
 	modularCounterInit("lightningPop", 40);
 	modularCounterInit("lightningPush", 40);
 	modularCounterInit("lightningActivate", 40);
-
+	
 	modularCounterInit("spyFind", 40);
 	modularCounterInit("spyFound", 40);
-
+	
 	modularCounterInit("deathSummonPush", 20);
 	modularCounterInit("deathSummonPop", 20);
-
-
+	
+	
 	trModifyProtounit("Gold Mine Dwarven", 1, 55, 4);
 	trModifyProtounit("Gold Mine Dwarven", 2, 55, 4);
 	// Modify animal attractor flying
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
-
+	
 	zInitProtoUnitStat("Wadjet Spit", 1, 1, 30);
 	zInitProtoUnitStat("Wadjet Spit", 2, 1, 30);
 	zSetProtoUnitStat("Wadjet Spit", 1, 1, 20);
 	zSetProtoUnitStat("Wadjet Spit", 2, 1, 20);
 	
 	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
-	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, 54);
 	trModifyProtounit("Revealer to Player", 1, 2, 9999999999999999999.0);
-	trModifyProtounit("Revealer to Player", 1, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 1, 2, -9999999999999999999.0);
 	trModifyProtounit("Revealer to Player", 1, 2, 18);
 	trModifyProtounit("Revealer to Player", 2, 2, 9999999999999999999.0);
-	trModifyProtounit("Revealer to Player", 2, 2, -9999999999999999999.0);	
+	trModifyProtounit("Revealer to Player", 2, 2, -9999999999999999999.0);
 	trModifyProtounit("Revealer to Player", 2, 2, 18);
-
+	
 	trModifyProtounit("Bolt Strike", 0, 27, -10000);
 	trModifyProtounit("Bolt Strike", 0, 28, -10000);
 	trModifyProtounit("Bolt Strike", 0, 29, -10000);
-
+	
 	// LOS
 	for(p=2; >0) {
 		trModifyProtounit("Dwarf", p, 2, -20);
@@ -723,21 +755,21 @@ runImmediately
 		trTechSetStatus(p, 476, 4); // iron all
 		trTechSetStatus(p, 412, 4); // Iron wall
 	}
-
+	
 	// Disable god powers
 	trPlayerTechTreeEnabledGodPowers(1, false);
 	trPlayerTechTreeEnabledGodPowers(2, false);
-
+	
 	// omniscience for p0
 	trTechSetStatus(0, 304, 4);
-
+	
 	trPlayerSetDiplomacy(0, 1, "Enemy");
 	trPlayerSetDiplomacy(0, 2, "Enemy");
 	trPlayerSetDiplomacy(1, 0, "Neutral");
 	trPlayerSetDiplomacy(2, 0, "Neutral");
 	trPlayerSetDiplomacy(2, 1, "Enemy");
 	trPlayerSetDiplomacy(1, 2, "Enemy");
-
+	
 	xsDisableRule("initializeEverything");
 }
 
@@ -746,13 +778,13 @@ rule PlsStopHardcodingCrapYouNoobs
 highFrequency
 active
 {
-   if ((trTime()-cActivationTime) >= 1){
-      trModifyProtounit("Hero Greek Jason", 1, 27, 4.0);
-      trModifyProtounit("Hero Greek Jason", 2, 27, 4.0);
-      trModifyProtounit("Hero Greek Ajax", 1, 27, 3.0);
-      trModifyProtounit("Hero Greek Ajax", 2, 27, 3.0);
-      trModifyProtounit("Hero Greek Theseus", 1, 27, 4.0);
-      trModifyProtounit("Hero Greek Theseus", 2, 27, 4.0);
-      xsDisableRule("PlsStopHardcodingCrapYouNoobs");
-   }
+	if ((trTime()-cActivationTime) >= 1){
+		trModifyProtounit("Hero Greek Jason", 1, 27, 4.0);
+		trModifyProtounit("Hero Greek Jason", 2, 27, 4.0);
+		trModifyProtounit("Hero Greek Ajax", 1, 27, 3.0);
+		trModifyProtounit("Hero Greek Ajax", 2, 27, 3.0);
+		trModifyProtounit("Hero Greek Theseus", 1, 27, 4.0);
+		trModifyProtounit("Hero Greek Theseus", 2, 27, 4.0);
+		xsDisableRule("PlsStopHardcodingCrapYouNoobs");
+	}
 }

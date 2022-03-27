@@ -45,23 +45,23 @@ const int TILE_OCCUPIED = 2;
 int deployAtTile(int p = 0, string proto = "", int tile = 0) {
 	int next = trGetNextUnitScenarioNameNumber();
 	trArmyDispatch("1,10","Dwarf",1,119,0,1,0,true);
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
-
+	
 	trUnitSelectClear();
 	trUnitSelect(""+next, true);
 	trUnitConvert(0);
 	trImmediateUnitGarrison(""+tile);
 	trUnitConvert(p);
 	trUnitChangeProtoUnit(proto);
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	trUnitSelectClear();
-
+	
 	return(next);
 }
 
@@ -470,7 +470,7 @@ void setupBoard() {
 			}
 		}
 		
-
+		
 		// Assigning neighbors to the tile
 		for (y=yGetDatabaseCount("neighbors"); >0) {
 			yDatabaseNext("neighbors");
@@ -483,7 +483,7 @@ void setupBoard() {
 					count = zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"));
 					zSetVarByIndex("tiles", "neighbor"+count, 1*trQuestVarGet("neighbors"), trQuestVarGet("tiles"));
 					zSetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"), count + 1);
-
+					
 					count = zGetVar("tiles", "neighborCount");
 					zSetVar("tiles", "neighbor"+count, trQuestVarGet("neighbors"));
 					zSetVar("tiles", "neighborCount", count + 1);
@@ -494,7 +494,7 @@ void setupBoard() {
 			}
 		}
 		yAddToDatabase("neighbors", "tiles");
-
+		
 		// Assigning borders to the tile
 		for (y=yGetDatabaseCount("borderSearch"); >0) {
 			yDatabaseNext("borderSearch");
@@ -526,9 +526,9 @@ runImmediately
 	int tiles = 1 + 3 * (xsPow(8, 2) - 8);
 	zBankInit("tiles", 128, tiles);
 	zBankInit("borders", 297, 552);
-
+	
 	setupBoard();
-
+	
 	xsDisableRule("initializeBoardStuff");
 }
 
@@ -540,7 +540,7 @@ inactive
 	xsEnableRule("gameplay_select_show_keywords");
 	/*
 	Tile index increases outwards from the center.
-	To vary the size of the map, just vary the 
+	To vary the size of the map, just vary the
 	size of the array.
 	*/
 	if (trQuestVarGet("dimension") <= 1) {
@@ -550,7 +550,7 @@ inactive
 	// Number of tiles in a hexagonal grid of X*X*X dimensions:
 	// 3*(X^2-X) + 1
 	zBankInit("tiles", 128, tiles);
-
+	
 	for(x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
 		if (trQuestVarGet("dungeonMode") == 1) {
@@ -570,12 +570,12 @@ inactive
 	
 	trQuestVarSet("idsEyecandyStart", trGetNextUnitScenarioNameNumber());
 	
-	if(trQuestVarGet("zenoMakeRandomStuffPlease") >= 0){	
+	if(trQuestVarGet("zenoMakeRandomStuffPlease") >= 0){
 		chooseTerrainTheme(1*trQuestVarGet("zenoMakeRandomStuffPlease"));
 		setupImpassableTerrain();
 	}
 	for(y=yGetDatabaseCount("customBoard"); >0) {
-		yDatabaseNext("customBoard");	
+		yDatabaseNext("customBoard");
 		if(yGetVar("customBoard", "count") > 1){
 			for(i=yGetVar("customBoard", "count"); >0) {
 				trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("customBoard", "tile")));
@@ -591,7 +591,7 @@ inactive
 				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),trQuestVarGet("heading"), true);
 				trArmySelect("1,10");
 				trUnitChangeName(collectionMission);
-				trUnitConvert(0);			
+				trUnitConvert(0);
 			}
 		} else {
 			trQuestVarSet("customBoard", deployAtTile(0, kbGetProtoUnitName(1*yGetVar("customBoard", "proto")), 1*yGetVar("customBoard", "tile")));
@@ -599,7 +599,7 @@ inactive
 			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
 			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
 			trUnitChangeName(collectionMission);
-		}		
+		}
 		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
 			paintTile(1*yGetVar("customBoard", "tile"), 0, 1*trQuestVarGet("customTerrainEmptyNot"));
 		} else {
@@ -610,20 +610,20 @@ inactive
 	trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
 	
 	trFadeOutAllSounds(0.0);
-
+	
 	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
 	trQuestVarCopy("p1startPosz", "p1startposx");
 	// Since p2 goes second, they start one tile closer to the center
 	trQuestVarSet("p2startPosx", 60.0 + 4.24 * (trQuestVarGet("dimension") - 2));
 	trQuestVarCopy("p2startposz", "p2startposx");
-
+	
 	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
 	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));
 	
 	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") + 6);
-
+	
 	xsDisableRule("initializeBoard");
 	xsEnableRule("match_00_start");
 	

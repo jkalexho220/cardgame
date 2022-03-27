@@ -101,7 +101,7 @@ void OnPlay(int unit = 0) {
 				trCameraShake(3.0, 0.3);
 				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: PREPARING EVERYTHING.");
 			}
-		}	
+		}
 		case kbGetProtoUnitID("Slinger"):
 		{
 			generateCard(p, 0, SPELL_SPARK);
@@ -122,7 +122,7 @@ void OnPlay(int unit = 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Avenger"));
-			trUnitOverrideAnimation(39, 0, 0, 1, -1);
+			trUnitOverrideAnimation(39, 0, false, true, -1);
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
@@ -176,7 +176,7 @@ void OnPlay(int unit = 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+unit);
 			trMutateSelected(kbGetProtoUnitID("Nemean Lion"));
-			trUnitOverrideAnimation(39, 0, 0, 1, -1);
+			trUnitOverrideAnimation(39, 0, false, true, -1);
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == 3 - p) {
