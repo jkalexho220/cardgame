@@ -127,7 +127,7 @@ void OnPlay(int unit = 0) {
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == 3 - p) {
-					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit(1*trQuestVarGet("allUnits"), 1);
 						deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("allUnits", "tile"));
 					}
@@ -158,7 +158,7 @@ void OnPlay(int unit = 0) {
 				if (trQuestVarGet("allUnits") == unit) {
 					continue;
 				} else if ((mGetVarByQV("allUnits", "player") == p) && (mGetVarByQV("allUnits", "spell") == 0)) {
-					if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						mSetVarByQV("allUnits", "health", 1 + mGetVarByQV("allUnits", "health"));
@@ -348,7 +348,7 @@ void OnPlay(int unit = 0) {
 			if ((trQuestVarGet("allUnits") == unit) || (mGetVarByQV("allUnits", "player") == 3 - p)) {
 				continue;
 			} else if (HasKeyword(MAGNETIC, 1*mGetVarByQV("allUnits", "keywords")) &&
-				zDistanceToVectorSquared("allUnits", "pos") < 40) {
+				trDistanceToVectorSquared("allUnits", "pos") < 40) {
 				done = false;
 				trQuestVarSet("spellCaster", unit);
 				chooseSpell(SPELL_MAGNETIZE);

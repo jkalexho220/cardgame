@@ -85,7 +85,7 @@ Returns -1 if none found.
 int findNearestTile(string v = "") {
 	for (x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
-		if (zDistanceToVectorSquared("tiles", v) < 9) {
+		if (trDistanceToVectorSquared("tiles", v) < 9) {
 			return(1*trQuestVarGet("tiles"));
 		}
 	}
@@ -154,7 +154,7 @@ void highlightTile(int tile = 0, float duration = 0.1) {
 
 void paintTile(int tile = 0, int type = 0, int subType = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
-	vectorToGrid("pos", "square");
+	trVectorToGrid("pos", "square");
 	int x = trQuestVarGet("squarex");
 	int z = trQuestVarGet("squarez");
 	trPaintTerrain(x-1, z-1, x+1, z+1, type, subType, false);
@@ -479,7 +479,7 @@ void setupBoard() {
 			} else {
 				// Tiles have radius 3 and are 6 units apart.
 				// Add this tile to the neighborlist of adjacent tiles and add adjacent neighbors to this tile's neighborlist
-				if (zDistanceToVectorSquared("neighbors", "currentPos") < 40) {
+				if (trDistanceToVectorSquared("neighbors", "currentPos") < 40) {
 					count = zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"));
 					zSetVarByIndex("tiles", "neighbor"+count, 1*trQuestVarGet("neighbors"), trQuestVarGet("tiles"));
 					zSetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("neighbors"), count + 1);
@@ -500,9 +500,8 @@ void setupBoard() {
 			yDatabaseNext("borderSearch");
 			if (yGetVar("borderSearch", "count") == 2) {
 				yRemoveFromDatabase("borderSearch");
-				yRemoveUpdateVar("borderSearch", "count");
 			} else {
-				if (zDistanceToVectorSquared("borderSearch", "currentPos") < 10) {
+				if (trDistanceToVectorSquared("borderSearch", "currentPos") < 10) {
 					count = zGetVar("tiles", "borderCount");
 					zSetVar("tiles", "border"+count, trQuestVarGet("borderSearch"));
 					zSetVar("tiles", "borderCount", count + 1);
@@ -521,7 +520,6 @@ void setupBoard() {
 rule initializeBoardStuff
 highFrequency
 active
-runImmediately
 {
 	int tiles = 1 + 3 * (xsPow(8, 2) - 8);
 	zBankInit("tiles", 128, tiles);

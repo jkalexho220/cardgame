@@ -84,7 +84,7 @@ inactive
 					unit = -1;
 					for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 						yDatabaseNext("p"+p+"hand");
-						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
+						if (trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
 							unit = yGetPointer("p"+p+"hand");
 							break;
 						}
@@ -189,6 +189,7 @@ inactive
 					trDamageUnitPercent(-100);
 					xsSetContextPlayer(p);
 					float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true));
+					xsSetContextPlayer(0);
 					mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), health));
 				}
 				// Start of turn effects
@@ -351,7 +352,6 @@ inactive
 		Meteors
 		*/
 		trQuestVarSet("sound", 0);
-		yDatabasePointerDefault("meteors");
 		for(x=yGetDatabaseCount("meteors"); >0) {
 			yDatabaseNext("meteors", true);
 			ySetVar("meteors", "time", yGetVar("meteors", "time") - 1);
@@ -364,13 +364,11 @@ inactive
 					yDatabaseNext("allUnits");
 					if (mGetVarByQV("allUnits", "tile") == yGetVar("meteors", "tile")) {
 						damageUnit(1*trQuestVarGet("allUnits"), 6 + trQuestVarGet("p"+(3-p)+"spellDamage"));
-					} else if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+					} else if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit(1*trQuestVarGet("allUnits"), 2 + trQuestVarGet("p"+(3-p)+"spellDamage"));
 					}
 				}
 				yRemoveFromDatabase("meteors");
-				yRemoveUpdateVar("meteors", "tile");
-				yRemoveUpdateVar("meteors", "time");
 			}
 		}
 		
@@ -384,7 +382,6 @@ inactive
 		// Discard fleeting cards
 		bool fleeting = false;
 		int type = 0;
-		yDatabasePointerDefault("p"+p+"hand");
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
@@ -409,7 +406,6 @@ inactive
 				}
 				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+p+"hand");
-				yRemoveUpdateVar("p"+p+"hand", "pos");
 			}
 		}
 		if (fleeting && trCurrentPlayer() == p) {

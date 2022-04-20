@@ -60,7 +60,7 @@ bool OnTurnStart(int unit = 0) {
 				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("dirz") * 6);
 				for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 					trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+x, tile)));
-					if (zDistanceBetweenVectorsSquared("current", "pos") < 9) {
+					if (trDistanceBetweenVectorsSquared("current", "pos") < 9) {
 						found = true;
 						tile = zGetVarByIndex("tiles", "neighbor"+x, tile);
 						break;
@@ -172,7 +172,7 @@ bool OnTurnStart(int unit = 0) {
 		{
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 			mSetVar(unit, "action", ACTION_SLEEPING);
-			if (zDistanceToVectorSquared("p1commander", "pos") < 64) {
+			if (trDistanceToVectorSquared("p1commander", "pos") < 64) {
 				damageUnit(unit, 9999);
 				trSoundPlayFN("favordump.wav","1",-1,"","");
 			}
@@ -226,7 +226,6 @@ bool OnTurnStart(int unit = 0) {
 		{
 			if(yGetDatabaseCount("p"+(3-p)+"hand") > 0){
 				trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("p"+(3-p)+"hand"), true);
-				yDatabasePointerDefault("p"+(3-p)+"hand");
 				for(x=trQuestVarGet("temp"); >0) {
 					yDatabaseNext("p"+(3-p)+"hand", true);
 				}
@@ -251,7 +250,6 @@ bool OnTurnStart(int unit = 0) {
 				}
 				zSetVarByIndex("p"+(3-p)+"handPos", "occupied", 1*yGetVar("p"+(3-p)+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+(3-p)+"hand");
-				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");
 				if(trQuestVarGet("chats_Monument3_1") == 0){
 					trQuestVarSet("chats_Monument3_1", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Assisting guest with luggage.");
@@ -302,7 +300,6 @@ bool OnTurnStart(int unit = 0) {
 			
 			if(yGetDatabaseCount("p"+(3-p)+"hand") > 0){
 				trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("p"+(3-p)+"hand"), true);
-				yDatabasePointerDefault("p"+(3-p)+"hand");
 				for(x=trQuestVarGet("temp"); >0) {
 					yDatabaseNext("p"+(3-p)+"hand", true);
 				}
@@ -325,7 +322,6 @@ bool OnTurnStart(int unit = 0) {
 					ChatLog((3-p), "Discarded " + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+(3-p)+"hand", "spell") + "_name"));
 				}
 				yRemoveFromDatabase("p"+(3-p)+"hand");
-				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");
 			}
 			
 			if(yGetDatabaseCount("p"+p+"hand") < 10){

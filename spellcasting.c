@@ -238,7 +238,6 @@ void castEnd() {
 		ySetPointer("p"+p+"hand", 1*trQuestVarGet("selectedCard"));
 		zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 		yRemoveFromDatabase("p"+p+"hand");
-		yRemoveUpdateVar("p"+p+"hand", "pos");
 		
 		updateHandPlayable(p);
 		
@@ -403,7 +402,6 @@ inactive
 						findAvailableTiles(tile, 1, "castTiles");
 					}
 				}
-				yDatabasePointerDefault("castTiles");
 				for(x=yGetDatabaseCount("castTiles"); >0) {
 					yDatabaseNext("castTiles");
 					if (zGetVarByIndex("tiles", "ward", 1*trQuestVarGet("castTiles")) == 1) {
@@ -438,7 +436,7 @@ inactive
 					if ((trQuestVarGet("allUnits") == trQuestVarGet(trStringQuestVarGet("cast"+x+"start"))) || (mGetVarByQV("allUnits", "player") == 3 - p)) {
 						continue;
 					} else if (HasKeyword(MAGNETIC, 1*mGetVarByQV("allUnits", "keywords")) &&
-						zDistanceToVectorSquared("allUnits", "pos") < 40) {
+						trDistanceToVectorSquared("allUnits", "pos") < 40) {
 						yAddToDatabase("castTargets", "allUnits");
 						if (trCurrentPlayer() == trQuestVarGet("activePlayer")) {
 							trUnitSelectClear();
@@ -470,7 +468,7 @@ inactive
 				for(d=0; < zGetVarByIndex("tiles", "neighborCount", 1*trQuestVarGet("start"))) {
 					trVectorSetUnitPos("pos", "start");
 					trVectorQuestVarSet("target", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+d, 1*trQuestVarGet("start"))));
-					trVectorQuestVarSet("step", zGetUnitVector("pos", "target", 6.0));
+					trVectorQuestVarSet("step", trGetUnitVector("pos", "target", 6.0));
 					trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));
 					trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));
 					tile = trQuestVarGet("start");
@@ -480,7 +478,7 @@ inactive
 						// Travel down the line and highlight tiles
 						for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 							trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+z, tile)));
-							if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
+							if (trDistanceBetweenVectorsSquared("current", "pos") < 1) {
 								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);
 								trQuestVarSet("currentTile", tile);
 								yAddToDatabase("castTiles", "currentTile");
@@ -510,7 +508,7 @@ inactive
 						if (mGetVarByQV("allUnits", "spell") <= trQuestVarGet("cast"+x+"commander")) {
 							trVectorSetUnitPos("d1pos", "allUnits");
 							trVectorSetUnitPos("d2pos", "cast"+x+"unit");
-							if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
+							if (trDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
 								trUnitSelectClear();
 								trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 								yAddToDatabase("castTargets", "allUnits");
@@ -540,7 +538,7 @@ inactive
 							trQuestVarSet("temp", trQuestVarGet("tiles"));
 							for (x=zGetBankCount("tiles"); >0) {
 								zBankNext("tiles");
-								if (zDistanceToVectorSquared("tiles", "spellProjectileEnd") < zDistanceToVectorSquared("temp", "spellProjectileEnd")) {
+								if (trDistanceToVectorSquared("tiles", "spellProjectileEnd") < trDistanceToVectorSquared("temp", "spellProjectileEnd")) {
 									trQuestVarSet("temp", trQuestVarGet("tiles"));
 								}
 							}
@@ -614,7 +612,7 @@ inactive
 					for(z=yGetDatabaseCount("castTargets"); >0) {
 						yDatabaseNext("castTargets");
 						
-						if (zDistanceToVectorSquared("castTargets", "p"+p+"clickPos") < 8) {
+						if (trDistanceToVectorSquared("castTargets", "p"+p+"clickPos") < 8) {
 							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTargets");
 							selected = true;
 							break;
@@ -624,7 +622,7 @@ inactive
 					for(z=yGetDatabaseCount("castTiles"); >0) {
 						yDatabaseNext("castTiles");
 						
-						if (zDistanceToVectorSquared("castTiles", "p"+p+"clickPos") < 8) {
+						if (trDistanceToVectorSquared("castTiles", "p"+p+"clickPos") < 8) {
 							trQuestVarCopy(trStringQuestVarGet("cast"+x+"qv"), "castTiles");
 							selected = true;
 							break;
@@ -644,7 +642,7 @@ inactive
 					*/
 					for(z=yGetDatabaseCount("p"+p+"hand"); >0) {
 						yDatabaseNext("p"+p+"hand");
-						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 2) {
+						if (trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 2) {
 							spellcastClearHighlights(x);
 							castReset();
 							trQuestVarSet("castDone", CASTING_CANCEL);
@@ -689,7 +687,6 @@ void chooseSpell(int spell = 0, int card = -1) {
 	trQuestVarSet("selectedCard", card);
 	// If the card is a spell
 	if (card > -1) {
-		yDatabasePointerDefault("allUnits");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (HasKeyword(WARD, 1*mGetVarByQV("allUnits", "keywords"))) {
@@ -1252,7 +1249,7 @@ inactive
 					if (trQuestVarGet("allUnits") != trQuestVarGet("p" + p + "commander")) {
 						trVectorSetUnitPos("d1pos", "allUnits");
 						trVectorSetUnitPos("d2pos", "p" + p + "commander");
-						if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
+						if (trDistanceBetweenVectorsSquared("d1pos", "d2pos") < 64){
 							damageUnit(1*trQuestVarGet("allUnits"), 1 + trQuestVarGet("p" + p + "spellDamage"));
 							deployAtTile(0, "Dust Small", 1*mGetVarByQV("allUnits", "tile"));
 						}
@@ -1544,7 +1541,6 @@ inactive
 					proto = yDatabaseNext("p"+p+"deck");
 					if ((trQuestVarGet("card_"+proto+"_cost") == 1) && (yGetVar("p"+p+"deck", "spell") == SPELL_NONE)) {
 						yRemoveFromDatabase("p"+p+"deck");
-						yRemoveUpdateVar("p"+p+"deck", "spell");
 						done = true;
 						break;
 					}
@@ -1623,7 +1619,7 @@ inactive
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
 					if (mGetVarByQV("allUnits", "player") == 3 - p) {
-						if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+						if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 							damageUnit(1*trQuestVarGet("allUnits"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 						}
 					}
@@ -1694,7 +1690,7 @@ inactive
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
-				trSetUnitOrientation(zGetUnitVector("healerPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("healerPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(50, 0, false, true, -1);
 				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("spellTarget", "tile"));
 				healUnit(1*trQuestVarGet("spellTarget"), 3);
@@ -1778,7 +1774,7 @@ inactive
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
-				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(40, 0, false, true, -1);
 				stunUnit(1*trQuestVarGet("spellTarget"));
 			}
@@ -1789,7 +1785,7 @@ inactive
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
-				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(37, 0, false, true, -1);
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
@@ -1820,7 +1816,7 @@ inactive
 				done = false;
 				trVectorSetUnitPos("start", "spellTarget");
 				trVectorSetUnitPos("end", "spellDirection");
-				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
 				pushUnit(1*trQuestVarGet("spellTarget"), "dir");
 				xsEnableRule("spell_attack_complete");
 			}
@@ -1847,7 +1843,7 @@ inactive
 					activeUnit = zGetVarByIndex("tiles", "occupant", target);
 					if ((activeUnit > 0) && (mGetVar(activeUnit, "spell") == SPELL_NONE)) {
 						trVectorQuestVarSet("pos", kbGetBlockPosition(""+activeUnit));
-						trVectorQuestVarSet("dir", zGetUnitVector("center", "pos"));
+						trVectorQuestVarSet("dir", trGetUnitVector("center", "pos"));
 						pushUnit(activeUnit, "dir");
 					}
 				}
@@ -1923,10 +1919,9 @@ inactive
 				trVectorSetUnitPos("center", "spellTarget");
 				for(x=yGetDatabaseCount("ignite"); >0) {
 					yDatabaseNext("ignite", true);
-					if (zDistanceToVectorSquared("ignite", "center") < 40) {
+					if (trDistanceToVectorSquared("ignite", "center") < 40) {
 						trUnitChangeProtoUnit("Lightning sparks");
 						yRemoveFromDatabase("ignite");
-						yRemoveUpdateVar("ignite", "tile");
 					}
 				}
 			}
@@ -1947,7 +1942,7 @@ inactive
 				trVectorSetUnitPos("targetPos", "spellTile");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
-				trSetUnitOrientation(zGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(39, 0, false, true, -1);
 				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
 				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("spellTile"));
@@ -1958,7 +1953,7 @@ inactive
 			{
 				trVectorSetUnitPos("laserstart", "spellTarget");
 				trVectorSetUnitPos("laserend", "spellDirection");
-				trVectorQuestVarSet("dir", zGetUnitVector("laserstart", "laserend"));
+				trVectorQuestVarSet("dir", trGetUnitVector("laserstart", "laserend"));
 				trQuestVarSet("posx", trQuestVarGet("laserstartx") + 6.0*trQuestVarGet("dirx"));
 				trQuestVarSet("posz", trQuestVarGet("laserstartz") + 6.0*trQuestVarGet("dirz"));
 				tile = mGetVarByQV("spellTarget", "tile");
@@ -1970,7 +1965,7 @@ inactive
 						neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);
 						if (neighbor < trQuestVarGet("ztilesend")) {
 							trVectorQuestVarSet("current", kbGetBlockPosition(""+neighbor));
-							if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
+							if (trDistanceBetweenVectorsSquared("current", "pos") < 1) {
 								trQuestVarSet("occupant", zGetVarByIndex("tiles", "occupant", neighbor));
 								if (trQuestVarGet("occupant") > 0) {
 									yAddToDatabase("worldSplitterHit", "occupant");
@@ -2061,7 +2056,7 @@ inactive
 				trQuestVarCopy("laserSFXX", "laserStartX");
 				trQuestVarCopy("laserSFXZ", "laserStartZ");
 				
-				trQuestVarSet("laserheading", 57.295779 * angleBetweenVectors("dir", "laserStep"));
+				trQuestVarSet("laserheading", 57.295779 * trAngleBetweenVectors("dir", "laserStep"));
 				
 				
 				trUnitSelectClear();
@@ -2226,13 +2221,12 @@ inactive
 				deployAtTile(0, "Osiris Box Glow", 1*mGetVarByQV("spellTarget", "tile"));
 				p = mGetVarByQV("spellTarget", "player");
 				trVectorSetUnitPos("pos", "spellTarget");
-				yDatabasePointerDefault("allUnits");
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
 					if (trQuestVarGet("allUnits") == trQuestVarGet("spellTarget")) {
 						continue;
 					} else if ((mGetVarByQV("allUnits", "player") == p) && (mGetVarByQV("allUnits", "spell") == SPELL_NONE)) {
-						if (zDistanceToVectorSquared("allUnits", "pos") < 40) {
+						if (trDistanceToVectorSquared("allUnits", "pos") < 40) {
 							magnetize(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("allUnits"));
 							yRemoveFromDatabase("allUnits");
 						}
@@ -2358,7 +2352,7 @@ inactive
 			{
 				trVectorSetUnitPos("start", "spellCaster");
 				trVectorSetUnitPos("end", "spellDirection");
-				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
 				mSetVarByQV("spellCaster", "laserDirx", trQuestVarGet("dirx"));
 				mSetVarByQV("spellCaster", "laserDirz", trQuestVarGet("dirz"));
 				trUnitSelectClear();
@@ -2462,7 +2456,6 @@ inactive
 		int p = trQuestVarGet("activePlayer");
 		int proto = 0;
 		int target = 3;
-		yDatabasePointerDefault("p"+p+"deck");
 		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 			proto = yDatabaseNext("p"+p+"deck");
 			if (yGetVar("p"+p+"deck", "spell") > 0) {
@@ -2558,7 +2551,6 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
-		yDatabasePointerDefault("p"+p+"deck");
 		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 			yDatabaseNext("p"+p+"deck");
 			if (yGetVar("p"+p+"deck", "spell") > 0) {
@@ -2567,7 +2559,6 @@ inactive
 				break;
 			}
 		}
-		yDatabasePointerDefault("p"+p+"deck");
 		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 			yDatabaseNext("p"+p+"deck");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
@@ -2621,7 +2612,7 @@ inactive
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (mGetVarByQV("allUnits", "player") == 3 - p) {
-				if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+				if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 					startAttack(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("allUnits"), false, false);
 				}
 			}
@@ -2650,7 +2641,7 @@ inactive
 	if ((trTime()-cActivationTime) >= 4){
 		trVectorQuestVarSet("spellProjectileStart", trVectorQuestVarGet("spellProjectileEnd"));
 	}
-	if (zDistanceBetweenVectorsSquared("spellProjectileStart", "spellProjectileEnd") < 8) {
+	if (trDistanceBetweenVectorsSquared("spellProjectileStart", "spellProjectileEnd") < 8) {
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("spellProjectile"), true);
 		trUnitDestroy();
@@ -2673,7 +2664,7 @@ inactive
 				trQuestVarSet("temp", trQuestVarGet("tiles"));
 				for (x=zGetBankCount("tiles"); >0) {
 					zBankNext("tiles");
-					if (zDistanceToVectorSquared("tiles", "spellProjectileEnd") < zDistanceToVectorSquared("temp", "spellProjectileEnd")) {
+					if (trDistanceToVectorSquared("tiles", "spellProjectileEnd") < trDistanceToVectorSquared("temp", "spellProjectileEnd")) {
 						trQuestVarSet("temp", trQuestVarGet("tiles"));
 					}
 				}
@@ -2789,7 +2780,7 @@ inactive
 		trVectorQuestVarSet("laserPos", kbGetBlockPosition(""+1*trQuestVarGet("laserGround"), true));
 		
 		// adjust speed;
-		trQuestVarSet("laserCurDistSquared", zDistanceBetweenVectorsSquared("laserPos", "laserStart"));
+		trQuestVarSet("laserCurDistSquared", trDistanceBetweenVectorsSquared("laserPos", "laserStart"));
 		if (trQuestVarGet("laserCurDistSquared") > trQuestVarGet("laserNextDistSquared")) {
 			trQuestVarSet("laserCurDist", xsSqrt(trQuestVarGet("laserCurDistSquared")));
 			trQuestVarSet("laserAngle", xsAtan(10.0 / trQuestVarGet("laserCurDist")) - 0.02);
@@ -2815,8 +2806,8 @@ inactive
 		}
 		
 		// adjust aim;
-		trVectorQuestVarSet("laserAim", zGetUnitVector3d("laserStart", "laserPos", -1.0));
-		trVectorQuestVarSet("laserAim2", crossProduct("laserAim", "laserNormal"));
+		trVectorQuestVarSet("laserAim", trGetUnitVector3d("laserStart", "laserPos", -1.0));
+		trVectorQuestVarSet("laserAim2", trCrossProduct("laserAim", "laserNormal"));
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
 		trSetUnitOrientation(trVectorQuestVarGet("laserAim"), trVectorQuestVarGet("laserAim2"), true);
@@ -2918,7 +2909,6 @@ inactive
 			damageUnit(1*trQuestVarGet("spellTarget"), 100);
 			if (trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType") == COMMANDER_YEEBAAGOOON) {
 				int p = mGetVarByQV("spellTarget", "player");
-				yDatabasePointerDefault("p"+p+"hand");
 				for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
 					if (mGetVarByQV("p"+p+"hand", "proto") == mGetVarByQV("spellTarget", "proto")) {
@@ -2927,14 +2917,11 @@ inactive
 						trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 						zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 						yRemoveFromDatabase("p"+p+"hand");
-						yRemoveUpdateVar("p"+p+"hand", "pos");
 					}
 				}
-				yDatabasePointerDefault("p"+p+"deck");
 				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 					if (yDatabaseNext("p"+p+"deck") == mGetVarByQV("spellTarget", "proto")) {
 						yRemoveFromDatabase("p"+p+"deck");
-						yRemoveUpdateVar("p"+p+"deck", "spell");
 					}
 				}
 				for(x=yGetDatabaseCount("allUnits"); >0) {

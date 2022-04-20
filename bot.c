@@ -128,7 +128,6 @@ inactive
 			case GAMEPLAY_SPELL_UNIT:
 			{
 				if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE){
-					yDatabasePointerDefault("castTargets");
 					for(x=yGetDatabaseCount("castTargets"); >0) {
 						yDatabaseNext("castTargets", true);
 						if(trUnitIsOwnedBy(2)){
@@ -137,7 +136,6 @@ inactive
 					}
 					
 					if(1*trQuestVarGet("botSpell") == SPELL_INTIMIDATE){
-						yDatabasePointerDefault("castTargets");
 						for(x=yGetDatabaseCount("castTargets"); >0) {
 							yDatabaseNext("castTargets");
 							if(mGetVarByQV("castTargets", "stunTime") > 0){
@@ -147,7 +145,6 @@ inactive
 					} else if((1*trQuestVarGet("botSpell") == SPELL_PISTOL_SHOT) || (1*trQuestVarGet("botSpell") == SPELL_PYROBALL)){
 						trQuestVarSet("value", -1);
 						trQuestVarSet("valueTarget", -1);
-						yDatabasePointerDefault("castTargets");
 						for(x=yGetDatabaseCount("castTargets"); >0) {
 							yDatabaseNext("castTargets");
 							if(trQuestVarGet("value") < (mGetVarByQV("castTargets", "attack") + mGetVarByQV("castTargets", "health") + mGetVarByQV("castTargets", "cost") + 10*mGetVarByQV("castTargets", "spell"))){
@@ -160,7 +157,6 @@ inactive
 							yAddToDatabase("castTargets", "valueTarget");
 						}
 					} else if(1*trQuestVarGet("botSpell") == SPELL_ELECTROSURGE){
-						yDatabasePointerDefault("castTargets");
 						for(x=yGetDatabaseCount("castTargets"); >0) {
 							yDatabaseNext("castTargets");
 							if(trCountUnitsInArea(""+1*trQuestVarGet("castTargets"),1,"Unit",9) < 2){
@@ -168,7 +164,6 @@ inactive
 							}
 						}
 					} else if(1*trQuestVarGet("botSpell") == SPELL_WATER_PRESSURE){
-						yDatabasePointerDefault("castTargets");
 						for(x=yGetDatabaseCount("castTargets"); >0) {
 							yDatabaseNext("castTargets");
 							if(mGetVarByQV("castTargets", "attack") < 2 && mGetVarByQV("castTargets", "health") < 2){
@@ -178,7 +173,6 @@ inactive
 					}
 					
 				} else if(1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_DEFENSIVE){
-					yDatabasePointerDefault("castTargets");
 					for(x=yGetDatabaseCount("castTargets"); >0) {
 						yDatabaseNext("castTargets", true);
 						if(trUnitIsOwnedBy(2) == false){
@@ -205,7 +199,6 @@ inactive
 			case GAMEPLAY_SPELL_TILE:
 			{
 				if (1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_OFFENSIVE) {
-					yDatabasePointerDefault("castTiles");
 					for(x=yGetDatabaseCount("castTiles"); >0) {
 						yDatabaseNext("castTiles");
 						if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") != 1){
@@ -214,7 +207,6 @@ inactive
 					}
 					
 					if(1*trQuestVarGet("botSpell") == SPELL_EXPLOSION){
-						yDatabasePointerDefault("castTiles");
 						for(x=yGetDatabaseCount("castTiles"); >0) {
 							yDatabaseNext("castTiles");
 							if(trCountUnitsInArea(""+1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")),1,"Unit",9) < 2){
@@ -224,7 +216,6 @@ inactive
 					}
 					
 				} else if (1*trQuestVarGet("spell_" + 1*trQuestVarGet("botSpell") + "_type") == SPELL_TYPE_DEFENSIVE) {
-					yDatabasePointerDefault("castTiles");
 					for(x=yGetDatabaseCount("castTiles"); >0) {
 						yDatabaseNext("castTiles");
 						if(mGetVar(1*zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("castTiles")), "player") < 2){
@@ -273,7 +264,6 @@ inactive
 			case GAMEPLAY_SUMMONING:
 			{
 				if((trQuestVarGet("botProto") == kbGetProtoUnitID("Griffon")) || (trQuestVarGet("botProto") == kbGetProtoUnitID("Avenger"))){
-					yDatabasePointerDefault("summonLocations");
 					for(x=yGetDatabaseCount("summonLocations"); >0) {
 						yDatabaseNext("summonLocations");
 						if(trCountUnitsInArea(""+1*trQuestVarGet("summonLocations"),1,"Unit",9) < 1){
@@ -316,7 +306,7 @@ inactive
 					also prioritize tiles closer to enemy commander
 					*/
 					currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
-					currentScore = currentScore - zDistanceToVector("reachable", "commanderpos") / 9;
+					currentScore = currentScore - trDistanceToVector("reachable", "commanderpos") / 9;
 					if (currentScore >= bestTileScore) {
 						/*
 						prioritize tiles that can be attacked by the fewest number of enemies
@@ -326,7 +316,7 @@ inactive
 						for(y=yGetDatabaseCount("allUnits"); >0) {
 							yDatabaseNext("allUnits");
 							if (mGetVarByQV("allUnits", "player") == 1) {
-								if (zDistanceToVector("allUnits", "pos") < 1.0 + 6.0*mGetVarByQV("allUnits", "range")) {
+								if (trDistanceToVector("allUnits", "pos") < 1.0 + 6.0*mGetVarByQV("allUnits", "range")) {
 									currentScore = currentScore - mGetVarByQV("allUnits", "attack");
 								}
 							}
@@ -366,7 +356,7 @@ inactive
 						continue; // Zenophobia doesn't attack allies that he can't kill
 					}
 					// If the target can counterattack, we subtract its attack from currentScore
-					if (zDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
+					if (trDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
 						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
 							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
 						} else {

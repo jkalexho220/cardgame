@@ -79,12 +79,11 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			deployAtTile(0, "Meteor Impact Ground", 1*mGetVarByQV("allUnits", "tile"));
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
-			yDatabasePointerDefault("allUnits");
 			for(y=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (trQuestVarGet("allUnits") == unit) {
 					continue;
-				} else if (zDistanceToVectorSquared("allUnits", "pos") < 40) {
+				} else if (trDistanceToVectorSquared("allUnits", "pos") < 40) {
 					startAttack(unit, 1*trQuestVarGet("allUnits"), false, false);
 					checkAgain = true;
 				}
@@ -97,7 +96,6 @@ bool OnDeath(int event = -1, int unit = 0){
 				proto = yDatabaseNext("p"+p+"deck");
 				if (yGetVar("p"+p+"deck", "spell") == SPELL_NONE) {
 					yRemoveFromDatabase("p"+p+"deck");
-					yRemoveUpdateVar("p"+p+"deck", "spell");
 					break;
 				}
 			}
@@ -131,7 +129,6 @@ void removeDeadUnits() {
 	int pointer = 0;
 	int p = 0;
 	checkAgain = false;
-	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
 		if (mGetVarByQV("allUnits", "health") <= 0 && mGetVarByQV("allUnits", "OnDeath") > 0) {
@@ -162,7 +159,6 @@ void removeDeadUnits() {
 	trQuestVarSet("p1deathCount", 0);
 	trQuestVarSet("p2deathCount", 0);
 	int proto = 0;
-	yDatabasePointerDefault("allUnits");
 	for(y=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		if (trQuestVarGet("allUnits") >= 128) {

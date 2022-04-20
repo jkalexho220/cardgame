@@ -14,7 +14,7 @@ void processAttack(string db = "attacks") {
 				trVectorQuestVarSet("d2pos", kbGetBlockPosition(""+target, true));
 				trUnitSelectClear();
 				trUnitSelect(""+attacker, true);
-				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
 				switch(1*yGetVar(db, "animation"))
 				{
 					case ANIM_DEFAULT:
@@ -52,9 +52,6 @@ void processAttack(string db = "attacks") {
 				}
 			} else {
 				yRemoveFromDatabase(db);
-				yRemoveUpdateVar(db, "target");
-				yRemoveUpdateVar(db, "phase");
-				yRemoveUpdateVar(db, "timeout");
 			}
 		}
 		case ATTACK_ANIMATE:
@@ -90,9 +87,6 @@ void processAttack(string db = "attacks") {
 			}
 			
 			yRemoveFromDatabase(db);
-			yRemoveUpdateVar(db, "target");
-			yRemoveUpdateVar(db, "phase");
-			yRemoveUpdateVar(db, "timeout");
 		}
 	}
 }
@@ -116,7 +110,7 @@ bool attackUnitAtCursor(int p = 0) {
 		trVectorSetUnitPos("d2pos", "targetUnit");
 		float range = xsPow(mGetVar(a, "range") * 6 + 1, 2);
 		float dist = 0;
-		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
+		if (trDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates
 			target = checkGuard(target);
 			
@@ -124,7 +118,7 @@ bool attackUnitAtCursor(int p = 0) {
 			
 			// Counterattack
 			range = xsPow(mGetVar(target, "range") * 6 + 3, 2);
-			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) &&
+			if ((trDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) &&
 				(mGetVar(target, "stunTime") == 0) &&
 				(HasKeyword(HEALER, 1*mGetVar(target, "keywords")) == false)) {
 				if ((HasKeyword(FLYING, 1*mGetVar(a, "keywords")) == false) ||
@@ -143,7 +137,7 @@ bool attackUnitAtCursor(int p = 0) {
 		trUnitSelect(""+a, true);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
-		trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+		trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
 		trUnitOverrideAnimation(50, 0, false, true, -1);
 		healUnit(target, mGetVar(a, "attack"));
 		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
@@ -279,7 +273,7 @@ inactive
 				float currentDistance = 0;
 				for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
-					currentDistance = zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos");
+					currentDistance = trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos");
 					if (currentDistance < closestDistance) {
 						closestDistance = currentDistance;
 						unit = trQuestVarGet("p"+p+"hand");
@@ -341,7 +335,7 @@ inactive
 				} else {
 					for(x=yGetDatabaseCount("meteors"); >0) {
 						yDatabaseNext("meteors");
-						if (zDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
+						if (trDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
 							trMessageSetText("A meteor will fall on this tile, dealing 6 damage to it and 2 damage to adjacent tiles.", -1);
 							break;
 						}
@@ -429,7 +423,7 @@ inactive
 					trQuestVarSet("moveTile", -1);
 					for (x=yGetDatabaseCount("reachable"); >0) {
 						yDatabaseNext("reachable");
-						if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
+						if (trDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
 							trQuestVarCopy("moveTile", "reachable");
 							break;
 						}
@@ -508,7 +502,7 @@ inactive
 			
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
+			trSetUnitOrientation(trGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
 			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
 			
 			if (trQuestVarGet("turnEnd") == 0) {
@@ -667,7 +661,7 @@ inactive
 				int tile = -1;
 				for(x=yGetDatabaseCount("summonLocations"); >0) {
 					yDatabaseNext("summonLocations");
-					if (zDistanceToVectorSquared("summonLocations", "p"+p+"clickPos") < 9) {
+					if (trDistanceToVectorSquared("summonLocations", "p"+p+"clickPos") < 9) {
 						tile = trQuestVarGet("summonLocations");
 						break;
 					}
@@ -713,7 +707,6 @@ inactive
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 					yRemoveFromDatabase("p"+p+"hand");
-					yRemoveUpdateVar("p"+p+"hand", "pos");
 					
 					zSetVarByIndex("tiles", "occupant", tile, unit);
 					// If the unit has an OnPlay effect

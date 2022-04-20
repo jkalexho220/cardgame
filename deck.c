@@ -7,13 +7,13 @@ void shuffleDeck(int p = 0) {
 		trQuestVarSetFromRand("pos", 0, x, true);
 		i = trQuestVarGet("pos");
 		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));
-		trQuestVarSet("tempSpell", yGetVarByIndex("p"+p+"deck", "spell", i));
+		trQuestVarSet("tempSpell", yGetVarAtIndex("p"+p+"deck", "spell", i));
 		
 		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
-		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));
+		ySetVarAtIndex("p"+p+"deck", "spell", i, yGetVarAtIndex("p"+p+"deck", "spell", x));
 		
 		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
-		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
+		ySetVarAtIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
 	}
 }
 /*
@@ -173,7 +173,6 @@ void drawCard(int p = 0, bool fleeting = false) {
 			
 		}
 		yRemoveFromDatabase("p"+p+"deck");
-		yRemoveUpdateVar("p"+p+"deck", "spell");
 		
 		updateRoxasHealth(p);
 		updateHandPlayable(p);

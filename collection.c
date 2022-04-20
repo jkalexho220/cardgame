@@ -519,8 +519,7 @@ inactive
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
-	trChatHistoryClear();
-	yDatabasePointerDefault("allUnits");
+	// trChatHistoryClear();
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
@@ -586,7 +585,8 @@ inactive
 			trQuestVarSet("p1click", 0);
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				int id = yDatabaseNext("allUnits", true);
-				if(zDistanceToVector("allUnits","p1clickPos") < 2){
+				float dist = trDistanceToVectorSquared("allUnits","p1clickPos");
+				if(dist < 4){
 					trVectorSetUnitPos("temp","allUnits");
 					if(1*yGetVar("allUnits", "spell") == SPELL_COMMANDER){
 						if(trVectorQuestVarGetZ("temp") < 44){
@@ -652,6 +652,7 @@ inactive
 		bool nothing = true;
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			int id = yDatabaseNext("allUnits", true);
+			trUnitHighlight(1.0, false);
 			if (trUnitIsSelected()) {
 				trVectorSetUnitPos("temp","allUnits");
 				if(trVectorQuestVarGetZ("temp") < 90){
@@ -662,7 +663,7 @@ inactive
 					collectionReward = "";
 					for(class=0;<6){
 						for(i=1;<=xsMin(getClassProgress(class),6)){
-							if(zDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
+							if(trDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
 								int cards = 3;
 								if(i > 1){
 									cards = 6;
@@ -749,7 +750,7 @@ inactive
 	if (trCheckGPActive("rain", 1)) {
 		if (trQuestVarGet("p1rain") == 0) {
 			trQuestVarSet("p1rain", 1);
-			trChatHistoryClear();
+			// trChatHistoryClear();
 			dataSave();
 			map("mouse1down", "game", "");
 			map("mouse2up", "game", "");

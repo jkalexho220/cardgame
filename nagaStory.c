@@ -297,7 +297,7 @@ highFrequency
 inactive
 {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("p2commander")));
-	if (zDistanceToVectorSquared("p1commander", "pos") < 64 && zDistanceToVectorSquared("companion", "pos") < 64) {
+	if (trDistanceToVectorSquared("p1commander", "pos") < 64 && trDistanceToVectorSquared("companion", "pos") < 64) {
 		damageUnit(1*trQuestVarGet("p2commander"), 999);
 		removeDeadUnits();
 		trQuestVarSet("p2defeated", 1);

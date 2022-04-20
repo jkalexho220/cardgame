@@ -633,7 +633,6 @@ void displayCardKeywordsAndDescription(int name = 0) {
 	}
 	
 	int card = ProtoToCard(proto);
-	int old = xsGetContextPlayer();
 	int p = mGetVar(name, "player");
 	int discount = 0;
 	if (mGetVar(name, "spell") <= SPELL_COMMANDER) {
@@ -653,7 +652,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		trVectorQuestVarSet("center", kbGetBlockPosition("128"));
 		
 		trChatSend(0, "<color={Playercolor("+p+")}>==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====</color>");
-		if (zDistanceBetweenVectorsSquared("pos", "center") > 2025) {
+		if (trDistanceBetweenVectorsSquared("pos", "center") > 2025) {
 			discount = trQuestVarGet("p"+p+"minionDiscount");
 			if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 				discount = discount + trQuestVarGet("p"+p+"manaflow");
@@ -666,6 +665,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		} else {
 			xsSetContextPlayer(1*mGetVar(name, "player"));
 			float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
+			xsSetContextPlayer(0);
 			int diff = 1*mGetVar(name, "health") - health;
 			if (diff > 0) {
 				bonus = bonus + "HP +" + diff + " ";
@@ -716,8 +716,6 @@ void displayCardKeywordsAndDescription(int name = 0) {
 	
 	updateMana();
 	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, getCardClassIcon(card));
-	
-	xsSetContextPlayer(old);
 }
 
 int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {

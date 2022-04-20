@@ -153,7 +153,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trSoundPlayFN("meteorsplash.wav","1",-1,"","");
 				trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
 				trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
-				trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+				trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
 				pushUnit(target, "dir");
 			}
 		}
@@ -210,8 +210,8 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trVectorSetUnitPos("end", "next");
 			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
 			trQuestVarSet("starty", 8);
-			trVectorQuestVarSet("dir1", zGetUnitVector3d("start", "end"));
-			trVectorQuestVarSet("dir2", zGetUnitVector("start", "end"));
+			trVectorQuestVarSet("dir1", trGetUnitVector3d("start", "end"));
+			trVectorQuestVarSet("dir2", trGetUnitVector("start", "end"));
 			// rotating the vector dir2 by 90 degrees
 			trQuestVarSet("temp", trQuestVarGet("dir2x"));
 			trQuestVarSet("dir2x", 0.0 - trQuestVarGet("dir2z"));
@@ -220,7 +220,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trSetUnitOrientation(trVectorQuestVarGet("dir1"), trVectorQuestVarGet("dir2"), true);
 			trUnitHighlight(3.0, false);
 			yAddToDatabase("mirrorTowerLasers", "next");
-			yAddUpdateVar("mirrorTowerLasers", "length", zDistanceBetweenVectors3d("start", "end") * 1.25);
+			yAddUpdateVar("mirrorTowerLasers", "length", trDistanceBetweenVectors3d("start", "end") * 1.25);
 			yAddUpdateVar("mirrorTowerLasers", "timeout", trTimeMS() + 1500);
 			xsEnableRule("attack_animate_mirror_laser");
 		}
@@ -230,7 +230,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (HasKeyword(ATTACK_TEAMWORK, 1*mGetVarByQV("allUnits", "OnAttack")) == false) { // no infinite loops for you
-					if ((mGetVarByQV("allUnits", "player") == p) && (zDistanceToVectorSquared("allUnits", "pos") < 64)) {
+					if ((mGetVarByQV("allUnits", "player") == p) && (trDistanceToVectorSquared("allUnits", "pos") < 64)) {
 						startAttack(1*trQuestVarGet("allUnits"), target);
 					}
 				}
@@ -257,8 +257,6 @@ inactive
 		if (scale < 0) {
 			trUnitDestroy();
 			yRemoveFromDatabase("mirrorTowerLasers");
-			yRemoveUpdateVar("mirrorTowerLasers", "length");
-			yRemoveUpdateVar("mirrorTowerLasers", "timeout");
 		} else {
 			scale = scale / 75;
 			trSetSelectedScale(scale, scale, yGetVar("mirrorTowerLasers", "length"));

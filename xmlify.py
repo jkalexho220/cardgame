@@ -21,10 +21,13 @@ files = ['memory.c', 'shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c',
 ####### CODE BELOW (DO NOT TOUCH) #######
 #########################################
 
+REFORMAT = False
 VERBOSE = False
 for t in sys.argv:
 	if t == '-v':
 		VERBOSE = True
+	if t == '-r':
+		REFORMAT = True
 
 # Stack Frame states
 STATE_NEED_NAME = 0
@@ -64,14 +67,13 @@ class CustomFunction:
 FUNCTIONS = {}
 BASE_JOB = None
 
+THE_TRIGGER_KNOWS = []
+IN_TRIGGER = False
+
 KNOWN_FOR = []
 KNOWN_TRIGGERS = []
-KNOWN_VARIABLES = ['cNumberPlayers', 'cMapSize', 'cNumberTeams',
-					'cConnectAllies', 'cConnectAreas', 'cConnectEnemies', 'cConnectPlayers',
-					'cInvalidVector', 'cOriginVector', 'cActivationTime']
-KNOWN_TYPES = ['int', 'int', 'int',
-				'int', 'int', 'int', 'int',
-				'vector', 'vector', 'int']
+KNOWN_VARIABLES = ['cNumberPlayers', 'cInvalidVector', 'cOriginVector', 'cActivationTime']
+KNOWN_TYPES = ['int', 'vector', 'vector', 'int']
 
 ERRORED = False
 
@@ -256,6 +258,9 @@ class StackFrame(Job):
 					KNOWN_VARIABLES = KNOWN_VARIABLES[:self.depth]
 					KNOWN_TYPES = KNOWN_TYPES[:self.depth]
 					self.state = STATE_CLOSED
+					if self.name != 'if':
+						self.resolve()
+						self.parent.children.pop()
 				elif self.name == 'switch' and not token == 'case':
 					accepted = False
 				elif token in LOGIC:
@@ -343,6 +348,9 @@ class Logic(StackFrame):
 						if self.children[0].datatype != 'int':
 							error("Contents of " + self.name + " do not resolve to an integer! " + self.children[0].datatype)
 							accepted = False
+					elif self.children[0].type == 'ASSIGNMENT':
+						error("Assignment operator in " + self.name + ". Use == instead.")
+						accepted = False
 					elif self.children[0].datatype != 'bool':
 						error("Contents of " + self.name + " do not resolve to a boolean! " + self.children[0].datatype)
 						accepted = False
@@ -404,6 +412,15 @@ class Trigger(StackFrame):
 		self.state = STATE_NEED_NAME
 		self.type = 'TRIGGER'
 		self.datatype = 'void'
+		global IN_TRIGGER
+		IN_TRIGGER = True
+
+	def resolve(self):
+		if self.state == STATE_CLOSED:
+			global THE_TRIGGER_KNOWS
+			global IN_TRIGGER
+			IN_TRIGGER = False
+			THE_TRIGGER_KNOWS = []
 
 	def accept(self, token):
 		global KNOWN_VARIABLES
@@ -470,11 +487,15 @@ class Returner(Job):
 class Declaration(StackFrame):
 	def __init__(self, name, parent):
 		super().__init__('', parent)
+		global ln
+		global line
 		self.state = STATE_NEED_NAME
 		self.type = 'VARIABLE'
 		self.datatype = name
 		self.returner = None
 		self.returnType = 'void'
+		self.ln = ln
+		self.line = line
 
 	def resolve(self):
 		if not self.closed:
@@ -486,9 +507,14 @@ class Declaration(StackFrame):
 					FUNCTIONS[self.name].add(frame.datatype)
 		elif self.state == STATE_CLOSED:
 			if self.returnType != self.datatype:
-				error("Function must return a value of type " + self.datatype)
+				global ERRORED
+				ERRORED = True
+				print("Function must return a value of type " + self.datatype)
+				print("Line " + str(self.ln) + ":\n    " + self.line)
 
 	def accept(self, token):
+		global THE_TRIGGER_KNOWS
+		global IN_TRIGGER
 		global KNOWN_VARIABLES
 		global KNOWN_TYPES
 		accepted = True
@@ -498,11 +524,15 @@ class Declaration(StackFrame):
 				if token in KNOWN_VARIABLES:
 					error("Declaring a function or variable name that was already declared in this context: " + token)
 					accepted = False
+				elif token in THE_TRIGGER_KNOWS and IN_TRIGGER:
+					error("Duplicate declaration of variable within the same trigger: " + token)
 				else:
 					self.name = token
 					self.state = STATE_NEED_PARENTHESIS
 					KNOWN_VARIABLES.append(self.name)
 					KNOWN_TYPES.append(self.datatype)
+					if IN_TRIGGER:
+						THE_TRIGGER_KNOWS.append(self.name)
 			elif self.state == STATE_NEED_PARENTHESIS:
 				if not token in ['=', '(']:
 					accepted = False
@@ -603,10 +633,13 @@ class Literal(Mathable):
 			self.state = 0
 
 	def resolve(self):
-		super().resolve()
-		if self.datatype == 'vector':
-			if len(self.children) != 3:
-				error("vector literal must contain 3 numeric components but only found " + str(len(self.children)))
+		if not self.closed:
+			super().resolve()
+			if self.datatype == 'vector':
+				if len(self.children) != 3:
+					error("vector literal must contain 3 numeric components but only found " + str(len(self.children)))
+				self.closed = True
+				self.children.clear()
 
 	def accept(self, token):
 		accepted = True
@@ -630,6 +663,8 @@ class Literal(Mathable):
 						accepted = self.children[-1].type == 'LITERAL' and self.children[-1].datatype in ['int', 'float']
 						if not accepted:
 							error("Vector literals can only contain literal integers or floats. Variables are not allowed.")
+					else:
+						accepted = False
 		return accepted
 
 
@@ -647,7 +682,7 @@ class Function(Mathable):
 		if not self.closed:
 			super().resolve()
 			self.closed = True
-			if self.state != 2:
+			if self.state != 3:
 				error("Missing close parenthesis");
 			elif len(self.children) > len(self.expected):
 				error("Too many inputs for " + self.name + " expected " + str(len(self.expected)) + " but received " + str(len(self.children)))
@@ -670,17 +705,25 @@ class Function(Mathable):
 				else:
 					accepted = False
 			elif token == ')':
-				self.state = 2;
+				self.state = 3;
 				self.resolve()
-			elif token == ',':
-				if len(self.children) == self.count:
-					error("Unused comma")
-					accepted = False
-				else:
-					self.children[-1].resolve()
-					self.count = len(self.children)
-			else:
+			elif self.state == 1:
 				accepted = self.parseGeneric(token)
+				if accepted:
+					self.state = 2
+			elif self.state == 2:
+				if token == ',':
+					if len(self.children) == self.count:
+						error("Unused comma")
+						accepted = False
+					else:
+						self.children[-1].resolve()
+						self.count = len(self.children)
+						self.state = 1;
+				else:
+					error("Missing comma in function statement in: " + self.name)
+					accepted = False
+				
 		return accepted
 
 class Variable(Mathable):
@@ -719,10 +762,19 @@ class Arithmetic(Mathable):
 					if self.children[i].datatype in ['bool', 'void']:		
 						error("Cannot perform arithmetic operator " + self.name + " on " + self.children[i].name + " of type " + self.children[i].datatype)
 				
-				if self.datatype == 'string' and self.name in ['-', '/', '*']:
-					error("Cannot perform arithmetic operator " + self.name + " on a string!")
-				elif self.datatype != self.children[1].datatype and self.children[1].datatype == 'string':
-					error("Cannot add a string to a " + self.datatype)
+				if self.datatype == 'string':
+					if self.name in ['-', '/', '*']:
+						error("Cannot perform arithmetic operator " + self.name + " on a string!")
+				elif self.datatype != self.children[1].datatype:
+					if self.children[1].datatype == 'string':
+						error("Cannot add a string to a " + self.datatype)
+					if self.children[0].datatype == 'vector':
+						if self.children[1].datatype not in ['int', 'float', 'vector']:
+							error("Cannot perform arithmetic operator " + self.name + " from a vector to a " + self.children[1].datatype)
+						elif self.name in ['+', '-']:
+							error("Cannot perform arithmetic operator " + self.name + " from a vector to a " + self.children[1].datatype)
+					elif self.children[1].datatype == 'vector':
+						error("Cannot perform arithmetic operator " + self.name + " from a " + self.datatype + " to a vector")
 
 				self.name = self.datatype
 				self.children = []
@@ -824,8 +876,6 @@ def removeStrings(line):
 				continue
 		if not isString or token == '"':
 			retline = retline + token
-	if "//" in retline:
-		retline = retline[:retline.find("//")]
 	return retline
 
 print("Reading Command Viewer")
@@ -846,12 +896,9 @@ with open('Commands.xml', 'r') as fd:
 
 print("rmsification start!")
 
-functions = {''}
-unknowns = {''}
 ln = 1
 FILE_1 = None
 comment = False
-escape = False
 try:
 	with open(FILENAME, 'w') as file_data_2:
 		with open("template.txt", 'r') as template:
@@ -860,6 +907,7 @@ try:
 				file_data_2.write(line)
 				line = template.readline()
 		file_data_2.write('\n<Effect name="'+ NAME +'">\n')
+		file_data_2.write('<Command>xsDisableSelf();}}</Command>\n')
 		for f in files:
 			FILE_1 = f
 			ln = 1
@@ -875,7 +923,10 @@ try:
 				while line:
 					# Rewrite history
 					reline = line.strip()
-					nostrings = removeStrings(reline)
+					stringless = removeStrings(reline)
+					nostrings = stringless
+					if "//" in nostrings:
+						nostrings = nostrings[:nostrings.find("//")]
 					if '}' in nostrings:
 						thedepth = thedepth - 1
 					reline = "\t" * thedepth + reline
@@ -887,7 +938,7 @@ try:
 					bcount = bcount + nostrings.count('{') - nostrings.count('}')
 					
 					if not line.isspace():
-						if ('/*' in line):
+						if ('/*' in nostrings):
 							comment = True
 
 						if not comment:
@@ -917,7 +968,7 @@ try:
 											BASE_JOB.debug()
 							
 							templine = reline.strip()
-							if '//' in templine:
+							if '//' in stringless:
 								templine = templine[:templine.find('//')].strip()
 
 							# Obsolete Sanity Checks
@@ -929,20 +980,23 @@ try:
 								print("Line " + str(ln) + ":\n    " + line)
 
 							# reWrite the line
-							if '<' in line or '&' in line or '|' in line:
-								file_data_2.write('<Command><![CDATA[' + line.rstrip() + ']]></Command>\n')
-							else:
-								file_data_2.write('<Command>' + line.rstrip() + '</Command>\n')
-						if ('*/' in line):
+							if len(line) > 0:
+								if '<' in line or '&' in line or '|' in line:
+									file_data_2.write('<Command><![CDATA[' + line.rstrip() + ']]></Command>\n')
+								else:
+									file_data_2.write('<Command>' + line.rstrip() + '</Command>\n')
+						if ('*/' in nostrings):
 							comment = False
 					else:
 						file_data_2.write('\n')
 					line = file_data_1.readline()
 					ln = ln + 1
+			BASE_JOB.resolve()
 			# reformat the .c raw code
-			with open(FILE_1, 'w') as file_data_1:
-				for line in rewrite:
-					file_data_1.write(line + '\n')
+			if REFORMAT:
+				with open(FILE_1, 'w') as file_data_1:
+					for line in rewrite:
+						file_data_1.write(line + '\n')
 			if pcount < 0:
 				print("ERROR: Extra close parenthesis detected!\n")
 			elif pcount > 0:
@@ -951,7 +1005,13 @@ try:
 				print("ERROR: Extra close brackets detected!\n")
 			elif bcount > 0:
 				print("ERROR: Missing close brackets detected!\n")
-			
+		
+		file_data_2.write('<Command>rule zenowashere</Command>\n')
+		file_data_2.write('<Command>inactive</Command>\n')
+		file_data_2.write('<Command>highFrequency</Command>\n')
+		file_data_2.write('<Command>{</Command>\n')
+		file_data_2.write('<Command>if(true) {</Command>\n')
+		file_data_2.write('<Command>xsDisableSelf();</Command>\n')
 		file_data_2.write('</Effect>\n')
 		file_data_2.write('</Effects>\n')
 		file_data_2.write('</trigger>')

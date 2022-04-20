@@ -43,7 +43,7 @@ int SummonLaser(int tile = 0, int target = 0) {
 	int siphon = summonAtTile(tile, 2, kbGetProtoUnitID("Fire Siphon"));
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+tile));
 	trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
-	trVectorQuestVarSet("dir", zGetUnitVector("start", "end"));
+	trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
 	mSetVar(siphon, "laserDirx", trQuestVarGet("dirx"));
 	mSetVar(siphon, "laserDirz", trQuestVarGet("dirz"));
 	trUnitSelectClear();
@@ -1028,8 +1028,8 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=yGetDatabaseCount("p1deck"); >0) {
 						yDatabaseNext("p1deck");
 						yAddToDatabase("p2deck", "p1deck");
-						yTransferUpdateVar("p2deck", "p1deck", "spell");
-						yTransferUpdateVar("p2deck", "p1deck", "proto");
+						yAddUpdateVar("p2deck", "spell", yGetVar("p1deck", "spell"));
+						yAddUpdateVar("p2deck", "proto", yGetVar("p1deck", "proto"));
 					}
 					for(x=0;<6) {
 						addCardToDeck(2, "Theris");
@@ -1104,7 +1104,6 @@ void CleanBoard(){
 			zBankNext("p"+p+"handPos");
 			zSetVar("p"+p+"handPos", "occupied", 0);
 		}
-		yDatabasePointerDefault("p"+p+"hand");
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
 			mSetVarByQV("p"+p+"hand", "played", 0);
@@ -1118,7 +1117,6 @@ void CleanBoard(){
 		trUnitSelectClear();trUnitSelect(""+i);
 		trUnitDestroy();
 	}
-	yDatabasePointerDefault("allUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		mSetVarByQV("allUnits", "played", 0);
@@ -1430,7 +1428,6 @@ inactive
 		trCameraCut(vector(85.849754,59.475327,36.041752), vector(0.374977,-0.843302,-0.385012), vector(0.588380,0.537438,-0.604126), vector(-0.716381,0.0,-0.697709));
 		trSoundPlayDialog("default", "1", -1, false, " : ", "");
 		trSoundPlayFN("plentybirth.wav", "1", -1, "","");
-		yDatabasePointerDefault("allUnits");
 		xsEnableRule("NewCardsEffect_");
 		trQuestVarSet("newCardsSelection", -1);
 		xsDisableRule("NewCards1");
