@@ -93,9 +93,9 @@ void teleportToTile(int name = 0, int tile = 0) {
 	scaleUnit(name);
 	
 	trUnitSelectClear();
-	trUnitSelectByID(tile);
-	trUnitConvert(0);
-	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	//trUnitSelectByID(tile);
+	//trUnitConvert(0);
+	//trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);

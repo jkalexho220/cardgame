@@ -22,7 +22,6 @@ inactive
 		
 		trQuestVarSet("p"+p+"defeated", 0);
 	}
-	
 	// Ravens
 	trQuestVarSet("p1block", 869);
 	trQuestVarSet("p2block", 871);

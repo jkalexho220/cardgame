@@ -589,8 +589,14 @@ void ySetVector(string db = "", string var = "", vector val = vector(0,0,0)) {
 	ySetVectorAtIndex(db, var, val, -1);
 }
 
+int yGetDatabaseCount(string db = "") {
+	return(xGetDatabaseCount(1*trQuestVarGet("database"+db)));
+}
+
 int yDatabaseNext(string db = "", bool select = false, bool reverse = false) {
-	xDatabaseNext(1*trQuestVarGet("database"+db), reverse);
+	if (yGetDatabaseCount(db) > 0) {
+		xDatabaseNext(1*trQuestVarGet("database"+db), reverse);
+	}
 	int u = yGetVar(db, "unitName");
 	trQuestVarSet(db, u);
 	if (select) {
@@ -640,11 +646,6 @@ bool ySetPointer(string db = "", int index = 0) {
 		trQuestVarSet(db, yGetVar(db, "unitName"));
 	}
 	return(safe);
-}
-
-
-int yGetDatabaseCount(string db = "") {
-	return(xGetDatabaseCount(1*trQuestVarGet("database"+db)));
 }
 
 int yGetUnitAtIndex(string db = "", int index = 0) {

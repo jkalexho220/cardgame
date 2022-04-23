@@ -10,10 +10,10 @@ void shuffleDeck(int p = 0) {
 		trQuestVarSet("tempSpell", yGetVarAtIndex("p"+p+"deck", "spell", i));
 		
 		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
-		ySetVarAtIndex("p"+p+"deck", "spell", i, yGetVarAtIndex("p"+p+"deck", "spell", x));
+		ySetVarAtIndex("p"+p+"deck", "spell", yGetVarAtIndex("p"+p+"deck", "spell", x), i);
 		
 		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
-		ySetVarAtIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
+		ySetVarAtIndex("p"+p+"deck", "spell", trQuestVarGet("tempSpell"), x);
 	}
 }
 /*
