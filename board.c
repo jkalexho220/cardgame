@@ -83,6 +83,7 @@ Given a QV vector name, find the ID of the closest space to it.
 Returns -1 if none found.
 */
 int findNearestTile(string v = "") {
+	debugLog("Vector is " + trVectorQuestVarGet(v));
 	for (x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
 		if (trDistanceToVectorSquared("tiles", v) < 9) {
@@ -400,8 +401,8 @@ void paintTreesOnTile(int tile = 0) {
 			trQuestVarSetFromRand("modx", -2, 2, true);
 			trQuestVarSetFromRand("modz", -2, 2, true);
 			trQuestVarSetFromRand("heading",0, 360, true);
-			x = trQuestVarGet("posx") + trQuestVarGet("modx");
-			z = trQuestVarGet("posz") + trQuestVarGet("modz");
+			x = trVectorQuestVarGetX("pos") + trQuestVarGet("modx");
+			z = trVectorQuestVarGetZ("pos") + trQuestVarGet("modz");
 			trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
 			trArmyDispatch("1,10",trStringQuestVarGet("treeType"),1,x,0,z,trQuestVarGet("heading"), true);
 			trUnitSelectClear();
@@ -584,9 +585,8 @@ inactive
 					trQuestVarSet("modz", 1);
 				}
 				trQuestVarSetFromRand("heading",0, 360, true);
-				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("modx"));
-				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("modz"));
-				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),trQuestVarGet("heading"), true);
+				trVectorQuestVarSet("pos", trVectorQuestVarGet("pos") + xsVectorSet(trQuestVarGet("modx"), 0, trQuestVarGet("modz")));
+				trArmyDispatch("1,10",kbGetProtoUnitName(1*yGetVar("customBoard", "proto")),1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),trQuestVarGet("heading"), true);
 				trArmySelect("1,10");
 				trUnitChangeName(collectionMission);
 				trUnitConvert(0);
@@ -609,11 +609,11 @@ inactive
 	
 	trFadeOutAllSounds(0.0);
 	
-	trQuestVarSet("p1startPosx", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
-	trQuestVarCopy("p1startPosz", "p1startposx");
+	trQuestVarSet("temp", 60.0 - 4.24 * (trQuestVarGet("dimension") - 1));
+	trVectorQuestVarSet("p1startPos", vector(1.0,0,1.0) * trQuestVarGet("temp"));
 	// Since p2 goes second, they start one tile closer to the center
-	trQuestVarSet("p2startPosx", 60.0 + 4.24 * (trQuestVarGet("dimension") - 2));
-	trQuestVarCopy("p2startposz", "p2startposx");
+	trQuestVarSet("temp", 60.0 + 4.24 * (trQuestVarGet("dimension") - 2));
+	trVectorQuestVarSet("p2startPos", vector(1.0,0,1.0) * trQuestVarGet("temp"));
 	
 	trQuestVarSet("p1startTile", findNearestTile("p1StartPos"));
 	trQuestVarSet("p2startTile", findNearestTile("p2StartPos"));

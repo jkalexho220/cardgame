@@ -7,6 +7,7 @@ inactive
 	trTechGodPower(0, "spy", 2);
 	int commander = 0;
 	for(p=2; >0) {
+		debugLog("Start tile is " + 1*trQuestVarGet("p"+p+"startTile"));
 		commander = CommanderToProtounit(1*trQuestVarGet("p"+p+"commanderType"));
 		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, commander));
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
