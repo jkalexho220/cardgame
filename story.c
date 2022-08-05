@@ -44,8 +44,8 @@ int SummonLaser(int tile = 0, int target = 0) {
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+tile));
 	trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
 	trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
-	mSetVar(siphon, "laserDirx", trQuestVarGet("dirx"));
-	mSetVar(siphon, "laserDirz", trQuestVarGet("dirz"));
+	mSetVar(siphon, "laserDirx", trVectorQuestVarGetX("dir"));
+	mSetVar(siphon, "laserDirz", trVectorQuestVarGetZ("dir"));
 	trUnitSelectClear();
 	trUnitSelect(""+siphon);
 	trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);

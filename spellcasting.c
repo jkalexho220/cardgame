@@ -469,8 +469,7 @@ inactive
 					trVectorSetUnitPos("pos", "start");
 					trVectorQuestVarSet("target", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+d, 1*trQuestVarGet("start"))));
 					trVectorQuestVarSet("step", trGetUnitVector("pos", "target", 6.0));
-					trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("stepx"));
-					trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("stepz"));
+					trVectorQuestVarSet("pos", trVectorQuestVarGet("pos") + trVectorQuestVarGet("step"));
 					tile = trQuestVarGet("start");
 					found = true;
 					while(found) {
@@ -1954,8 +1953,7 @@ inactive
 				trVectorSetUnitPos("laserstart", "spellTarget");
 				trVectorSetUnitPos("laserend", "spellDirection");
 				trVectorQuestVarSet("dir", trGetUnitVector("laserstart", "laserend"));
-				trQuestVarSet("posx", trQuestVarGet("laserstartx") + 6.0*trQuestVarGet("dirx"));
-				trQuestVarSet("posz", trQuestVarGet("laserstartz") + 6.0*trQuestVarGet("dirz"));
+				trVectorQuestVarSet("laserStart", trVectorQuestVarGet("laserStart") + (trVectorQuestVarGet("dir") * 6.0));
 				tile = mGetVarByQV("spellTarget", "tile");
 				
 				while(done) {
@@ -1971,8 +1969,7 @@ inactive
 									yAddToDatabase("worldSplitterHit", "occupant");
 								}
 								tile = neighbor;
-								trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet("dirx"));
-								trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet("dirz"));
+								trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (trVectorQuestVarGet("dir") * 6.0));
 								done = true;
 								break;
 							}
@@ -2047,21 +2044,18 @@ inactive
 				
 				trQuestVarSet("laserStartY", 10.0);
 				
-				trQuestVarSet("laserStepx", 2.0*trQuestVarGet("dirX"));
-				trQuestVarSet("laserStepz", 2.0*trQuestVarGet("dirZ"));
-				trQuestVarSet("laserNormalX", trQuestVarGet("dirZ"));
-				trQuestVarSet("laserNormalY", 0);
-				trQuestVarSet("laserNormalZ", trQuestVarGet("dirX"));
+				trVectorQuestVarSet("laserStep", trVectorQuestVarGet("dir") * 2.0);
+				trVectorQuestVarSet("laserNormal", xsVectorSet(trVectorQuestVarGetZ("dir"), 0, trVectorQuestVarGetX("dir")));
+				
 				trQuestVarSet("laserStepDist", 0);
-				trQuestVarCopy("laserSFXX", "laserStartX");
-				trQuestVarCopy("laserSFXZ", "laserStartZ");
+				trVectorQuestVarSet("laserSFX", trVectorQuestVarGet("laserStart"));
 				
 				trQuestVarSet("laserheading", 57.295779 * trAngleBetweenVectors("dir", "laserStep"));
 				
 				
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);
-				trUnitTeleport(trQuestVarGet("laserStartx"), 10.0, trQuestVarGet("laserStartz"));
+				trUnitTeleport(trVectorQuestVarGetX("laserStart"), 10.0, trVectorQuestVarGetZ("laserStart"));
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
 				
 				trQuestVarSet("laserAngle", 1.550796);
@@ -2302,7 +2296,7 @@ inactive
 					trUnitSelect(""+1*trQuestVarGet("next"), true);
 					trSetUnitOrientation(xsVectorSet(1,0,0), xsVectorSet(0,-1,0), true);
 					trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
-					trUnitTeleport(trQuestVarGet("posx"), trQuestVarGet("posy"), trQuestVarGet("posz"));
+					trUnitTeleport(trVectorQuestVarGetX("pos"), trQuestVarGet("posy"), trVectorQuestVarGetZ("pos"));
 					trQuestVarSet("hammerPos"+x, trQuestVarGet("next"));
 				}
 				trQuestVarSet("hammerNext", trTimeMS() + 1000);
@@ -2353,8 +2347,8 @@ inactive
 				trVectorSetUnitPos("start", "spellCaster");
 				trVectorSetUnitPos("end", "spellDirection");
 				trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
-				mSetVarByQV("spellCaster", "laserDirx", trQuestVarGet("dirx"));
-				mSetVarByQV("spellCaster", "laserDirz", trQuestVarGet("dirz"));
+				mSetVarByQV("spellCaster", "laserDirx", trVectorQuestVarGetX("dir"));
+				mSetVarByQV("spellCaster", "laserDirz", trVectorQuestVarGetZ("dir"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
@@ -2759,7 +2753,7 @@ inactive
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserGround"), true);
 			trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));
-			trUnitMoveToPoint(trQuestVarGet("laserEndx"),0,trQuestVarGet("laserEndz"), -1);
+			trUnitMoveToPoint(trVectorQuestVarGetX("laserEnd"),0,trVectorQuestVarGetZ("laserEnd"), -1);
 			
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);
@@ -2795,11 +2789,10 @@ inactive
 			bool f = true;
 			while(trQuestVarGet("laserStepDist") < trQuestVarGet("laserCurDist")) {
 				trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("laserSFXX"),0,trQuestVarGet("laserSFXZ"),trQuestVarGet("laserheading"),f);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("laserSFX"),0,trVectorQuestVarGetZ("laserSFX"),trQuestVarGet("laserheading"),f);
 				f = false;
 				trQuestVarSet("laserStepDist", trQuestVarGet("laserStepDist") + 2.0);
-				trQuestVarSet("laserSFXX", trQuestVarGet("laserSFXX") + trQuestVarGet("laserStepX"));
-				trQuestVarSet("laserSFXZ", trQuestVarGet("laserSFXZ") + trQuestVarGet("laserStepZ"));
+				trVectorQuestVarSet("laserSFX", trVectorQuestVarGet("laserSFX") + trVectorQuestVarGet("laserStep"));
 			}
 			trArmySelect("1,10");
 			trUnitChangeProtoUnit("Tartarian Gate flame");

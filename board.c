@@ -156,8 +156,8 @@ void highlightTile(int tile = 0, float duration = 0.1) {
 void paintTile(int tile = 0, int type = 0, int subType = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
 	trVectorToGrid("pos", "square");
-	int x = trQuestVarGet("squarex");
-	int z = trQuestVarGet("squarez");
+	int x = trVectorQuestVarGetX("square");
+	int z = trVectorQuestVarGetZ("square");
 	trPaintTerrain(x-1, z-1, x+1, z+1, type, subType, false);
 }
 
@@ -438,8 +438,7 @@ void setupImpassableTerrain() {
 				tile = tile + trQuestVarGet("step");
 				paintTreesOnTile(tile);
 				trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
-				trQuestVarSet("posx", 120 - trQuestVarGet("posx"));
-				trQuestVarSet("posz", 120 - trQuestVarGet("posz"));
+				trVectorQuestVarSet("pos", vector(120, 0, 120) - trVectorQuestVarGet("pos"));
 				paintTreesOnTile(1*findNearestTile("pos"));
 				trQuestVarSet("count", trQuestVarGet("count") - 1);
 			}
@@ -536,7 +535,6 @@ string collectionMission = "";
 rule initializeBoard
 inactive
 {
-	xsEnableRule("gameplay_select_show_keywords");
 	/*
 	Tile index increases outwards from the center.
 	To vary the size of the map, just vary the

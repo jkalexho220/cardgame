@@ -346,7 +346,6 @@ int peekModularCounterNext(string name = "") {
 Shows the Chat Log
 */
 void ChatLogShow(){
-	/*
 	trChatHistoryClear();
 	for(p=2; >0) {
 		if (trCurrentPlayer() == p) {
@@ -355,7 +354,6 @@ void ChatLogShow(){
 			}
 		}
 	}
-	*/
 }
 
 /*
@@ -590,6 +588,7 @@ void ySetVector(string db = "", string var = "", vector val = vector(0,0,0)) {
 }
 
 int yGetDatabaseCount(string db = "") {
+	yDatabaseCreateIfNull(db);
 	return(xGetDatabaseCount(1*trQuestVarGet("database"+db)));
 }
 

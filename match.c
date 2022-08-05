@@ -7,7 +7,6 @@ inactive
 	trTechGodPower(0, "spy", 2);
 	int commander = 0;
 	for(p=2; >0) {
-		debugLog("Start tile is " + 1*trQuestVarGet("p"+p+"startTile"));
 		commander = CommanderToProtounit(1*trQuestVarGet("p"+p+"commanderType"));
 		trQuestVarSet("p"+p+"commander", summonAtTile(1*trQuestVarGet("p"+p+"startTile"), p, commander));
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
@@ -67,7 +66,7 @@ rule match_02_mulligan
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || (Multiplayer  && (trTime() > cActivationTime + 20))) {
+	if ((trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2) || (Multiplayer  && (trTime() > cActivationTime + 20))) {
 		xsEnableRule("match_03_replace");
 		xsDisableRule("match_02_mulligan");
 	} else {
@@ -127,7 +126,7 @@ inactive
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 				trVectorSetUnitPos("pos", "p"+p+"hand");
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
@@ -144,6 +143,7 @@ inactive
 		yClearDatabase("temp");
 		shuffleDeck(p);
 	}
+	xsEnableRule("gameplay_select_show_keywords");
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");
 	xsDisableRule("match_03_replace");
@@ -393,7 +393,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");

@@ -93,9 +93,9 @@ void teleportToTile(int name = 0, int tile = 0) {
 	scaleUnit(name);
 	
 	trUnitSelectClear();
-	//trUnitSelectByID(tile);
-	//trUnitConvert(0);
-	//trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+	trUnitSelectByID(tile);
+	trUnitConvert(0);
+	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);
@@ -450,9 +450,7 @@ void pushUnit(int name = 0, string dir = "") {
 	Find destination
 	*/
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+name));
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
-	trQuestVarSet("posx", trQuestVarGet("posx") + 6.0*trQuestVarGet(dir+"x"));
-	trQuestVarSet("posz", trQuestVarGet("posz") + 6.0*trQuestVarGet(dir+"z"));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name) + (trVectorQuestVarGet(dir) * 6.0));
 	bool found = true;
 	int neighbor = 0;
 	int target = 0;
@@ -468,6 +466,7 @@ void pushUnit(int name = 0, string dir = "") {
 						target = zGetVarByIndex("tiles", "occupant", neighbor);
 					} else {
 						tile = neighbor;
+						trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (trVectorQuestVarGet(dir) * 6.0));
 						trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet(dir+"x"));
 						trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet(dir+"z"));
 						found = true;
