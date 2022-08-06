@@ -57,7 +57,7 @@ void dataSave() {
 		power = power * 4;
 	}
 	trSetCurrentScenarioUserData(7, data);
-
+	
 	if (trQuestVarGet("class1") == trQuestVarGet("class2")) {
 		trSetCurrentScenarioUserData(8, 0);
 		trSetCurrentScenarioUserData(9, 0);
@@ -81,7 +81,7 @@ void dataSave() {
 		trSetCurrentScenarioUserData(9, data);
 	}
 	
-
+	
 	/*
 	Saving collection and class progress data
 	*/
@@ -94,7 +94,7 @@ void dataSave() {
 			data = data + 4 * (1 * trQuestVarGet("commander") - 2 * c); // set the commander bit
 		}
 		data = data + 8 * trQuestVarGet("class"+c+"progress"); // progress is bits 3-5
-
+		
 		power = 64; // skip first 6 bits to add collectible cards
 		for(x=7; <15) {
 			card = x + 30 * c;
@@ -102,7 +102,7 @@ void dataSave() {
 			power = power * 4;
 		}
 		trSetCurrentScenarioUserData(c, data);
-
+		
 		data = 0;
 		power = 1;
 		for(x=15; < 30) {
@@ -126,7 +126,7 @@ inactive
 		int data = 0;
 		int bit = 0;
 		int card = 0;
-
+		
 		
 		for(x=0; < 6) {
 			data = trGetScenarioUserData(x, "!HeavenGames.scx");
@@ -152,12 +152,12 @@ inactive
 					trQuestVarSet("commander", 2*trQuestVarGet("class1") + bit);
 				}
 			}
-
+			
 			data = trGetScenarioUserData(x, "!HeavenGames.scx");
 			data = data / 8;
 			trQuestVarSet("class"+x+"progress", iModulo(8, data));
 		}
-
+		
 		if (Multiplayer) {
 			trSoundPlayFN("default","1",-1,"Loading:","icons\god power reverse time icons 64");
 			trUIFadeToColor(0,0,0,0,0,true);
@@ -188,8 +188,8 @@ inactive
 			} else {
 				xsEnableRule("Collection");
 			}
-			/* 
-			Load player's collection 
+			/*
+			Load player's collection
 			*/
 			for(c=0; <6) {
 				// Starter cards 0-6
@@ -406,7 +406,7 @@ inactive
 			trPlayerGrantResources(p, "gold", -1000);
 			trPlayerGrantResources(p, "favor", -1000);
 		}
-
+		
 		/*
 		Deck data
 		*/
@@ -419,7 +419,7 @@ inactive
 		trQuestVarSet("classProgress", 1);
 		trQuestVarSet("loadNext", 1);
 		trQuestVarSet("progress", 2);
-
+		
 		xsEnableRule("data_load_05_load_cards");
 		xsEnableRule("data_load_06_detect_cards");
 	}
@@ -430,7 +430,7 @@ highFrequency
 inactive
 {
 	int p = trCurrentPlayer();
-	if ((trQuestVarGet("loadNext") == 1) && 
+	if ((trQuestVarGet("loadNext") == 1) &&
 		(trPlayerUnitCountSpecific(p, "Swordsman Hero") == 0)) {
 		trLetterBox(false);
 		trBlockAllSounds(true);
@@ -464,7 +464,7 @@ inactive
 				deckc2d1 = deckc2d1 / 64;
 			}
 		}
-
+		
 		int x = iModulo(64, data);
 		if (p == 2) {
 			x = x + 64;

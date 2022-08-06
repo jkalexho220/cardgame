@@ -21,7 +21,7 @@ inactive
 			summonAtTile(223, 2, kbGetProtoUnitID("Nereid"));
 		}
 		xsEnableRule("StoryClass2Mission1_end");
-	}	
+	}
 }
 
 rule StoryClass2Mission1_end
@@ -63,9 +63,9 @@ inactive
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(139, 2, kbGetProtoUnitID("Man O War"));
 			summonAtTile(145, 2, kbGetProtoUnitID("Man O War"));
-		}	
+		}
 		xsEnableRule("StoryClass2Mission2_mes");
-	}	
+	}
 }
 
 rule StoryClass2Mission2_mes
@@ -73,11 +73,11 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
-		xsDisableSelf();		
+		xsDisableSelf();
 		uiMessageBox("You are underwater. Here's an Oxygen Tank.","");
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);	
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		xsEnableRule("StoryClass2Mission2_end");
-	}	
+	}
 }
 
 rule StoryClass2Mission2_end
@@ -102,18 +102,18 @@ inactive
 		xsDisableSelf();
 		CinematicReset();
 		CinematicAdd("HeavenGames\c2m3_01", "");
-		CinematicAdd("HeavenGames\c2m3_02", "");	
+		CinematicAdd("HeavenGames\c2m3_02", "");
 		CinematicStart();
 		mSetVarByQV("p2commander", "health", 40);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
-		mSetVarByQV("p2commander", "spell", SPELL_COMMANDER);		
+		mSetVarByQV("p2commander", "spell", SPELL_COMMANDER);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(168, 2, kbGetProtoUnitID("Wadjet"));
 			summonAtTile(169, 2, kbGetProtoUnitID("Wadjet"));
 		}
 		xsEnableRule("StoryClass2Mission3_mes");
-	}	
+	}
 }
 
 rule StoryClass2Mission3_mes
@@ -121,12 +121,12 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
-		xsDisableSelf();		
+		xsDisableSelf();
 		uiMessageBox("Two Oxygen Tanks for current depth.","");
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		xsEnableRule("StoryClass2Mission3_end");
-	}	
+	}
 }
 
 rule StoryClass2Mission3_end
@@ -164,7 +164,7 @@ inactive
 			summonAtTile(151, 2, kbGetProtoUnitID("Sea Turtle"));
 		}
 		xsEnableRule("StoryClass2Mission4_mes");
-	}	
+	}
 }
 
 rule StoryClass2Mission4_mes
@@ -172,12 +172,12 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
-		xsDisableSelf();		
+		xsDisableSelf();
 		uiMessageBox("Three Oxygen Tanks for current depth.","");
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);		
-	}	
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
+	}
 }
 
 rule StoryClass2Mission5
@@ -202,7 +202,7 @@ inactive
 			summonAtTile(193, 2, kbGetProtoUnitID("Leviathan"));
 		}
 		xsEnableRule("StoryClass2Mission5_mes");
-	}	
+	}
 }
 
 rule StoryClass2Mission5_mes
@@ -210,13 +210,13 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
-		xsDisableSelf();		
+		xsDisableSelf();
 		uiMessageBox("Four Oxygen Tanks for current depth.","");
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
 		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-	}	
+	}
 }
 
 rule StoryClass2Mission6
@@ -277,8 +277,8 @@ inactive
 			summonAtTile(275, 2, kbGetProtoUnitID("Nemean Lion"));
 		}
 		trQuestVarSet("idsEyecandyEnd", trGetNextUnitScenarioNameNumber());
-		xsEnableRule("StoryClass2Mission6_mes");		
-	}	
+		xsEnableRule("StoryClass2Mission6_mes");
+	}
 }
 
 rule StoryClass2Mission6_mes
@@ -286,10 +286,10 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
-		xsDisableSelf();		
-		uiMessageBox("Objective: Out Reach and Scragins must survive and get near the exit.","");		
+		xsDisableSelf();
+		uiMessageBox("Objective: Out Reach and Scragins must survive and get near the exit.","");
 		xsEnableRule("StoryClass2Mission6_end");
-	}	
+	}
 }
 
 rule StoryClass2Mission6_end
@@ -297,7 +297,7 @@ highFrequency
 inactive
 {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("p2commander")));
-	if (zDistanceToVectorSquared("p1commander", "pos") < 64 && zDistanceToVectorSquared("companion", "pos") < 64) {
+	if (trDistanceToVectorSquared("p1commander", "pos") < 64 && trDistanceToVectorSquared("companion", "pos") < 64) {
 		damageUnit(1*trQuestVarGet("p2commander"), 999);
 		removeDeadUnits();
 		trQuestVarSet("p2defeated", 1);
@@ -327,5 +327,5 @@ inactive
 		CinematicAdd("HeavenGames\c2m6_27", "");
 		CinematicStart();
 		xsDisableSelf();
-	}	
+	}
 }

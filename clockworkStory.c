@@ -20,7 +20,7 @@ inactive
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 		}
 		xsEnableRule("StoryClass3Mission1_end");
-	}	
+	}
 }
 
 rule StoryClass3Mission1_end
@@ -67,7 +67,7 @@ inactive
 		}
 		xsEnableRule("StoryClass3Mission2_deploy");
 		xsEnableRule("StoryClass3Mission2_end");
-	}	
+	}
 }
 
 rule StoryClass3Mission2_deploy
@@ -146,7 +146,7 @@ inactive
 		CinematicAdd("HeavenGames\roxas", "No one guards this place. We can sneak in if we're careful.");
 		CinematicStart();
 		teleportToTile(1*trQuestVarGet("p2commander"), 233);
-	}	
+	}
 }
 
 
@@ -164,7 +164,7 @@ inactive
 			summonAtTile(128, 2, kbGetProtoUnitID("Tower Mirror"));
 		}
 		xsEnableRule("StoryClass3Mission4_end");
-	}	
+	}
 }
 
 
@@ -214,7 +214,7 @@ inactive
 {
 	trQuestVarSet("p1drawCards", 0);
 	if ((trQuestVarGet("maxmana") > trQuestVarGet("storyMissionBotMana")) &&
-		(yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && 
+		(yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) &&
 		(trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
 		trQuestVarCopy("storyMissionBotMana", "maxmana");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
@@ -265,7 +265,7 @@ inactive
 				SummonLaser(137, 134);
 				SummonLaser(135, 129);
 				SummonLaser(136, 130);
-
+				
 				SummonLaser(144, 145);
 				SummonLaser(143, 133);
 				SummonLaser(142, 132);
@@ -307,7 +307,7 @@ inactive
 				SummonLaser(137, 134);
 				SummonLaser(136, 130);
 				mSetVar(summonAtTile(135, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
-
+				
 				mSetVar(summonAtTile(133, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				mSetVar(summonAtTile(143, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				mSetVar(summonAtTile(131, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
@@ -329,7 +329,7 @@ inactive
 				SummonLaser(138, 136);
 				SummonLaser(142, 132);
 				mSetVar(summonAtTile(128, 1, kbGetProtoUnitID("Throwing Axeman")), "action", ACTION_READY);
-
+				
 				addCardToHand(1, 0, SPELL_EXPLOSION, true);
 				addCardToHand(1, 0, SPELL_DOUBLEBLAST, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);
@@ -432,7 +432,7 @@ inactive
 			}
 		}
 		xsEnableRule("StoryClass3Mission6_end");
-	}	
+	}
 }
 
 rule StoryClass3Mission6_end

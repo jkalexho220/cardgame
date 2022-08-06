@@ -23,7 +23,7 @@ active
 			trUnitDestroy();
 			trTechGodPower(p, "Animal magnetism", 1);
 			ChatLogShow();
-		}	
+		}
 	}
 }
 
@@ -38,6 +38,6 @@ runImmediately
 	map("mouse2up", "game", "uiSetSpecialPower(84) uiSpecialPowerAtPointer");		// dwarven mine for right click
 	map("space", "game", "uiSetSpecialPower(156) uiSpecialPowerAtPointer");			// rain for space (look at hand)
 	map("enter", "game", "uiSetSpecialPower(235) uiSpecialPowerAtPointer");			// nidhogg for enter (end turn)
-
+	
 	xsDisableRule("initializeClick");
 }
