@@ -7,16 +7,16 @@ void shuffleDeck(int p = 0) {
 		trQuestVarSetFromRand("pos", 0, x, true);
 		i = trQuestVarGet("pos");
 		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));
-		trQuestVarSet("tempSpell", yGetVarByIndex("p"+p+"deck", "spell", i));
-
+		trQuestVarSet("tempSpell", yGetVarAtIndex("p"+p+"deck", "spell", i));
+		
 		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
-		ySetVarByIndex("p"+p+"deck", "spell", i, yGetVarByIndex("p"+p+"deck", "spell", x));
-
+		ySetVarAtIndex("p"+p+"deck", "spell", yGetVarAtIndex("p"+p+"deck", "spell", x), i);
+		
 		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
-		ySetVarByIndex("p"+p+"deck", "spell", x, trQuestVarGet("tempSpell"));
+		ySetVarAtIndex("p"+p+"deck", "spell", trQuestVarGet("tempSpell"), x);
 	}
 }
-/* 
+/*
 Updates the hand UI by highlighting cards that the user can
 afford to play
 */
@@ -69,33 +69,33 @@ void addCardToDeckByIndex(int p = 0, int card = 0) {
 		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
 		yAddToDatabase("p"+p+"deck", "proto");
 		yAddUpdateVar("p"+p+"deck", "spell", spell);
-	}	
+	}
 }
 
-/* 
+/*
 This function should only be called if there is room in the hand!
 */
 void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
 	trQuestVarSet("next", CardInstantiate(p, proto, spell));
 	trUnitSelectClear();
-	trUnitSelect(""+1*trQuestVarGet("next"), true); 
+	trUnitSelect(""+1*trQuestVarGet("next"), true);
 	
 	if (spell > SPELL_NONE) {
 		proto = kbGetProtoUnitID("Statue of Lightning");
 	}
-
+	
 	yAddToDatabase("p"+p+"hand", "next");
 	
 	trUnitHighlight(3, true);
-
+	
 	if (fleeting) {
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), FLEETING));
 	}
-
+	
 	if ((trCountUnitsInArea("128",p,"Heka Gigantes",45) > 0) && (spell == SPELL_NONE)) {
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), OVERFLOW));
 	}
-
+	
 	// Find an empty position in the hand to place the unit.
 	for(x=zGetBankCount("p"+p+"handPos"); >0) {
 		zBankNext("p"+p+"handPos");
@@ -105,19 +105,19 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));
 			trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));
-
+			
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("next"), true);
 			trMutateSelected(kbGetProtoUnitID("Dwarf"));
 			trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"handPos"));
-
+			
 			trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
-
-
+			
+			
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("p"+p+"handPos"));
 			trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-
+			
 			break;
 		}
 	}
@@ -126,7 +126,7 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 		trUnitSelect(""+1*trQuestVarGet("next"), true);
 		float scale = 0.2 + xsSqrt(trQuestVarGet("spell_"+spell+"_cost")) * 0.4;
 		trSetSelectedScale(0.75, scale, 0.75);
-		trUnitSetAnimationPath(1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
+		trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 }
 
@@ -170,11 +170,10 @@ void drawCard(int p = 0, bool fleeting = false) {
 			} else {
 				ChatLog(p, "Hand full! Burned " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
-
+			
 		}
 		yRemoveFromDatabase("p"+p+"deck");
-		yRemoveUpdateVar("p"+p+"deck", "spell");
-
+		
 		updateRoxasHealth(p);
 		updateHandPlayable(p);
 		updateMana();
@@ -212,10 +211,10 @@ active
 {
 	zBankInit("p1handPos", 849, 10);
 	zBankInit("p2handPos", 859, 10);
-
+	
 	trVectorQuestVarSet("p1deck", xsVectorSet(1,0,1));
 	trVectorQuestVarSet("p2deck", xsVectorSet(119,0,119));
-
+	
 	xsDisableRule("initializeHand");
 }
 

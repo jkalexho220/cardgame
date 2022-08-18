@@ -14,37 +14,37 @@ void processAttack(string db = "attacks") {
 				trVectorQuestVarSet("d2pos", kbGetBlockPosition(""+target, true));
 				trUnitSelectClear();
 				trUnitSelect(""+attacker, true);
-				trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
 				switch(1*yGetVar(db, "animation"))
 				{
 					case ANIM_DEFAULT:
 					{
 						if (mGetVar(attacker, "range") <= 1) {
-							trUnitOverrideAnimation(1,0,0,1,-1);
+							trUnitOverrideAnimation(1,0,false,true,-1);
 						} else {
-							trUnitOverrideAnimation(12,0,0,1,-1);
+							trUnitOverrideAnimation(12,0,false,true,-1);
 						}
 					}
 					case ANIM_CHARGING:
 					{
-						trUnitOverrideAnimation(19,0,0,1,-1);
+						trUnitOverrideAnimation(19,0,false,true,-1);
 					}
 					case ANIM_GORE:
 					{
-						trUnitOverrideAnimation(26,0,0,1,-1);
+						trUnitOverrideAnimation(26,0,false,true,-1);
 					}
 				}
 				
 				ySetVar(db, "phase", ATTACK_ANIMATE);
 				ySetVar(db, "timeout", trTimeMS() + 1500);
-
+				
 				/*
 				Undercity Sniper
 				*/
 				if (mGetVar(attacker, "spell") == SPELL_COMMANDER) {
 					for(x=yGetDatabaseCount("allUnits"); >0) {
 						yDatabaseNext("allUnits");
-						if ((mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Archer Atlantean")) && 
+						if ((mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Archer Atlantean")) &&
 							(mGetVarByQV("allUnits", "player") == mGetVar(attacker, "player"))) {
 							startAttack(1*trQuestVarGet("allUnits"), target, false, true);
 						}
@@ -52,9 +52,6 @@ void processAttack(string db = "attacks") {
 				}
 			} else {
 				yRemoveFromDatabase(db);
-				yRemoveUpdateVar(db, "target");
-				yRemoveUpdateVar(db, "phase");
-				yRemoveUpdateVar(db, "timeout");
 			}
 		}
 		case ATTACK_ANIMATE:
@@ -88,11 +85,8 @@ void processAttack(string db = "attacks") {
 				}
 				n = n / 2;
 			}
-
+			
 			yRemoveFromDatabase(db);
-			yRemoveUpdateVar(db, "target");
-			yRemoveUpdateVar(db, "phase");
-			yRemoveUpdateVar(db, "timeout");
 		}
 	}
 }
@@ -103,7 +97,7 @@ If target of the right-click was an enemy within range, start an attack
 bool attackUnitAtCursor(int p = 0) {
 	int target = findNearestUnit("p"+p+"clickPos", 9);
 	int a = trQuestVarGet("activeUnit");
-
+	
 	if (target == -1) {
 		return(false);
 	}
@@ -116,15 +110,15 @@ bool attackUnitAtCursor(int p = 0) {
 		trVectorSetUnitPos("d2pos", "targetUnit");
 		float range = xsPow(mGetVar(a, "range") * 6 + 1, 2);
 		float dist = 0;
-		if (zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
+		if (trDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) {
 			// Guard activates
 			target = checkGuard(target);
-
+			
 			startAttack(a, target, HasKeyword(AMBUSH, 1*mGetVar(a, "keywords")), true);
-
+			
 			// Counterattack
 			range = xsPow(mGetVar(target, "range") * 6 + 3, 2);
-			if ((zDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) && 
+			if ((trDistanceBetweenVectorsSquared("d1pos", "d2pos") < range) &&
 				(mGetVar(target, "stunTime") == 0) &&
 				(HasKeyword(HEALER, 1*mGetVar(target, "keywords")) == false)) {
 				if ((HasKeyword(FLYING, 1*mGetVar(a, "keywords")) == false) ||
@@ -132,7 +126,7 @@ bool attackUnitAtCursor(int p = 0) {
 					startAttack(target, a, false, true);
 				}
 			}
-
+			
 			mSetVar(a, "action", xsMax(ACTION_DONE, mGetVar(a, "action")));
 			xsEnableRule("gameplay_05_attackComplete");
 			return(true);
@@ -143,8 +137,8 @@ bool attackUnitAtCursor(int p = 0) {
 		trUnitSelect(""+a, true);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
-		trSetUnitOrientation(zGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-		trUnitOverrideAnimation(50, 0, 0, 1, -1);
+		trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
+		trUnitOverrideAnimation(50, 0, false, true, -1);
 		healUnit(target, mGetVar(a, "attack"));
 		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
 			if (mGetVar(target, "action") < ACTION_SLEEPING) {
@@ -156,7 +150,7 @@ bool attackUnitAtCursor(int p = 0) {
 		xsEnableRule("gameplay_05_attackComplete");
 		return(true);
 	}
-
+	
 	return(false);
 }
 
@@ -172,7 +166,7 @@ active
 	/*
 	Resolve lightning every 100 MS.
 	*/
-	if (trTimeMS() > trQuestVarGet("lightningNext") && 
+	if (trTimeMS() > trQuestVarGet("lightningNext") &&
 		(trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop")) == false) {
 		trQuestVarSet("lightningNext", trTimeMS() + 100);
 		int index = modularCounterNext("lightningActivate");
@@ -260,12 +254,12 @@ inactive
 				if (mGetVar(unit, "player") == p &&
 					mGetVar(unit, "action") == ACTION_READY) {
 					highlightReachable(unit);
-
+					
 					// highlight attackable enemies within range
 					findTargets(unit, "targets", HasKeyword(HEALER, 1*mGetVar(unit, "keywords")));
 					yDatabaseSelectAll("targets");
 					trUnitHighlight(3600.0, false);
-
+					
 					xsDisableRule("gameplay_01_select");
 					highlightReady(0.1);
 					xsEnableRule("gameplay_02_work");
@@ -279,7 +273,7 @@ inactive
 				float currentDistance = 0;
 				for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
-					currentDistance = zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos");
+					currentDistance = trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos");
 					if (currentDistance < closestDistance) {
 						closestDistance = currentDistance;
 						unit = trQuestVarGet("p"+p+"hand");
@@ -324,14 +318,14 @@ inactive
 									highlightTile(tile, 3600);
 								}
 							}
-
+							
 							trQuestVarSet("summonUnit", unit);
 							xsEnableRule("gameplay_10_summon");
 						} else {
 							// If it is a spell
 							chooseSpell(1*mGetVar(unit, "spell"), pointer);
 						}
-
+						
 						trQuestVarSet("handPointer", pointer);
 						
 						xsDisableRule("gameplay_01_select");
@@ -341,21 +335,21 @@ inactive
 				} else {
 					for(x=yGetDatabaseCount("meteors"); >0) {
 						yDatabaseNext("meteors");
-						if (zDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
+						if (trDistanceToVectorSquared("meteors", "p"+p+"clickPos") < 9) {
 							trMessageSetText("A meteor will fall on this tile, dealing 6 damage to it and 2 damage to adjacent tiles.", -1);
 							break;
 						}
 					}
 				}
 			}
-
+			
 			trQuestVarSet("p"+p+"click", 0);
 		}
 	}
 }
 
 /*
-Game is waiting for the active player to issue a right click, 
+Game is waiting for the active player to issue a right click,
 which can be a move or an attack command. A left click will cancel
 and send us back to gameplay_01_select.
 Again, we ignore whatever the inactive player is doing.
@@ -406,13 +400,13 @@ inactive
 					if (mGetVarByQV("activeUnit", "action") == ACTION_MOVED) {
 						mSetVarByQV("activeUnit", "action", ACTION_DONE);
 					}
-
+					
 					xsDisableRule("gameplay_02_work");
 					xsEnableRule("gameplay_01_select");
 					highlightReady(100);
-
-					/* 
-					We DON'T set click back to zero in case the user selected another unit 
+					
+					/*
+					We DON'T set click back to zero in case the user selected another unit
 					with this click.
 					*/
 					// trQuestVarSet("p"+p+"click", 0);
@@ -422,14 +416,14 @@ inactive
 			{
 				int unit = trQuestVarGet("activeUnit");
 				/*
-				First check if player wants unit to attack something in range 
+				First check if player wants unit to attack something in range
 				without moving it.
-				 */
+				*/
 				if (attackUnitAtCursor(p) == false) {
 					trQuestVarSet("moveTile", -1);
 					for (x=yGetDatabaseCount("reachable"); >0) {
 						yDatabaseNext("reachable");
-						if (zDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
+						if (trDistanceToVectorSquared("reachable", "p"+p+"clickPos") < 9) {
 							trQuestVarCopy("moveTile", "reachable");
 							break;
 						}
@@ -444,7 +438,7 @@ inactive
 							highlightTile(1*yDatabaseNext("reachable", false), 0.1);
 						}
 						yClearDatabase("reachable");
-
+						
 						/*
 						Clear previously highlighted target enemies
 						*/
@@ -453,7 +447,7 @@ inactive
 							trUnitHighlight(0.1, false);
 							yClearDatabase("targets");
 						}
-
+						
 						/* setting old tile to unoccupied */
 						int tile = mGetVarByQV("activeUnit", "tile");
 						zSetVarByIndex("tiles", "occupant", tile, 0);
@@ -467,7 +461,7 @@ inactive
 						trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 						trUnitMoveToVector("moveDestination");
 						trQuestVarSet("moving", 0);
-	
+						
 						mSetVarByQV("activeUnit", "action", ACTION_MOVED);
 						trQuestVarSet("gameplayPhase", GAMEPLAY_MOVING);
 						xsEnableRule("gameplay_03_moveComplete");
@@ -502,15 +496,15 @@ inactive
 	} else if (trQuestVarGet("moving") == 1) {
 		if (kbUnitGetAnimationActionType(1*trQuestVarGet("activeUnitID")) == 9 || trQuestVarGet("turnEnd") == 1) {
 			int p = trQuestVarGet("activePlayer");
-
+			
 			trVectorSetUnitPos("start", "activeUnit");
 			trVectorSetUnitPos("end", "moveTile");
-
+			
 			trUnitSelectClear();
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
-			trSetUnitOrientation(zGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
+			trSetUnitOrientation(trGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
 			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
-
+			
 			if (trQuestVarGet("turnEnd") == 0) {
 				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));
 				/*
@@ -531,12 +525,12 @@ inactive
 			
 			mSetVarByQV("activeUnit", "tile", trQuestVarGet("moveTile"));
 			zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("moveTile"), 1*trQuestVarGet("activeUnit"));
-
+			
 			if (HasKeyword(GUARD, 1*mGetVarByQV("activeUnit", "keywords"))) {
 				refreshGuardAll();
 			}
-
-
+			
+			
 			xsDisableRule("gameplay_03_moveComplete");
 		}
 	}
@@ -605,10 +599,10 @@ rule gameplay_05_attackComplete
 highFrequency
 inactive
 {
-	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) || 
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) ||
 		(trTime() > cActivationTime + 3)) {
 		int p = trQuestVarGet("activePlayer");
-
+		
 		if (yGetDatabaseCount("reachable") > 0) {
 			for(x=yGetDatabaseCount("reachable"); >0) {
 				highlightTile(1*yDatabaseNext("reachable"), 0.1);
@@ -620,10 +614,10 @@ inactive
 			trUnitHighlight(0.1, false);
 			yClearDatabase("targets");
 		}
-
+		
 		removeDeadUnits();
 		refreshGuardAll();
-
+		
 		if (trQuestVarGet("turnEnd") == 0) {
 			if (HasKeyword(FURIOUS, 1*mGetVarByQV("activeUnit", "keywords")) &&
 				mGetVarByQV("activeUnit", "action") < ACTION_FURY &&
@@ -667,7 +661,7 @@ inactive
 				int tile = -1;
 				for(x=yGetDatabaseCount("summonLocations"); >0) {
 					yDatabaseNext("summonLocations");
-					if (zDistanceToVectorSquared("summonLocations", "p"+p+"clickPos") < 9) {
+					if (trDistanceToVectorSquared("summonLocations", "p"+p+"clickPos") < 9) {
 						tile = trQuestVarGet("summonLocations");
 						break;
 					}
@@ -690,7 +684,7 @@ inactive
 					yAddToDatabase("allUnits", "summonUnit");
 					
 					teleportToTile(unit, tile);
-
+					
 					int cost = mGetVar(unit, "cost");
 					cost = xsMax(0, cost - trQuestVarGet("p"+p+"minionDiscount"));
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
@@ -698,28 +692,27 @@ inactive
 					}
 					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - cost);
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
-
+					
 					if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords")) == true) {
 						mSetVar(unit, "action", ACTION_READY);
 					} else {
 						mSetVar(unit, "action", ACTION_SLEEPING);
 					}
 					updateMana();
-
+					
 					
 					
 					updateAuras();
-
+					
 					ySetPointer("p"+p+"hand", 1*trQuestVarGet("handPointer"));
 					zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 					yRemoveFromDatabase("p"+p+"hand");
-					yRemoveUpdateVar("p"+p+"hand", "pos");
-
+					
 					zSetVarByIndex("tiles", "occupant", tile, unit);
 					// If the unit has an OnPlay effect
 					OnPlay(unit);
 					updateHandPlayable(p);
-
+					
 					for (x=yGetDatabaseCount("summonLocations"); >0) {
 						yDatabaseNext("summonLocations");
 						if (trCurrentPlayer() == p) {
@@ -727,7 +720,7 @@ inactive
 						}
 					}
 					yClearDatabase("summonLocations");
-
+					
 					string name = trStringQuestVarGet("card_"+1*kbGetUnitBaseTypeID(kbGetBlockID(""+unit))+"_name");
 					ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> summoned " + name);
 					

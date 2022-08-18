@@ -54,7 +54,6 @@ This is called only after a yDatabaseNext("allUnits").
 */
 void removeUnit(string db = "allUnits") {
 	yRemoveFromDatabase(db);
-	yRemoveUpdateVar(db, "pos");
 }
 
 /*
@@ -63,13 +62,13 @@ to the 'to' database.
 */
 void transferUnit(string to = "", string from = "") {
 	yAddToDatabase(to, from);
-	yTransferUpdateVar(to, from, "pos");
+	yAddUpdateVar(to, "pos", yGetVar(from, "pos"));
 }
 
 
 void teleportToTile(int name = 0, int tile = 0) {
 	int p = mGetVar(name, "player");
-
+	
 	if (HasKeyword(GUARD, 1*mGetVar(name, "keywords"))) {
 		if (mGetVar(name, "tile") > 0) {
 			tileGuard(1*mGetVar(name, "tile"), false);
@@ -77,7 +76,7 @@ void teleportToTile(int name = 0, int tile = 0) {
 		tileGuard(tile, true);
 	}
 	
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(p);
@@ -92,12 +91,12 @@ void teleportToTile(int name = 0, int tile = 0) {
 	trUnitSelect(""+name);
 	trMutateSelected(1*mGetVar(name, "proto"));
 	scaleUnit(name);
-
+	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
 	trUnitConvert(0);
 	trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-
+	
 	mSetVar(name, "tile", tile);
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
@@ -107,7 +106,7 @@ int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	teleportToTile(1*trQuestVarGet("next"), tile);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"));
-	trUnitOverrideAnimation(18,0,0,1,-1);
+	trUnitOverrideAnimation(18,0,false,true,-1);
 	yAddToDatabase("allUnits", "next");
 	return(1*trQuestVarGet("next"));
 }
@@ -125,7 +124,7 @@ int findNearestUnit(string qv = "", float radius = 1) {
 		if (id == -1) {
 			removeUnit();
 		} else {
-			if (zDistanceToVectorSquared("allUnits", qv) < radius) {
+			if (trDistanceToVectorSquared("allUnits", qv) < radius) {
 				return(1*trQuestVarGet("allUnits"));
 			}
 		}
@@ -143,7 +142,7 @@ the tiles that are reachable by that unit.
 void highlightReachable(int name = 0) {
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name, true));
 	int tile = findNearestTile("pos");
-	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable", 
+	findAvailableTiles(tile, mGetVar(name, "speed"), "reachable",
 		(HasKeyword(ETHEREAL, 1*mGetVar(name, "keywords")) || HasKeyword(FLYING, 1*mGetVar(name, "keywords"))));
 	for(x=yGetDatabaseCount("reachable"); >0) {
 		tile = yDatabaseNext("reachable");
@@ -184,7 +183,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 			continue;
 		} else if ((mGetVarByQV("allUnits", "player") == p) ||
 			mGetVar(name, "proto") == kbGetProtoUnitID("Hoplite")) {
-			if (zDistanceToVectorSquared("allUnits", "pos") < dist) {
+			if (trDistanceToVectorSquared("allUnits", "pos") < dist) {
 				if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
 					if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
 						yAddToDatabase(db, "allUnits");
@@ -200,6 +199,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 void healUnit(int index = 0, float heal = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
+	xsSetContextPlayer(0);
 	trUnitSelectClear();
 	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
@@ -212,8 +212,8 @@ void damageUnit(int index = 0, float dmg = 0) {
 	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
 		dmg = xsMax(0, dmg - 1);
 	}
-	if (1*mGetVar(index, "proto") == kbGetProtoUnitID("Golem") && zModulo(2,dmg) == 1) {
-		return();
+	if (1*mGetVar(index, "proto") == kbGetProtoUnitID("Golem") && iModulo(2,dmg) == 1) {
+		return;
 	}
 	if(dmg > 0 && HasKeyword(STEALTH, 1*mGetVar(index, "keywords"))){
 		mSetVar(index, "keywords", mGetVar(index, "keywords") - Keyword(STEALTH));
@@ -232,15 +232,15 @@ void damageUnit(int index = 0, float dmg = 0) {
 				if (1*mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Trident Soldier Hero")) {
 					damageUnit(1*trQuestVarGet("allUnits"), dmg);
 					ySetPointer("allUnits", pointer);
-					return();
+					return;
 				}
 			}
 			ySetPointer("allUnits", pointer);
 		}
-		ySetPointer("allUnits", pointer);
 	}
 	xsSetContextPlayer(p);
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
+	xsSetContextPlayer(0);
 	mSetVar(index, "health", xsMax(0, 1*mGetVar(index, "health") - dmg));
 	trUnitSelectClear();
 	trUnitSelect(""+index);
@@ -271,7 +271,7 @@ void lightning(int index = 0, int damage = 0, bool deadly = false) {
 		pop = modularCounterNext("lightningPop");
 		unit = trQuestVarGet("lightning" + pop);
 		tile = mGetVar(unit, "tile");
-
+		
 		for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 			neighbor = 1*zGetVarByIndex("tiles", "neighbor"+x, tile);
 			if (zGetVarByIndex("tiles", "searched", neighbor) == 0) {
@@ -301,7 +301,7 @@ int checkGuard(int target = 0) {
 	float dist = 0;
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
-		dist = zDistanceToVectorSquared("allUnits", "targetPos");
+		dist = trDistanceToVectorSquared("allUnits", "targetPos");
 		if (dist < 64 && dist > 9 &&
 			mGetVarByQV("allUnits", "stunTime") == 0 &&
 			mGetVarByQV("allUnits", "player") == 3 - trQuestVarGet("activePlayer") &&
@@ -432,27 +432,25 @@ void pushUnit(int name = 0, string dir = "") {
 	zSetVarByIndex("tiles", "occupant", tile, 0);
 	tileGuard(tile, false);
 	refreshGuardAll();
-
+	
 	trUnitSelectClear();
 	trUnitSelect(""+container, true);
 	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
 	trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));
-
+	
 	trUnitSelectClear();
 	trUnitSelect(""+name);
-	trUnitOverrideAnimation(24,0,1,1,-1);
+	trUnitOverrideAnimation(24,0,true,true,-1);
 	trMutateSelected(kbGetProtoUnitID("Relic"));
 	trImmediateUnitGarrison(""+container);
 	trMutateSelected(1*mGetVar(name, "proto"));
-
-
+	
+	
 	/*
 	Find destination
 	*/
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+name));
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
-	trQuestVarSet("posx", trQuestVarGet("posx") + 6.0*trQuestVarGet(dir+"x"));
-	trQuestVarSet("posz", trQuestVarGet("posz") + 6.0*trQuestVarGet(dir+"z"));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name) + (trVectorQuestVarGet(dir) * 6.0));
 	bool found = true;
 	int neighbor = 0;
 	int target = 0;
@@ -463,11 +461,12 @@ void pushUnit(int name = 0, string dir = "") {
 			neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);
 			if (zGetVarByIndex("tiles", "terrain", neighbor) == 0 && neighbor < trQuestVarGet("ztilesend")) {
 				trVectorQuestVarSet("current", kbGetBlockPosition(""+neighbor));
-				if (zDistanceBetweenVectorsSquared("current", "pos") < 1) {
+				if (trDistanceBetweenVectorsSquared("current", "pos") < 1) {
 					if (zGetVarByIndex("tiles", "occupant", neighbor) > 0) {
 						target = zGetVarByIndex("tiles", "occupant", neighbor);
 					} else {
 						tile = neighbor;
+						trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (trVectorQuestVarGet(dir) * 6.0));
 						trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet(dir+"x"));
 						trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet(dir+"z"));
 						found = true;
@@ -482,7 +481,7 @@ void pushUnit(int name = 0, string dir = "") {
 	yAddUpdateVar("pushes", "name", name);
 	yAddUpdateVar("pushes", "dest", tile);
 	yAddUpdateVar("pushes", "target", target);
-	yAddUpdateVar("pushes", "timeout", trTimeMS() + 70 * zDistanceBetweenVectors("start", "pos"));
+	yAddUpdateVar("pushes", "timeout", trTimeMS() + 70 * trDistanceBetweenVectors("start", "pos"));
 	trUnitSelectClear();
 	trUnitSelect(""+tile);
 	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
@@ -558,7 +557,7 @@ void updateAuras() {
 		} else {
 			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
 		}
-
+		
 		/*
 		Scylla discounts
 		*/
@@ -592,7 +591,7 @@ active
 	if (yGetDatabaseCount("pushes") > 0) {
 		int unit = yDatabaseNext("pushes");
 		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*yGetVar("pushes", "dest")));
-		if (zDistanceToVectorSquared("pushes", "pos") < 4 || trTimeMS() > yGetVar("pushes", "timeout")) {
+		if (trDistanceToVectorSquared("pushes", "pos") < 4 || trTimeMS() > yGetVar("pushes", "timeout")) {
 			trUnitSelectClear();
 			trUnitSelect(""+1*yGetVar("pushes", "name"));
 			trUnitChangeProtoUnit("Dwarf");
@@ -605,10 +604,6 @@ active
 				startAttack(1*yGetVar("pushes", "target"), 1*yGetVar("pushes", "name"), false, false);
 			}
 			yRemoveFromDatabase("pushes");
-			yRemoveUpdateVar("pushes", "name");
-			yRemoveUpdateVar("pushes", "dest");
-			yRemoveUpdateVar("pushes", "target");
-			yRemoveUpdateVar("pushes", "timeout");
 		}
 	}
 }
@@ -677,7 +672,6 @@ inactive
 		} else {
 			trUnitDestroy();
 			yRemoveFromDatabase("directionalLasers");
-			yRemoveUpdateVar("directionalLasers", "timeout");
 		}
 	} else {
 		xsDisableRule("directional_lasers");

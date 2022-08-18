@@ -21,7 +21,7 @@ inactive
 			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 		}
 		xsEnableRule("StoryClass4Mission1_end");
-	}	
+	}
 }
 
 rule StoryClass4Mission1_end

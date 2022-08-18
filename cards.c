@@ -295,7 +295,7 @@ string GetKeywordDescription(int bitPosition=0){
 	return ("");
 }
 
-/* 
+/*
 Given a bitPosition, return 2^bitPosition
 */
 int Keyword(int bitPos = 0) {
@@ -365,7 +365,7 @@ int getClassProgress(int class = 0) {
 }
 
 
-/* 
+/*
 Given the class and spell type, returns the statue animation
 */
 int GetSpellAnimation(int class = 0, int type = 0){
@@ -461,6 +461,24 @@ int GetSpellAnimation(int class = 0, int type = 0){
 				}
 			}
 		}
+		case CLASS_SPACE:
+		{
+			switch(type)
+			{
+				case SPELL_TYPE_OFFENSIVE:
+				{
+					return (9);	// Kronos
+				}
+				case SPELL_TYPE_DEFENSIVE:
+				{
+					return (11); // Oranos
+				}
+				case SPELL_TYPE_OTHER:
+				{
+					return (11); // Oranos
+				}
+			}
+		}
 	}
 	ThrowError("GetSpellAnimation");
 }
@@ -529,12 +547,12 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	if (spell <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
-			gadgetUnreal("NormalArmorTextDisplay");			
+			gadgetUnreal("NormalArmorTextDisplay");
 		} else {
 			gadgetUnreal("unitStatPanel-stat-normalArmor");
 		}
 		if(HasKeyword(WARD, keywords)){
-			gadgetUnreal("PierceArmorTextDisplay");			
+			gadgetUnreal("PierceArmorTextDisplay");
 		} else {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
@@ -545,9 +563,9 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	}
 	
 	if(message != ""){
-		trChatSend(0, message);		
+		trChatSend(0, message);
 	}
-
+	
 	bool multiple = false;
 	if (keywords>0) {
 		trChatSend(0, "==== Keywords ====");
@@ -565,7 +583,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 			current = current / 2;
 		}
 	}
-
+	
 	trSoundPlayDialog("default", "1", -1, false, " : " + dialog, getCardClassIcon(card));
 }
 
@@ -578,7 +596,7 @@ void updateMana() {
 		}
 		trCounterAddTime("mana"+p, -1, -9999999, str,-1);
 		trCounterAbort("handAndDeck"+p);
-		trCounterAddTime("handAndDeck"+p, -1, -9999999, 
+		trCounterAddTime("handAndDeck"+p, -1, -9999999,
 			"<color={Playercolor("+p+")}>Hand: "+1*yGetDatabaseCount("p"+p+"hand") + " | Deck: "+1*yGetDatabaseCount("p"+p+"deck"), -1);
 	}
 }
@@ -613,29 +631,28 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			current = current / 2;
 		}
 	}
-
+	
 	int card = ProtoToCard(proto);
-	int old = xsGetContextPlayer();
 	int p = mGetVar(name, "player");
 	int discount = 0;
 	if (mGetVar(name, "spell") <= SPELL_COMMANDER) {
 		gadgetUnreal("DetailedHelpButton");
 		if(HasKeyword(ARMORED, keywords)){
-			gadgetUnreal("NormalArmorTextDisplay");			
+			gadgetUnreal("NormalArmorTextDisplay");
 		} else {
 			gadgetUnreal("unitStatPanel-stat-normalArmor");
 		}
 		if(HasKeyword(WARD, keywords)){
-			gadgetUnreal("PierceArmorTextDisplay");			
+			gadgetUnreal("PierceArmorTextDisplay");
 		} else {
 			gadgetUnreal("unitStatPanel-stat-pierceArmor");
 		}
 		
 		trVectorQuestVarSet("pos", kbGetBlockPosition(""+name));
 		trVectorQuestVarSet("center", kbGetBlockPosition("128"));
-
+		
 		trChatSend(0, "<color={Playercolor("+p+")}>==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====</color>");
-		if (zDistanceBetweenVectorsSquared("pos", "center") > 2025) {
+		if (trDistanceBetweenVectorsSquared("pos", "center") > 2025) {
 			discount = trQuestVarGet("p"+p+"minionDiscount");
 			if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 				discount = discount + trQuestVarGet("p"+p+"manaflow");
@@ -647,18 +664,20 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
 		} else {
 			xsSetContextPlayer(1*mGetVar(name, "player"));
-			int diff = 1*mGetVar(name, "health") - kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
+			float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
+			xsSetContextPlayer(0);
+			int diff = 1*mGetVar(name, "health") - health;
 			if (diff > 0) {
 				bonus = bonus + "HP +" + diff + " ";
 			}
-
+			
 			diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
 			if (diff > 0) {
 				bonus = bonus + "ATK +" + diff + " ";
 			} else if (diff < 0) {
 				bonus = bonus + "ATK " + diff + " ";
 			}
-
+			
 			diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
 			if (diff > 0) {
 				bonus = bonus + "SPD +" + diff;
@@ -675,7 +694,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
-
+		
 		discount = trQuestVarGet("p"+p+"spellDiscount");
 		if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 			discount = discount + trQuestVarGet("p"+p+"manaflow");
@@ -694,24 +713,22 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
 	}
-
+	
 	updateMana();
 	trSoundPlayDialog("default", "1", -1, false, bonus + ": " + dialog, getCardClassIcon(card));
-
-	xsSetContextPlayer(old);
 }
 
 int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	int next = 0;
 	for(x=64; >0) {
 		next = zBankNext("p"+p+"unitBank");
-		if (mGetVar(next, "played") == 0) {
+		if (mGetVar(next, "played") <= 0) {
 			break;
 		}
 	}
 	trUnitSelectClear();
 	trUnitSelect(""+next, false);
-
+	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
 		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
 		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
@@ -722,6 +739,10 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "keywords", trQuestVarGet("card_" + proto + "_Keywords"));
 		mSetVar(next, "onAttack", trQuestVarGet("card_" + proto + "_OnAttack"));
 		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
+		mSetVar(next, "tile", 0);
+		mSetVar(next, "stunTime", 0);
+		mSetVar(next, "stunSFX", 0);
+		mSetVar(next, "victory", 0);
 		mSetVar(next, "scale", 1);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
@@ -736,10 +757,10 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	mSetVar(next, "spell", spell);
 	mSetVar(next, "played", 1);
 	mSetVar(next, "state", STATE_ALIVE);
-
+	
 	trMutateSelected(proto);
 	trUnitConvert(p);
-
+	
 	return(next);
 }
 
@@ -749,7 +770,7 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "",
 	trStringQuestVarSet("spell_"+spell+"_description", desc);
 	trQuestVarSet("spell_"+spell+"_type", type);
 	trQuestVarSet("spell_"+spell+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, type));
-
+	
 	// This is so that the uncollectable card is assigned to the right class
 	trQuestVarSet("spellToCard"+spell, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
@@ -757,9 +778,9 @@ void SpellSetup(string name = "", int cost = 0, int spell = 0, string desc = "",
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), kbGetProtoUnitID("Statue of Lightning"));
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
-
+	
 	trQuestVarSet("spell_"+spell+"_keywords", keywords);
-
+	
 }
 
 void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string ability="") {
@@ -774,14 +795,14 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 	if(proto<0){
 		ThrowError("That's not a unit. Method: CardSetup");
 	}
-
+	
 	// this is so that the uncollectable card is assigned to the right class
 	trQuestVarSet("protoToCard"+proto, trQuestVarGet("cardIndex"));
 	if (uncollectable == false) {
 		trQuestVarSet("cardToProto"+1*trQuestVarGet("cardIndex"), proto);
 		trQuestVarSet("cardIndex", 1 + trQuestVarGet("cardIndex"));
 	}
-
+	
 	trStringQuestVarSet("card_" + proto + "_Name",name);
 	trQuestVarSet("card_" + proto + "_Cost",cost);
 	trQuestVarSet("card_" + proto + "_Attack",attack);
@@ -834,15 +855,15 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 		trModifyProtounit(protoName, p, 0, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 0, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 0, health); // Hitpoints
-
+		
 		trModifyProtounit(protoName, p, 11, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 11, range); // Range
-
+		
 		trModifyProtounit(protoName, p, 1, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 1, -9999999999999999999.0);
 		trModifyProtounit(protoName, p, 1, 10); // Speed
-
+		
 		// 0 LOS
 		trModifyProtounit(protoName, p, 2, 9999999999999999999.0);
 		trModifyProtounit(protoName, p, 2, -9999999999999999999.0);
@@ -852,8 +873,8 @@ void CardSetup(string protoName="", int cost=1, string name="", int attack=1, in
 rule initializeCards
 highFrequency
 active
-runImmediately
 {
+	trQuestVarSet("cardsReady", 0);
 	for(p=1;<cNumberPlayers){
 		trForbidProtounit(p, "Archer Atlantean Hero");
 		trForbidProtounit(p, "Javelin Cavalry Hero");
@@ -861,9 +882,9 @@ runImmediately
 		trForbidProtounit(p, "Maceman Hero");
 		trForbidProtounit(p, "Oracle Hero");
 		trForbidProtounit(p, "Royal Guard Hero");
-		/* 
-		need this for heroize deck importing 
-		trForbidProtounit(p, "Swordsman Hero"); 
+		/*
+		need this for heroize deck importing
+		trForbidProtounit(p, "Swordsman Hero");
 		*/
 		trForbidProtounit(p, "Trident Soldier Hero");
 		trForbidProtounit(p, "Villager Atlantean Hero");
@@ -877,14 +898,14 @@ runImmediately
 		trForbidProtounit(p, "Ulfsark");
 		trModifyProtounit("Minion", p, 8, -99); // minion lifespan
 	}
-
+	
 	/*
 	Don't use unit 0 because a lot of things are default 0
 	*/
 	zBankInit("p1unitBank", 1, 63);
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 127);
-
+	
 	CardSetup("Automaton",		0, "Training Dummy", 		0, 10, 0, 0, 0, true);
 	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
@@ -907,7 +928,7 @@ runImmediately
 	CardEvents("Setna", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
 	CardSetup("Circe",					0, "Archmage's Mom", 		2, 40, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 	CardEvents("Circe", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
-
+	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Boots Treasure", 		2, SPELL_BOOTS_TREASURE, 	"Give your minions Pathfinder.", SPELL_TYPE_OTHER, 0, true);
@@ -921,10 +942,10 @@ runImmediately
 	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
-
+	
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
 	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a minion's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
+	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
@@ -951,39 +972,47 @@ runImmediately
 	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane minion and play a random Arcane spell.");
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
-
+	
 	SpellSetup("Chaos",					4, SPELL_TAVERN_BRAWL,		"Every unit attacks another one at random, regardless of distance.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Dominance",				3, SPELL_DOMINANCE,			"Your Commander gains +1 attack and then attacks an enemy.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Infestation",			2, SPELL_SPIDER_LAIR,		"Add 3 Festering Eggs to your hand. They cost 0 and have Airdrop.", SPELL_TYPE_OTHER, 0, true);
-
-	CardSetup("Tartarian Gate",			4, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true); 
+	
+	CardSetup("Tartarian Gate",			4, "Mouth of Chaos",		0, 8, 0, 0, Keyword(BEACON), true);
 	CardEvents("Tartarian Gate", 0, 0,	"At the start of your turn, draw a card and set its cost to 0.");
-
+	
 	CardSetup("Invisible Target",		0, "Destination",			0, 999, 0, 0, Keyword(WARD) + Keyword(REGENERATE) + Keyword(STEALTH), true);
 	CardSetup("Cinematic Block",		0, "Indestructable",		0, 999, 0, 0, Keyword(WARD) + Keyword(REGENERATE) + Keyword(STEALTH), true);
-
-	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true); 
+	
+	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true);
 	CardEvents("Theris", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
-
+	
 	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
-
+	
 	CardSetup("Javelin Cavalry",		3, "Profit Hunter",			3, 2, 3, 2, Keyword(CHARGE), true);
 	CardEvents("Javelin Cavalry", Keyword(ATTACK_SING), 0, "Attack: Give your Commander another action if he has already acted.");
-
+	
 	CardSetup("Chieroballista",			4, "Gatling Gun",			3, 4, 2, 2, Keyword(FURIOUS), true);
 	CardSetup("Crossbowman",			2, "Security Sniper",		1, 3, 2, 3, Keyword(AIRDROP) + Keyword(LIGHTNING), true);
-
+	
 	CardSetup("Female",					2, "Princess Arsch",		1, 2, 2, 1, Keyword(WARD), true);
 	CardEvents("Female", 0, Keyword(DEATH_DAMAGE_ENEMY), "Play: Give your Commander +2 health. Death: Deal 2 damage to the enemy Commander.");
-
+	
 	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
+	
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_01");
+}
 
+rule initializeCards_01
+inactive
+highFrequency
+{
 	//Pick a card. Any card.
 	/*
 	Unit stats and keywords
-	        Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
+	Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
 	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	/*
@@ -1029,6 +1058,14 @@ runImmediately
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 2 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_02");
+}
+
+rule initializeCards_02
+inactive
+highFrequency
+{
 	/*
 	ARCANE
 	*/
@@ -1075,7 +1112,14 @@ runImmediately
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
 	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 3, 2); // At the start of your turn, both players draw a card.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_03");
+}
 
+rule initializeCards_03
+inactive
+highFrequency
+{
 	/*
 	NAGA
 	*/
@@ -1083,7 +1127,7 @@ runImmediately
 	CardSetup("Royal Guard Hero",		0, "Out Reach", 		2, 20, 2, 1, Keyword(BEACON), true); // Your Mana spent on spells will still count as Manaflow next turn.
 	CardSetup("Archer Atlantean Hero",	0, "scragins", 			1, 20, 2, 3, Keyword(BEACON), true);
 	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
-
+	
 	// 60-64
 	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
@@ -1120,6 +1164,15 @@ runImmediately
 	SpellSetup("Drown",					7, SPELL_DROWN,		 		"Shuffle a minion into your deck.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
+	
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_04");
+}
+
+rule initializeCards_04
+inactive
+highFrequency
+{
 	/*
 	CLOCKWORK
 	*/
@@ -1130,12 +1183,12 @@ runImmediately
 	CardSetup("Outpost",				0, "Lightning Rod",			0, 3, 0, 0, Keyword(CONDUCTOR) + Keyword(AIRDROP), true);
 	CardSetup("Guild",					4, "Gear Factory",			0, 6, 0, 0, 0, true); // At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.
 	CardSetup("Wall Connector",			0, "Iron Wall",				0, 3, 0, 0, Keyword(AIRDROP) + Keyword(FLEETING), true);
-
+	
 	// 90-94
 	SpellSetup("Repair",		 		3, SPELL_SONG_OF_REST,		"Restore 6 health to your Commander. Draw a card.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Fortify",		 		3, SPELL_FORTIFY,			"Fill your hand with Iron Walls.", SPELL_TYPE_OTHER);
 	CardSetup("Dwarf",					1, "Iron Scavenger",		1, 1, 2, 1); // Death: Add a Scrap Metal to your hand.
-	CardSetup("Portable Ram",			2, "Circuit Squad",			1, 3, 2, 1, Keyword(ARMORED) + Keyword(CONDUCTOR)); 
+	CardSetup("Portable Ram",			2, "Circuit Squad",			1, 3, 2, 1, Keyword(ARMORED) + Keyword(CONDUCTOR));
 	CardSetup("Petrobolos",				3, "Scrap Launcher",		1, 2, 1, 3); // Attack: Stun my target.
 	// 95-99
 	CardSetup("Maceman Hero",			3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
@@ -1167,7 +1220,14 @@ runImmediately
 	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Borrowed Time",			20, SPELL_BORROWED_TIME,	"Gain an extra turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_05");
+}
 
+rule initializeCards_05
+inactive
+highFrequency
+{
 	/*
 	OTHERWORLD
 	*/
@@ -1215,32 +1275,45 @@ runImmediately
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied minion and an enemy minion swap spaces.", SPELL_TYPE_OTHER);
 	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a minion, give it Decay.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_06");
+	//trDelayedRuleActivation("initializeCards_07");
+}
+
+
+rule initializeCards_06
+inactive
+highFrequency
+{
 	/*
 	SPACE
 	*/
 	// Created cards
-	//CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
-	//CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
-	
-	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);	
-	/*
-	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_name", "Nickonhawk's Portal");
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_cost", 3);
-	trStringQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_description", "Summon a random minion on a random tile.");
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_type", SPELL_TYPE_OTHER);
-	trQuestVarSet("spell_"+SPELL_NICKS_PORTAL+"_animation", GetSpellAnimation((1*trQuestVarGet("cardIndex"))/30, SPELL_TYPE_OTHER));
-	trQuestVarSet("spellToCard"+SPELL_NICKS_PORTAL, trQuestVarGet("cardIndex"));
-	*/
-	/* 150-154
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
+	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);
+	// 150-154
+	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER);
 	// 155-159
 	// 160-164 (LEGENDARY at 164)
 	// 165-169
 	// 170-174
-	// 175-179 (LEGENDARY at 179) */
+	// 175-179 (LEGENDARY at 179)
+	xsDisableSelf();
+	trDelayedRuleActivation("initializeCards_07");
+	
+}
+
+rule initializeCards_07
+inactive
+highFrequency
+{
+	trQuestVarSet("cardsReady", 1);
 	/*
 	Unit OnPlay, OnAttack, OnDeath, and description
-		Proto | OnAttack | OnDeath | Description
+	Proto | OnAttack | OnDeath | Description
 	*/
+	
 	CardEvents("Hero Greek Jason", Keyword(ATTACK_GET_WINDSONG), 0, 	"Attack: Create a Fleeting Windsong.");
 	
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
@@ -1255,7 +1328,7 @@ runImmediately
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
 	CardEvents("Ornlu", Keyword(ATTACK_GET_FENRIS), 0,					"Attack: Create a Pack Hunter.");
-
+	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	
@@ -1294,7 +1367,7 @@ runImmediately
 	
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
 	CardEvents("Arkantos God", 0, 0,									"I have +1 health for each card in your deck.");
-
+	
 	CardEvents("Dwarf", 0, Keyword(DEATH_GET_SCRAP),					"Death: Add a Scrap Metal to your hand.");
 	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
 	CardEvents("Throwing Axeman", 0, 0,									"Your minions cost 1 less.");
@@ -1304,7 +1377,7 @@ runImmediately
 	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");
-
+	
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
 	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
@@ -1325,9 +1398,9 @@ runImmediately
 	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
-
-	//CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
-	//CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");	
 	
-	xsDisableRule("initializeCards");
+	//CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
+	//CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
+	
+	xsDisableSelf();
 }

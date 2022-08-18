@@ -14,20 +14,19 @@ inactive
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
 		spyEffect("Healing SFX");
-
+		
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
-
+		
 		shuffleDeck(p);
-
+		
 		trQuestVarSet("p"+p+"defeated", 0);
 	}
-
 	// Ravens
 	trQuestVarSet("p1block", 869);
 	trQuestVarSet("p2block", 871);
 	trQuestVarSet("maxMana", 0);
-
+	
 	xsDisableRule("match_00_start");
 	xsEnableRule("match_01_mulliganStart");
 	xsEnableRule("gameplay_toggle_camera");
@@ -53,11 +52,11 @@ inactive
 		trMessageSetText("Left click to choose cards to mulligan. Enter to finish.",-1);
 		
 		if(Multiplayer){
-			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);	
+			trCounterAddTime("counter", 21, 1, "Mulligan phase",-1);
 		} else {
 			trQuestVarSet("p2done", 1);
 		}
-
+		
 		xsEnableRule("match_02_mulligan");
 		xsDisableRule("match_01_mulliganStart");
 	}
@@ -67,7 +66,7 @@ rule match_02_mulligan
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2 || (Multiplayer  && (trTime() > cActivationTime + 20))) {
+	if ((trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2) || (Multiplayer  && (trTime() > cActivationTime + 20))) {
 		xsEnableRule("match_03_replace");
 		xsDisableRule("match_02_mulligan");
 	} else {
@@ -84,7 +83,7 @@ inactive
 					unit = -1;
 					for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 						yDatabaseNext("p"+p+"hand");
-						if (zDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
+						if (trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
 							unit = yGetPointer("p"+p+"hand");
 							break;
 						}
@@ -127,7 +126,7 @@ inactive
 				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
 				trVectorSetUnitPos("pos", "p"+p+"hand");
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
@@ -144,6 +143,7 @@ inactive
 		yClearDatabase("temp");
 		shuffleDeck(p);
 	}
+	xsEnableRule("gameplay_select_show_keywords");
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");
 	xsDisableRule("match_03_replace");
@@ -153,7 +153,7 @@ rule turn_00_start
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("bossSpell") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("bossSpell") + trQuestVarGet("chainReactionDeath") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
 		int p = trQuestVarGet("activePlayer");
 		if (trQuestVarGet("p"+p+"borrowedTime") > 0) {
 			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
@@ -166,8 +166,7 @@ inactive
 		trQuestVarSet("activePlayer", p);
 		trQuestVarSet("turnEnd", 0);
 		trPlayerKillAllGodPowers(p);
-		yClearDatabase("turnStart");	
-		xsSetContextPlayer(p);
+		yClearDatabase("turnStart");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (mGetVarByQV("allUnits", "player") == p) {
@@ -188,15 +187,18 @@ inactive
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 					trDamageUnitPercent(-100);
-					mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true))));
+					xsSetContextPlayer(p);
+					float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true));
+					xsSetContextPlayer(0);
+					mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), health));
 				}
 				// Start of turn effects
-				yAddToDatabase("turnStart", "allUnits");					
+				yAddToDatabase("turnStart", "allUnits");
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
 		}
-
+		
 		/*
 		Guardian of the Sea expires
 		*/
@@ -209,7 +211,7 @@ inactive
 		xsDisableRule("turn_00_start");
 	}
 }
-		
+
 
 rule turn_01_resolve_turn_start
 highFrequency
@@ -230,14 +232,14 @@ inactive
 			trQuestVarSet("turnStartDelay", trTimeMS() + 500);
 		} else {
 			trSoundPlayFN("fanfare.wav","1",-1,"","");
-
+			
 			trTechGodPower(p, "create gold", 1);
 			trTechGodPower(p, "animal magnetism", 1);
 			trTechGodPower(p, "rain", 1);
 			trTechGodPower(p, "nidhogg", 1);
-	
+			
 			if(Multiplayer){
-				trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);	
+				trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);
 			} else if (p == 2) {
 				trQuestVarSet("botPhase", 0);
 				trQuestVarSet("botThinking", 0);
@@ -245,15 +247,15 @@ inactive
 			}
 			
 			
-
+			
 			trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
 			trQuestVarSet("p"+p+"manaTax", 0);
 			
 			trQuestVarSet("p"+p+"click", 0);
 			highlightReady(100);
-
+			
 			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + 1);
-
+			
 			updateMana();
 			removeDeadUnits();
 			updateAuras();
@@ -262,7 +264,7 @@ inactive
 			xsDisableRule("turn_01_resolve_turn_start");
 		}
 	}
-
+	
 }
 
 
@@ -286,14 +288,14 @@ inactive
 		trCounterAbort("mana");
 		trCounterAbort("handAndDeck");
 		trCounterAbort("turnTimer");
-
+		
 		trQuestVarSet("turnEnd", 1);
-
+		
 		trQuestVarSet("apocalypse", trQuestVarGet("apocalypse") - 1);
 		if (trQuestVarGet("apocalypse") == 0) {
 			musicToggleBattleMode();
 		}
-
+		
 		/*
 		End of turn effects
 		*/
@@ -314,7 +316,7 @@ inactive
 				}
 				damageUnit(1*trQuestVarGet("allUnits"), trQuestVarGet("mindflayerDamage"));
 			}
-
+			
 			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Hero Chinese Immortal")){
 				if(mGetVarByQV("allUnits", "player") == p){
 					mSetVarByQV("allUnits", "range", 2);
@@ -337,20 +339,19 @@ inactive
 					{
 						trUnitSelectClear();
 						trUnitSelect(""+1*trQuestVarGet("allUnits"));
-						trUnitOverrideAnimation(40,0,0,1,-1);
+						trUnitOverrideAnimation(40,0,false,true,-1);
 					}
 				}
 			}
 		}
-
+		
 		mSetVarByQV("p"+p+"commander", "attack", mGetVarByQV("p"+p+"commander", "attack") - trQuestVarGet("p"+p+"yeebBonus"));
 		trQuestVarSet("p"+p+"yeebbonus", 0);
-
+		
 		/*
 		Meteors
 		*/
 		trQuestVarSet("sound", 0);
-		yDatabasePointerDefault("meteors");
 		for(x=yGetDatabaseCount("meteors"); >0) {
 			yDatabaseNext("meteors", true);
 			ySetVar("meteors", "time", yGetVar("meteors", "time") - 1);
@@ -363,27 +364,24 @@ inactive
 					yDatabaseNext("allUnits");
 					if (mGetVarByQV("allUnits", "tile") == yGetVar("meteors", "tile")) {
 						damageUnit(1*trQuestVarGet("allUnits"), 6 + trQuestVarGet("p"+(3-p)+"spellDamage"));
-					} else if (zDistanceToVectorSquared("allUnits", "pos") < 64) {
+					} else if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
 						damageUnit(1*trQuestVarGet("allUnits"), 2 + trQuestVarGet("p"+(3-p)+"spellDamage"));
 					}
 				}
 				yRemoveFromDatabase("meteors");
-				yRemoveUpdateVar("meteors", "tile");
-				yRemoveUpdateVar("meteors", "time");
 			}
 		}
-
+		
 		if (trQuestVarGet("sound") == 1) {
 			trSoundPlayFN("meteorbighit.wav","1",-1,"","");
 			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
 		}
-
+		
 		removeDeadUnits();
-
+		
 		// Discard fleeting cards
 		bool fleeting = false;
 		int type = 0;
-		yDatabasePointerDefault("p"+p+"hand");
 		for (x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand");
 			if (HasKeyword(FLEETING, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
@@ -395,7 +393,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+p+"hand"), true);
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
@@ -408,7 +406,6 @@ inactive
 				}
 				zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+p+"hand");
-				yRemoveUpdateVar("p"+p+"hand", "pos");
 			}
 		}
 		if (fleeting && trCurrentPlayer() == p) {

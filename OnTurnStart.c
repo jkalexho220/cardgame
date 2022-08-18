@@ -34,8 +34,7 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
-			trQuestVarSet("dirx", mGetVar(unit, "laserDirx"));
-			trQuestVarSet("dirz", mGetVar(unit, "laserDirz"));
+			trVectorQuestVarSet("dir", xsVectorSet(mGetVar(unit, "laserDirx"), 0, mGetVar(unit, "laserDirz")));
 			trUnitSelectClear();
 			trUnitSelect(""+unit);
 			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
@@ -45,22 +44,20 @@ bool OnTurnStart(int unit = 0) {
 			trUnitSelect(""+1*trQuestVarGet("next"), true);
 			trUnitHighlight(1.0, false);
 			trSetSelectedScale(10, 0, 60);
-			trSetUnitOrientation(xsVectorSet(0.0 - trQuestVarGet("dirx"), 0, 0.0 - trQuestVarGet("dirz")), xsVectorSet(0,1,0), true);
+			trSetUnitOrientation(vector(0,0,0) - trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
 			trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
 			yAddToDatabase("directionalLasers", "next");
 			yAddUpdateVar("directionalLasers", "timeout", trTimeMS() + 500);
 			xsEnableRule("directional_lasers");
-
+			
 			bool found = true;
 			tile = mGetVar(unit, "tile");
 			while (found) {
 				found = false;
-				trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile));
-				trQuestVarSet("posx", trQuestVarGet("posx") + trQuestVarGet("dirx") * 6);
-				trQuestVarSet("posz", trQuestVarGet("posz") + trQuestVarGet("dirz") * 6);
+				trVectorQuestVarSet("pos", kbGetBlockPosition(""+tile) + (trVectorQuestVarGet("dir") * 6.0));
 				for(x=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
 					trVectorQuestVarSet("current", kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+x, tile)));
-					if (zDistanceBetweenVectorsSquared("current", "pos") < 9) {
+					if (trDistanceBetweenVectorsSquared("current", "pos") < 9) {
 						found = true;
 						tile = zGetVarByIndex("tiles", "neighbor"+x, tile);
 						break;
@@ -91,9 +88,9 @@ bool OnTurnStart(int unit = 0) {
 				if(trQuestVarGet("chats_Audrey_0") == 0){
 					trQuestVarSet("chats_Audrey_0", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Vora</color>: *plant noises*");
-				}					
-				return (true);				
-			}	
+				}
+				return (true);
+			}
 		}
 		case kbGetProtoUnitID("Shaba Ka"):
 		{
@@ -116,18 +113,18 @@ bool OnTurnStart(int unit = 0) {
 			}
 			trQuestVarSetFromRand("temp", 1, 3, true);
 			if(trQuestVarGet("temp") == 1){
-				generateCard(p, 0, SPELL_BOOTS_TREASURE);	
+				generateCard(p, 0, SPELL_BOOTS_TREASURE);
 			} else if(trQuestVarGet("temp") == 2){
-				generateCard(p, 0, SPELL_WEAPONS_TREASURE);	
+				generateCard(p, 0, SPELL_WEAPONS_TREASURE);
 			} else {
-				generateCard(p, 0, SPELL_SHIELDS_TREASURE);	
+				generateCard(p, 0, SPELL_SHIELDS_TREASURE);
 			}
 			return(true);
 		}
 		case kbGetProtoUnitID("Pirate Ship"):
 		{
 			if(trQuestVarGet("pirateShipTarget" + unit) > -1){
-				trSoundPlayFN("meteorbighit.wav","1",-1,"","");		
+				trSoundPlayFN("meteorbighit.wav","1",-1,"","");
 				deployAtTile(0, "Meteor Impact Ground", 1*trQuestVarGet("pirateShipTarget" + unit));
 				int occupant = zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("pirateShipTarget" + unit));
 				damageUnit(occupant, 8);
@@ -135,17 +132,17 @@ bool OnTurnStart(int unit = 0) {
 					if(trQuestVarGet("chats_PirateShip_1") == 0){
 						trQuestVarSet("chats_PirateShip_1", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Damn, we missed!");
-					}		
+					}
 				} else if(1*mGetVar(occupant, "tile") == p){
 					if(trQuestVarGet("chats_PirateShip_2") == 0){
 						trQuestVarSet("chats_PirateShip_2", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Oops! Sorry about that!");
-					}					
+					}
 				} else {
 					if(trQuestVarGet("chats_PirateShip_3") == 0){
 						trQuestVarSet("chats_PirateShip_3", 1);
 						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: We got them good!");
-					}					
+					}
 				}
 			} else {
 				if(trQuestVarGet("chats_PirateShip_4") == 0){
@@ -153,12 +150,12 @@ bool OnTurnStart(int unit = 0) {
 					ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Cannons be ready to fire!");
 				}
 			}
-			yClearDatabase("pirateShipTargets");	
+			yClearDatabase("pirateShipTargets");
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits", true);
 				if(mGetVarByQV("allUnits", "player") == 3 - p){
 					trQuestVarSet("temp", mGetVarByQV("allUnits", "tile"));
-					yAddToDatabase("pirateShipTargets", "temp");	
+					yAddToDatabase("pirateShipTargets", "temp");
 				}
 			}
 			trQuestVarSetFromRand("pirateShipRandom", 1, yGetDatabaseCount("pirateShipTargets"), true);
@@ -172,7 +169,7 @@ bool OnTurnStart(int unit = 0) {
 		{
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 			mSetVar(unit, "action", ACTION_SLEEPING);
-			if (zDistanceToVectorSquared("p1commander", "pos") < 64) {
+			if (trDistanceToVectorSquared("p1commander", "pos") < 64) {
 				damageUnit(unit, 9999);
 				trSoundPlayFN("favordump.wav","1",-1,"","");
 			}
@@ -213,12 +210,12 @@ bool OnTurnStart(int unit = 0) {
 				if(trQuestVarGet("chats_Monument2_1") == 0){
 					trQuestVarSet("chats_Monument2_1", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Exemplary outfit. Congratulations.");
-				}	
+				}
 			} else {
 				if(trQuestVarGet("chats_Monument2_2") == 0){
 					trQuestVarSet("chats_Monument2_2", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Outfit issues detected. Addressing.");
-				}	
+				}
 			}
 			return (true);
 		}
@@ -226,13 +223,12 @@ bool OnTurnStart(int unit = 0) {
 		{
 			if(yGetDatabaseCount("p"+(3-p)+"hand") > 0){
 				trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("p"+(3-p)+"hand"), true);
-				yDatabasePointerDefault("p"+(3-p)+"hand");
 				for(x=trQuestVarGet("temp"); >0) {
 					yDatabaseNext("p"+(3-p)+"hand", true);
 				}
 				//addCardToDeck(3-p, kbGetProtoUnitName(1*mGetVarByQV("p"+(3-p)+"hand", "proto")), mGetVarByQV("p"+(3-p)+"hand", "spell"));
 				trQuestVarSetFromRand("soundRandom", 1, 3, true);
-				trSoundPlayFN("swing" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");	
+				trSoundPlayFN("swing" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 				trVectorSetUnitPos("pos", "p"+(3-p)+"hand");
 				trUnitSelectClear();
 				trUnitSelectByID(1*yGetVar("p"+(3-p)+"hand", "pos"));
@@ -240,7 +236,7 @@ bool OnTurnStart(int unit = 0) {
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"hand"), true);
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
@@ -251,17 +247,16 @@ bool OnTurnStart(int unit = 0) {
 				}
 				zSetVarByIndex("p"+(3-p)+"handPos", "occupied", 1*yGetVar("p"+(3-p)+"hand", "pos"), 0);
 				yRemoveFromDatabase("p"+(3-p)+"hand");
-				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");
 				if(trQuestVarGet("chats_Monument3_1") == 0){
 					trQuestVarSet("chats_Monument3_1", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Assisting guest with luggage.");
-				}	
+				}
 			} else {
 				if(trQuestVarGet("chats_Monument3_2") == 0){
 					trQuestVarSet("chats_Monument3_2", 1);
 					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Guest is free of luggage.");
-				}	
-			}		
+				}
+			}
 			return (true);
 		}
 		case kbGetProtoUnitID("Monument 4"):
@@ -269,12 +264,12 @@ bool OnTurnStart(int unit = 0) {
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(trQuestVarGet("chats_Monument4_1") == 0){
 				trQuestVarSet("chats_Monument4_1", 1);
@@ -302,7 +297,6 @@ bool OnTurnStart(int unit = 0) {
 			
 			if(yGetDatabaseCount("p"+(3-p)+"hand") > 0){
 				trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("p"+(3-p)+"hand"), true);
-				yDatabasePointerDefault("p"+(3-p)+"hand");
 				for(x=trQuestVarGet("temp"); >0) {
 					yDatabaseNext("p"+(3-p)+"hand", true);
 				}
@@ -315,7 +309,7 @@ bool OnTurnStart(int unit = 0) {
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"hand"), true);
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				trArmyDispatch("1,10","Dwarf",1,trQuestVarGet("posx"),0,trQuestVarGet("posz"),0, true);
+				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
 				trUnitSelectClear();
 				trArmySelect("1,10");
 				trUnitChangeProtoUnit("Hero Death");
@@ -325,18 +319,17 @@ bool OnTurnStart(int unit = 0) {
 					ChatLog((3-p), "Discarded " + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+(3-p)+"hand", "spell") + "_name"));
 				}
 				yRemoveFromDatabase("p"+(3-p)+"hand");
-				yRemoveUpdateVar("p"+(3-p)+"hand", "pos");				
 			}
-
+			
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			if(yGetDatabaseCount("p"+p+"hand") < 10){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
-				mSetVarByQV("next", "cost", 0);				
+				mSetVarByQV("next", "cost", 0);
 			}
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("gaiasparkle" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
