@@ -258,7 +258,8 @@ void OnPlay(int unit = 0) {
 					}
 				}
 			}
-			ySetPointer("p"+p+"deck", 1 + trQuestVarGet("highestPointer"));
+			ySetPointer("p"+p+"deck", 1*trQuestVarGet("highestPointer"));
+			yDatabaseNext("p"+p+"deck", false, true);
 			drawCard(p);
 		}
 		case kbGetProtoUnitID("Medusa"):
