@@ -2,19 +2,39 @@
 Fischer-Yates shuffle
 */
 void shuffleDeck(int p = 0) {
-	int i = 0;
-	for(x=yGetDatabaseCount("p"+p+"deck")-1; >=0) {
-		trQuestVarSetFromRand("pos", 0, x, true);
-		i = trQuestVarGet("pos");
-		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));
-		trQuestVarSet("tempSpell", yGetVarAtIndex("p"+p+"deck", "spell", i));
-		
-		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));
-		ySetVarAtIndex("p"+p+"deck", "spell", yGetVarAtIndex("p"+p+"deck", "spell", x), i);
-		
-		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));
-		ySetVarAtIndex("p"+p+"deck", "spell", trQuestVarGet("tempSpell"), x);
+	/*
+	Copy the deck into an array
+	*/
+	int proto = 0;
+	int spell = 0;
+	int count = yGetDatabaseCount("p"+p+"deck");
+	int db = aiPlanCreate("shuffle", 8);
+	aiPlanAddUserVariableInt(db, 0, "proto", count);
+	aiPlanAddUserVariableInt(db, 1, "spell", count);
+	for(i=0; < count) {
+		proto = yDatabaseNext("p"+p+"deck");
+		spell = yGetVar("p"+p+"deck", "spell");
+		aiPlanSetUserVariableInt(db, 0, i, proto);
+		aiPlanSetUserVariableInt(db, 1, i, spell);
 	}
+	yClearDatabase("p"+p+"deck");
+	/*
+	Shuffle the array into the deck
+	*/
+	for(i=count - 1; >= 0) {
+		// choose a random card
+		trQuestVarSetFromRand("temp", 0, i, true);
+		trQuestVarSet("tempProto", aiPlanGetUserVariableInt(db, 0, 1*trQuestVarGet("temp")));
+		trQuestVarSet("tempSpell", aiPlanGetUserVariableInt(db, 1, 1*trQuestVarGet("temp")));
+		yAddToDatabase("p"+p+"deck", "tempProto");
+		yAddUpdateVar("p"+p+"deck", "spell", trQuestVarGet("tempSpell"));
+		// swap with the last card
+		proto = aiPlanGetUserVariableInt(db, 0, i);
+		spell = aiPlanGetUserVariableInt(db, 1, i);
+		aiPlanSetUserVariableInt(db, 0, 1*trQuestVarGet("temp"), proto);
+		aiPlanSetUserVariableInt(db, 1, 1*trQuestVarGet("temp"), spell);
+	}
+	aiPlanDestroy(db);
 }
 /*
 Updates the hand UI by highlighting cards that the user can
@@ -63,6 +83,10 @@ void addCardToDeckByIndex(int p = 0, int card = 0) {
 	int spell = CardToSpell(card);
 	if (spell == 0) {
 		trQuestVarSet("proto", CardToProto(card));
+		if (trQuestVarGet("proto") == 0) {
+			trSoundPlayFN("cantdothat.wav","1",-1,"","");
+			ChatLog(1, "Card invalid! " + card);
+		}
 		yAddToDatabase("p"+p+"deck", "proto");
 		yAddUpdateVar("p"+p+"deck", "spell", 0);
 	} else {

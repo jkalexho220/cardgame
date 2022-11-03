@@ -2600,7 +2600,7 @@ inactive
 					}
 				}
 			} else if (trQuestVarGet("card_"+proto+"_cost") == 1) {
-				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				yDatabaseNext("p"+p+"deck", false, true);
 				drawCard(p);
 				target = target - 1;
 				if (target == 0) {
@@ -2685,7 +2685,7 @@ inactive
 		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 			yDatabaseNext("p"+p+"deck");
 			if (yGetVar("p"+p+"deck", "spell") > 0) {
-				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				yDatabaseNext("p"+p+"deck", false, true);
 				drawCard(p);
 				break;
 			}
@@ -2693,7 +2693,7 @@ inactive
 		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 			yDatabaseNext("p"+p+"deck");
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
-				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+				yDatabaseNext("p"+p+"deck", false, true);
 				drawCard(p);
 				break;
 			}

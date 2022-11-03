@@ -106,7 +106,7 @@ int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	teleportToTile(1*trQuestVarGet("next"), tile);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"));
-	trUnitOverrideAnimation(18,0,false,true,-1);
+	trUnitOverrideAnimation(-1,0,false,true,-1);
 	yAddToDatabase("allUnits", "next");
 	return(1*trQuestVarGet("next"));
 }
@@ -199,11 +199,11 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 void healUnit(int index = 0, float heal = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
-	xsSetContextPlayer(0);	
 	trUnitSelectClear();
 	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
 	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
+	xsSetContextPlayer(0);
 	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
 	if(heal>=1 && trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType")==COMMANDER_GOD) {	
 		yClearDatabase("toyTiles");

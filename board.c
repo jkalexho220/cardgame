@@ -83,7 +83,6 @@ Given a QV vector name, find the ID of the closest space to it.
 Returns -1 if none found.
 */
 int findNearestTile(string v = "") {
-	debugLog("Vector is " + trVectorQuestVarGet(v));
 	for (x=zGetBankCount("tiles"); >0) {
 		zBankNext("tiles");
 		if (trDistanceToVectorSquared("tiles", v) < 9) {
