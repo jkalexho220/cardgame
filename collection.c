@@ -1,3 +1,33 @@
+/*
+These are functions are called to play the storyline
+CinematicReset();
+CinematicAdd("icons\infantry g hoplite icon 64", "pen island");
+CinematicStart();
+*/
+
+void CinematicReset() {
+	trQuestVarSet("cinematicStep", 0);
+	trQuestVarSet("cinematicLength", 0);
+}
+
+/*
+i = icon
+s = string text
+*/
+void CinematicAdd(string i = "", string s = "") {
+	trQuestVarSet("cinematicLength", 1 + trQuestVarGet("cinematicLength"));
+	trStringQuestVarSet("cinematicImage"+1*trQuestVarGet("cinematicLength"), i);
+	trStringQuestVarSet("cinematicText"+1*trQuestVarGet("cinematicLength"), s);
+}
+
+/*
+m = music filename
+*/
+void CinematicStart(string m = "") {
+	trMusicPlay(m, "1", 0);
+	xsEnableRule("Story_Cinematic_Play");
+}
+
 bool ValidateClass(int class = 0){
 	bool valid = true;
 	bool hasCardsInDeck = false;
@@ -411,7 +441,7 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	}
 	
 	if(doClass){
-		ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
+		//ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
 		trPaintTerrain(10 * class, 0, 10 + 10 * class, 43, 0, 73, false); // CityTileWaterPool
 		trPaintTerrain(1 + 10 * class, 0, 9 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(1 + 10 * class, 22, 9 + 10 * class, 42, terrainType, terrainSubType, false);
@@ -538,6 +568,17 @@ inactive
 		xsEnableRule("CollectionSpace");
 		trCounterAddTime("tooltipSpace", -1, -9999999, "(Press SPACE to save deck and QUIT)");
 		trQuestVarSet("canPressSpace", 1);
+		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
+			CinematicReset();
+			CinematicAdd("icons\improvement architects icon 64", "This is your Collection and Deck. Right Click a Card to move it between the two.");
+			CinematicAdd("icons\improvement architects icon 64", "Your Deck must have a Commander and 40 Cards from one or two Classes.");
+			CinematicAdd("icons\improvement architects icon 64", "The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
+			CinematicAdd("icons\building outpost icon 64", "The Story Missions are Outposts. They reward packs containing Class Cards.");
+			CinematicAdd("icons\building outpost icon 64", "After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
+			CinematicAdd("icons\building outpost icon 64", "After completing a Class Story you will unlock the second Commander for that Class.");
+			CinematicAdd("icons\improvement rheias gift icons 64", "Complete your first Class Story to unlock the other Classes.");
+			CinematicStart();
+		}
 	} else {
 		trLetterBox(true);
 		trUIFadeToColor(0,0,0,0,0,true);
@@ -652,7 +693,7 @@ inactive
 		bool nothing = true;
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			int id = yDatabaseNext("allUnits", true);
-			trUnitHighlight(1.0, false);
+			//trUnitHighlight(1.0, false);
 			if (trUnitIsSelected()) {
 				trVectorSetUnitPos("temp","allUnits");
 				if(trVectorQuestVarGetZ("temp") < 90){
@@ -664,10 +705,7 @@ inactive
 					for(class=0;<6){
 						for(i=1;<=xsMin(getClassProgress(class),6)){
 							if(trDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
-								int cards = 3;
-								if(i > 1){
-									cards = 6;
-								}
+								int cards = 2 + i;
 								if(getClassProgress(class) == i){
 									trQuestVarSet("missionHardmode", 0);
 									collectionMission = GetMissionTitle(class,i);
@@ -761,6 +799,17 @@ inactive
 	} else if (trQuestVarGet("p1rain") == 1) {
 		trTechGodPower(1, "rain", 1);
 		trQuestVarSet("p1rain", 0);
+	}
+}
+
+rule CollectionTutorial
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		trShowImageDialog("icons\improvement architects icon 64", "This is your Collection and Deck. Right Click a card to move it between the two.");
+		trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+		xsDisableSelf();
 	}
 }
 

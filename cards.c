@@ -23,8 +23,8 @@ const int COMMANDER_ROGERS = 0;
 const int COMMANDER_VENLESH = 1;
 const int COMMANDER_NANO = 2;
 const int COMMANDER_NOTTUD = 3;
-const int COMMANDER_SCRAGINS = 4;
-const int COMMANDER_REACH = 5;
+const int COMMANDER_REACH = 4;
+const int COMMANDER_SCRAGINS = 5;
 const int COMMANDER_ROXAS = 6;
 const int COMMANDER_YEEBAAGOOON = 7;
 const int COMMANDER_ANRAHEIR = 8;
@@ -155,7 +155,23 @@ const int SPELL_FORTIFY = 75;
 const int SPELL_SONG_OF_REST = 76;
 
 // SPACE
-const int SPELL_NICKS_PORTAL = 77;
+const int SPELL_BEND_REALITY = 77;
+const int SPELL_NICKS_PORTAL = 78;
+const int SPELL_WARP_TILE = 79;
+const int SPELL_SPACE_VENT = 80;
+const int SPELL_BREAK_REALITY = 81;
+const int SPELL_PETTY_LASER = 82;
+const int SPELL_THICK_LASER = 83;
+const int SPELL_GRAND_LASER = 84;
+const int SPELL_OMEGA_LASER = 85;
+const int SPELL_GODLY_LASER = 86;
+const int SPELL_CONS_LIBRA = 87;
+const int SPELL_CONS_TAURUS = 88;
+const int SPELL_CONS_GEMINI = 89;
+const int SPELL_CONS_ORION = 90;
+const int SPELL_SPACE_BLESSING = 91;
+const int SPELL_SPACE_CURSE = 92;
+
 
 /*
 OnAttack events (bit positions)
@@ -185,8 +201,9 @@ const int ATTACK_SPELL_DAMAGE = 21;
 const int ATTACK_DRAW_CARD_ENEMY_COST = 22;
 const int ATTACK_SUMMON_TREE = 23;
 const int ATTACK_TEAMWORK = 24;
+const int ATTACK_NICKONHAWK = 25;
 
-const int ATTACK_EVENT_COUNT = 25;
+const int ATTACK_EVENT_COUNT = 26;
 
 /*
 OnDeath events (bit positions)
@@ -235,8 +252,10 @@ const int MAGNETIC = 17;
 const int CONDUCTOR = 18;
 const int STEALTH = 19;
 const int IMPORTANT = 20;
+const int IMMUNE = 21;
+const int REPEATABLE = 22;
 
-const int NUM_KEYWORDS = 21;
+const int NUM_KEYWORDS = 23;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -262,6 +281,8 @@ string GetKeywordName(int bitPosition=0){
 		case CONDUCTOR: return("Conductor");
 		case STEALTH: return("Stealth");
 		case IMPORTANT: return("Important");
+		case IMMUNE: return("Immune");
+		case REPEATABLE: return("Repeatable");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -290,6 +311,8 @@ string GetKeywordDescription(int bitPosition=0){
 		case CONDUCTOR: return("Allied Lightning effects can pass through me.");
 		case STEALTH: return("I cannot be targeted until I take damage.");
 		case IMPORTANT: return("If my Commander dies I become the new Commander.");
+		case IMMUNE: return("Cannot take damage.");
+		case REPEATABLE: return("This card may be played multiple times.");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
@@ -1019,7 +1042,7 @@ highFrequency
 	ADVENTURER
 	*/
 	// Created cards
-	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);
+	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		100, 500, 2, 1, Keyword(BEACON), true);
 	CardSetup("Lancer Hero",			0, "Venlesh", 			2, 20, 3, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
 	
 	// 0 - 4
@@ -1289,16 +1312,50 @@ highFrequency
 	SPACE
 	*/
 	// Created cards
-	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Battle-Mode",	2, 20, 2, 2, Keyword(BEACON), true);
-	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God-Mode", 		0, 20, 3, 0, Keyword(BEACON), true);
-	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);
+	CardSetup("Forkboy",				1, "Toy",						1, 1, 1, 1, 0, true);
+	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a minion.", SPELL_TYPE_OFFENSIVE, 0, true);
 	// 150-154
-	SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER);
+	SpellSetup("Touched by Chaos", 		2, SPELL_BEND_REALITY, 		"Give a minion a random Keyword. Draw a card.", SPELL_TYPE_OTHER);	
+	CardSetup("Fishing Ship Egyptian",	2, "3-SPD Scout",			1, 3, 3, 1, Keyword(FLYING)); 						// Play: I take 2 damage.
+	CardSetup("Fishing Ship Greek",		2, "Beacon Scout",			2, 4, 2, 1, Keyword(FLYING) + Keyword(BEACON)); 	// Play: I take 2 damage.
+	CardSetup("Fishing Ship Norse",		3, "Battle Interceptor",	3, 5, 2, 1, Keyword(FLYING)); 						// Play: I take 3 damage.
+	CardSetup("Fishing Ship Atlantean",	3, "Plasma Interceptor",	1, 5, 2, 1, Keyword(FLYING) + Keyword(DEADLY)); 	// Play: I take 3 damage.
 	// 155-159
+	CardSetup("Kebenit",				4, "Battle Corvette",		2, 9, 2, 1, Keyword(FLYING)); 						// Play: I take 4 damage.
+	CardSetup("Trireme",				4, "Nebula Corvette",		3, 5, 2, 1, Keyword(FLYING) + Keyword(STEALTH)); 	// Play: I take 4 damage.
+	CardSetup("Longboat",				5, "Battle Frigate",		4, 8, 2, 1, Keyword(FLYING)); 						// Play: I take 5 damage.
+	CardSetup("Fire Ship Atlantean",	5, "Warded Frigate",		7, 7, 2, 1, Keyword(FLYING) + Keyword(WARD)); 		// Play: I take 5 damage.
+	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random minion on a random tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
+	CardSetup("Siege Ship Egyptian",	6, "Battle Cruiser",		6, 12, 2, 1, Keyword(FLYING)); 						// Play: I take 6 damage.
+	CardSetup("Siege Ship Greek",		6, "Beacon Cruiser",		3, 12, 2, 1, Keyword(FLYING) + Keyword(BEACON)); 	// Play: I take 6 damage.
+	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 2, 1, Keyword(FLYING)); 						// Play: I take 8 damage.
+	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 2, 1, Keyword(FLYING) + Keyword(DEADLY)); 	// Play: I take 8 damage.
+	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 1, Keyword(FLYING) + Keyword(ARMORED) + Keyword(CHARGE) + Keyword(FURIOUS));	 // I can't attack commanders. Play: I take 10 damage. 
 	// 165-169
+	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));
+	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
+	CardSetup("Athena",					4, "God's Assistant",		1, 1, 2, 1, Keyword(IMMUNE));
+	SpellSetup("Warp", 					3, SPELL_WARP_TILE, 		"Choose a tile. Next turn summon a minion from your deck on it.", SPELL_TYPE_OTHER);
+	SpellSetup("Airlock Vent", 			6, SPELL_SPACE_VENT, 		"Both players discard their hand, summon any minions discarded.", SPELL_TYPE_OTHER);
 	// 170-174
+	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
+	CardSetup("Catapult",				9, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(MAGNETIC));
+	CardSetup("Santa",					5, "Santa Claus",			6, 7, 1, 1, Keyword(STEALTH));
+	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 1, 1, Keyword(MAGNETIC)); // Play: Grant an allied minion +1|+1
+	CardSetup("Roc",					5, "Fateful Bird",			2, 2, 1, 1, Keyword(FLYING)); // Death: Summon the most expensive minion from your deck on my tile.
 	// 175-179 (LEGENDARY at 179)
+	SpellSetup("Constellation: Libra", 	1, SPELL_CONS_LIBRA, 		"Restore 1 Health to your Commander. Repeat for each other Constellation you played this game.", SPELL_TYPE_OTHER);
+	SpellSetup("Constellation: Orion", 	3, SPELL_CONS_ORION, 		"Give a minion +1 Attack. Upgrade your future Constellations.", SPELL_TYPE_OTHER);
+	SpellSetup("Constellation: Taurus", 5, SPELL_CONS_TAURUS, 		"Draw 1 card. Upgrade your future Constellations.", SPELL_TYPE_OTHER);
+	SpellSetup("Constellation: Gemini", 7, SPELL_CONS_GEMINI, 		"Summon 1 copy of a minion. Upgrade your future Constellations.", SPELL_TYPE_OTHER);
+
+	CardSetup("Hero Greek Heracles",	6, "Multiverse Champion",			4, 5, 2, 1); //Your cards are Repeatable.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_07");
 	
@@ -1385,7 +1442,7 @@ highFrequency
 	CardEvents("Anubite", 0, 0,											"Play: Deal 3 damage to your Commander.");
 	CardEvents("Satyr", Keyword(ATTACK_GET_ZOMBIE), 0, 					"Attack: Create a Zombie.");
 	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
-	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an ally and grant me its attack and health.");
+	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an allied minion and grant me its attack and health.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
 	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
@@ -1399,8 +1456,11 @@ highFrequency
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 	
-	//CardEvents("Hero Greek Odysseus", 0, 0, 							"Loading ability...");
-	//CardEvents("Caravan Atlantean", 0, 0, 								"Loading ability...");
+	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Consume your Mana to summon a minion from deck that costs that much or less.");
+	CardEvents("Caravan Atlantean", 0, 0, 								"Your healing effects summon a Toy with stats equal to the amount healed.");
+	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");
+	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards are Repeatable.");
+	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Grant an allied minion +1 attack and health.");
 	
 	xsDisableSelf();
 }

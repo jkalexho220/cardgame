@@ -199,12 +199,27 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 void healUnit(int index = 0, float heal = 0) {
 	xsSetContextPlayer(1*mGetVar(index, "player"));
 	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
-	xsSetContextPlayer(0);
+	xsSetContextPlayer(0);	
 	trUnitSelectClear();
 	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
 	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
 	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
+	if(heal>=1 && trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType")==COMMANDER_GOD) {	
+		yClearDatabase("toyTiles");
+		findAvailableTiles(1*mGetVar(index, "tile"), 1, "toyTiles", false);
+		if(yGetDatabaseCount("toyTiles") > 0){
+			int target = summonAtTile(1*yDatabaseNext("toyTiles"),1*trQuestVarGet("activePlayer"),kbGetProtoUnitID("Forkboy"));
+			mSetVar(target, "attack", heal);
+			mSetVar(target, "health", heal);
+			mSetVar(target, "speed", heal);
+			mSetVar(target, "cost", heal);
+			mSetVar(target, "scale", 1 + 0.25 * heal);
+			scaleUnit(target);	
+		} else {
+			ChatLog(1, "No space to summon!");
+		}
+	}
 }
 
 void damageUnit(int index = 0, float dmg = 0) {

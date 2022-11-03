@@ -243,6 +243,48 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				mSetVarByQV("p"+p+"commander", "action", ACTION_READY);
 			}
 		}
+		case ATTACK_NICKONHAWK:
+		{
+			int proto = 0;
+			int manaCost = trQuestVarGet("p"+p+"mana");			
+			
+			while(manaCost >= 0){
+				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
+					proto = yDatabaseNext("p"+p+"deck");
+					if (yGetVar("p"+p+"deck", "spell") == SPELL_NONE && trQuestVarGet("card_"+proto+"_cost") == manaCost) {
+						yRemoveFromDatabase("p"+p+"deck");
+						break;
+					}
+					proto = 0;
+				}
+				if(proto > 0){
+					trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") - trQuestVarGet("card_"+proto+"_cost"));
+					updateMana();
+					updateHandPlayable(p);
+					manaCost = -1;
+				} else {
+					manaCost = manaCost - 1;
+				}			
+			}		
+			
+			if(proto > 0){
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				yClearDatabase("odyTiles");
+				findAvailableTiles(1*mGetVar(attacker, "tile"), 1, "odyTiles", false);
+				if(yGetDatabaseCount("odyTiles") > 0){
+					int activeUnit = summonAtTile(1*yDatabaseNext("odyTiles"),p,proto);			
+					if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == true){
+						mSetVar(activeUnit, "action", ACTION_READY);
+					} else {
+						mSetVar(activeUnit, "action", ACTION_SLEEPING);				
+					}	
+				} else {
+					ChatLog(1, "No space to summon!");
+				}
+			} else {
+				ChatLog(1, "Nothing to summon!");
+			}		
+		}
 	}
 }
 

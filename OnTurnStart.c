@@ -34,10 +34,10 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
-			trVectorQuestVarSet("dir", xsVectorSet(mGetVar(unit, "laserDirx"), 0, mGetVar(unit, "laserDirz")));
+			trVectorQuestVarSet("dir", xsVectorSet(1.0*mGetVar(unit, "laserDirx")/100000.0, 0, 1.0*mGetVar(unit, "laserDirz")/100000.0));
 			trUnitSelectClear();
 			trUnitSelect(""+unit);
-			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
+			trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true); // This makes the siphon dissapear
 			trSoundPlayFN("sky passage.wav","1",-1,"","");
 			trQuestVarSet("next", deployAtTile(0, "Dwarf", 1*mGetVar(unit, "tile")));
 			trUnitSelectClear();
@@ -103,7 +103,7 @@ bool OnTurnStart(int unit = 0) {
 			}
 			for (x=yGetDatabaseCount("allUnits"); >0)  {
 				yDatabaseNext("allUnits");
-				p = yGetVar("allUnits", "player");
+				p = mGetVarByQV("allUnits", "player");
 				trQuestVarSet("p"+p+"count", 1 + trQuestVarGet("p"+p+"count"));
 			}
 			if (trQuestVarGet("p1count") > trQuestVarGet("p2count")) {
