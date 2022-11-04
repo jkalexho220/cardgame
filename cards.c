@@ -730,7 +730,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	trUnitSelect(""+next, false);
 	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
-		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
 		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
 		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
 		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));
@@ -746,7 +746,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "scale", 1);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
-		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
 		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
 		mSetVar(next, "keywords", trQuestVarGet("spell_"+spell+"_keywords"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
@@ -1154,7 +1154,7 @@ highFrequency
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
-	CardSetup("Archer Atlantean",		4, "Undercity Sniper",		1, 3, 2, 3); // Whenever your Commander attacks an enemy, I attack it too.
+	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
 	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
 	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
