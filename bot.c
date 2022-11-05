@@ -257,6 +257,10 @@ inactive
 					if(trCountUnitsInArea("128",2,"Unit",45) < 3){
 						yClearDatabase("castTiles");
 					}
+				} else if(1*trQuestVarGet("botSpell") == SPELL_REFRESH_MANA){
+					if((trQuestVarGet("maxMana") - trQuestVarGet("p2mana")) < 4){
+						yClearDatabase("castTiles");
+					}
 				}
 				
 				if (1*trQuestVarGet("botSpell") == SPELL_SCRAP_METAL) {
@@ -365,6 +369,9 @@ inactive
 						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
 							currentScore = currentScore - 1;
 						}
+						if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
+							currentScore = 0;
+						}
 					}
 					// If the target dies, then currentScore = 2 * (target's attack + cost)
 					if (currentScore >= 0) {
@@ -377,7 +384,7 @@ inactive
 						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
 							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
 						} else {
-							if(1*mGetVarByQV("targets", "stunTime") == 0){
+							if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
 								currentScore = currentScore - mGetVarByQV("targets", "attack");
 								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
 									currentScore = currentScore + 1;

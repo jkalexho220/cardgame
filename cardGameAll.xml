@@ -1818,11 +1818,11 @@
 <Command>const int SPELL_SONG_OF_REST = 76;</Command>
 
 <Command>// SPACE</Command>
-<Command>const int SPELL_BEND_REALITY = 77;</Command>
+<Command>const int SPELL_REFRESH_MANA = 77;</Command>
 <Command>const int SPELL_NICKS_PORTAL = 78;</Command>
-<Command>const int SPELL_WARP_TILE = 79;</Command>
-<Command>const int SPELL_SPACE_VENT = 80;</Command>
-<Command>const int SPELL_BREAK_REALITY = 81;</Command>
+<Command>const int SPELL_SPACE_VENT = 79;</Command>
+<Command>const int SPELL_ELDRITCH_WHISPERS = 80;</Command>
+<Command>const int SPELL_ELDRITCH_RITUAL = 81;</Command>
 <Command>const int SPELL_PETTY_LASER = 82;</Command>
 <Command>const int SPELL_THICK_LASER = 83;</Command>
 <Command>const int SPELL_GRAND_LASER = 84;</Command>
@@ -1832,8 +1832,6 @@
 <Command>const int SPELL_CONS_TAURUS = 88;</Command>
 <Command>const int SPELL_CONS_GEMINI = 89;</Command>
 <Command>const int SPELL_CONS_ORION = 90;</Command>
-<Command>const int SPELL_SPACE_BLESSING = 91;</Command>
-<Command>const int SPELL_SPACE_CURSE = 92;</Command>
 
 
 <Command>const int ATTACK_DRAW_CARD = 0;</Command>
@@ -1905,11 +1903,10 @@
 <Command>const int MAGNETIC = 17;</Command>
 <Command>const int CONDUCTOR = 18;</Command>
 <Command>const int STEALTH = 19;</Command>
-<Command>const int IMPORTANT = 20;</Command>
+<Command>const int REPEATABLE = 20;</Command>
 <Command>const int IMMUNE = 21;</Command>
-<Command>const int REPEATABLE = 22;</Command>
 
-<Command>const int NUM_KEYWORDS = 23;</Command>
+<Command>const int NUM_KEYWORDS = 22;</Command>
 
 
 <Command>string GetKeywordName(int bitPosition=0){</Command>
@@ -1934,9 +1931,8 @@
 <Command>		case MAGNETIC: return("Magnetic");</Command>
 <Command>		case CONDUCTOR: return("Conductor");</Command>
 <Command>		case STEALTH: return("Stealth");</Command>
-<Command>		case IMPORTANT: return("Important");</Command>
+<Command>		case REPEATABLE: return("Echo");</Command>
 <Command>		case IMMUNE: return("Immune");</Command>
-<Command>		case REPEATABLE: return("Repeatable");</Command>
 <Command>	}</Command>
 <Command>	ThrowError("Invalid keyword id. Method: GetKeywordName");</Command>
 <Command>	return ("");</Command>
@@ -1964,9 +1960,9 @@
 <Command>		case MAGNETIC: return("When played next to another Magnetic minion, you can combine them, adding attack, health, and keywords.");</Command>
 <Command>		case CONDUCTOR: return("Allied Lightning effects can pass through me.");</Command>
 <Command>		case STEALTH: return("I cannot be targeted until I take damage.");</Command>
-<Command>		case IMPORTANT: return("If my Commander dies I become the new Commander.");</Command>
+<Command>		case REPEATABLE: return("This card may be played an additional time.");</Command>
 <Command>		case IMMUNE: return("Cannot take damage.");</Command>
-<Command>		case REPEATABLE: return("This card may be played multiple times.");</Command>
+
 <Command>	}</Command>
 <Command>	ThrowError("Invalid keyword id. Method: GetKeywordDescription");</Command>
 <Command>	return ("");</Command>
@@ -2403,6 +2399,7 @@
 <Command>		mSetVar(next, "stunTime", 0);</Command>
 <Command>		mSetVar(next, "stunSFX", 0);</Command>
 <Command>		mSetVar(next, "victory", 0);</Command>
+<Command>		mSetVar(next, "victoryAmbush", 0);</Command>
 <Command>		mSetVar(next, "scale", 1);</Command>
 <Command>		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
 <Command>	} else {</Command>
@@ -2665,7 +2662,7 @@
 <Command>	//Pick a card. Any card.</Command>
 <Command>	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);</Command>
 <Command>	// Created cards</Command>
-<Command>	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		100, 500, 2, 1, Keyword(BEACON), true);</Command>
+<Command>	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);</Command>
 <Command>	CardSetup("Lancer Hero",			0, "Venlesh", 			2, 20, 3, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);</Command>
 
 <Command>	// 0 - 4</Command>
@@ -2923,47 +2920,49 @@
 <Command>	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	2, 20, 2, 2, Keyword(BEACON), true);</Command>
 <Command>	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);</Command>
 <Command>	CardSetup("Forkboy",				1, "Toy",						1, 1, 1, 1, 0, true);</Command>
+<Command>	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstruosity in your deck.", SPELL_TYPE_OTHER, 0, true);</Command>
+<Command>	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstruosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(16) + Keyword(9) + Keyword(15) + Keyword(22), true);</Command>
 <Command>	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a minion.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	// 150-154</Command>
-<Command>	SpellSetup("Touched by Chaos", 		2, SPELL_BEND_REALITY, 		"Give a minion a random Keyword. Draw a card.", SPELL_TYPE_OTHER);</Command>
-<Command>	CardSetup("Fishing Ship Egyptian",	2, "3-SPD Scout",			1, 3, 3, 1, Keyword(FLYING)); 						// Play: I take 2 damage.</Command>
-<Command>	CardSetup("Fishing Ship Greek",		2, "Beacon Scout",			2, 4, 2, 1, Keyword(FLYING) + Keyword(BEACON)); 	// Play: I take 2 damage.</Command>
-<Command>	CardSetup("Fishing Ship Norse",		3, "Battle Interceptor",	3, 5, 2, 1, Keyword(FLYING)); 						// Play: I take 3 damage.</Command>
-<Command>	CardSetup("Fishing Ship Atlantean",	3, "Plasma Interceptor",	1, 5, 2, 1, Keyword(FLYING) + Keyword(DEADLY)); 	// Play: I take 3 damage.</Command>
+<Command>	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);</Command>
+<Command>	CardSetup("Fishing Ship Egyptian",	2, "3-SPD Scout",			1, 3, 3, 1, Keyword(ETHEREAL)); 					// Play: I take 2 damage.</Command>
+<Command>	CardSetup("Fishing Ship Greek",		2, "Beacon Scout",			2, 4, 2, 1, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: I take 2 damage.</Command>
+<Command>	CardSetup("Fishing Ship Norse",		3, "Battle Interceptor",	3, 5, 2, 1, Keyword(ETHEREAL)); 					// Play: I take 3 damage.</Command>
+<Command>	CardSetup("Fishing Ship Atlantean",	3, "Plasma Interceptor",	1, 5, 2, 1, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 3 damage.</Command>
 <Command>	// 155-159</Command>
-<Command>	CardSetup("Kebenit",				4, "Battle Corvette",		2, 9, 2, 1, Keyword(FLYING)); 						// Play: I take 4 damage.</Command>
-<Command>	CardSetup("Trireme",				4, "Nebula Corvette",		3, 5, 2, 1, Keyword(FLYING) + Keyword(STEALTH)); 	// Play: I take 4 damage.</Command>
-<Command>	CardSetup("Longboat",				5, "Battle Frigate",		4, 8, 2, 1, Keyword(FLYING)); 						// Play: I take 5 damage.</Command>
-<Command>	CardSetup("Fire Ship Atlantean",	5, "Warded Frigate",		7, 7, 2, 1, Keyword(FLYING) + Keyword(WARD)); 		// Play: I take 5 damage.</Command>
+<Command>	CardSetup("Kebenit",				4, "Battle Corvette",		2, 9, 2, 2, Keyword(ETHEREAL)); 					// Play: I take 4 damage.</Command>
+<Command>	CardSetup("Trireme",				4, "Nebula Corvette",		3, 5, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: I take 4 damage.</Command>
+<Command>	CardSetup("Longboat",				5, "Battle Frigate",		4, 7, 2, 2, Keyword(ETHEREAL)); 					// Play: I take 5 damage.</Command>
+<Command>	CardSetup("Fire Ship Atlantean",	5, "Warded Frigate",		6, 6, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: I take 5 damage.</Command>
 <Command>	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random minion on a random tile.", SPELL_TYPE_OTHER);</Command>
 <Command>	// 160-164 (LEGENDARY at 164)</Command>
-<Command>	CardSetup("Siege Ship Egyptian",	6, "Battle Cruiser",		6, 12, 2, 1, Keyword(FLYING)); 						// Play: I take 6 damage.</Command>
-<Command>	CardSetup("Siege Ship Greek",		6, "Beacon Cruiser",		3, 12, 2, 1, Keyword(FLYING) + Keyword(BEACON)); 	// Play: I take 6 damage.</Command>
-<Command>	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 2, 1, Keyword(FLYING)); 						// Play: I take 8 damage.</Command>
-<Command>	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 2, 1, Keyword(FLYING) + Keyword(DEADLY)); 	// Play: I take 8 damage.</Command>
-<Command>	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 1, Keyword(FLYING) + Keyword(ARMORED) + Keyword(CHARGE) + Keyword(FURIOUS));	 // I can't attack commanders. Play: I take 10 damage.</Command>
+<Command>	CardSetup("Siege Ship Egyptian",	6, "Battle Cruiser",		6, 12, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 6 damage.</Command>
+<Command>	CardSetup("Siege Ship Greek",		6, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.</Command>
+<Command>	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 8 damage.</Command>
+<Command>	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.</Command>
+<Command>	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE) + Keyword(AMBUSH));	 // Play: I take 10 damage.</Command>
 <Command>	// 165-169</Command>
 <Command>	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));</Command>
 <Command>	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));</Command>
-<Command>	CardSetup("Athena",					4, "God's Assistant",		1, 1, 2, 1, Keyword(IMMUNE));</Command>
-<Command>	SpellSetup("Warp", 					3, SPELL_WARP_TILE, 		"Choose a tile. Next turn summon a minion from your deck on it.", SPELL_TYPE_OTHER);</Command>
+<Command>	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));</Command>
+<Command>	CardSetup("Santa",					5, "Big Santa Claus",		6, 7, 1, 1, Keyword(HEALER));</Command>
 <Command>	SpellSetup("Airlock Vent", 			6, SPELL_SPACE_VENT, 		"Both players discard their hand, summon any minions discarded.", SPELL_TYPE_OTHER);</Command>
 <Command>	// 170-174</Command>
-<Command>	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);</Command>
-<Command>	CardSetup("Catapult",				9, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(MAGNETIC));</Command>
-<Command>	CardSetup("Santa",					5, "Santa Claus",			6, 7, 1, 1, Keyword(STEALTH));</Command>
-<Command><![CDATA[	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 1, 1, Keyword(MAGNETIC)); // Play: Grant an allied minion +1|+1]]></Command>
-<Command>	CardSetup("Roc",					5, "Fateful Bird",			2, 2, 1, 1, Keyword(FLYING)); // Death: Summon the most expensive minion from your deck on my tile.</Command>
+<Command>	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh your Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);</Command>
+<Command>	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Play: Deal 5 Damage to ALL adjacent minions</Command>
+<Command>	SpellSetup("Eldritch Whispers", 	5, SPELL_ELDRITCH_WHISPERS, "Give a minion +5 Health. If you target an enemy, shuffle an Eldritch Ritual in your deck.", SPELL_TYPE_OTHER);</Command>
+<Command><![CDATA[	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1]]></Command>
+<Command>	CardSetup("Stymphalian Bird",		4, "Mech Bird",				2, 2, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));</Command>
 <Command>	// 175-179 (LEGENDARY at 179)</Command>
-<Command>	SpellSetup("Constellation: Libra", 	1, SPELL_CONS_LIBRA, 		"Restore 1 Health to your Commander. Repeat for each other Constellation you played this game.", SPELL_TYPE_OTHER);</Command>
-<Command>	SpellSetup("Constellation: Orion", 	3, SPELL_CONS_ORION, 		"Give a minion +1 Attack. Upgrade your future Constellations.", SPELL_TYPE_OTHER);</Command>
-<Command>	SpellSetup("Constellation: Taurus", 5, SPELL_CONS_TAURUS, 		"Draw 1 card. Upgrade your future Constellations.", SPELL_TYPE_OTHER);</Command>
-<Command>	SpellSetup("Constellation: Gemini", 7, SPELL_CONS_GEMINI, 		"Summon 1 copy of a minion. Upgrade your future Constellations.", SPELL_TYPE_OTHER);</Command>
+<Command>	SpellSetup("Constellation: Libra", 	1, SPELL_CONS_LIBRA, 		"Restore 1 Health to your Commander. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);</Command>
+<Command><![CDATA[	SpellSetup("Constellation: Gemini", 3, SPELL_CONS_GEMINI, 		"Summon a 1|1 copy of a minion. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);]]></Command>
+<Command>	SpellSetup("Constellation: Taurus", 5, SPELL_CONS_TAURUS, 		"Draw 1 card. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);</Command>
+<Command><![CDATA[	SpellSetup("Constellation: Orion", 	7, SPELL_CONS_ORION, 		"Give your minions +1|+1. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);]]></Command>
 
-<Command>	CardSetup("Hero Greek Heracles",	6, "Multiverse Champion",			4, 5, 2, 1); //Your cards are Repeatable.</Command>
+<Command>	CardSetup("Hero Greek Heracles",	7, "Multiverse Champion",			5, 6, 2, 1); //Your cards have Echo.</Command>
 <Command>	xsDisableSelf();</Command>
 <Command>	trDelayedRuleActivation("initializeCards_07");</Command>
 
@@ -3060,11 +3059,24 @@
 <Command>	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");</Command>
 <Command>	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");</Command>
 
-<Command>	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Consume your Mana to summon a minion from deck that costs that much or less.");</Command>
-<Command>	CardEvents("Caravan Atlantean", 0, 0, 								"Your healing effects summon a Toy with stats equal to the amount healed.");</Command>
+<Command>	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Summon and pay for the most expensive minion from your deck that you can afford.");</Command>
+<Command>	CardEvents("Caravan Atlantean", 0, 0, 								"Your healing effects summon a Toy with attack and health equal to the amount healed.");</Command>
+<Command>	CardEvents("Fishing Ship Egyptian", 0, 0, 							"Play: I take 2 damage. ");</Command>
+<Command>	CardEvents("Fishing Ship Greek", 0, 0, 								"Play: I take 2 damage. ");</Command>
+<Command>	CardEvents("Fishing Ship Norse", 0, 0, 								"Play: I take 3 damage. ");</Command>
+<Command>	CardEvents("Fishing Ship Atlantean", 0, 0, 							"Play: I take 3 damage. ");</Command>
+<Command>	CardEvents("Kebenit", 0, 0, 										"Play: I take 4 damage. ");</Command>
+<Command>	CardEvents("Trireme", 0, 0, 										"Play: I take 4 damage. ");</Command>
+<Command>	CardEvents("Longboat", 0, 0, 										"Play: I take 5 damage. ");</Command>
+<Command>	CardEvents("Fire Ship Atlantean", 0, 0, 							"Play: I take 5 damage. ");</Command>
+<Command>	CardEvents("Siege Ship Egyptian", 0, 0, 							"Play: I take 6 damage. ");</Command>
+<Command>	CardEvents("Siege Ship Greek", 0, 0, 								"Play: I take 6 damage. ");</Command>
+<Command>	CardEvents("Siege Ship Norse", 0, 0, 								"Play: I take 8 damage. ");</Command>
+<Command>	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: I take 8 damage. ");</Command>
 <Command>	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");</Command>
-<Command>	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards are Repeatable.");</Command>
+<Command>	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards have Echo.");</Command>
 <Command>	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Grant an allied minion +1 attack and health.");</Command>
+<Command>	CardEvents("Catapult", 0, 0, 										"Play: Deal 5 Damage to ALL adjacent minions.");</Command>
 
 <Command>	xsDisableSelf();</Command>
 <Command>}</Command>
@@ -3149,7 +3161,6 @@
 
 
 <Command>int findNearestTile(string v = "") {</Command>
-<Command>	debugLog("Vector is " + trVectorQuestVarGet(v));</Command>
 <Command>	for (x=zGetBankCount("tiles"); >0) {</Command>
 <Command>		zBankNext("tiles");</Command>
 <Command><![CDATA[		if (trDistanceToVectorSquared("tiles", v) < 9) {]]></Command>
@@ -4247,7 +4258,7 @@
 <Command>	teleportToTile(1*trQuestVarGet("next"), tile);</Command>
 <Command>	trUnitSelectClear();</Command>
 <Command>	trUnitSelect(""+1*trQuestVarGet("next"));</Command>
-<Command>	trUnitOverrideAnimation(18,0,false,true,-1);</Command>
+<Command>	trUnitOverrideAnimation(-1,0,false,true,-1);</Command>
 <Command>	yAddToDatabase("allUnits", "next");</Command>
 <Command>	return(1*trQuestVarGet("next"));</Command>
 <Command>}</Command>
@@ -4323,11 +4334,11 @@
 <Command>void healUnit(int index = 0, float heal = 0) {</Command>
 <Command>	xsSetContextPlayer(1*mGetVar(index, "player"));</Command>
 <Command>	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));</Command>
-<Command>	xsSetContextPlayer(0);</Command>
 <Command>	trUnitSelectClear();</Command>
 <Command>	trUnitSelect(""+index);</Command>
 <Command>	trDamageUnit(0 - heal);</Command>
 <Command>	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;</Command>
+<Command>	xsSetContextPlayer(0);</Command>
 <Command>	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);</Command>
 <Command><![CDATA[	if(heal>=1 && trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType")==COMMANDER_GOD) {]]></Command>
 <Command>		yClearDatabase("toyTiles");</Command>
@@ -4336,9 +4347,9 @@
 <Command>			int target = summonAtTile(1*yDatabaseNext("toyTiles"),1*trQuestVarGet("activePlayer"),kbGetProtoUnitID("Forkboy"));</Command>
 <Command>			mSetVar(target, "attack", heal);</Command>
 <Command>			mSetVar(target, "health", heal);</Command>
-<Command>			mSetVar(target, "speed", heal);</Command>
+<Command>			mSetVar(target, "speed", 2);</Command>
 <Command>			mSetVar(target, "cost", heal);</Command>
-<Command>			mSetVar(target, "scale", 1 + 0.25 * heal);</Command>
+<Command>			mSetVar(target, "scale", 0.5 + 0.25 * heal);</Command>
 <Command>			scaleUnit(target);</Command>
 <Command>		} else {</Command>
 <Command>			ChatLog(1, "No space to summon!");</Command>
@@ -4347,7 +4358,9 @@
 <Command>}</Command>
 
 <Command>void damageUnit(int index = 0, float dmg = 0) {</Command>
-<Command>	int p = mGetVar(index, "player");</Command>
+<Command>	if (HasKeyword(IMMUNE, 1*mGetVar(index, "keywords"))) {</Command>
+<Command>		return;</Command>
+<Command>	}</Command>
 <Command>	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {</Command>
 <Command>		dmg = xsMax(0, dmg - 1);</Command>
 <Command>	}</Command>
@@ -4360,6 +4373,7 @@
 <Command>		trUnitSelect(""+1*trQuestVarGet("spyEye"+1*trQuestVarGet("stealthSFX"+index)));</Command>
 <Command>		trUnitDestroy();</Command>
 <Command>	}</Command>
+<Command>	int p = mGetVar(index, "player");</Command>
 <Command>	if(index == trQuestVarGet("p"+p+"commander")){</Command>
 <Command>		if (trCountUnitsInArea("128",p,"Trident Soldier Hero",45) > 0) {</Command>
 <Command>			int pointer = yGetPointer("allUnits");</Command>
@@ -4780,19 +4794,33 @@
 <Command>	}</Command>
 <Command>}</Command>
 <Command>void shuffleDeck(int p = 0) {</Command>
-<Command>	int i = 0;</Command>
-<Command>	for(x=yGetDatabaseCount("p"+p+"deck")-1; >=0) {</Command>
-<Command>		trQuestVarSetFromRand("pos", 0, x, true);</Command>
-<Command>		i = trQuestVarGet("pos");</Command>
-<Command>		trQuestVarSet("tempProto", yGetUnitAtIndex("p"+p+"deck", i));</Command>
-<Command>		trQuestVarSet("tempSpell", yGetVarAtIndex("p"+p+"deck", "spell", i));</Command>
-
-<Command>		ySetUnitAtIndex("p"+p+"deck", i, yGetUnitAtIndex("p"+p+"deck", x));</Command>
-<Command>		ySetVarAtIndex("p"+p+"deck", "spell", yGetVarAtIndex("p"+p+"deck", "spell", x), i);</Command>
-
-<Command>		ySetUnitAtIndex("p"+p+"deck", x, 1*trQuestVarGet("tempProto"));</Command>
-<Command>		ySetVarAtIndex("p"+p+"deck", "spell", trQuestVarGet("tempSpell"), x);</Command>
+<Command>	int proto = 0;</Command>
+<Command>	int spell = 0;</Command>
+<Command>	int count = yGetDatabaseCount("p"+p+"deck");</Command>
+<Command>	int db = aiPlanCreate("shuffle", 8);</Command>
+<Command>	aiPlanAddUserVariableInt(db, 0, "proto", count);</Command>
+<Command>	aiPlanAddUserVariableInt(db, 1, "spell", count);</Command>
+<Command><![CDATA[	for(i=0; < count) {]]></Command>
+<Command>		proto = yDatabaseNext("p"+p+"deck");</Command>
+<Command>		spell = yGetVar("p"+p+"deck", "spell");</Command>
+<Command>		aiPlanSetUserVariableInt(db, 0, i, proto);</Command>
+<Command>		aiPlanSetUserVariableInt(db, 1, i, spell);</Command>
 <Command>	}</Command>
+<Command>	yClearDatabase("p"+p+"deck");</Command>
+<Command>	for(i=count - 1; >= 0) {</Command>
+<Command>		// choose a random card</Command>
+<Command>		trQuestVarSetFromRand("temp", 0, i, true);</Command>
+<Command>		trQuestVarSet("tempProto", aiPlanGetUserVariableInt(db, 0, 1*trQuestVarGet("temp")));</Command>
+<Command>		trQuestVarSet("tempSpell", aiPlanGetUserVariableInt(db, 1, 1*trQuestVarGet("temp")));</Command>
+<Command>		yAddToDatabase("p"+p+"deck", "tempProto");</Command>
+<Command>		yAddUpdateVar("p"+p+"deck", "spell", trQuestVarGet("tempSpell"));</Command>
+<Command>		// swap with the last card</Command>
+<Command>		proto = aiPlanGetUserVariableInt(db, 0, i);</Command>
+<Command>		spell = aiPlanGetUserVariableInt(db, 1, i);</Command>
+<Command>		aiPlanSetUserVariableInt(db, 0, 1*trQuestVarGet("temp"), proto);</Command>
+<Command>		aiPlanSetUserVariableInt(db, 1, 1*trQuestVarGet("temp"), spell);</Command>
+<Command>	}</Command>
+<Command>	aiPlanDestroy(db);</Command>
 <Command>}</Command>
 <Command>void updateHandPlayable(int p = 0) {</Command>
 <Command>	for(x=zGetBankCount("p"+p+"handPos"); >0) {</Command>
@@ -4837,6 +4865,10 @@
 <Command>	int spell = CardToSpell(card);</Command>
 <Command>	if (spell == 0) {</Command>
 <Command>		trQuestVarSet("proto", CardToProto(card));</Command>
+<Command>		if (trQuestVarGet("proto") == 0) {</Command>
+<Command>			trSoundPlayFN("cantdothat.wav","1",-1,"","");</Command>
+<Command>			ChatLog(1, "Card invalid! " + card);</Command>
+<Command>		}</Command>
 <Command>		yAddToDatabase("p"+p+"deck", "proto");</Command>
 <Command>		yAddUpdateVar("p"+p+"deck", "spell", 0);</Command>
 <Command>	} else {</Command>
@@ -5908,27 +5940,27 @@
 <Command>			{</Command>
 <Command>				case 1:</Command>
 <Command>				{</Command>
-<Command>					return ("It's Over And Yet");</Command>
+<Command>					return ("Hoof, Sword and Arrow");</Command>
 <Command>				}</Command>
 <Command>				case 2:</Command>
 <Command>				{</Command>
-<Command>					return ("The Portal Guy");</Command>
+<Command>					return ("Magical Staff");</Command>
 <Command>				}</Command>
 <Command>				case 3:</Command>
 <Command>				{</Command>
-<Command>					return ("Secrets And Stars");</Command>
+<Command>					return ("Water Horse");</Command>
 <Command>				}</Command>
 <Command>				case 4:</Command>
 <Command>				{</Command>
-<Command>					return ("Puzzle Box");</Command>
+<Command>					return ("Cogs");</Command>
 <Command>				}</Command>
 <Command>				case 5:</Command>
 <Command>				{</Command>
-<Command>					return ("It's Empty And Yet");</Command>
+<Command>					return ("Nasty Hand");</Command>
 <Command>				}</Command>
 <Command>				case 6:</Command>
 <Command>				{</Command>
-<Command>					return ("Thank You");</Command>
+<Command>					return ("Black Star");</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
@@ -6813,6 +6845,12 @@
 <Command>		cost = mGetVar(unit, "cost") - trQuestVarGet("p"+p+"spellDiscount");</Command>
 <Command>		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {</Command>
 <Command>			cost = cost - trQuestVarGet("p"+p+"manaflow");</Command>
+<Command>		}</Command>
+<Command><![CDATA[		if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {]]></Command>
+<Command>			generateCard(p, 0, 1*mGetVar(unit, "spell"), true);</Command>
+<Command>			if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){</Command>
+<Command>				mSetVarByQV("next", "echo", 1);</Command>
+<Command>			}</Command>
 <Command>		}</Command>
 <Command>		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_REACH) {</Command>
 <Command>			trQuestVarSet("p"+p+"extraManaflow", cost + trQuestVarGet("p"+p+"extraManaflow"));</Command>
@@ -7800,6 +7838,43 @@
 <Command>		{</Command>
 <Command>			castAddTile("spellTarget", true);</Command>
 <Command>			castInstructions("Click on any tile to cast. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_REFRESH_MANA:</Command>
+<Command>		{</Command>
+<Command>			castAddTile("spellTarget", true);</Command>
+<Command>			castInstructions("Click on any tile to cast. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_ELDRITCH_WHISPERS:</Command>
+<Command>		{</Command>
+<Command>			castAddUnit("spellTarget", 0, false);</Command>
+<Command>			castInstructions("Choose a minion. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_ELDRITCH_RITUAL:</Command>
+<Command>		{</Command>
+<Command>			castAddUnit("spellTarget", 0, false);</Command>
+<Command>			castInstructions("Choose a minion. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_CONS_LIBRA:</Command>
+<Command>		{</Command>
+<Command>			castAddTile("spellTarget", true);</Command>
+<Command>			castInstructions("Click on any tile to restore " + (1+1*trQuestVarGet("constellations")) + " Health to your Commander. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_CONS_GEMINI:</Command>
+<Command>		{</Command>
+<Command>			castAddUnit("spellTarget", 0, false);</Command>
+<Command><![CDATA[			castInstructions("Choose a minion to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");]]></Command>
+<Command>			castAddSummonLocations("spellDestination");</Command>
+<Command><![CDATA[			castInstructions("Choose a tile to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");]]></Command>
+<Command>		}</Command>
+<Command>		case SPELL_CONS_TAURUS:</Command>
+<Command>		{</Command>
+<Command>			castAddTile("spellTarget", true);</Command>
+<Command>			castInstructions("Click on any tile to draw " + (1+1*trQuestVarGet("constellations")) + " cards. Right click to cancel.");</Command>
+<Command>		}</Command>
+<Command>		case SPELL_CONS_ORION:</Command>
+<Command>		{</Command>
+<Command>			castAddTile("spellTarget", true);</Command>
+<Command><![CDATA[			castInstructions("Click on any tile to give your minions +" + (1+1*trQuestVarGet("constellations")) + "|+" + (1+1*trQuestVarGet("constellations")) + ". Right click to cancel.");]]></Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>	castStart();</Command>
@@ -9128,6 +9203,109 @@
 <Command>				}</Command>
 
 <Command>			}</Command>
+<Command>			case SPELL_REFRESH_MANA:</Command>
+<Command>			{</Command>
+<Command>				int refreshCount = xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"mana"));</Command>
+<Command>				for(x=refreshCount; >0) {</Command>
+<Command>					if (yGetDatabaseCount("p"+p+"deck") > 0) {</Command>
+<Command>						int refreshProto = yDatabaseNext("p"+p+"deck");</Command>
+<Command>						if(refreshCount == 1){</Command>
+<Command>							if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
+<Command>								ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + refreshProto + "_Name") + " from your deck.");</Command>
+<Command>							} else {</Command>
+<Command>								ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name") + " from your deck.");</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>						yRemoveFromDatabase("p"+p+"deck");</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>				if(refreshCount > 1){</Command>
+<Command>					ChatLog(p, "Discarded " + refreshCount + " cards from your deck.");</Command>
+<Command>				}</Command>
+<Command>				trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));</Command>
+<Command>				updateRoxasHealth(p);</Command>
+<Command>				updateHandPlayable(p);</Command>
+<Command>				updateMana();</Command>
+<Command>				trSoundPlayFN("skypassagein.wav", "1", -1, "","");</Command>
+<Command>				deployAtTile(0, "Osiris Box Glow", 1*mGetVarByQV("p" + p + "commander", "tile"));</Command>
+<Command>			}</Command>
+<Command>			case SPELL_ELDRITCH_WHISPERS:</Command>
+<Command>			{</Command>
+<Command>				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));</Command>
+<Command>				mSetVarByQV("spellTarget", "health", 5 + mGetVarByQV("spellTarget", "health"));</Command>
+<Command>				if(1*mGetVarByQV("spellTarget", "player") != p){</Command>
+<Command>					addCardToDeck(p, "", SPELL_ELDRITCH_RITUAL);</Command>
+<Command>					shuffleDeck(p);</Command>
+<Command>					trSoundPlayFN("spybirth.wav","1",-1,"","");</Command>
+<Command>					deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case SPELL_ELDRITCH_RITUAL:</Command>
+<Command>			{</Command>
+<Command>				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));</Command>
+<Command>				mSetVarByQV("spellTarget", "attack", 5 + mGetVarByQV("spellTarget", "attack"));</Command>
+<Command>				if(1*mGetVarByQV("spellTarget", "player") != p){</Command>
+<Command>					addCardToDeck(p, "Flying Purple Hippo");</Command>
+<Command>					shuffleDeck(p);</Command>
+<Command>					trSoundPlayFN("changeunit.wav","1",-1,"","");</Command>
+<Command>					deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			case SPELL_CONS_LIBRA:</Command>
+<Command>			{</Command>
+<Command>				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);</Command>
+<Command>				healUnit(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("constellations"));</Command>
+<Command>				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));</Command>
+<Command>				for(x=trQuestVarGet("constellations"); >0) {</Command>
+<Command>					trSoundPlayFN("heal.wav","1",-1,"","");</Command>
+<Command>				}</Command>
+<Command>				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));</Command>
+<Command>			}</Command>
+<Command>			case SPELL_CONS_GEMINI:</Command>
+<Command>			{</Command>
+<Command>				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);</Command>
+<Command>				activeUnit = summonAtTile(1*trQuestVarGet("spellDestination"),p,1*mGetVarByQV("spellTarget", "proto"));</Command>
+<Command>				mSetVar(activeUnit, "health", 1*trQuestVarGet("constellations"));</Command>
+<Command>				mSetVar(activeUnit, "attack", 1*trQuestVarGet("constellations"));</Command>
+<Command>				if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {</Command>
+<Command>					mSetVar(activeUnit, "action", ACTION_READY);</Command>
+<Command>				} else {</Command>
+<Command>					mSetVar(activeUnit, "action", ACTION_SLEEPING);</Command>
+<Command>				}</Command>
+<Command>				for(x=trQuestVarGet("constellations"); >0) {</Command>
+<Command>					trSoundPlayFN("mythcreate.wav","1",-1,"","");</Command>
+<Command>				}</Command>
+<Command>				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));</Command>
+<Command>			}</Command>
+<Command>			case SPELL_CONS_TAURUS:</Command>
+<Command>			{</Command>
+<Command>				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);</Command>
+<Command>				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("constellations") + trQuestVarGet("p"+p+"drawCards"));</Command>
+<Command>				deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));</Command>
+<Command>				for(x=trQuestVarGet("constellations"); >0) {</Command>
+<Command>					trSoundPlayFN("temple.wav","1",-1,"","");</Command>
+<Command>				}</Command>
+<Command>				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));</Command>
+<Command>			}</Command>
+<Command>			case SPELL_CONS_ORION:</Command>
+<Command>			{</Command>
+<Command>				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);</Command>
+<Command>				for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>					yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[					if ((mGetVarByQV("allUnits", "spell") == SPELL_NONE) &&]]></Command>
+<Command>						(mGetVarByQV("allUnits", "player") == p)) {</Command>
+<Command>						mSetVarByQV("allUnits", "health", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "health"));</Command>
+<Command>						mSetVarByQV("allUnits", "attack", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "attack"));</Command>
+<Command>						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>				for(x=trQuestVarGet("constellations"); >0) {</Command>
+<Command>					trSoundPlayFN("herocreation.wav","1",-1,"","");</Command>
+<Command>				}</Command>
+<Command>				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));</Command>
+<Command>			}</Command>
 <Command>		}</Command>
 
 <Command>		if (trQuestVarGet("selectedCard") >= 0) {</Command>
@@ -9166,7 +9344,7 @@
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>			} else if (trQuestVarGet("card_"+proto+"_cost") == 1) {</Command>
-<Command>				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));</Command>
+<Command>				yDatabaseNext("p"+p+"deck", false, true);</Command>
 <Command>				drawCard(p);</Command>
 <Command>				target = target - 1;</Command>
 <Command>				if (target == 0) {</Command>
@@ -9251,7 +9429,7 @@
 <Command>		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"deck");</Command>
 <Command>			if (yGetVar("p"+p+"deck", "spell") > 0) {</Command>
-<Command>				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));</Command>
+<Command>				yDatabaseNext("p"+p+"deck", false, true);</Command>
 <Command>				drawCard(p);</Command>
 <Command>				break;</Command>
 <Command>			}</Command>
@@ -9259,7 +9437,7 @@
 <Command>		for(x=yGetDatabaseCount("p"+p+"deck"); >0) {</Command>
 <Command>			yDatabaseNext("p"+p+"deck");</Command>
 <Command>			if (yGetVar("p"+p+"deck", "spell") == 0) {</Command>
-<Command>				ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));</Command>
+<Command>				yDatabaseNext("p"+p+"deck", false, true);</Command>
 <Command>				drawCard(p);</Command>
 <Command>				break;</Command>
 <Command>			}</Command>
@@ -9903,6 +10081,13 @@
 <Command>					int activeUnit = summonAtTile(1*yDatabaseNext("odyTiles"),p,proto);</Command>
 <Command>					if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == true){</Command>
 <Command>						mSetVar(activeUnit, "action", ACTION_READY);</Command>
+<Command><![CDATA[						if((proto == kbGetProtoUnitID("Hero Greek Argo")) && (trQuestVarGet("chats_Argo_0") == 0)){]]></Command>
+<Command>							trFadeOutAllSounds(0.0);</Command>
+<Command>							trQuestVarSet("chats_Argo_0", 1);</Command>
+<Command>							trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");</Command>
+<Command><![CDATA[							ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");]]></Command>
+<Command>							MusicHigh();</Command>
+<Command>						}</Command>
 <Command>					} else {</Command>
 <Command>						mSetVar(activeUnit, "action", ACTION_SLEEPING);</Command>
 <Command>					}</Command>
@@ -9953,6 +10138,12 @@
 <Command>	}</Command>
 <Command>	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {</Command>
 <Command>		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));</Command>
+<Command>	}</Command>
+<Command><![CDATA[	if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {]]></Command>
+<Command>		generateCard(p, proto, 0, true);</Command>
+<Command>		if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){</Command>
+<Command>			mSetVarByQV("next", "echo", 1);</Command>
+<Command>		}</Command>
 <Command>	}</Command>
 <Command>	switch(proto)</Command>
 <Command>	{</Command>
@@ -10195,7 +10386,8 @@
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>			}</Command>
-<Command>			ySetPointer("p"+p+"deck", 1 + trQuestVarGet("highestPointer"));</Command>
+<Command>			ySetPointer("p"+p+"deck", 1*trQuestVarGet("highestPointer"));</Command>
+<Command>			yDatabaseNext("p"+p+"deck", false, true);</Command>
 <Command>			drawCard(p);</Command>
 <Command>		}</Command>
 <Command>		case kbGetProtoUnitID("Medusa"):</Command>
@@ -10276,6 +10468,174 @@
 <Command>		{</Command>
 <Command>			mSetVarByQV("p"+p+"commander", "health", 2 + mGetVarByQV("p"+p+"commander", "health"));</Command>
 <Command>			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Flying Purple Hippo"):</Command>
+<Command>		{</Command>
+<Command>			trSoundPlayFN("gaiaattack.wav","1",-1,"","");</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 6, true);</Command>
+<Command>			switch(1*trQuestVarGet("soundRandom"))</Command>
+<Command>			{</Command>
+<Command>				case 1:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("hippogrunt1.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoreselect1.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: ANJKLDNSMDKHALDMNBNA!!!");]]></Command>
+<Command>				}</Command>
+<Command>				case 2:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("hippogrunt2.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoreselect2.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: OIUHDSNBAGNKDAKDAKDA!!!");]]></Command>
+<Command>				}</Command>
+<Command>				case 3:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("hyenagrunt1.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoremove1.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: GDAGAKDGBAJKDGABJKDG!!!");]]></Command>
+<Command>				}</Command>
+<Command>				case 4:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("hyenagrunt2.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoremove2.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: IAHDUIADHANILDHADNDA!!!");]]></Command>
+<Command>				}</Command>
+<Command>				case 5:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("walrusgrunt1.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoregrunt1.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: UYADGAKDGAKDGGDASKJF!!!");]]></Command>
+<Command>				}</Command>
+<Command>				case 6:</Command>
+<Command>				{</Command>
+<Command>					trSoundPlayFN("walrusgrunt2.wav","1",-1,"","");</Command>
+<Command>					trSoundPlayFN("manticoregrunt2.wav","1",-1,"","");</Command>
+<Command><![CDATA[					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: TARIHDNADHADHDGNALAD!!!");]]></Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Villager Atlantean Hero"):</Command>
+<Command>		{</Command>
+<Command>			done = false;</Command>
+<Command>			chooseSpell(SPELL_FOOD);</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Fishing Ship Egyptian"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 2);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Fishing Ship Greek"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 2);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Fishing Ship Norse"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 3);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Fishing Ship Atlantean"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 3);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Kebenit"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 4);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Trireme"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 4);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Longboat"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 5);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Fire Ship Atlantean"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 5);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Siege Ship Egyptian"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 6);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Siege Ship Greek"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 6);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Siege Ship Norse"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 8);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Siege Ship Atlantean"):</Command>
+<Command>		{</Command>
+<Command>			damageUnit(unit, 8);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Hero Greek Argo"):</Command>
+<Command>		{</Command>
+<Command>			if(trQuestVarGet("chats_Argo_0") == 0){</Command>
+<Command>				trFadeOutAllSounds(0.0);</Command>
+<Command>				trQuestVarSet("chats_Argo_0", 1);</Command>
+<Command>				trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");</Command>
+<Command><![CDATA[				ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");]]></Command>
+<Command>				MusicHigh();</Command>
+<Command>			}</Command>
+<Command>			damageUnit(unit, 10);</Command>
+<Command>			trQuestVarSetFromRand("soundRandom", 1, 3, true);</Command>
+<Command>			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("lightningbirth.wav","1",-1,"","");</Command>
+
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Hero Greek Heracles"):</Command>
+<Command>		{</Command>
+<Command>			if(trQuestVarGet("chats_Heracles_0") == 0){</Command>
+<Command>				trFadeOutAllSounds(0.0);</Command>
+<Command>				trQuestVarSet("chats_Heracles_0", 1);</Command>
+<Command>				trSoundPlayFN("xpack\xdialog\en\xfol535.mp3","1",-1,"","");</Command>
+<Command><![CDATA[				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: My brothers have arrived!");]]></Command>
+<Command>				MusicHigh();</Command>
+<Command>			}</Command>
+<Command>			trSoundPlayFN("lightningbirth.wav","1",-1,"","");</Command>
+<Command>		}</Command>
+<Command>		case kbGetProtoUnitID("Catapult"):</Command>
+<Command>		{</Command>
+<Command>			deployAtTile(0, "Meteor", 1*mGetVar(unit, "tile"));</Command>
+<Command>			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));</Command>
+<Command>			for(x=yGetDatabaseCount("allUnits"); >0) {</Command>
+<Command>				yDatabaseNext("allUnits");</Command>
+<Command><![CDATA[				if ((1*mGetVarByQV("allUnits", "spell") == 0) && (1*trQuestVarGet("allUnits") != unit)) {]]></Command>
+<Command><![CDATA[					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {]]></Command>
+<Command>						damageUnit(1*trQuestVarGet("allUnits"), 5);</Command>
+<Command>						deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("allUnits", "tile"));</Command>
+<Command>					}</Command>
+<Command>				}</Command>
+<Command>			}</Command>
+<Command>			trCameraShake(1.0, 0.1);</Command>
+<Command>			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("gateramloud.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("gateramloud.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("chaos.wav","1",-1,"","");</Command>
+<Command>			trSoundPlayFN("chaos.wav","1",-1,"","");</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));</Command>
@@ -11581,6 +11941,10 @@
 <Command><![CDATA[					if(trCountUnitsInArea("128",2,"Unit",45) < 3){]]></Command>
 <Command>						yClearDatabase("castTiles");</Command>
 <Command>					}</Command>
+<Command>				} else if(1*trQuestVarGet("botSpell") == SPELL_REFRESH_MANA){</Command>
+<Command><![CDATA[					if((trQuestVarGet("maxMana") - trQuestVarGet("p2mana")) < 4){]]></Command>
+<Command>						yClearDatabase("castTiles");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 
 <Command>				if (1*trQuestVarGet("botSpell") == SPELL_SCRAP_METAL) {</Command>
@@ -11678,6 +12042,9 @@
 <Command>						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){</Command>
 <Command>							currentScore = currentScore - 1;</Command>
 <Command>						}</Command>
+<Command>						if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){</Command>
+<Command>							currentScore = 0;</Command>
+<Command>						}</Command>
 <Command>					}</Command>
 <Command>					// If the target dies, then currentScore = 2 * (target's attack + cost)</Command>
 <Command>					if (currentScore >= 0) {</Command>
@@ -11690,7 +12057,7 @@
 <Command><![CDATA[						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){]]></Command>
 <Command>							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");</Command>
 <Command>						} else {</Command>
-<Command>							if(1*mGetVarByQV("targets", "stunTime") == 0){</Command>
+<Command><![CDATA[							if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){]]></Command>
 <Command>								currentScore = currentScore - mGetVarByQV("targets", "attack");</Command>
 <Command>								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){</Command>
 <Command>									currentScore = currentScore + 1;</Command>
@@ -12259,10 +12626,6 @@
 <Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Bear"));</Command>
 <Command><![CDATA[					for(x=0;<40){]]></Command>
 <Command>						addCardToDeck(2, "", SPELL_INTIMIDATE);</Command>
-<Command>					}</Command>
-<Command><![CDATA[					for(x=0;<30) {]]></Command>
-<Command>						addCardToDeck(1, "", SPELL_PETTY_LASER);</Command>
-<Command>						addCardToDeck(1, "", SPELL_SPACE_VENT);</Command>
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 2:</Command>
@@ -13129,27 +13492,89 @@
 <Command>			{</Command>
 <Command>				case 1:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<10){]]></Command>
+<Command>						addCardToDeck(2, "Swordsman");</Command>
+<Command>						addCardToDeck(2, "Jarl");</Command>
+<Command>						addCardToDeck(2, "Mountain Giant");</Command>
+<Command>						addCardToDeck(2, "Hero Greek Hippolyta");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 2:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<10){]]></Command>
+<Command>						addCardToDeck(2, "Prisoner");</Command>
+<Command>						addCardToDeck(2, "Fire Giant");</Command>
+<Command>						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);</Command>
+<Command>						addCardToDeck(2, "Chimera");</Command>
+<Command>						addCardToDeck(2, "Hero Greek Bellerophon");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 3:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<10){]]></Command>
+<Command>						addCardToDeck(2, "", SPELL_WATER_CANNON);</Command>
+<Command>						addCardToDeck(2, "Kraken");</Command>
+<Command>						addCardToDeck(2, "Hydra");</Command>
+<Command>						addCardToDeck(2, "Scylla");</Command>
+<Command>						addCardToDeck(2, "Sea Turtle");</Command>
+<Command>						addCardToDeck(2, "Leviathan");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 4:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<10){]]></Command>
+<Command>						addCardToDeck(2, "", SPELL_REWIND);</Command>
+<Command>						addCardToDeck(2, "", SPELL_SONG_OF_REST);</Command>
+<Command>						addCardToDeck(2, "Automaton SPC");</Command>
+<Command>						addCardToDeck(2, "Ballista");</Command>
+<Command>						addCardToDeck(2, "Battle Boar");</Command>
+<Command>						addCardToDeck(2, "Colossus");</Command>
+<Command>						addCardToDeck(2, "Tower Mirror");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 5:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<80){]]></Command>
+<Command>						addCardToDeck(2, "Guardian");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 6:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));</Command>
+<Command><![CDATA[					for(x=0;<10){]]></Command>
+<Command>						addCardToDeck(2, "", SPELL_REFRESH_MANA);</Command>
+<Command>						addCardToDeck(2, "", SPELL_PETTY_LASER);</Command>
+<Command>						addCardToDeck(2, "", SPELL_NICKS_PORTAL);</Command>
+<Command>						addCardToDeck(1, "", SPELL_SPACE_VENT);</Command>
+<Command>						addCardToDeck(2, "Trireme");</Command>
+<Command>						addCardToDeck(2, "Siege Ship Greek");</Command>
+<Command>						addCardToDeck(2, "Siege Ship Atlantean");</Command>
+<Command>						addCardToDeck(2, "Catapult");</Command>
+<Command>						addCardToDeck(2, "Hero Greek Argo");</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
@@ -13413,6 +13838,20 @@
 <Command>				xsEnableRule("NewCommander0");</Command>
 <Command>				CommanderUnlockLine(CLASS_ARCANE, true);</Command>
 <Command>				trDelayedRuleActivation("ClassUnlockMessage_1");</Command>
+<Command>				trQuestVarSet("class1", CLASS_ADVENTURER);</Command>
+<Command>				trQuestVarSet("class2", CLASS_ARCANE);</Command>
+<Command><![CDATA[				for(i = 0;<6){]]></Command>
+<Command>					setCardCountDeck(i, 3);</Command>
+<Command>					setCardCountDeck(i + 30, 3);</Command>
+<Command>					setCardCountCollection(i, 0);</Command>
+<Command>					setCardCountCollection(i + 30, 0);</Command>
+<Command>				}</Command>
+<Command>				setCardCountDeck(6, 2);</Command>
+<Command>				setCardCountCollection(6, 3);</Command>
+<Command>				setCardCountDeck(36, 2);</Command>
+<Command>				setCardCountCollection(36, 3);</Command>
+<Command>				setClassProgress(CLASS_ADVENTURER, 1);</Command>
+<Command>				setClassProgress(CLASS_ARCANE, 1);</Command>
 <Command>			} else {</Command>
 <Command>				int storiesFinished = 0;</Command>
 <Command>				if(getClassProgress(CLASS_ADVENTURER) > 6){</Command>
@@ -13441,7 +13880,7 @@
 <Command>						storiesFinished = storiesFinished + 1;</Command>
 <Command>						if(getClassProgress(CLASS_NAGA) == 0){</Command>
 <Command>							trQuestVarSet("unlockMore", CLASS_NAGA);</Command>
-<Command><![CDATA[						} else if(storiesFinished > 2 && getClassProgress(CLASS_SPACE) == 0) {]]></Command>
+<Command><![CDATA[						} else if(storiesFinished > 4 && getClassProgress(CLASS_SPACE) == 0) {]]></Command>
 <Command>							trQuestVarSet("unlockMore", CLASS_SPACE);</Command>
 <Command>						}</Command>
 <Command>					}</Command>
@@ -13455,17 +13894,20 @@
 <Command>					playerLegendaries = playerLegendaries + getCardCountCollection(14 + 30 * i);</Command>
 <Command>					playerLegendaries = playerLegendaries + getCardCountCollection(29 + 30 * i);</Command>
 <Command>				}</Command>
-<Command>				ChatLog(0, "playerLegendaries: " + playerLegendaries);</Command>
 <Command>				xsEnableRule("NewCards0");</Command>
 <Command>				xsEnableRule("CollectionClick");</Command>
 <Command><![CDATA[				for(i=0;<trQuestVarGet("newCardsCount")){]]></Command>
 <Command>					int reward = 0;</Command>
 <Command>					int legendary = 0;</Command>
 <Command>					trQuestVarSet("packReward" + i, -1);</Command>
-<Command><![CDATA[					for(k=0;<7){]]></Command>
+<Command><![CDATA[					for(k=0;<9){]]></Command>
+<Command>						legendary = 0;</Command>
 <Command>						trQuestVarSetFromRand("reward", 7, 29, true);</Command>
 <Command><![CDATA[						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){]]></Command>
 <Command>							trQuestVarSetFromRand("reward", 7, 29, true);</Command>
+<Command><![CDATA[							if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){]]></Command>
+<Command>								trQuestVarSetFromRand("reward", 7, 29, true);</Command>
+<Command>							}</Command>
 <Command>						}</Command>
 
 <Command>						int maxCopies = 3;</Command>
@@ -13531,7 +13973,17 @@
 <Command>		if(trQuestVarGet("restartMission") == 1){</Command>
 <Command>			xsEnableRule("MissionBegin");</Command>
 <Command>		} else {</Command>
-<Command>			xsEnableRule("Collection");</Command>
+<Command>			if(true){</Command>
+<Command>				dataSave();</Command>
+<Command>				subModeEnter("Simulation", "Editor");</Command>
+<Command>				uiMessageBox("moo","restartCurrentGame()");</Command>
+<Command>				uiCycleCurrentActivate();</Command>
+<Command>				subModeLeave("Simulation", "Editor");</Command>
+<Command>				modeEnter("pregame");</Command>
+<Command>				modeEnter("Simulation");</Command>
+<Command>			} else {</Command>
+<Command>				xsEnableRule("Collection");</Command>
+<Command>			}</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -13732,6 +14184,7 @@
 <Command><![CDATA[	for (x=0; < 7) {]]></Command>
 <Command>		setCardCountCollection(x + 30 * class, 3);</Command>
 <Command>	}</Command>
+<Command>	dataSave();</Command>
 <Command>}</Command>
 
 <Command>rule NewCommander3</Command>
@@ -14108,6 +14561,102 @@
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			summonAtTile(192, 2, kbGetProtoUnitID("Fire Giant"));</Command>
 <Command>			summonAtTile(193, 2, kbGetProtoUnitID("Monument 5"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission1</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\building specialist icons 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 20);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Wolf"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission2</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\improvement focus icons 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 25);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Phoenix Egg"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Phoenix Egg"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission3</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\improvement poseidons secret icons 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 30);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Servant"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Servant"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission4</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\improvement engineers icon 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 35);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Eitri"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Eitri"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission5</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\god power ancestors icon 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 40);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Guardian"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Guardian"));</Command>
+<Command>		}</Command>
+<Command>	}</Command>
+<Command>}</Command>
+
+<Command>rule StoryClass5Mission6</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	if ((trTime()-cActivationTime) > 0){</Command>
+<Command>		xsDisableSelf();</Command>
+<Command>		trShowImageDialog("icons\god power eclipse icon 64", "");</Command>
+<Command>		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");</Command>
+<Command>		mSetVarByQV("p2commander", "health", 45);</Command>
+<Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
+<Command>			summonAtTile(222, 2, kbGetProtoUnitID("Minotaur"));</Command>
+<Command>			summonAtTile(223, 2, kbGetProtoUnitID("Hoplite"));</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>

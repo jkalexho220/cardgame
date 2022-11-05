@@ -395,27 +395,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("It's Over And Yet");
+					return ("Hoof, Sword and Arrow");
 				}
 				case 2:
 				{
-					return ("The Portal Guy");
+					return ("Magical Staff");
 				}
 				case 3:
 				{
-					return ("Secrets And Stars");
+					return ("Water Horse");
 				}
 				case 4:
 				{
-					return ("Puzzle Box");
+					return ("Cogs");
 				}
 				case 5:
 				{
-					return ("It's Empty And Yet");
+					return ("Nasty Hand");
 				}
 				case 6:
 				{
-					return ("Thank You");
+					return ("Black Star");
 				}
 			}
 		}

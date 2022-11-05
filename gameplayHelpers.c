@@ -212,9 +212,9 @@ void healUnit(int index = 0, float heal = 0) {
 			int target = summonAtTile(1*yDatabaseNext("toyTiles"),1*trQuestVarGet("activePlayer"),kbGetProtoUnitID("Forkboy"));
 			mSetVar(target, "attack", heal);
 			mSetVar(target, "health", heal);
-			mSetVar(target, "speed", heal);
+			mSetVar(target, "speed", 2);
 			mSetVar(target, "cost", heal);
-			mSetVar(target, "scale", 1 + 0.25 * heal);
+			mSetVar(target, "scale", 0.5 + 0.25 * heal);
 			scaleUnit(target);	
 		} else {
 			ChatLog(1, "No space to summon!");
@@ -223,7 +223,9 @@ void healUnit(int index = 0, float heal = 0) {
 }
 
 void damageUnit(int index = 0, float dmg = 0) {
-	int p = mGetVar(index, "player");
+	if (HasKeyword(IMMUNE, 1*mGetVar(index, "keywords"))) {
+		return;
+	}
 	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
 		dmg = xsMax(0, dmg - 1);
 	}
@@ -236,6 +238,7 @@ void damageUnit(int index = 0, float dmg = 0) {
 		trUnitSelect(""+1*trQuestVarGet("spyEye"+1*trQuestVarGet("stealthSFX"+index)));
 		trUnitDestroy();
 	}
+	int p = mGetVar(index, "player");
 	if(index == trQuestVarGet("p"+p+"commander")){
 		/*
 		Throne Shield activates here

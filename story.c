@@ -113,10 +113,6 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_INTIMIDATE);
 					}
-					for(x=0;<30) {
-						addCardToDeck(1, "", SPELL_PETTY_LASER);
-						addCardToDeck(1, "", SPELL_SPACE_VENT);
-					}
 				}
 				case 2:
 				{
@@ -1019,27 +1015,101 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "Swordsman");
+						addCardToDeck(2, "Jarl");
+						addCardToDeck(2, "Mountain Giant");
+						addCardToDeck(2, "Hero Greek Hippolyta");
+					}
 				}
 				case 2:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Fire Giant");
+						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
+						addCardToDeck(2, "Chimera");
+						addCardToDeck(2, "Hero Greek Bellerophon");
+					}
 				}
 				case 3:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_WATER_CANNON);
+						addCardToDeck(2, "Kraken");
+						addCardToDeck(2, "Hydra");
+						addCardToDeck(2, "Scylla");
+						addCardToDeck(2, "Sea Turtle");
+						addCardToDeck(2, "Leviathan");	
+					}
 				}
 				case 4:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_REWIND);
+						addCardToDeck(2, "", SPELL_SONG_OF_REST);
+						addCardToDeck(2, "Automaton SPC");
+						addCardToDeck(2, "Ballista");
+						addCardToDeck(2, "Battle Boar");
+						addCardToDeck(2, "Colossus");
+						addCardToDeck(2, "Tower Mirror");
+					}
 				}
 				case 5:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<80){
+						addCardToDeck(2, "Guardian");	
+					}
 				}
 				case 6:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_REFRESH_MANA);
+						addCardToDeck(2, "", SPELL_PETTY_LASER);
+						addCardToDeck(2, "", SPELL_NICKS_PORTAL);
+						addCardToDeck(1, "", SPELL_SPACE_VENT);
+						addCardToDeck(2, "Trireme");
+						addCardToDeck(2, "Siege Ship Greek");
+						addCardToDeck(2, "Siege Ship Atlantean");
+						addCardToDeck(2, "Catapult");
+						addCardToDeck(2, "Hero Greek Argo");
+					}
 				}
 			}
 		}
@@ -1306,6 +1376,20 @@ inactive
 				xsEnableRule("NewCommander0");
 				CommanderUnlockLine(CLASS_ARCANE, true);
 				trDelayedRuleActivation("ClassUnlockMessage_1");
+				trQuestVarSet("class1", CLASS_ADVENTURER);
+				trQuestVarSet("class2", CLASS_ARCANE);
+				for(i = 0;<6){
+					setCardCountDeck(i, 3);
+					setCardCountDeck(i + 30, 3);
+					setCardCountCollection(i, 0);
+					setCardCountCollection(i + 30, 0);
+				}
+				setCardCountDeck(6, 2);
+				setCardCountCollection(6, 3);
+				setCardCountDeck(36, 2);
+				setCardCountCollection(36, 3);
+				setClassProgress(CLASS_ADVENTURER, 1);
+				setClassProgress(CLASS_ARCANE, 1);
 			} else {
 				/* Progress Current Story */
 				int storiesFinished = 0;
@@ -1335,7 +1419,7 @@ inactive
 						storiesFinished = storiesFinished + 1;
 						if(getClassProgress(CLASS_NAGA) == 0){
 							trQuestVarSet("unlockMore", CLASS_NAGA);
-						} else if(storiesFinished > 2 && getClassProgress(CLASS_SPACE) == 0) {
+						} else if(storiesFinished > 4 && getClassProgress(CLASS_SPACE) == 0) {
 							trQuestVarSet("unlockMore", CLASS_SPACE);
 						}
 					}
@@ -1350,7 +1434,6 @@ inactive
 					playerLegendaries = playerLegendaries + getCardCountCollection(14 + 30 * i);
 					playerLegendaries = playerLegendaries + getCardCountCollection(29 + 30 * i);
 				}
-				ChatLog(0, "playerLegendaries: " + playerLegendaries);
 				xsEnableRule("NewCards0");
 				xsEnableRule("CollectionClick");
 				for(i=0;<trQuestVarGet("newCardsCount")){
@@ -1358,11 +1441,15 @@ inactive
 					int legendary = 0;
 					trQuestVarSet("packReward" + i, -1);
 					/* Extras Rarity */
-					for(k=0;<7){
+					for(k=0;<9){
+						legendary = 0;
 						trQuestVarSetFromRand("reward", 7, 29, true);
 						/* Legendary Rarity */
 						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
 							trQuestVarSetFromRand("reward", 7, 29, true);
+							if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
+								trQuestVarSetFromRand("reward", 7, 29, true);
+							}
 						}
 						
 						int maxCopies = 3;
@@ -1428,7 +1515,18 @@ inactive
 		if(trQuestVarGet("restartMission") == 1){
 			xsEnableRule("MissionBegin");
 		} else {
-			xsEnableRule("Collection");
+			/* restart */
+			if(true){
+				dataSave();
+				subModeEnter("Simulation", "Editor");
+				uiMessageBox("moo","restartCurrentGame()");
+				uiCycleCurrentActivate();
+				subModeLeave("Simulation", "Editor");
+				modeEnter("pregame");
+				modeEnter("Simulation");
+			} else {
+				xsEnableRule("Collection");
+			}
 		}
 	}
 }
@@ -1629,6 +1727,7 @@ void UnlockClass(int class = 0){
 	for (x=0; < 7) {
 		setCardCountCollection(x + 30 * class, 3);
 	}
+	dataSave();
 }
 
 rule NewCommander3
@@ -2005,6 +2104,102 @@ inactive
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(192, 2, kbGetProtoUnitID("Fire Giant"));
 			summonAtTile(193, 2, kbGetProtoUnitID("Monument 5"));
+		}
+	}
+}
+
+rule StoryClass5Mission1
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\building specialist icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 20);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Wolf"));
+		}
+	}
+}
+
+rule StoryClass5Mission2
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement focus icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 25);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Phoenix Egg"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Phoenix Egg"));
+		}
+	}
+}
+
+rule StoryClass5Mission3
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement poseidons secret icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 30);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Servant"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Servant"));
+		}
+	}
+}
+
+rule StoryClass5Mission4
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement engineers icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 35);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Eitri"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Eitri"));
+		}
+	}
+}
+
+rule StoryClass5Mission5
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power ancestors icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 40);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Guardian"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Guardian"));
+		}
+	}
+}
+
+rule StoryClass5Mission6
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power eclipse icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 45);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Minotaur"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Hoplite"));
 		}
 	}
 }

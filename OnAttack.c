@@ -275,6 +275,13 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 					int activeUnit = summonAtTile(1*yDatabaseNext("odyTiles"),p,proto);			
 					if(HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords")) == true){
 						mSetVar(activeUnit, "action", ACTION_READY);
+						if((proto == kbGetProtoUnitID("Hero Greek Argo")) && (trQuestVarGet("chats_Argo_0") == 0)){
+							trFadeOutAllSounds(0.0);
+							trQuestVarSet("chats_Argo_0", 1);
+							trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");
+							ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
+							MusicHigh();
+						}
 					} else {
 						mSetVar(activeUnit, "action", ACTION_SLEEPING);				
 					}	
