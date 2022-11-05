@@ -1611,10 +1611,10 @@ inactive
 				int spell = yGetVar("allUnits","spell");
 				if(trUnitTypeIsSelected("Atlantis Wall Connector")){
 					if (spell == 0) {
-						trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");
+						trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
 						trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
 					} else {
-						trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));
+						trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
 						trUnitChangeProtoUnit("Statue of Lightning");
 						trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
 						trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
