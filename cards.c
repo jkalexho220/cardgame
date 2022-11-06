@@ -1309,11 +1309,11 @@ highFrequency
 	SPACE
 	*/
 	// Created cards
-	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	2, 20, 2, 2, Keyword(BEACON), true);
-	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);
-	CardSetup("Forkboy",				1, "Toy",						1, 1, 1, 1, 0, true);
-	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstruosity in your deck.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstruosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(16) + Keyword(9) + Keyword(15) + Keyword(22), true);
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	1, 15, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			1, 15, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);
+	CardSetup("Forkboy",				1, "Toy",						1, 1, 2, 1, 0, true);
+	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstrosity in your deck.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstrosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(20) + Keyword(9) + Keyword(15) + Keyword(21), true);
 	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
@@ -1335,15 +1335,15 @@ highFrequency
 	CardSetup("Siege Ship Greek",		6, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.
 	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 8 damage.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.
-	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE) + Keyword(AMBUSH));	 // Play: I take 10 damage. 
+	CardSetup("Hero Greek Argo",		10, "The Hawk",				5, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. 
 	// 165-169
 	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));
 	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
 	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
 	CardSetup("Santa",					5, "Big Santa Claus",		6, 7, 1, 1, Keyword(HEALER));
-	SpellSetup("Airlock Vent", 			6, SPELL_SPACE_VENT, 		"Both players discard their hand, summon any minions discarded.", SPELL_TYPE_OTHER);
+	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand, summon and stun any minions discarded.", SPELL_TYPE_OTHER);
 	// 170-174
-	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh your Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);	
+	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh up to 5 Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);	
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Play: Deal 5 Damage to ALL adjacent minions
 	SpellSetup("Eldritch Whispers", 	5, SPELL_ELDRITCH_WHISPERS, "Give a minion +5 Health. If you target an enemy, shuffle an Eldritch Ritual in your deck.", SPELL_TYPE_OTHER);
 	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1

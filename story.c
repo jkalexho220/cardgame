@@ -1447,9 +1447,6 @@ inactive
 						/* Legendary Rarity */
 						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
 							trQuestVarSetFromRand("reward", 7, 29, true);
-							if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
-								trQuestVarSetFromRand("reward", 7, 29, true);
-							}
 						}
 						
 						int maxCopies = 3;

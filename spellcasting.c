@@ -2555,7 +2555,8 @@ inactive
 				trSoundPlayFN("pigout.wav","1",-1,"","");
 				trSoundPlayFN("pigout.wav","1",-1,"","");
 				
-				for(ventPlayer=2; >0) {
+				//for(ventPlayer=2; >0) {
+					int ventPlayer = p;
 					string disText = "";
 					int disCount = 0;
 					for(x=yGetDatabaseCount("p"+ventPlayer+"hand"); >0) {
@@ -2582,7 +2583,8 @@ inactive
 									mSetVar(ventUnit, "action", ACTION_READY);
 								} else {
 									mSetVar(ventUnit, "action", ACTION_SLEEPING);				
-								}	
+								}
+								stunUnit(ventUnit);							
 							} else {
 								if(disCount < 4){
 									disText = disText + trStringQuestVarGet("card_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "proto") + "_name") + " ";
@@ -2602,12 +2604,15 @@ inactive
 					}
 					ChatLog(ventPlayer, "Discarded " + disText);
 					ChatLog((3-ventPlayer), "Opponent discarded " + disText);
-				}
+				//}
 
 			}
 			case SPELL_REFRESH_MANA:
 			{
 				int refreshCount = xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"mana"));
+				if(refreshCount > 5){
+					refreshCount = 5;
+				}
 				for(x=refreshCount; >0) {
 					if (yGetDatabaseCount("p"+p+"deck") > 0) {
 						int refreshProto = yDatabaseNext("p"+p+"deck");
@@ -2624,7 +2629,7 @@ inactive
 				if(refreshCount > 1){
 					ChatLog(p, "Discarded " + refreshCount + " cards from your deck.");
 				}
-				trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));
+				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + refreshCount);
 				updateRoxasHealth(p);
 				updateHandPlayable(p);
 				updateMana();	

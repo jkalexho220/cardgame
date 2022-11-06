@@ -2386,7 +2386,7 @@
 <Command>	trUnitSelect(""+next, false);</Command>
 
 <Command><![CDATA[	if (spell == 0 || spell == SPELL_COMMANDER) {]]></Command>
-<Command><![CDATA[		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
+<Command>		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));</Command>
 <Command>		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));</Command>
 <Command>		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));</Command>
 <Command>		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));</Command>
@@ -2403,7 +2403,7 @@
 <Command>		mSetVar(next, "scale", 1);</Command>
 <Command>		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
 <Command>	} else {</Command>
-<Command>		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
+<Command>		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
 <Command>		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));</Command>
 <Command>		mSetVar(next, "keywords", trQuestVarGet("spell_"+spell+"_keywords"));</Command>
 <Command>		proto = kbGetProtoUnitID("Statue of Lightning");</Command>
@@ -2791,7 +2791,7 @@
 <Command>	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);</Command>
 <Command>	// 80-84</Command>
 <Command>	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);</Command>
-<Command>	CardSetup("Archer Atlantean",		4, "Undercity Sniper",		1, 3, 2, 3); // Whenever your Commander attacks an enemy, I attack it too.</Command>
+<Command>	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.</Command>
 <Command>	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);</Command>
 <Command>	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));</Command>
 <Command>	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));</Command>
@@ -2917,11 +2917,11 @@
 <Command>highFrequency</Command>
 <Command>{</Command>
 <Command>	// Created cards</Command>
-<Command>	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	2, 20, 2, 2, Keyword(BEACON), true);</Command>
-<Command>	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 2, Keyword(BEACON) + Keyword(HEALER), true);</Command>
-<Command>	CardSetup("Forkboy",				1, "Toy",						1, 1, 1, 1, 0, true);</Command>
-<Command>	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstruosity in your deck.", SPELL_TYPE_OTHER, 0, true);</Command>
-<Command>	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstruosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(16) + Keyword(9) + Keyword(15) + Keyword(22), true);</Command>
+<Command>	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	1, 15, 2, 2, Keyword(BEACON), true);</Command>
+<Command>	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			1, 15, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);</Command>
+<Command>	CardSetup("Forkboy",				1, "Toy",						1, 1, 2, 1, 0, true);</Command>
+<Command>	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstrosity in your deck.", SPELL_TYPE_OTHER, 0, true);</Command>
+<Command>	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstrosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(20) + Keyword(9) + Keyword(15) + Keyword(21), true);</Command>
 <Command>	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
 <Command>	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
@@ -2943,15 +2943,15 @@
 <Command>	CardSetup("Siege Ship Greek",		6, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.</Command>
 <Command>	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 8 damage.</Command>
 <Command>	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.</Command>
-<Command>	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE) + Keyword(AMBUSH));	 // Play: I take 10 damage.</Command>
+<Command>	CardSetup("Hero Greek Argo",		10, "The Hawk",				5, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage.</Command>
 <Command>	// 165-169</Command>
 <Command>	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));</Command>
 <Command>	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));</Command>
 <Command>	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));</Command>
 <Command>	CardSetup("Santa",					5, "Big Santa Claus",		6, 7, 1, 1, Keyword(HEALER));</Command>
-<Command>	SpellSetup("Airlock Vent", 			6, SPELL_SPACE_VENT, 		"Both players discard their hand, summon any minions discarded.", SPELL_TYPE_OTHER);</Command>
+<Command>	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand, summon and stun any minions discarded.", SPELL_TYPE_OTHER);</Command>
 <Command>	// 170-174</Command>
-<Command>	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh your Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);</Command>
+<Command>	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh up to 5 Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);</Command>
 <Command>	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Play: Deal 5 Damage to ALL adjacent minions</Command>
 <Command>	SpellSetup("Eldritch Whispers", 	5, SPELL_ELDRITCH_WHISPERS, "Give a minion +5 Health. If you target an enemy, shuffle an Eldritch Ritual in your deck.", SPELL_TYPE_OTHER);</Command>
 <Command><![CDATA[	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1]]></Command>
@@ -5682,10 +5682,10 @@
 <Command>	}</Command>
 
 <Command><![CDATA[	if (spell == 0 || spell == SPELL_COMMANDER) {]]></Command>
-<Command><![CDATA[		trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
+<Command>		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));</Command>
 <Command>		trUnitChangeProtoUnit(kbGetProtoUnitName(proto));</Command>
 <Command>	} else {</Command>
-<Command>		trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
+<Command>		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
 <Command>		proto = kbGetProtoUnitID("Statue of Lightning");</Command>
 <Command>		trUnitChangeProtoUnit("Statue of Lightning");</Command>
 <Command>		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);</Command>
@@ -9153,7 +9153,8 @@
 <Command>				trSoundPlayFN("pigout.wav","1",-1,"","");</Command>
 <Command>				trSoundPlayFN("pigout.wav","1",-1,"","");</Command>
 
-<Command>				for(ventPlayer=2; >0) {</Command>
+<Command>				//for(ventPlayer=2; >0) {</Command>
+<Command>					int ventPlayer = p;</Command>
 <Command>					string disText = "";</Command>
 <Command>					int disCount = 0;</Command>
 <Command>					for(x=yGetDatabaseCount("p"+ventPlayer+"hand"); >0) {</Command>
@@ -9181,6 +9182,7 @@
 <Command>								} else {</Command>
 <Command>									mSetVar(ventUnit, "action", ACTION_SLEEPING);</Command>
 <Command>								}</Command>
+<Command>								stunUnit(ventUnit);</Command>
 <Command>							} else {</Command>
 <Command><![CDATA[								if(disCount < 4){]]></Command>
 <Command>									disText = disText + trStringQuestVarGet("card_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "proto") + "_name") + " ";</Command>
@@ -9200,12 +9202,15 @@
 <Command>					}</Command>
 <Command>					ChatLog(ventPlayer, "Discarded " + disText);</Command>
 <Command>					ChatLog((3-ventPlayer), "Opponent discarded " + disText);</Command>
-<Command>				}</Command>
+<Command>				//}</Command>
 
 <Command>			}</Command>
 <Command>			case SPELL_REFRESH_MANA:</Command>
 <Command>			{</Command>
 <Command>				int refreshCount = xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"mana"));</Command>
+<Command>				if(refreshCount > 5){</Command>
+<Command>					refreshCount = 5;</Command>
+<Command>				}</Command>
 <Command>				for(x=refreshCount; >0) {</Command>
 <Command>					if (yGetDatabaseCount("p"+p+"deck") > 0) {</Command>
 <Command>						int refreshProto = yDatabaseNext("p"+p+"deck");</Command>
@@ -9222,7 +9227,7 @@
 <Command>				if(refreshCount > 1){</Command>
 <Command>					ChatLog(p, "Discarded " + refreshCount + " cards from your deck.");</Command>
 <Command>				}</Command>
-<Command>				trQuestVarSet("p"+p+"mana", trQuestVarGet("maxMana"));</Command>
+<Command>				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + refreshCount);</Command>
 <Command>				updateRoxasHealth(p);</Command>
 <Command>				updateHandPlayable(p);</Command>
 <Command>				updateMana();</Command>
@@ -13905,9 +13910,6 @@
 <Command>						trQuestVarSetFromRand("reward", 7, 29, true);</Command>
 <Command><![CDATA[						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){]]></Command>
 <Command>							trQuestVarSetFromRand("reward", 7, 29, true);</Command>
-<Command><![CDATA[							if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){]]></Command>
-<Command>								trQuestVarSetFromRand("reward", 7, 29, true);</Command>
-<Command>							}</Command>
 <Command>						}</Command>
 
 <Command>						int maxCopies = 3;</Command>
@@ -14068,10 +14070,10 @@
 <Command>				int spell = yGetVar("allUnits","spell");</Command>
 <Command>				if(trUnitTypeIsSelected("Atlantis Wall Connector")){</Command>
 <Command>					if (spell == 0) {</Command>
-<Command><![CDATA[						trUnitChangeName("("+1*trQuestVarGet("card_" + proto + "_Cost")+") "+trStringQuestVarGet("card_" + proto + "_Name")+" <"+1*trQuestVarGet("card_" + proto + "_Speed")+">");]]></Command>
+<Command>						trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));</Command>
 <Command>						trUnitChangeProtoUnit(kbGetProtoUnitName(proto));</Command>
 <Command>					} else {</Command>
-<Command>						trUnitChangeName("("+1*trQuestVarGet("spell_" + spell + "_Cost")+") "+trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
+<Command>						trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
 <Command>						trUnitChangeProtoUnit("Statue of Lightning");</Command>
 <Command>						trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);</Command>
 <Command>						trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");</Command>
