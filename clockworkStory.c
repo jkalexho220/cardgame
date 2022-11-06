@@ -79,8 +79,8 @@ inactive
 		if (trQuestVarGet("storyMissionBotMana") == 5) {
 			if (zGetVarByIndex("tiles", "occupant", 255) == 0) {
 				int siphon = summonAtTile(255, 2, kbGetProtoUnitID("Fire Siphon"));
-				mSetVar(siphon, "laserDirx", -0.707107);
-				mSetVar(siphon, "laserDirz", -0.707107);
+				mSetVar(siphon, "laserDirx", -70710);
+				mSetVar(siphon, "laserDirz", -70710);
 				trUnitSelectClear();
 				trUnitSelect(""+siphon);
 				trSetUnitOrientation(xsVectorSet(-0.707107,0,0.707107), xsVectorSet(0,1,0), true);

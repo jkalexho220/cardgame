@@ -17,6 +17,12 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
+	if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {
+		generateCard(p, proto, 0, true);
+		if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){
+			mSetVarByQV("next", "echo", 1);
+		}
+	}
 	switch(proto)
 	{
 		case kbGetProtoUnitID("Bear"):
@@ -327,8 +333,8 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
 			trQuestVarSet("spellCaster", unit);
-			mSetVar(unit, "laserDirx", -0.707107);
-			mSetVar(unit, "laserDirz", -0.707107);
+			mSetVar(unit, "laserDirx", -70710);
+			mSetVar(unit, "laserDirz", -70710);
 			trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
 			chooseSpell(SPELL_CHOOSE_DIRECTION);
 		}
@@ -340,6 +346,174 @@ void OnPlay(int unit = 0) {
 		{
 			mSetVarByQV("p"+p+"commander", "health", 2 + mGetVarByQV("p"+p+"commander", "health"));
 			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+		}
+		case kbGetProtoUnitID("Flying Purple Hippo"):
+		{
+			trSoundPlayFN("gaiaattack.wav","1",-1,"","");
+			trQuestVarSetFromRand("soundRandom", 1, 6, true);
+			switch(1*trQuestVarGet("soundRandom"))
+			{
+				case 1:
+				{
+					trSoundPlayFN("hippogrunt1.wav","1",-1,"","");
+					trSoundPlayFN("manticoreselect1.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: ANJKLDNSMDKHALDMNBNA!!!");
+				}
+				case 2:
+				{
+					trSoundPlayFN("hippogrunt2.wav","1",-1,"","");
+					trSoundPlayFN("manticoreselect2.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: OIUHDSNBAGNKDAKDAKDA!!!");
+				}
+				case 3:
+				{
+					trSoundPlayFN("hyenagrunt1.wav","1",-1,"","");
+					trSoundPlayFN("manticoremove1.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: GDAGAKDGBAJKDGABJKDG!!!");
+				}
+				case 4:
+				{
+					trSoundPlayFN("hyenagrunt2.wav","1",-1,"","");
+					trSoundPlayFN("manticoremove2.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: IAHDUIADHANILDHADNDA!!!");
+				}
+				case 5:
+				{
+					trSoundPlayFN("walrusgrunt1.wav","1",-1,"","");
+					trSoundPlayFN("manticoregrunt1.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: UYADGAKDGAKDGGDASKJF!!!");
+				}
+				case 6:
+				{
+					trSoundPlayFN("walrusgrunt2.wav","1",-1,"","");
+					trSoundPlayFN("manticoregrunt2.wav","1",-1,"","");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: TARIHDNADHADHDGNALAD!!!");
+				}
+			}
+		}
+		case kbGetProtoUnitID("Villager Atlantean Hero"):
+		{
+			done = false;
+			chooseSpell(SPELL_FOOD);
+		}
+		case kbGetProtoUnitID("Fishing Ship Egyptian"):
+		{
+			damageUnit(unit, 2);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Fishing Ship Greek"):
+		{
+			damageUnit(unit, 2);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Fishing Ship Norse"):
+		{
+			damageUnit(unit, 3);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Fishing Ship Atlantean"):
+		{
+			damageUnit(unit, 3);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Kebenit"):
+		{
+			damageUnit(unit, 4);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Trireme"):
+		{
+			damageUnit(unit, 4);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Longboat"):
+		{
+			damageUnit(unit, 5);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Fire Ship Atlantean"):
+		{
+			damageUnit(unit, 5);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Siege Ship Egyptian"):
+		{
+			damageUnit(unit, 6);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Siege Ship Greek"):
+		{
+			damageUnit(unit, 6);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Siege Ship Norse"):
+		{
+			damageUnit(unit, 8);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Siege Ship Atlantean"):
+		{
+			damageUnit(unit, 8);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Hero Greek Argo"):
+		{
+			if(trQuestVarGet("chats_Argo_0") == 0){
+				trFadeOutAllSounds(0.0);
+				trQuestVarSet("chats_Argo_0", 1);
+				trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");
+				ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
+				MusicHigh();
+			}
+			damageUnit(unit, 10);
+			trQuestVarSetFromRand("soundRandom", 1, 3, true);
+			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
+
+		}
+		case kbGetProtoUnitID("Hero Greek Heracles"):
+		{
+			if(trQuestVarGet("chats_Heracles_0") == 0){
+				trFadeOutAllSounds(0.0);
+				trQuestVarSet("chats_Heracles_0", 1);
+				trSoundPlayFN("xpack\xdialog\en\xfol535.mp3","1",-1,"","");
+				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: My brothers have arrived!");
+				MusicHigh();
+			}
+			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
+		}
+		case kbGetProtoUnitID("Catapult"):
+		{
+			deployAtTile(0, "Meteor", 1*mGetVar(unit, "tile"));
+			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
+			for(x=yGetDatabaseCount("allUnits"); >0) {
+				yDatabaseNext("allUnits");
+				if ((1*mGetVarByQV("allUnits", "spell") == 0) && (1*trQuestVarGet("allUnits") != unit)) {
+					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
+						damageUnit(1*trQuestVarGet("allUnits"), 5);
+						deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+			}
+			trCameraShake(1.0, 0.1);
+			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+			trSoundPlayFN("gateramloud.wav","1",-1,"","");
+			trSoundPlayFN("gateramloud.wav","1",-1,"","");
+			trSoundPlayFN("chaos.wav","1",-1,"","");
+			trSoundPlayFN("chaos.wav","1",-1,"","");
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));

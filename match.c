@@ -250,7 +250,7 @@ inactive
 			
 			trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
 			trQuestVarSet("p"+p+"manaTax", 0);
-			
+
 			trQuestVarSet("p"+p+"click", 0);
 			highlightReady(100);
 			

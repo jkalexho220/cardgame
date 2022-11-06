@@ -20,6 +20,21 @@ inactive
 	trQuestVarSet("botMoveOptions", 10);
 	xsEnableRule("Bot1");
 	xsDisableRule("Bot_00_turn_start");
+	//This is a bandaid fix
+	xsEnableRule("BotTimer");
+	trQuestVarSet("botTimer", trTime() + 2 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
+}
+
+rule BotTimer
+highFrequency
+inactive
+{
+	if (trTime() > trQuestVarGet("botTimer")){
+		xsDisableSelf();
+		ChatLog(0, "Bot ran out of time.");
+		trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
+		xsDisableRule("Bot1");
+	}
 }
 
 /*
@@ -37,6 +52,7 @@ inactive
 		if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
 			trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
 			xsDisableRule("Bot1");
+			xsDisableRule("BotTimer");
 			trQuestVarSet("gameplayPhase", -1);
 		}
 		
@@ -64,6 +80,7 @@ inactive
 				if (trQuestVarGet("botChooseHand") + trQuestVarGet("botChooseUnit") == 0) {
 					trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
 					xsDisableRule("Bot1");
+					xsDisableRule("BotTimer");
 					// If choose hand
 				} else if (trQuestVarGet("botChooseHand") > trQuestVarGet("botChooseUnit")) {
 					trQuestVarSet("botSpell", -1);
@@ -240,6 +257,10 @@ inactive
 					if(trCountUnitsInArea("128",2,"Unit",45) < 3){
 						yClearDatabase("castTiles");
 					}
+				} else if(1*trQuestVarGet("botSpell") == SPELL_REFRESH_MANA){
+					if((trQuestVarGet("maxMana") - trQuestVarGet("p2mana")) < 4){
+						yClearDatabase("castTiles");
+					}
 				}
 				
 				if (1*trQuestVarGet("botSpell") == SPELL_SCRAP_METAL) {
@@ -348,6 +369,9 @@ inactive
 						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
 							currentScore = currentScore - 1;
 						}
+						if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
+							currentScore = 0;
+						}
 					}
 					// If the target dies, then currentScore = 2 * (target's attack + cost)
 					if (currentScore >= 0) {
@@ -360,7 +384,7 @@ inactive
 						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
 							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
 						} else {
-							if(1*mGetVarByQV("targets", "stunTime") == 0){
+							if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
 								currentScore = currentScore - mGetVarByQV("targets", "attack");
 								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
 									currentScore = currentScore + 1;

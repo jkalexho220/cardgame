@@ -230,6 +230,12 @@ void castEnd() {
 		if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
 		}
+		if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {
+			generateCard(p, 0, 1*mGetVar(unit, "spell"), true);
+			if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){
+				mSetVarByQV("next", "echo", 1);
+			}
+		}
 		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_REACH) {
 			trQuestVarSet("p"+p+"extraManaflow", cost + trQuestVarGet("p"+p+"extraManaflow"));
 		}
@@ -1205,6 +1211,73 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
+		case SPELL_PETTY_LASER:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_THICK_LASER:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_GRAND_LASER:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_OMEGA_LASER:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_GODLY_LASER:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_SPACE_VENT:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_REFRESH_MANA:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_ELDRITCH_WHISPERS:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_ELDRITCH_RITUAL:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion. Right click to cancel.");
+		}
+		case SPELL_CONS_LIBRA:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to restore " + (1+1*trQuestVarGet("constellations")) + " Health to your Commander. Right click to cancel.");
+		}
+		case SPELL_CONS_GEMINI:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a minion to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");
+			castAddSummonLocations("spellDestination");
+			castInstructions("Choose a tile to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");
+		}
+		case SPELL_CONS_TAURUS:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to draw " + (1+1*trQuestVarGet("constellations")) + " cards. Right click to cancel.");
+		}
+		case SPELL_CONS_ORION:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to give your minions +" + (1+1*trQuestVarGet("constellations")) + "|+" + (1+1*trQuestVarGet("constellations")) + ". Right click to cancel.");
+		}
 	}
 	castStart();
 	xsEnableRule("spell_cast");
@@ -1430,6 +1503,7 @@ inactive
 				trSoundPlayFN("gaiatreesprout2.wav","1",-1,"","");
 				trSoundPlayFN("villagercreate.wav","1",-1,"","");
 				addCardToDeck(p, "", SPELL_OXYGEN_TANK);
+				shuffleDeck(p);
 			}
 			case SPELL_SPARK:
 			{
@@ -1901,6 +1975,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+				tileGuard(1*mGetVarByQV("spellTarget", "tile"), false);
 			}
 			case SPELL_CLEANSING_WATERS:
 			{
@@ -2274,7 +2349,7 @@ inactive
 					neighbor = zGetVarByIndex("tiles", "neighbor"+x, tile);
 					deployAtTile(0, "Osiris SFX", neighbor);
 					target = zGetVarByIndex("tiles", "occupant", neighbor);
-					if ((target > 0) && (mGetVar(target, "spell") == SPELL_NONE)) {
+					if (target > 0) {
 						stunUnit(target);
 					}
 				}
@@ -2347,8 +2422,8 @@ inactive
 				trVectorSetUnitPos("start", "spellCaster");
 				trVectorSetUnitPos("end", "spellDirection");
 				trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
-				mSetVarByQV("spellCaster", "laserDirx", trVectorQuestVarGetX("dir"));
-				mSetVarByQV("spellCaster", "laserDirz", trVectorQuestVarGetZ("dir"));
+				mSetVarByQV("spellCaster", "laserDirx", trVectorQuestVarGetX("dir") * 100000);
+				mSetVarByQV("spellCaster", "laserDirz", trVectorQuestVarGetZ("dir") * 100000);
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellCaster"));
 				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
@@ -2424,6 +2499,219 @@ inactive
 				if(HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) == false){
 					mSetVar(target, "action", ACTION_SLEEPING);
 				}
+			}
+			case SPELL_PETTY_LASER:
+			{
+				for (x = 2 + trQuestVarGet("p"+p+"spellDamage"); >0) {
+					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				}
+				trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"));
+				addCardToDeck(p, "", SPELL_THICK_LASER);
+				shuffleDeck(p);
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+			case SPELL_THICK_LASER:
+			{
+				for (x = 4 + trQuestVarGet("p"+p+"spellDamage"); >0) {
+					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				}
+				damageUnit(1*trQuestVarGet("spellTarget"), 4 + trQuestVarGet("p"+p+"spellDamage"));
+				addCardToDeck(p, "", SPELL_GRAND_LASER);
+				shuffleDeck(p);
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+			case SPELL_GRAND_LASER:
+			{
+				for (x = 6 + trQuestVarGet("p"+p+"spellDamage"); >0) {
+					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				}
+				damageUnit(1*trQuestVarGet("spellTarget"), 6 + trQuestVarGet("p"+p+"spellDamage"));
+				addCardToDeck(p, "", SPELL_OMEGA_LASER);
+				shuffleDeck(p);
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+			case SPELL_OMEGA_LASER:
+			{
+				for (x = 8 + trQuestVarGet("p"+p+"spellDamage"); >0) {
+					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				}
+				damageUnit(1*trQuestVarGet("spellTarget"), 8 + trQuestVarGet("p"+p+"spellDamage"));
+				addCardToDeck(p, "", SPELL_GODLY_LASER);
+				shuffleDeck(p);
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+			case SPELL_GODLY_LASER:
+			{
+				for (x = 10 + trQuestVarGet("p"+p+"spellDamage"); >0) {
+					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
+				}
+				damageUnit(1*trQuestVarGet("spellTarget"), 10 + trQuestVarGet("p"+p+"spellDamage"));
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
+			}
+			case SPELL_SPACE_VENT:
+			{
+				trSoundPlayFN("pigout.wav","1",-1,"","");
+				trSoundPlayFN("pigout.wav","1",-1,"","");
+				trSoundPlayFN("pigout.wav","1",-1,"","");
+				
+				//for(ventPlayer=2; >0) {
+					int ventPlayer = p;
+					string disText = "";
+					int disCount = 0;
+					for(x=yGetDatabaseCount("p"+ventPlayer+"hand"); >0) {
+						disCount = disCount + 1;
+						yDatabaseNext("p"+ventPlayer+"hand", true);
+						trSoundPlayFN("pigout.wav","1",-1,"","");
+						trVectorSetUnitPos("pos", "p"+ventPlayer+"hand");
+						trUnitSelectClear();
+						trUnitSelectByID(1*yGetVar("p"+ventPlayer+"hand", "pos"));
+						trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+						trUnitSelectClear();
+						trUnitSelect(""+1*trQuestVarGet("p"+ventPlayer+"hand"), true);
+						trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+						trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
+						trUnitSelectClear();
+						trArmySelect("1,10");
+						trUnitChangeProtoUnit("Hero Death");
+						if (mGetVarByQV("p"+ventPlayer+"hand", "spell") == SPELL_NONE) {
+							yClearDatabase("ventTiles");
+							findAvailableTiles(1*mGetVarByQV("p"+ventPlayer+"commander", "tile"), 1, "ventTiles", false);
+							if(yGetDatabaseCount("ventTiles") > 0){
+								int ventUnit = summonAtTile(1*yDatabaseNext("ventTiles"),ventPlayer,1*mGetVarByQV("p"+ventPlayer+"hand", "proto"));			
+								if(HasKeyword(CHARGE, 1*mGetVar(ventUnit, "keywords")) == true){
+									mSetVar(ventUnit, "action", ACTION_READY);
+								} else {
+									mSetVar(ventUnit, "action", ACTION_SLEEPING);				
+								}
+								stunUnit(ventUnit);							
+							} else {
+								if(disCount < 4){
+									disText = disText + trStringQuestVarGet("card_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "proto") + "_name") + " ";
+								} else {
+									disText = "" + disCount + " cards";
+								}
+							}
+						} else {
+							if(disCount < 4){
+								disText = disText + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "spell") + "_name") + " ";
+							} else {
+								disText = "" + disCount + " cards";
+							}
+						}
+						zSetVarByIndex("p"+ventPlayer+"handPos", "occupied", 1*yGetVar("p"+ventPlayer+"hand", "pos"), 0);
+						yRemoveFromDatabase("p"+ventPlayer+"hand");
+					}
+					ChatLog(ventPlayer, "Discarded " + disText);
+					ChatLog((3-ventPlayer), "Opponent discarded " + disText);
+				//}
+
+			}
+			case SPELL_REFRESH_MANA:
+			{
+				int refreshCount = xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"mana"));
+				if(refreshCount > 5){
+					refreshCount = 5;
+				}
+				for(x=refreshCount; >0) {
+					if (yGetDatabaseCount("p"+p+"deck") > 0) {
+						int refreshProto = yDatabaseNext("p"+p+"deck");
+						if(refreshCount == 1){
+							if (yGetVar("p"+p+"deck", "spell") == 0) {
+								ChatLog(p, "Discarded " + trStringQuestVarGet("card_" + refreshProto + "_Name") + " from your deck.");
+							} else {
+								ChatLog(p, "Discarded " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name") + " from your deck.");
+							}
+						}
+						yRemoveFromDatabase("p"+p+"deck");
+					}
+				}
+				if(refreshCount > 1){
+					ChatLog(p, "Discarded " + refreshCount + " cards from your deck.");
+				}
+				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + refreshCount);
+				updateRoxasHealth(p);
+				updateHandPlayable(p);
+				updateMana();	
+				trSoundPlayFN("skypassagein.wav", "1", -1, "","");
+				deployAtTile(0, "Osiris Box Glow", 1*mGetVarByQV("p" + p + "commander", "tile"));
+			}
+			case SPELL_ELDRITCH_WHISPERS:
+			{
+				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
+				mSetVarByQV("spellTarget", "health", 5 + mGetVarByQV("spellTarget", "health"));
+				if(1*mGetVarByQV("spellTarget", "player") != p){
+					addCardToDeck(p, "", SPELL_ELDRITCH_RITUAL);
+					shuffleDeck(p);
+					trSoundPlayFN("spybirth.wav","1",-1,"","");
+					deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));
+				} 
+			}
+			case SPELL_ELDRITCH_RITUAL:
+			{
+				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
+				mSetVarByQV("spellTarget", "attack", 5 + mGetVarByQV("spellTarget", "attack"));
+				if(1*mGetVarByQV("spellTarget", "player") != p){
+					addCardToDeck(p, "Flying Purple Hippo");
+					shuffleDeck(p);
+					trSoundPlayFN("changeunit.wav","1",-1,"","");
+					deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));
+				}
+			}
+			case SPELL_CONS_LIBRA:
+			{
+				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
+				healUnit(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("constellations"));
+				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+				for(x=trQuestVarGet("constellations"); >0) {
+					trSoundPlayFN("heal.wav","1",-1,"","");
+				}
+				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
+			}
+			case SPELL_CONS_GEMINI:
+			{
+				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
+				activeUnit = summonAtTile(1*trQuestVarGet("spellDestination"),p,1*mGetVarByQV("spellTarget", "proto"));
+				mSetVar(activeUnit, "health", 1*trQuestVarGet("constellations"));
+				mSetVar(activeUnit, "attack", 1*trQuestVarGet("constellations"));
+				if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {
+					mSetVar(activeUnit, "action", ACTION_READY);
+				} else {
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				}
+				for(x=trQuestVarGet("constellations"); >0) {
+					trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				}
+				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
+			}
+			case SPELL_CONS_TAURUS:
+			{
+				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
+				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("constellations") + trQuestVarGet("p"+p+"drawCards"));
+				deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+				for(x=trQuestVarGet("constellations"); >0) {
+					trSoundPlayFN("temple.wav","1",-1,"","");
+				}
+				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
+			}
+			case SPELL_CONS_ORION:
+			{
+				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if ((mGetVarByQV("allUnits", "spell") == SPELL_NONE) &&
+						(mGetVarByQV("allUnits", "player") == p)) {
+						mSetVarByQV("allUnits", "health", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "health"));
+						mSetVarByQV("allUnits", "attack", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "attack"));
+						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
+					}
+				}
+				for(x=trQuestVarGet("constellations"); >0) {
+					trSoundPlayFN("herocreation.wav","1",-1,"","");
+				}
+				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
 			}
 		}
 		

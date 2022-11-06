@@ -56,7 +56,7 @@ inactive
 		CinematicAdd("HeavenGames\c2m2_02", "");
 		CinematicAdd("HeavenGames\c2m2_03", "");
 		CinematicStart();
-		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 3);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(LIGHTNING));
 		mSetVarByQV("p2commander", "spell", SPELL_COMMANDER);
@@ -104,7 +104,7 @@ inactive
 		CinematicAdd("HeavenGames\c2m3_01", "");
 		CinematicAdd("HeavenGames\c2m3_02", "");
 		CinematicStart();
-		mSetVarByQV("p2commander", "health", 40);
+		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
 		mSetVarByQV("p2commander", "spell", SPELL_COMMANDER);

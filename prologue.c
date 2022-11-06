@@ -349,21 +349,88 @@ inactive
 			trQuestVarSet("missionSelection", -1);
 			trQuestVarSet("missionClass", -1);
 			trQuestVarSet("newCommanderType", kbGetProtoUnitID("Hero Greek Jason"));
-			xsEnableRule("CinPrologue13");
+			xsEnableRule("CinPrologue14");
 			xsEnableRule("NewCommander0");
 			trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
 			trLetterBox(false);
-			trShowImageDialog("icons/god power meteor icon", "Great Evil approaches! You must bring together the scattered Forumers!");
-			trSoundPlayFN("xnew_objective.wav","1",-1,"","");
+			trShowImageDialog("icons\god power meteor icon", "Great Evil approaches! You must bring together the scattered Forumers!");
+			trSoundPlayFN("xnew_objective.wav","1",-1,"","");		
+			trDelayedRuleActivation("ClassUnlockMessage_0");
 		}
 	}
 	
-	rule CinPrologue13
+	rule CinPrologue14
 	highFrequency
 	inactive
 	{
 		if (trQuestVarGet("newCommanderType") == 0){
-			xsDisableRule("CinPrologue13");
+			xsDisableRule("CinPrologue14");
 			xsEnableRule("MissionBegin");
+		}
+	}
+	
+	rule ClassUnlockMessage_0
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\building specialist icons 64", "Class Unlocked: Adventurer");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+		}
+	}
+	
+	rule ClassUnlockMessage_1
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\improvement focus icons 64", "Class Unlocked: Arcane");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+		}
+	}
+	
+	rule ClassUnlockMessage_2
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\improvement poseidons secret icons 64", "Class Unlocked: Naga");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+		}
+	}
+	
+	rule ClassUnlockMessage_3
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\improvement engineers icon 64", "Class Unlocked: Clockwork");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+		}
+	}
+	
+	rule ClassUnlockMessage_4
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\god power ancestors icon 64", "Class Unlocked: Evil");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+		}
+	}
+	
+	rule ClassUnlockMessage_5
+	highFrequency
+	inactive
+	{
+		if ((trTime()-cActivationTime) > 0){
+			xsDisableSelf();
+			trShowImageDialog("icons\god power eclipse icon 64", "Class Unlocked: Space");
+			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 		}
 	}

@@ -1,34 +1,3 @@
-/*
-These are functions are called to play the storyline
-CinematicReset();
-CinematicAdd("icons/infantry g hoplite icon 64", "pen island");
-CinematicStart();
-*/
-
-void CinematicReset() {
-	trQuestVarSet("cinematicStep", 0);
-	trQuestVarSet("cinematicLength", 0);
-}
-
-/*
-i = icon
-s = string text
-*/
-void CinematicAdd(string i = "", string s = "") {
-	trQuestVarSet("cinematicLength", 1 + trQuestVarGet("cinematicLength"));
-	trStringQuestVarSet("cinematicImage"+1*trQuestVarGet("cinematicLength"), i);
-	trStringQuestVarSet("cinematicText"+1*trQuestVarGet("cinematicLength"), s);
-}
-
-/*
-m = music filename
-*/
-void CinematicStart(string m = "") {
-	trMusicPlay(m, "1", 0);
-	xsEnableRule("Story_Cinematic_Play");
-}
-
-
 void AddToCustomBoard(int tile = 0, int terrain = 0, string proto = "", int count = 1, int heading = 45, int scale = 1){
 	yAddToDatabase("customBoard", "thisDoesNotMatterRight");
 	yAddUpdateVar("customBoard", "tile", tile);
@@ -44,8 +13,8 @@ int SummonLaser(int tile = 0, int target = 0) {
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+tile));
 	trVectorQuestVarSet("end", kbGetBlockPosition(""+target));
 	trVectorQuestVarSet("dir", trGetUnitVector("start", "end"));
-	mSetVar(siphon, "laserDirx", trVectorQuestVarGetX("dir"));
-	mSetVar(siphon, "laserDirz", trVectorQuestVarGetZ("dir"));
+	mSetVar(siphon, "laserDirx", trVectorQuestVarGetX("dir") * 100000);
+	mSetVar(siphon, "laserDirz", trVectorQuestVarGetZ("dir") * 100000);
 	trUnitSelectClear();
 	trUnitSelect(""+siphon);
 	trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);
@@ -501,7 +470,7 @@ void SetupMission(int class = 0, int mission = 0){
 				case 6:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+					trPaintTerrain(0, 0, 60, 60, 0, 50, false);
 					trQuestVarSet("dimension", 7);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Border */
@@ -1046,27 +1015,101 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "Swordsman");
+						addCardToDeck(2, "Jarl");
+						addCardToDeck(2, "Mountain Giant");
+						addCardToDeck(2, "Hero Greek Hippolyta");
+					}
 				}
 				case 2:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Fire Giant");
+						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
+						addCardToDeck(2, "Chimera");
+						addCardToDeck(2, "Hero Greek Bellerophon");
+					}
 				}
 				case 3:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_WATER_CANNON);
+						addCardToDeck(2, "Kraken");
+						addCardToDeck(2, "Hydra");
+						addCardToDeck(2, "Scylla");
+						addCardToDeck(2, "Sea Turtle");
+						addCardToDeck(2, "Leviathan");	
+					}
 				}
 				case 4:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_REWIND);
+						addCardToDeck(2, "", SPELL_SONG_OF_REST);
+						addCardToDeck(2, "Automaton SPC");
+						addCardToDeck(2, "Ballista");
+						addCardToDeck(2, "Battle Boar");
+						addCardToDeck(2, "Colossus");
+						addCardToDeck(2, "Tower Mirror");
+					}
 				}
 				case 5:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<80){
+						addCardToDeck(2, "Guardian");	
+					}
 				}
 				case 6:
 				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					for(x=0;<10){
+						addCardToDeck(2, "", SPELL_REFRESH_MANA);
+						addCardToDeck(2, "", SPELL_PETTY_LASER);
+						addCardToDeck(2, "", SPELL_NICKS_PORTAL);
+						addCardToDeck(1, "", SPELL_SPACE_VENT);
+						addCardToDeck(2, "Trireme");
+						addCardToDeck(2, "Siege Ship Greek");
+						addCardToDeck(2, "Siege Ship Atlantean");
+						addCardToDeck(2, "Catapult");
+						addCardToDeck(2, "Hero Greek Argo");
+					}
 				}
 			}
 		}
@@ -1241,43 +1284,74 @@ inactive
 }
 
 
-void CommanderUnlockLine(int class = -1){
-	switch(class)
-	{
-		case -1:
+void CommanderUnlockLine(int class = -1, bool first = false){
+	if(first){
+		switch(class)
 		{
-			trShowImageDialog("icons/infantry x Oracle hero icons 64", "You must be pretty good to finish the tutorial. Mind if I tag along?");
-			trSoundPlayFN("ahs4.wav","1",-1,"","");
+			case CLASS_ADVENTURER:
+			{
+				trShowImageDialog("icons\hero g jason icon 64", "phdorogers4: Well, here we go again!");
+				trSoundPlayFN("gha1.wav","1",-1,"","");
+			}
+			case CLASS_ARCANE:
+			{
+				trShowImageDialog("icons\infantry x Oracle hero icons 64", "Nanodude: You must be pretty good to finish the tutorial. Mind if I tag along?");
+				trSoundPlayFN("ahs4.wav","1",-1,"","");
+			}
+			case CLASS_NAGA:
+			{
+				trShowImageDialog("icons\infantry x fanatic hero icons 64", "Out Reach: You look sexy, wanna catch an eel later?");
+				trSoundPlayFN("aha2.wav","1",-1,"","");	
+			}
+			case CLASS_CLOCKWORK:
+			{
+				trShowImageDialog("icons\scenario arkantos icon 64", "Roxas: I don't even know who you are!");
+				trSoundPlayFN("arkantos2attack1.wav","1",-1,"","");	
+			}
+			case CLASS_EVIL:
+			{
+				trShowImageDialog("icons\hero g perseus icon 64", "Anraheir: And... ACTION! And some juice please, film making is like super hard and stuff.");
+				trSoundPlayFN("gha3.wav","1",-1,"","");		
+			}
+			case CLASS_SPACE:
+			{
+				trShowImageDialog("icons\hero g odysseus icon 64", "Nickonhawk: You have recruited all the forumers! Well done!");
+				trSoundPlayFN("gha2.wav","1",-1,"","");	
+			}
 		}
-		case CLASS_ADVENTURER:
+	} else {
+		switch(class)
 		{
-			trShowImageDialog("icons/cavalry x Lancer hero icons 64", "Sorry you had to come all this way, I was working on LOME. Now what's all this about?");
-			trSoundPlayFN("aha1.wav","1",-1,"","");
-		}
-		case CLASS_ARCANE:
-		{
-			trShowImageDialog("icons/Special G Minotaur Icon 64", "Ah! You found me! I'll join you but I won't be using my Arcane God powers, that would make things too easy.");
-			trSoundPlayFN("minotaurgore.wav","1",-1,"","");
-		}
-		case CLASS_NAGA:
-		{
-			trShowImageDialog("icons/archer x arcus hero icons 64", "It's scragins time!");
-			trSoundPlayFN("aha2.wav","1",-1,"","");
-		}
-		case CLASS_CLOCKWORK:
-		{
-			trShowImageDialog("icons/Special E Son of Osiris Icon 64", "BOW BEFORE YEEBAAGOOON!");
-			trSoundPlayFN("soopattack.wav","1",-1,"","");
-		}
-		case CLASS_EVIL:
-		{
-			trShowImageDialog("icons/Infantry G Hoplite Icon 64", "Why is Nick taking so long with this map?");
-			trSoundPlayFN("mummydie.wav","1",-1,"","");
-		}
-		case CLASS_SPACE:
-		{
-			trShowImageDialog("Zenophobia\SFA\Nick", "You made it to the end! Well played!");
-			trSoundPlayFN("llamamove2.wav","1",-1,"","");
+			case CLASS_ADVENTURER:
+			{
+				trShowImageDialog("icons\cavalry x Lancer hero icons 64", "Venlesh: Sorry you had to come all this way, I was working on LOME. Now what's all this about?");
+				trSoundPlayFN("aha1.wav","1",-1,"","");
+			}
+			case CLASS_ARCANE:
+			{
+				trShowImageDialog("icons\Special G Minotaur Icon 64", "nottud: Ah! You found me! I'll join you but I won't be using my super powers, that would make things too easy.");
+				trSoundPlayFN("minotaurgore.wav","1",-1,"","");
+			}
+			case CLASS_NAGA:
+			{
+				trShowImageDialog("icons\archer x arcus hero icons 64", "scragins: It's scragins time!");
+				trSoundPlayFN("aha2.wav","1",-1,"","");
+			}
+			case CLASS_CLOCKWORK:
+			{
+				trShowImageDialog("icons\Special E Son of Osiris Icon 64", "Yeebaagooon: BOW BEFORE YEEBAAGOOON!");
+				trSoundPlayFN("soopattack.wav","1",-1,"","");
+			}
+			case CLASS_EVIL:
+			{
+				trShowImageDialog("icons\Infantry G Hoplite Icon 64", "Zenophobia: Why is Nick taking so long with this map?");
+				trSoundPlayFN("mummydie.wav","1",-1,"","");
+			}
+			case CLASS_SPACE:
+			{
+				trShowImageDialog("Zenophobia\SFA\Nick", "God: Pew-pew!");
+				trSoundPlayFN("llamamove2.wav","1",-1,"","");
+			}
 		}
 	}
 }
@@ -1300,15 +1374,54 @@ inactive
 				trQuestVarSet("newCards", 0);
 				trQuestVarSet("newCommanderType", kbGetProtoUnitID("Oracle Hero"));
 				xsEnableRule("NewCommander0");
-				CommanderUnlockLine();
+				CommanderUnlockLine(CLASS_ARCANE, true);
+				trDelayedRuleActivation("ClassUnlockMessage_1");
+				trQuestVarSet("class1", CLASS_ADVENTURER);
+				trQuestVarSet("class2", CLASS_ARCANE);
+				for(i = 0;<6){
+					setCardCountDeck(i, 3);
+					setCardCountDeck(i + 30, 3);
+					setCardCountCollection(i, 0);
+					setCardCountCollection(i + 30, 0);
+				}
+				setCardCountDeck(6, 2);
+				setCardCountCollection(6, 3);
+				setCardCountDeck(36, 2);
+				setCardCountCollection(36, 3);
+				setClassProgress(CLASS_ADVENTURER, 1);
+				setClassProgress(CLASS_ARCANE, 1);
 			} else {
 				/* Progress Current Story */
+				int storiesFinished = 0;
+				if(getClassProgress(CLASS_ADVENTURER) > 6){
+					storiesFinished = storiesFinished + 1;
+				}
+				if(getClassProgress(CLASS_ARCANE) > 6){
+					storiesFinished = storiesFinished + 1;
+				}
+				if(getClassProgress(CLASS_NAGA) > 6){
+					storiesFinished = storiesFinished + 1;
+				}
+				if(getClassProgress(CLASS_CLOCKWORK) > 6){
+					storiesFinished = storiesFinished + 1;
+				}
+				if(getClassProgress(CLASS_EVIL) > 6){
+					storiesFinished = storiesFinished + 1;
+				}
+						
 				if(trQuestVarGet("missionHardmode") == 0){
 					setClassProgress(1*trQuestVarGet("missionClass"), getClassProgress(1*trQuestVarGet("missionClass")) + 1);
 					if(getClassProgress(1*trQuestVarGet("missionClass")) > 6){
 						trQuestVarSet("newCommanderType", CommanderToProtounit(1+(2*trQuestVarGet("missionClass"))));
 						xsEnableRule("NewCommander0");
 						CommanderUnlockLine(trQuestVarGet("missionClass"));
+						
+						storiesFinished = storiesFinished + 1;
+						if(getClassProgress(CLASS_NAGA) == 0){
+							trQuestVarSet("unlockMore", CLASS_NAGA);
+						} else if(storiesFinished > 4 && getClassProgress(CLASS_SPACE) == 0) {
+							trQuestVarSet("unlockMore", CLASS_SPACE);
+						}
 					}
 				}
 				/* Reward Pack Cards */
@@ -1316,6 +1429,11 @@ inactive
 				trQuestVarSet("newCardsCount", 2 + trQuestVarGet("missionSelection"));
 				trVectorQuestVarSet("packPos", xsVectorSet(trVectorQuestVarGetX("packPos")+(8-trQuestVarGet("newCardsCount")),0,trVectorQuestVarGetZ("packPos")+(8-trQuestVarGet("newCardsCount"))));
 				
+				int playerLegendaries = 0;
+				for(i=0;<6){
+					playerLegendaries = playerLegendaries + getCardCountCollection(14 + 30 * i);
+					playerLegendaries = playerLegendaries + getCardCountCollection(29 + 30 * i);
+				}
 				xsEnableRule("NewCards0");
 				xsEnableRule("CollectionClick");
 				for(i=0;<trQuestVarGet("newCardsCount")){
@@ -1323,19 +1441,19 @@ inactive
 					int legendary = 0;
 					trQuestVarSet("packReward" + i, -1);
 					/* Extras Rarity */
-					for(k=0;<7){
+					for(k=0;<9){
+						legendary = 0;
+						trQuestVarSetFromRand("reward", 7, 29, true);
 						/* Legendary Rarity */
-						for(j=0;<4){
+						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
 							trQuestVarSetFromRand("reward", 7, 29, true);
-							if(trQuestVarGet("reward") != 14 && trQuestVarGet("reward") != 29){
-								break;
-							}
 						}
 						
 						int maxCopies = 3;
-						if(trQuestVarGet("reward") == 14 || trQuestVarGet("reward") == 29){
+						if((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)){
 							maxCopies = 1;
 							legendary = 1;
+							playerLegendaries = playerLegendaries + 1;
 						}
 						
 						int class = trQuestVarGet("missionClass");
@@ -1349,7 +1467,7 @@ inactive
 							class = trQuestVarGet("temp");
 						}
 						
-						reward = trQuestVarGet("reward") + 30 * class;
+						reward = 1*trQuestVarGet("reward") + 30 * class;
 						
 						if((getCardCountDeck(reward) + getCardCountCollection(reward)) < maxCopies){
 							setCardCountCollection(reward, getCardCountDeck(reward) + getCardCountCollection(reward) + 1);
@@ -1394,7 +1512,18 @@ inactive
 		if(trQuestVarGet("restartMission") == 1){
 			xsEnableRule("MissionBegin");
 		} else {
-			xsEnableRule("Collection");
+			/* restart */
+			if(true){
+				dataSave();
+				subModeEnter("Simulation", "Editor");
+				uiMessageBox("moo","restartCurrentGame()");
+				uiCycleCurrentActivate();
+				subModeLeave("Simulation", "Editor");
+				modeEnter("pregame");
+				modeEnter("Simulation");
+			} else {
+				xsEnableRule("Collection");
+			}
 		}
 	}
 }
@@ -1424,7 +1553,7 @@ inactive
 	if ((trTime()-cActivationTime) > 2){
 		trPaintTerrain(0, 0, 60, 60, 5, 4, false);
 		trSetFogAndBlackmap(false, false);
-		trUIFadeToColor(0,0,0,500,500,false);
+		trUIFadeToColor(0,0,0,100,100,false);
 		trCameraCut(vector(85.849754,59.475327,36.041752), vector(0.374977,-0.843302,-0.385012), vector(0.588380,0.537438,-0.604126), vector(-0.716381,0.0,-0.697709));
 		trSoundPlayDialog("default", "1", -1, false, " : ", "");
 		trSoundPlayFN("plentybirth.wav", "1", -1, "","");
@@ -1448,6 +1577,7 @@ inactive
 			DeploySober("Gaia Forest effect", "temp");
 		}
 		trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+		trQuestVarSet("timermstimer", trTimeMS() + 200);
 		xsEnableRule("NewCardsEffect_");
 	} else {
 		xsEnableRule("NewCardsClick");
@@ -1459,7 +1589,7 @@ rule NewCardsEffect_
 highFrequency
 inactive
 {
-	if ((trTime()-cActivationTime) > 0){
+	if (trTimeMS() > trQuestVarGet("timermstimer")){
 		xsDisableRule("NewCardsEffect_");
 		xsEnableRule("NewCardsEffect");
 	}
@@ -1567,7 +1697,7 @@ inactive
 		trQuestVarSet("newCommanderHeading", 0);
 		trArmyDispatch("1,10", kbGetProtoUnitName(trQuestVarGet("newCommanderType")), 1, 107.5, 0.00, 10, 0, true);
 		trCameraCut(vector(89.639015,9.863803,26.737341), vector(0.713514,-0.328201,-0.619017), vector(0.247909,0.944608,-0.215076), vector(-0.655317,0.0,-0.755354));
-		trSoundPlayDialog("default", "1", -1, false, "New Commander Unlocked:" + trStringQuestVarGet("card_" + 1*trQuestVarGet("newCommanderType") + "_Name"), "");
+		trSoundPlayDialog("default", "1", -1, false, "Commander Unlocked:" + trStringQuestVarGet("card_" + 1*trQuestVarGet("newCommanderType") + "_Name"), "");
 		trSoundPlayFN("arkantosarrive.wav", "1", -1, "","");
 		trSoundPlayFN("lightthunder.wav", "1", -1, "","");
 		xsDisableRule("NewCommander1");
@@ -1587,6 +1717,16 @@ inactive
 	}
 }
 
+void UnlockClass(int class = 0){
+	CommanderUnlockLine(class, true);
+	trDelayedRuleActivation("ClassUnlockMessage_" + class);
+	setClassProgress(class, 1);
+	for (x=0; < 7) {
+		setCardCountCollection(x + 30 * class, 3);
+	}
+	dataSave();
+}
+
 rule NewCommander3
 highFrequency
 inactive
@@ -1599,9 +1739,31 @@ inactive
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("newCommander"), true);
 		trUnitDestroy();
-		trQuestVarSet("newCommander", 0);
-		trQuestVarSet("newCommanderType", 0);
-		xsDisableRule("NewCommander3");
+		xsDisableRule("NewCommander3");		
+		if(1*trQuestVarGet("unlockMore") == 0){
+			trQuestVarSet("newCommander", 0);
+			trQuestVarSet("newCommanderType", 0);			
+		} else if(1*trQuestVarGet("unlockMore") == CLASS_NAGA) {
+			xsEnableRule("NewCommander0");
+			trQuestVarSet("newCommanderType", kbGetProtoUnitID("Royal Guard Hero"));	
+			UnlockClass(CLASS_NAGA);
+			trQuestVarSet("unlockMore", CLASS_CLOCKWORK);			
+		} else if(1*trQuestVarGet("unlockMore") == CLASS_CLOCKWORK) {
+			xsEnableRule("NewCommander0");
+			trQuestVarSet("newCommanderType", kbGetProtoUnitID("Arkantos God"));	
+			UnlockClass(CLASS_CLOCKWORK);
+			trQuestVarSet("unlockMore", CLASS_EVIL);
+		} else if(1*trQuestVarGet("unlockMore") == CLASS_EVIL) {
+			xsEnableRule("NewCommander0");
+			trQuestVarSet("newCommanderType", kbGetProtoUnitID("Hero Greek Perseus"));
+			UnlockClass(CLASS_EVIL);
+			trQuestVarSet("unlockMore", 0);
+		} else if(1*trQuestVarGet("unlockMore") == CLASS_SPACE) {
+			xsEnableRule("NewCommander0");
+			trQuestVarSet("newCommanderType", kbGetProtoUnitID("Hero Greek Odysseus"));	
+			UnlockClass(CLASS_SPACE);
+			trQuestVarSet("unlockMore", 0);
+		}
 	}
 }
 
@@ -1610,7 +1772,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("newCommander") > 0){
-		trQuestVarSet("newCommanderTimer", trTimeMS() + 2);
+		trQuestVarSet("timermstimer", trTimeMS() + 2);
 		trQuestVarSet("newCommanderHeading", trQuestVarGet("newCommanderHeading") + 2);
 		if(trQuestVarGet("newCommanderHeading") > 360){
 			trQuestVarSet("newCommanderHeading", 1);
@@ -1627,7 +1789,7 @@ rule NewCommanderRotate_
 highFrequency
 inactive
 {
-	if(trTimeMS() > trQuestVarGet("newCommanderTimer")){
+	if(trTimeMS() > trQuestVarGet("timermstimer")){
 		xsDisableRule("NewCommanderRotate_");
 		xsEnableRule("NewCommanderRotate");
 	}
@@ -1745,8 +1907,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission1");
-		trShowImageDialog("icons/World Berry Bush icon 64", "Not long after starting your journey, a large figure comes running to greet you.");
+		trShowImageDialog("icons\World Berry Bush icon 64", "Not long after starting your journey, a large figure comes running to greet you.");
 		trSoundPlayFN("gaiatreesprout1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Wolf"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Wolf"));
+		}
 	}
 }
 
@@ -1756,12 +1922,14 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission2");
-		trShowImageDialog("icons/scenario x general icons 64", "Hello civilian! We will take your money to fund the army. Standard procedure.");
+		trShowImageDialog("icons\scenario x general icons 64", "Hello civilian! We will take your money to fund the army. Standard procedure.");
 		trSoundPlayFN("xpack\xdialog\en\xgen005.mp3", "2", -1, "","");
 		if (trQuestVarGet("missionHardmode") == 1) {
 			for (x=6; >0) {
 				addCardToDeck(2, "Hero Greek Ajax");
 			}
+			summonAtTile(168, 2, kbGetProtoUnitID("Swordsman"));
+			summonAtTile(169, 2, kbGetProtoUnitID("Swordsman"));
 		}
 	}
 }
@@ -1772,8 +1940,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission3");
-		trShowImageDialog("icons/Special C Qilin Icon", "I am the Protector of this forest. How dare you walk into my domain?");
+		trShowImageDialog("icons\Special C Qilin Icon", "I am the Protector of this forest. How dare you walk into my domain?");
 		trSoundPlayFN("qilin_select1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(168, 2, kbGetProtoUnitID("Hetairoi"));
+			summonAtTile(169, 2, kbGetProtoUnitID("Hetairoi"));
+		}
 	}
 }
 
@@ -1787,7 +1959,7 @@ inactive
 		if(PlayerDefeated(1) == false){
 			xsDisableRule("StoryClass0Mission3_");
 			if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p2commander"))) == kbGetProtoUnitID("Qilin")){
-				trShowImageDialog("icons/Special C Qilin Icon", "Oh right, I uhhh... left the stove on! Please excuse me!");
+				trShowImageDialog("icons\Special C Qilin Icon", "Oh right, I uhhh... left the stove on! Please excuse me!");
 				trSoundPlayFN("qilin_select2.wav","1",-1,"","");
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
@@ -1804,8 +1976,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission4");
-		trShowImageDialog("icons/Scenario Kemsyt Icon 64", "Ah perfect, something to plunder! We got stuck in this swamp and we were getting bored!");
+		trShowImageDialog("icons\Scenario Kemsyt Icon 64", "Ah perfect, something to plunder! We got stuck in this swamp and we were getting bored!");
 		trSoundPlayFN("kemsytattack1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Bondi"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Bondi"));
+		}
 	}
 }
 
@@ -1815,8 +1991,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission5");
-		trShowImageDialog("icons/god power audrey icons 64", "*plant noises*");
+		trShowImageDialog("icons\god power audrey icons 64", "*plant noises*");
 		trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Bear"));
+		}
 	}
 }
 
@@ -1826,8 +2006,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass0Mission6");
-		trShowImageDialog("icons/Special C Qilin Icon", "The stove incident has been resolved. This time let's fight for real!");
+		trShowImageDialog("icons\Special C Qilin Icon", "The stove incident has been resolved. This time let's fight for real!");
 		trSoundPlayFN("qilin_select2.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Hetairoi"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
+		}
 	}
 }
 
@@ -1837,8 +2021,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission1");
-		trShowImageDialog("icons/improvement granite blood icon 64", "As you approach the Arcane Tower, you notice something blocking the way. It moves.");
+		trShowImageDialog("icons\improvement granite blood icon 64", "As you approach the Arcane Tower, you notice something blocking the way. It moves.");
 		trSoundPlayFN("medusastone.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(168, 2, kbGetProtoUnitID("Prisoner"));
+			summonAtTile(169, 2, kbGetProtoUnitID("Monument"));
+		}
 	}
 }
 
@@ -1848,8 +2036,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission2");
-		trShowImageDialog("icons/Special E Pharaoh Icon 64", "Welcome to the Arcane Tower! I shall be your first challenger, the great Fire Mage!");
+		trShowImageDialog("icons\Special E Pharaoh Icon 64", "Welcome to the Arcane Tower! I shall be your first challenger, the great Fire Mage!");
 		trSoundPlayFN("pha1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Oracle Scout"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Monument 2"));
+		}
 	}
 }
 
@@ -1859,8 +2051,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission3");
-		trShowImageDialog("icons/scenario x folstag icons 64", "Yo! Frost Mage here!");
+		trShowImageDialog("icons\scenario x folstag icons 64", "Yo! Frost Mage here!");
 		trSoundPlayFN("mountaingiantattack1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Frost Giant"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Monument 3"));
+		}
 	}
 }
 
@@ -1870,8 +2066,11 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission4");
-		trShowImageDialog("icons/Animal Boar icon 64", "Hey I have to be somewhere, can we do this challenge thing in the elevator? Thanks.");
+		trShowImageDialog("icons\Animal Boar icon 64", "Hey I have to be somewhere, can we do this challenge thing in the elevator? Thanks.");
 		trSoundPlayFN("pigambient.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(0, 2, kbGetProtoUnitID("Maceman"));
+		}
 	}
 }
 
@@ -1881,8 +2080,12 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission5");
-		trShowImageDialog("icons/Special E Setna Icon 64", "Impressive. But you are no match for the Archmage!");
+		trShowImageDialog("icons\Special E Setna Icon 64", "Impressive. But you are no match for the Archmage!");
 		trSoundPlayFN("setnaattack1.wav","1",-1,"","");
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Golem"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Monument 4"));
+		}
 	}
 }
 
@@ -1892,7 +2095,108 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 0){
 		xsDisableRule("StoryClass1Mission6");
-		trShowImageDialog("icons/Special G Circe Icon 64", "*You feel a large amount of fear!*");
+		trShowImageDialog("icons\Special G Circe Icon 64", "*You feel a large amount of fear!*");
 		trSoundPlayFN("xattackwarning.wav","1",-1,"","");
+		trPaintTerrain(0, 0, 60, 60, 0, 50, false);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(192, 2, kbGetProtoUnitID("Fire Giant"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Monument 5"));
+		}
+	}
+}
+
+rule StoryClass5Mission1
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\building specialist icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 20);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Wolf"));
+		}
+	}
+}
+
+rule StoryClass5Mission2
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement focus icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 25);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Phoenix Egg"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Phoenix Egg"));
+		}
+	}
+}
+
+rule StoryClass5Mission3
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement poseidons secret icons 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 30);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Servant"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Servant"));
+		}
+	}
+}
+
+rule StoryClass5Mission4
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement engineers icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 35);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Eitri"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Eitri"));
+		}
+	}
+}
+
+rule StoryClass5Mission5
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power ancestors icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 40);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Guardian"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Guardian"));
+		}
+	}
+}
+
+rule StoryClass5Mission6
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power eclipse icon 64", "");
+		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+		mSetVarByQV("p2commander", "health", 45);
+		if (trQuestVarGet("missionHardmode") == 1) {
+			summonAtTile(222, 2, kbGetProtoUnitID("Minotaur"));
+			summonAtTile(223, 2, kbGetProtoUnitID("Hoplite"));
+		}
 	}
 }
