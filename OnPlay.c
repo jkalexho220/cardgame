@@ -311,9 +311,11 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Scorpion Man"):
 		{
-			done = false;
-			trQuestVarSet("spellCaster", unit);
-			chooseSpell(SPELL_SCORPION_STING);
+			if (yGetDatabaseCount("p"+p+"hand") > yGetDatabaseCount("p"+(3-p)+"hand")) {
+				done = false;
+				trQuestVarSet("spellCaster", unit);
+				chooseSpell(SPELL_SCORPION_STING);
+			}
 		}
 		case kbGetProtoUnitID("Anubite"):
 		{
@@ -396,69 +398,15 @@ void OnPlay(int unit = 0) {
 			done = false;
 			chooseSpell(SPELL_FOOD);
 		}
-		case kbGetProtoUnitID("Fishing Ship Egyptian"):
-		{
-			damageUnit(unit, 2);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Greek"):
-		{
-			damageUnit(unit, 2);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Norse"):
-		{
-			damageUnit(unit, 3);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Atlantean"):
-		{
-			damageUnit(unit, 3);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Kebenit"):
-		{
-			damageUnit(unit, 4);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
 		case kbGetProtoUnitID("Trireme"):
 		{
 			damageUnit(unit, 4);
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Longboat"):
-		{
-			damageUnit(unit, 5);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
 		case kbGetProtoUnitID("Fire Ship Atlantean"):
 		{
 			damageUnit(unit, 5);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Siege Ship Egyptian"):
-		{
-			damageUnit(unit, 6);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Siege Ship Greek"):
-		{
-			damageUnit(unit, 6);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Siege Ship Norse"):
-		{
-			damageUnit(unit, 8);
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 		}

@@ -144,7 +144,7 @@ const int SPELL_COMPRESS = 64;
 const int SPELL_UPGRADE = 65;
 const int SPELL_PROFITEERING = 66;
 const int SPELL_WARNING_SHOT = 67;
-const int SPELL_PORTABLE_SPELL_SHIELD = 68;
+const int SPELL_SONG_OF_REST = 68;
 const int SPELL_REWIND = 69;
 const int SPELL_TIME_POCKET = 70;
 const int SPELL_BANHAMMER = 71;
@@ -152,24 +152,23 @@ const int SPELL_ASSEMBLY_LINE = 72;
 const int SPELL_POWER_SUIT = 73;
 const int SPELL_BORROWED_TIME = 74;
 const int SPELL_FORTIFY = 75;
-const int SPELL_SONG_OF_REST = 76;
+
 
 // SPACE
+const int SPELL_NANOMACHINES = 76;
 const int SPELL_REFRESH_MANA = 77;
 const int SPELL_NICKS_PORTAL = 78;
 const int SPELL_SPACE_VENT = 79;
-const int SPELL_ELDRITCH_WHISPERS = 80;
-const int SPELL_ELDRITCH_RITUAL = 81;
-const int SPELL_PETTY_LASER = 82;
-const int SPELL_THICK_LASER = 83;
-const int SPELL_GRAND_LASER = 84;
-const int SPELL_OMEGA_LASER = 85;
-const int SPELL_GODLY_LASER = 86;
-const int SPELL_CONS_LIBRA = 87;
-const int SPELL_CONS_TAURUS = 88;
-const int SPELL_CONS_GEMINI = 89;
-const int SPELL_CONS_ORION = 90;
-
+const int SPELL_PETTY_LASER = 80;
+const int SPELL_THICK_LASER = 81;
+const int SPELL_GRAND_LASER = 82;
+const int SPELL_OMEGA_LASER = 83;
+const int SPELL_GODLY_LASER = 84;
+const int SPELL_THE_CALLING = 85;
+const int SPELL_ARIES = 86;
+const int SPELL_AQUARIUS = 87;
+const int SPELL_LIBRA = 88;
+const int SPELL_PISCES = 89;
 
 /*
 OnAttack events (bit positions)
@@ -200,8 +199,9 @@ const int ATTACK_DRAW_CARD_ENEMY_COST = 22;
 const int ATTACK_SUMMON_TREE = 23;
 const int ATTACK_TEAMWORK = 24;
 const int ATTACK_NICKONHAWK = 25;
+const int ATTACK_SPLASH = 26;
 
-const int ATTACK_EVENT_COUNT = 26;
+const int ATTACK_EVENT_COUNT = 27; // we're running out of space
 
 /*
 OnDeath events (bit positions)
@@ -222,8 +222,11 @@ const int DEATH_GET_TREASURE = 13;
 const int DEATH_SUMMON_BEETLE = 14;
 const int DEATH_DAMAGE_ENEMY = 15;
 const int DEATH_REDUCE_COST = 16;
+const int DEATH_LOVE = 17;
+const int DEATH_LASERS = 18;
+const int DEATH_TOYS = 19;
 
-const int DEATH_EVENT_COUNT = 17;
+const int DEATH_EVENT_COUNT = 20;
 
 
 /*
@@ -1040,7 +1043,7 @@ highFrequency
 	*/
 	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);
-	CardSetup("Lancer Hero",			0, "Venlesh", 			2, 20, 3, 1, Keyword(BEACON) + Keyword(ETHEREAL), true);
+	CardSetup("Maceman Hero",			0, "Venlesh", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);
 	
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
@@ -1051,7 +1054,7 @@ highFrequency
 	// 5 - 9
 	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
-	CardSetup("Physician",				3, "Bard", 				0, 3, 2, 1, Keyword(HEALER));
+	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		4, "Party Leader", 		3, 3, 2, 1); // Play: Summon a random 1-cost minion from your deck.
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
@@ -1119,7 +1122,7 @@ highFrequency
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
 	CardSetup("Prisoner",				2, "Magic Test Subject",2, 2, 2, 1); // Death: Create a random Arcane spell.
 	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Create a random Arcane spell.
-	CardSetup("Petsuchos", 				6, "Bejeweled Sunlisk",	0, 4, 1, 3); // I have 3 range. Each time you cast a spell, grant me +2 attack.
+	CardSetup("Petsuchos", 				5, "Bejeweled Sunlisk",	0, 4, 1, 3); // I have 3 range. Each time you cast a spell, grant me +2 attack.
 	// 50-54
 	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
@@ -1169,7 +1172,7 @@ highFrequency
 	// 75-79
 	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Give your Commander another action if they have already acted.
 	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
-	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 1 {Manaflow} this turn.
+	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 2 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
 	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
@@ -1211,7 +1214,7 @@ highFrequency
 	CardSetup("Portable Ram",			2, "Circuit Squad",			1, 3, 2, 1, Keyword(ARMORED) + Keyword(CONDUCTOR));
 	CardSetup("Petrobolos",				3, "Scrap Launcher",		1, 2, 1, 3); // Attack: Stun my target.
 	// 95-99
-	CardSetup("Maceman Hero",			3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
+	CardSetup("Hero Norse",				3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
 	CardSetup("Automaton SPC",			2, "Gearwalker",			2, 2, 2, 1, Keyword(MAGNETIC));
 	CardSetup("Onager",					4, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
 	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your minions cost 1 less.
@@ -1231,7 +1234,7 @@ highFrequency
 	// 110-114
 	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
-	SpellSetup("Portable Spell Shield",	2, SPELL_PORTABLE_SPELL_SHIELD,			"Give an allied minion Armored and Ward.", SPELL_TYPE_OTHER);
+	CardSetup("Hero Greek Atalanta",	4, "Thunderstepper",		2, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
@@ -1309,51 +1312,49 @@ highFrequency
 	SPACE
 	*/
 	// Created cards
-	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	1, 15, 2, 2, Keyword(BEACON), true);
-	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			1, 15, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);
-	CardSetup("Forkboy",				1, "Toy",						1, 1, 2, 1, 0, true);
-	SpellSetup("Eldritch Ritual", 		5, SPELL_ELDRITCH_RITUAL, 	"Give a minion +5 Attack. If you target an enemy, shuffle an Eldritch Monstrosity in your deck.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Flying Purple Hippo",	5, "Eldritch Monstrosity",	5, 5, 2, 1, Keyword(0) + Keyword(1) + Keyword(2) + Keyword(3) + Keyword(4) + Keyword(5) + Keyword(10) + Keyword(11) + Keyword(20) + Keyword(9) + Keyword(15) + Keyword(21), true);
+	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	1, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 1, Keyword(BEACON), true);
 	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a minion.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("The Calling",			10, SPELL_THE_CALLING,		"Combine ALL minions into the ???, adding up attack, health, and keywords.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Kronos",					10, "???",					1, 1, 2, 1, Keyword(WARD), true);
 	// 150-154
-	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Fishing Ship Egyptian",	2, "3-SPD Scout",			1, 3, 3, 1, Keyword(ETHEREAL)); 					// Play: I take 2 damage.
-	CardSetup("Fishing Ship Greek",		2, "Beacon Scout",			2, 4, 2, 1, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: I take 2 damage.
-	CardSetup("Fishing Ship Norse",		3, "Battle Interceptor",	3, 5, 2, 1, Keyword(ETHEREAL)); 					// Play: I take 3 damage.
-	CardSetup("Fishing Ship Atlantean",	3, "Plasma Interceptor",	1, 5, 2, 1, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 3 damage.
+	CardSetup("Hero Ragnorok",			3, "Taurus",				3, 1, 2, 1); // Play: Grant me +1 health for each card in your hand.
+	CardSetup("Golden Lion",			5, "Leo",					3, 3, 2, 1, Keyword(CHARGE)); // Each turn I spend in your hand, reduce my cost by 1.
+	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a minion for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Aquarius",				2, SPELL_AQUARIUS,			"Restore 1 health to your Commander for each card in your hand (including this).", SPELL_TYPE_OTHER);
+	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	// 155-159
-	CardSetup("Kebenit",				4, "Battle Corvette",		2, 9, 2, 2, Keyword(ETHEREAL)); 					// Play: I take 4 damage.
-	CardSetup("Trireme",				4, "Nebula Corvette",		3, 5, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: I take 4 damage.
-	CardSetup("Longboat",				5, "Battle Frigate",		4, 7, 2, 2, Keyword(ETHEREAL)); 					// Play: I take 5 damage.
-	CardSetup("Fire Ship Atlantean",	5, "Warded Frigate",		6, 6, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: I take 5 damage.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		3, 5, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: I take 4 damage.
+	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.
+	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		6, 6, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: I take 5 damage.
+	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.
 	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random minion on a random tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
-	CardSetup("Siege Ship Egyptian",	6, "Battle Cruiser",		6, 12, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 6 damage.
-	CardSetup("Siege Ship Greek",		6, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.
-	CardSetup("Siege Ship Norse",		8, "Battle Dreadnaught",	7, 15, 1, 2, Keyword(ETHEREAL)); 					// Play: I take 8 damage.
-	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.
-	CardSetup("Hero Greek Argo",		10, "The Hawk",				5, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. 
+	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied minion Armored and Ward.", SPELL_TYPE_OTHER);
+	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all minions in your hand.");
+	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy minion to a tile next to me.
+	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. Attack: Summon a minion from your deck.
 	// 165-169
+	CardSetup("Flying Purple Hippo",	3, "Servant of Love",		2, 1, 2, 1, Keyword(FLYING) + Keyword(HEALER)); // Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)
+	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
+	CardSetup("Forkboy",				7, "Servant of Toys",		7, 7, 2, 1); // Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)
+	CardSetup("Promethean Small",		2, "Gemini",				1, 2, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
+	CardSetup("Lancer Hero",			4, "Capricorn",				1, 4, 3, 1); // Play: Grant me +1 attack for each card in your hand.
+	// 170-174
+	CardSetup("Carcinos",				7, "Cancer",				5, 6, 2, 1); // Play: Destroy an allied minion and give its Keywords to minions in your hand.
+	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
+	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand. Summon any minions discarded.", SPELL_TYPE_OTHER);
+	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
+	CardSetup("Stymphalian Bird",		4, "Mech Bird",				1, 1, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));
+	// 175-179 (LEGENDARY at 179)
 	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));
 	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
-	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
-	CardSetup("Santa",					5, "Big Santa Claus",		6, 7, 1, 1, Keyword(HEALER));
-	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand, summon and stun any minions discarded.", SPELL_TYPE_OTHER);
-	// 170-174
-	SpellSetup("Space Flow", 			0, SPELL_REFRESH_MANA, 		"Refresh up to 5 Mana. For each Mana refreshed discard the top card of your deck.", SPELL_TYPE_OTHER);	
-	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Play: Deal 5 Damage to ALL adjacent minions
-	SpellSetup("Eldritch Whispers", 	5, SPELL_ELDRITCH_WHISPERS, "Give a minion +5 Health. If you target an enemy, shuffle an Eldritch Ritual in your deck.", SPELL_TYPE_OTHER);
 	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1
-	CardSetup("Stymphalian Bird",		4, "Mech Bird",				2, 2, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));
-	// 175-179 (LEGENDARY at 179)
-	SpellSetup("Constellation: Libra", 	1, SPELL_CONS_LIBRA, 		"Restore 1 Health to your Commander. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);
-	SpellSetup("Constellation: Gemini", 3, SPELL_CONS_GEMINI, 		"Summon a 1|1 copy of a minion. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);
-	SpellSetup("Constellation: Taurus", 5, SPELL_CONS_TAURUS, 		"Draw 1 card. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);
-	SpellSetup("Constellation: Orion", 	7, SPELL_CONS_ORION, 		"Give your minions +1|+1. Upgrade ALL future Constellations.", SPELL_TYPE_OTHER);
-
+	SpellSetup("Space Flow", 			1, SPELL_REFRESH_MANA, 		"Convert your Manaflow into mana.", SPELL_TYPE_OTHER);	
 	CardSetup("Hero Greek Heracles",	7, "Multiverse Champion",			5, 6, 2, 1); //Your cards have Echo.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_07");
@@ -1403,6 +1404,7 @@ highFrequency
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
 	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
+	CardEvents("Hero Greek Bellerophon", 0, 0,							"After you cast a spell, grant me another action.");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Your Mana spent on spells will still count as Manaflow next turn.");
 	// CardEvents("Archer Atlantean Hero", 0, 0, 							"I have 3 range.");
@@ -1418,7 +1420,7 @@ highFrequency
 	CardEvents("Heka Gigantes", 0, 0,									"All your minions have Overflow.");
 	CardEvents("Hippikon", 0, 0,										"Play: Give your Commander another action if they have already acted.");
 	CardEvents("Kraken", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to its owner's hand.");
-	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 1 Manaflow this turn.");
+	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 2 Manaflow this turn.");
 	CardEvents("Hero Greek Polyphemus", 0, 0, 							"Your Commander has Furious.");
 	
 	CardEvents("Pharaoh of Osiris", 0, 0, 								"After you cast a spell, grant me +1 Attack until the end of the turn.");
@@ -1433,6 +1435,7 @@ highFrequency
 	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");
+	CardEvents("Hero Greek Atalanta", 0, 0,								"After I move, I gain +1 attack.");
 	
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
@@ -1455,24 +1458,25 @@ highFrequency
 	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 	
-	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Summon and pay for the most expensive minion from your deck that you can afford.");
-	CardEvents("Caravan Atlantean", 0, 0, 								"Your healing effects summon a Toy with attack and health equal to the amount healed.");
-	CardEvents("Fishing Ship Egyptian", 0, 0, 							"Play: I take 2 damage. ");
-	CardEvents("Fishing Ship Greek", 0, 0, 								"Play: I take 2 damage. ");
-	CardEvents("Fishing Ship Norse", 0, 0, 								"Play: I take 3 damage. ");
-	CardEvents("Fishing Ship Atlantean", 0, 0, 							"Play: I take 3 damage. ");
-	CardEvents("Kebenit", 0, 0, 										"Play: I take 4 damage. ");
-	CardEvents("Trireme", 0, 0, 										"Play: I take 4 damage. ");
-	CardEvents("Longboat", 0, 0, 										"Play: I take 5 damage. ");
+	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Spend all your mana and summon a minion from your deck with equal cost.");
+	CardEvents("Caravan Atlantean", 0, 0, 								"Your hand size is increased to 15.");
 	CardEvents("Fire Ship Atlantean", 0, 0, 							"Play: I take 5 damage. ");
-	CardEvents("Siege Ship Egyptian", 0, 0, 							"Play: I take 6 damage. ");
-	CardEvents("Siege Ship Greek", 0, 0, 								"Play: I take 6 damage. ");
-	CardEvents("Siege Ship Norse", 0, 0, 								"Play: I take 8 damage. ");
 	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: I take 8 damage. ");
 	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards have Echo.");
 	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Catapult", 0, 0, 										"Play: Deal 5 Damage to ALL adjacent minions.");
+	CardEvents("Catapult", Keyword(ATTACK_SPLASH), 0,					"Attack: Also damage enemies adjacent to my target.");
+	CardEvents("Carcinos", 0, 0,										"Play: Destroy an allied minion and grant its keywords to all minions in your hand.");
+	CardEvents("Scorpion Man", 0, 0,									"Play: If you hold more cards than your opponent, teleport an enemy minion next to me.");
+	CardEvents("Promethean Small", 0, 0,								"Play: Summon an exact copy of me on an adjacent tile.");
+	CardEvents("Hero Ragnorok", 0, 0,									"Play: Grant me +1 health for each card in your hand.");
+	CardEvents("Golden Lion", 0, 0,										"Each turn I spend in your hand, reduce my cost by 1.");
+	CardEvents("Lancer Hero", 0, 0,										"Play: Grant me +1 attack for each card in your hand.");
 	
+	CardEvents("Flying Purple Hippo", 0, Keyword(DEATH_LOVE),			"Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)");
+	CardEvents("Lazer Bear", 0, Keyword(DEATH_LASERS),					"Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)");
+	CardEvents("Forkboy", 0, Keyword(DEATH_TOYS),						"Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)");
+	CardEvents("Kronos", 0, 0,											"Their screams echo forever more.");
+
 	xsDisableSelf();
 }

@@ -97,6 +97,7 @@ If target of the right-click was an enemy within range, start an attack
 bool attackUnitAtCursor(int p = 0) {
 	int target = findNearestUnit("p"+p+"clickPos", 9);
 	int a = trQuestVarGet("activeUnit");
+	int id = trQuestVarGet("activeUnitID");
 	
 	if (target == -1) {
 		return(false);
@@ -139,6 +140,17 @@ bool attackUnitAtCursor(int p = 0) {
 		trVectorSetUnitPos("d2pos", "targetUnit");
 		trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
 		trUnitOverrideAnimation(50, 0, false, true, -1);
+		switch(kbGetUnitBaseTypeID(id))
+		{
+			case kbGetProtoUnitID("Maceman Hero"):
+			{
+				trUnitOverrideAnimation(1, 0, false, true, -1);
+			}
+			case kbGetProtoUnitID("Flying Purple Hippo"):
+			{
+				trUnitOverrideAnimation(1, 0, false, true, -1);
+			}
+		}
 		healUnit(target, mGetVar(a, "attack"));
 		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
 			if (mGetVar(target, "action") < ACTION_SLEEPING) {
@@ -504,6 +516,10 @@ inactive
 			trUnitSelectByID(1*trQuestVarGet("moveTile"));
 			trSetUnitOrientation(trGetUnitVector("start", "end"),xsVectorSet(0,1,0), true);
 			teleportToTile(1*trQuestVarGet("activeUnit"), 1*trQuestVarGet("moveTile"));
+
+			if (kbGetUnitBaseTypeID(1*trQuestVarGet("activeUnitID")) == kbGetProtoUnitID("Hero Greek Atalanta")) {
+				mSetVarByQV("activeUnit", "attack", 1 + mGetVarByQV("activeUnit", "attack"));
+			}
 			
 			if (trQuestVarGet("turnEnd") == 0) {
 				findTargets(1*trQuestVarGet("activeUnit"), "targets", HasKeyword(HEALER, 1*mGetVarByQV("activeUnit", "keywords")));

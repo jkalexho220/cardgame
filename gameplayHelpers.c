@@ -371,6 +371,10 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 			{
 				yAddUpdateVar(db, "animation", ANIM_CHARGING);
 			}
+			case kbGetProtoUnitID("Circe"):
+			{
+				yAddUpdateVar(db, "animation", ANIM_CHARGING);
+			}
 		}
 	} else {
 		yAddUpdateVar(db, "phase", ATTACK_DONE);

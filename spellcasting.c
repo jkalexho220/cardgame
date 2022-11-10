@@ -1141,7 +1141,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 0, true);
 			castInstructions("Choose a unit. Right click to cancel.");
 		}
-		case SPELL_PORTABLE_SPELL_SHIELD:
+		case SPELL_NANOMACHINES:
 		{
 			castAddUnit("spellTarget", p, false);
 			castInstructions("Choose an allied minion. Right click to cancel.");
@@ -1246,37 +1246,30 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
-		case SPELL_ELDRITCH_WHISPERS:
+		case SPELL_ARIES:
 		{
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a minion. Right click to cancel.");
 		}
-		case SPELL_ELDRITCH_RITUAL:
-		{
-			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
-		}
-		case SPELL_CONS_LIBRA:
+		case SPELL_AQUARIUS:
 		{
 			castAddTile("spellTarget", true);
-			castInstructions("Click on any tile to restore " + (1+1*trQuestVarGet("constellations")) + " Health to your Commander. Right click to cancel.");
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
-		case SPELL_CONS_GEMINI:
-		{
-			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");
-			castAddSummonLocations("spellDestination");
-			castInstructions("Choose a tile to summon a " + (1+1*trQuestVarGet("constellations")) + "|" + (1+1*trQuestVarGet("constellations")) + " copy. Right click to cancel.");
-		}
-		case SPELL_CONS_TAURUS:
+		case SPELL_LIBRA:
 		{
 			castAddTile("spellTarget", true);
-			castInstructions("Click on any tile to draw " + (1+1*trQuestVarGet("constellations")) + " cards. Right click to cancel.");
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
-		case SPELL_CONS_ORION:
+		case SPELL_PISCES:
 		{
 			castAddTile("spellTarget", true);
-			castInstructions("Click on any tile to give your minions +" + (1+1*trQuestVarGet("constellations")) + "|+" + (1+1*trQuestVarGet("constellations")) + ". Right click to cancel.");
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_THE_CALLING:
+		{
+			castAddTile("spellTarget", false);
+			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
 	}
 	castStart();
@@ -2326,7 +2319,7 @@ inactive
 				damageUnit(1*trQuestVarGet("spellTarget"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 				trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 			}
-			case SPELL_PORTABLE_SPELL_SHIELD:
+			case SPELL_NANOMACHINES:
 			{
 				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
@@ -2609,6 +2602,7 @@ inactive
 			}
 			case SPELL_REFRESH_MANA:
 			{
+				/*
 				int refreshCount = xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"mana"));
 				if(refreshCount > 5){
 					refreshCount = 5;
@@ -2629,89 +2623,45 @@ inactive
 				if(refreshCount > 1){
 					ChatLog(p, "Discarded " + refreshCount + " cards from your deck.");
 				}
-				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + refreshCount);
-				updateRoxasHealth(p);
+				*/
+				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"manaflow"));
+				trQuestVarSet("p"+p+"manaflow", 0);
 				updateHandPlayable(p);
 				updateMana();	
 				trSoundPlayFN("skypassagein.wav", "1", -1, "","");
 				deployAtTile(0, "Osiris Box Glow", 1*mGetVarByQV("p" + p + "commander", "tile"));
 			}
-			case SPELL_ELDRITCH_WHISPERS:
+			case SPELL_ARIES:
 			{
-				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
+				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
+				damageUnit(1*trQuestVarGet("spellTarget"), yGetDatabaseCount("p"+p+"hand") + trQuestVarGet("p"+p+"spellDamage"));
+				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
-				mSetVarByQV("spellTarget", "health", 5 + mGetVarByQV("spellTarget", "health"));
-				if(1*mGetVarByQV("spellTarget", "player") != p){
-					addCardToDeck(p, "", SPELL_ELDRITCH_RITUAL);
-					shuffleDeck(p);
-					trSoundPlayFN("spybirth.wav","1",-1,"","");
-					deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));
-				} 
 			}
-			case SPELL_ELDRITCH_RITUAL:
+			case SPELL_AQUARIUS:
 			{
-				trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
-				mSetVarByQV("spellTarget", "attack", 5 + mGetVarByQV("spellTarget", "attack"));
-				if(1*mGetVarByQV("spellTarget", "player") != p){
-					addCardToDeck(p, "Flying Purple Hippo");
-					shuffleDeck(p);
-					trSoundPlayFN("changeunit.wav","1",-1,"","");
-					deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p" + p + "commander", "tile"));
+				trSoundPlayFN("xpack\xcinematics\gaiasparkle.mp3","1",-1,"","");
+				healUnit(1*trQuestVarGet("p"+p+"commander"), yGetDatabaseCount("p"+p+"hand"));
+				deployAtTile(0, "Arkantos Boost SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+			}
+			case SPELL_LIBRA:
+			{
+				trQuestVarSet("p"+p+"drawCards", xsMax(0, yGetDatabaseCount("p"+(3-p)+"hand") - yGetDatabaseCount("p"+p+"hand")));
+				trSoundPlayFN("ageadvance.wav","1",-1,"","");
+			}
+			case SPELL_PISCES:
+			{
+				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
+				trSoundPlayFN("skypassageout.wav","1",-1,"","");
+				for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
+					yDatabaseNext("p"+p+"hand");
+					mSetVarByQV("p"+p+"hand", "attack", 1 + mGetVarByQV("p"+p+"hand", "attack"));
+					mSetVarByQV("p"+p+"hand", "health", 1 + mGetVarByQV("p"+p+"hand", "health"));
 				}
 			}
-			case SPELL_CONS_LIBRA:
+			case SPELL_THE_CALLING:
 			{
-				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
-				healUnit(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("constellations"));
-				deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
-				for(x=trQuestVarGet("constellations"); >0) {
-					trSoundPlayFN("heal.wav","1",-1,"","");
-				}
-				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
-			}
-			case SPELL_CONS_GEMINI:
-			{
-				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
-				activeUnit = summonAtTile(1*trQuestVarGet("spellDestination"),p,1*mGetVarByQV("spellTarget", "proto"));
-				mSetVar(activeUnit, "health", 1*trQuestVarGet("constellations"));
-				mSetVar(activeUnit, "attack", 1*trQuestVarGet("constellations"));
-				if (HasKeyword(CHARGE, 1*mGetVar(activeUnit, "keywords"))) {
-					mSetVar(activeUnit, "action", ACTION_READY);
-				} else {
-					mSetVar(activeUnit, "action", ACTION_SLEEPING);
-				}
-				for(x=trQuestVarGet("constellations"); >0) {
-					trSoundPlayFN("mythcreate.wav","1",-1,"","");
-				}
-				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
-			}
-			case SPELL_CONS_TAURUS:
-			{
-				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
-				trQuestVarSet("p"+p+"drawCards", trQuestVarGet("constellations") + trQuestVarGet("p"+p+"drawCards"));
-				deployAtTile(0, "Curse SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
-				for(x=trQuestVarGet("constellations"); >0) {
-					trSoundPlayFN("temple.wav","1",-1,"","");
-				}
-				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
-			}
-			case SPELL_CONS_ORION:
-			{
-				trQuestVarSet("constellations", trQuestVarGet("constellations") + 1);
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "spell") == SPELL_NONE) &&
-						(mGetVarByQV("allUnits", "player") == p)) {
-						mSetVarByQV("allUnits", "health", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "health"));
-						mSetVarByQV("allUnits", "attack", 1*trQuestVarGet("constellations") + mGetVarByQV("allUnits", "attack"));
-						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-					}
-				}
-				for(x=trQuestVarGet("constellations"); >0) {
-					trSoundPlayFN("herocreation.wav","1",-1,"","");
-				}
-				ChatLog(0, "Constellations played: " + 1*trQuestVarGet("constellations"));
+				// TODO: THE CALLING
 			}
 		}
 		

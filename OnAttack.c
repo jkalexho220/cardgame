@@ -134,7 +134,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_MANAFLOW:
 		{
-			trQuestVarSet("p"+p+"manaflow", 1 + trQuestVarGet("p"+p+"manaflow"));
+			trQuestVarSet("p"+p+"manaflow", 2 + trQuestVarGet("p"+p+"manaflow"));
 		}
 		case ATTACK_RETURN:
 		{
@@ -223,6 +223,21 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			yAddUpdateVar("mirrorTowerLasers", "length", trDistanceBetweenVectors3d("start", "end") * 1.25);
 			yAddUpdateVar("mirrorTowerLasers", "timeout", trTimeMS() + 1500);
 			xsEnableRule("attack_animate_mirror_laser");
+		}
+		case ATTACK_SPLASH:
+		{
+			trCameraShake(0.5, 0.5);
+			trQuestVarSetFromRand("sound", 1, 5, true);
+			trSoundPlayFN("meteordustcloud.wav","1",-1,"","");
+			spell = mGetVar(target, "tile");
+			deployAtTile(0, "Meteor Impact Ground", spell);
+			for (x=0; < zGetVarByIndex("tiles", "neighborCount", spell)) {
+				count = zGetVarByIndex("tiles", "neighbor"+x, spell);
+				target = zGetVarByIndex("tiles", "occupant", count);
+				if (target > 0) {
+					damageUnit(target, mGetVar(attacker, "attack"));
+				}
+			}
 		}
 		case ATTACK_TEAMWORK:
 		{
