@@ -193,9 +193,13 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 			}
 		}
-		case ATTACK_GET_FENRIS:
+		case ATTACK_BOOST_HAND:
 		{
-			generateCard(p, 1*kbGetProtoUnitID("Ornlu"));
+			for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
+				yDatabaseNext("p"+p+"hand");
+				mSetVarByQV("p"+p+"hand", "attack", 1 + mGetVarByQV("p"+p+"hand", "attack"));
+			}
+			trSoundPlayFN("wolfhowl.wav","1",-1,"","");
 		}
 		case ATTACK_ANIMATE_TOWER:
 		{

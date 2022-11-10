@@ -442,26 +442,9 @@ void OnPlay(int unit = 0) {
 			}
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Catapult"):
+		case kbGetProtoUnitID("Hero Ragnorok"):
 		{
-			deployAtTile(0, "Meteor", 1*mGetVar(unit, "tile"));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits");
-				if ((1*mGetVarByQV("allUnits", "spell") == 0) && (1*trQuestVarGet("allUnits") != unit)) {
-					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
-						damageUnit(1*trQuestVarGet("allUnits"), 5);
-						deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("allUnits", "tile"));
-					}
-				}
-			}
-			trCameraShake(1.0, 0.1);
-			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
-			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
-			trSoundPlayFN("gateramloud.wav","1",-1,"","");
-			trSoundPlayFN("gateramloud.wav","1",-1,"","");
-			trSoundPlayFN("chaos.wav","1",-1,"","");
-			trSoundPlayFN("chaos.wav","1",-1,"","");
+			mSetVar(unit, "health", mGetVar(unit, "health") + yGetDatabaseCount("p"+p+"hand"));
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));

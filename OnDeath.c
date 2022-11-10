@@ -1,8 +1,9 @@
-void deathSummonQueue(int tile = 0, int p = 0, string proto = "") {
+void deathSummonQueue(int tile = 0, int p = 0, string proto = "", int hand = -1) {
 	int push = modularCounterNext("deathSummonPush");
 	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
 	trQuestVarSet("deathSummon"+push+"player", p);
 	trQuestVarSet("deathSummon"+push+"tile", tile);
+	trQuestVarSet("deathSummon"+push+"hand", hand);
 }
 
 bool OnDeath(int event = -1, int unit = 0){
@@ -120,6 +121,24 @@ bool OnDeath(int event = -1, int unit = 0){
 			}
 			trSoundPlayFN("flamingweapons.wav","1",-1,"","");
 		}
+		case DEATH_SUMMON_FROM_HAND:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Hawk", mGetVar(unit, "attack"));
+		}
+		case DEATH_BOOST_HAND:
+		{
+			target = mGetVar(unit, "keywords");
+			for(i=0; < NUM_KEYWORDS) {
+				if (HasKeyword(i, target)) {
+					for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
+						yDatabaseNext("p"+p+"hand");
+						if (HasKeyword(i, mGetVarByQV("p"+p+"hand", "keywords")) == false) {
+							mSetVarByQV("p"+p+"hand", "keywords", Keyword(i) + mGetVarByQV("p"+p+"hand", "keywords"));
+						}
+					}
+				}
+			}
+		}
 	}
 	return (checkAgain);
 }
@@ -226,12 +245,42 @@ void removeDeadUnits() {
 	*/
 	int pop = 0;
 	int unit = 0;
-	while ((trQuestVarGet("deathSummonPush") == trQuestVarGet("deathSummonPop")) == false) {
+	int cost = 0;
+	while (trQuestVarGet("deathSummonPush") != trQuestVarGet("deathSummonPop")) {
 		pop = modularCounterNext("deathSummonPop");
 		if (zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("deathSummon"+pop+"tile")) == 0) {
-			unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"),
-				1*trQuestVarGet("deathSummon"+pop+"player"),
-				1*trQuestVarGet("deathSummon"+pop+"proto"));
+			// if summon from hand (Capricorn effect)
+			if (trQuestVarGet("deathSummon"+pop+"hand") >= 0) {
+				p = trQuestVarGet("deathSummon"+pop+"player");
+				unit = -1;
+				cost = 0;
+				for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
+					yDatabaseNext("p"+p+"hand");
+					if (mGetVarByQV("p"+p+"hand", "spell") == 0) {
+						if (mGetVarByQV("p"+p+"hand", "cost") <= trQuestVarGet("deathSummon"+pop+"hand")) {
+							if (mGetVarByQV("p"+p+"hand", "cost") > cost) {
+								unit = yGetPointer("p"+p+"hand");
+								cost = mGetVarByQV("p"+p+"hand", "cost");
+							}
+						}
+					}
+				}
+				if (unit > 0) {
+					ySetPointer("p"+p+"hand", unit);
+					yAddToDatabase("allUnits", "p"+p+"hand");
+					unit = trQuestVarGet("p"+p+"hand");
+					teleportToTile(unit, 1*trQuestVarGet("deathSummon"+pop+"tile"));
+
+					zSetVarByIndex("p"+p+"handPos", "occupied", 1*yGetVar("p"+p+"hand", "pos"), 0);
+					yRemoveFromDatabase("p"+p+"hand");
+					
+					zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("deathSummon"+pop+"tile"), unit);
+				}
+			} else {
+				unit = summonAtTile(1*trQuestVarGet("deathSummon"+pop+"tile"),
+					1*trQuestVarGet("deathSummon"+pop+"player"),
+					1*trQuestVarGet("deathSummon"+pop+"proto"));
+			}
 			if (HasKeyword(CHARGE, 1*mGetVar(unit, "keywords"))) {
 				mSetVar(unit, "action", ACTION_READY);
 			} else {

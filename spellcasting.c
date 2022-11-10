@@ -487,8 +487,7 @@ inactive
 								tile = zGetVarByIndex("tiles", "neighbor"+z, tile);
 								trQuestVarSet("currentTile", tile);
 								yAddToDatabase("castTiles", "currentTile");
-								trQuestVarSet("posx", trQuestVarGet("currentx") + trQuestVarGet("stepx"));
-								trQuestVarSet("posz", trQuestVarGet("currentz") + trQuestVarGet("stepz"));
+								trVectorQuestVarSet("pos", trVectorQuestVarGet("step") + trVectorQuestVarGet("current"));
 								if (trCurrentPlayer() == p) {
 									highlightTile(tile, 999999);
 								}
@@ -1270,6 +1269,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", false);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
+		}
+		case SPELL_DUPLICATE_ME:
+		{
+			castAddAdjacentTile("spellTarget", "spellCaster");
+			castInstructions("Click on a tile to summon a duplicate.");
 		}
 	}
 	castStart();
@@ -2662,6 +2666,15 @@ inactive
 			case SPELL_THE_CALLING:
 			{
 				// TODO: THE CALLING
+			}
+			case SPELL_DUPLICATE_ME:
+			{
+				trSoundPlayFN("mythcreate.wav","1",-1,"","");
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Promethean Small"));
+				mSetVar(activeUnit, "action", ACTION_SLEEPING);
+				mSetVar(activeUnit, "health", mGetVarByQV("spellCaster", "health"));
+				mSetVar(activeUnit, "attack", mGetVarByQV("spellCaster", "attack"));
+				mSetVar(activeUnit, "keywords", mGetVarByQV("spellCaster", "keywords"));
 			}
 		}
 		
