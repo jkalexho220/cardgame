@@ -205,6 +205,7 @@ void healUnit(int index = 0, float heal = 0) {
 	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
 	xsSetContextPlayer(0);
 	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
+	/*
 	if(heal>=1 && trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType")==COMMANDER_GOD) {	
 		yClearDatabase("toyTiles");
 		findAvailableTiles(1*mGetVar(index, "tile"), 1, "toyTiles", false);
@@ -220,6 +221,7 @@ void healUnit(int index = 0, float heal = 0) {
 			ChatLog(1, "No space to summon!");
 		}
 	}
+	*/
 }
 
 void damageUnit(int index = 0, float dmg = 0) {

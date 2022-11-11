@@ -968,22 +968,25 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<6){
 						addCardToDeck(2, "Female");
 						addCardToDeck(2, "Archer Atlantean");
+						addCardToDeck(2, "Gemini");
+						addCardToDeck(2, "", SPELL_PISCES);
 					}
 					
 					for(x=0;<3) {
 						addCardToDeck(2, "Theris");
 						addCardToDeck(2, "Bireme");
-						addCardToDeck(2, "Hippocampus");
-						addCardToDeck(2, "Scylla");
 						addCardToDeck(2, "Mummy");
-						addCardToDeck(2, "Apep");
-						addCardToDeck(2, "Sea Turtle");
 						addCardToDeck(2, "", SPELL_DOMINANCE);
 						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+						addCardToDeck(2, "", SPELL_LIBRA);
+						addCardToDeck(2, "", SPELL_AQUARIUS);
 					}
+					addCardToDeck(2, "Flying Purple Hippo");
+					addCardToDeck(2, "Lazer Bear");
+					addCardToDeck(2, "Forkboy");
 					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 					addCardToDeck(2, "Hero Greek Achilles");
-					trQuestVarSet("p2class2", CLASS_NAGA);
+					trQuestVarSet("p2class2", CLASS_SPACE);
 				}
 				case 6:
 				{

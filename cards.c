@@ -1012,7 +1012,7 @@ active
 	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true);
 	CardEvents("Theris", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
 	
-	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL), true);
+	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL) + Keyword(STEALTH), true);
 	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
 	
 	CardSetup("Javelin Cavalry",		3, "Profit Hunter",			3, 2, 3, 2, Keyword(CHARGE), true);

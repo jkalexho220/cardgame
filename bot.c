@@ -327,7 +327,7 @@ inactive
 					also prioritize tiles closer to enemy commander
 					*/
 					currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
-					currentScore = currentScore - trDistanceToVector("reachable", "commanderpos") / 9;
+					currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
 					if (currentScore >= bestTileScore) {
 						/*
 						prioritize tiles that can be attacked by the fewest number of enemies

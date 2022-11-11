@@ -1,6 +1,6 @@
 void checkKeys(int p = 0) {
 	if (trQuestVarGet("p"+p+"loveKey") + trQuestVarGet("p"+p+"laserKey") + trQuestVarGet("p"+p+"toyKey") == 3) {
-		trSoundPlayFN("cinematics\17_in\arrive.mp3","1",-1,"","");
+		trSoundPlayFN("cinematics\10_in\musicsound2.mp3","1",-1,"","");
 		trSoundPlayFN("spybirth.wav","1",-1,"","");
 		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has collected all the keys!");
 		addCardToDeck(p, "Statue of Lightning", SPELL_THE_CALLING);
@@ -156,30 +156,36 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_LOVE:
 		{
-			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LOVE key!");
-			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
-			trQuestVarSetFromRand("sound", 1, 5, true);
-			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
-			trQuestVarSet("p"+p+"loveKey", 1);
-			checkKeys(p);
+			if (trQuestVarGet("p"+p+"loveKey") == 0) {
+				ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LOVE key!");
+				trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+				trQuestVarSetFromRand("sound", 1, 5, true);
+				trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
+				trQuestVarSet("p"+p+"loveKey", 1);
+				checkKeys(p);
+			}
 		}
 		case DEATH_LASERS:
 		{
-			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LASER key!");
-			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
-			trQuestVarSetFromRand("sound", 1, 5, true);
-			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
-			trQuestVarSet("p"+p+"laserKey", 1);
-			checkKeys(p);
+			if (trQuestVarGet("p"+p+"laserKey") == 0) {
+				ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LASER key!");
+				trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+				trQuestVarSetFromRand("sound", 1, 5, true);
+				trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
+				trQuestVarSet("p"+p+"laserKey", 1);
+				checkKeys(p);	
+			}
 		}
 		case DEATH_TOYS:
 		{
-			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the TOY key!");
-			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
-			trQuestVarSetFromRand("sound", 1, 5, true);
-			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
-			trQuestVarSet("p"+p+"toyKey", 1);
-			checkKeys(p);
+			if (trQuestVarGet("p"+p+"toyKey") == 0) {
+				ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the TOY key!");
+				trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+				trQuestVarSetFromRand("sound", 1, 5, true);
+				trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
+				trQuestVarSet("p"+p+"toyKey", 1);
+				checkKeys(p);
+			}
 		}
 	}
 	return (checkAgain);
