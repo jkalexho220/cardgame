@@ -21,6 +21,12 @@ inactive
 		shuffleDeck(p);
 		
 		trQuestVarSet("p"+p+"defeated", 0);
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_GOD) {
+			zBankInit("p"+p+"handPos", 861 + p * 15, 15);
+			trQuestVarSet("p"+p+"maxHandSize", 15);
+		} else {
+			trQuestVarSet("p"+p+"maxHandSize", 10);
+		}
 	}
 	// Ravens
 	trQuestVarSet("p1block", 869);
@@ -226,6 +232,13 @@ inactive
 			if(OnTurnStart(1*trQuestVarGet("turnStart")) == true){
 				delay = true;
 				break;
+			}
+		}
+		// Leo discount
+		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
+			yDatabaseNext("p"+p+"hand");
+			if (kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p"+p+"hand"))) == kbGetProtoUnitID("Golden Lion")) {
+				mSetVarByQV("p"+p+"hand", "cost", xsMax(0, mGetVarByQV("p"+p+"hand", "cost") - 1));
 			}
 		}
 		if(delay){

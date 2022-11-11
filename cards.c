@@ -1115,7 +1115,7 @@ highFrequency
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Swordsman Hero",			3, "Spellsword",		1, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After you cast a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -1173,7 +1173,7 @@ highFrequency
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(GUARD) + Keyword(ARMORED));
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
 	// 75-79
-	CardSetup("Hippikon",				4, "Undercity Captain",		2, 3, 3, 1); // Play: Give your Commander another action if they have already acted.
+	CardSetup("Hippikon",				4, "Undercity Captain",		3, 3, 3, 1); // Play: Give your Commander another action if they have already acted.
 	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 2 {Manaflow} this turn.
 	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
@@ -1463,8 +1463,10 @@ highFrequency
 	
 	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Spend all your mana and summon a minion from your deck with equal cost.");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Your hand size is increased to 15.");
-	CardEvents("Fire Ship Atlantean", 0, 0, 							"Play: I take 5 damage. ");
-	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: I take 8 damage. ");
+	CardEvents("Transport Ship Norse", 0, 0,							"Play: Pay 2 mana next turn.");
+	CardEvents("Siege Ship Greek", 0, 0, 								"Play: Pay 2 mana next turn.");
+	CardEvents("Fire Ship Atlantean", 0, 0, 							"Play: Pay 3 mana next turn.");
+	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: Pay 4 mana next turn.");
 	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards have Echo.");
 	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Grant an allied minion +1 attack and health.");

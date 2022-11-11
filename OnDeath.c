@@ -4,6 +4,7 @@ void checkKeys(int p = 0) {
 		trSoundPlayFN("spybirth.wav","1",-1,"","");
 		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has collected all the keys!");
 		addCardToDeck(p, "Statue of Lightning", SPELL_THE_CALLING);
+		shuffleDeck(p);
 		trQuestVarSet("p"+p+"loveKey", 0);
 		trQuestVarSet("p"+p+"laserKey", 0);
 		trQuestVarSet("p"+p+"toyKey", 0);
@@ -157,6 +158,8 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LOVE key!");
 			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSetFromRand("sound", 1, 5, true);
+			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
 			trQuestVarSet("p"+p+"loveKey", 1);
 			checkKeys(p);
 		}
@@ -164,6 +167,8 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LASER key!");
 			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSetFromRand("sound", 1, 5, true);
+			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
 			trQuestVarSet("p"+p+"laserKey", 1);
 			checkKeys(p);
 		}
@@ -171,6 +176,8 @@ bool OnDeath(int event = -1, int unit = 0){
 		{
 			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the TOY key!");
 			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSetFromRand("sound", 1, 5, true);
+			trSoundPlayFN("ui\thunder"+1*trQuestVarGet("sound")+".mp3","1",-1,"","");
 			trQuestVarSet("p"+p+"toyKey", 1);
 			checkKeys(p);
 		}

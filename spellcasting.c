@@ -374,7 +374,7 @@ inactive
 					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords"))) {
 						continue;
 					} else if (mGetVarByQV("allUnits", "player") == p) {
-						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) > 1) {
+						if (trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Unit", 8) + trCountUnitsInArea(""+1*trQuestVarGet("allUnits"), p, "Building", 8) > 1) {
 							trUnitSelectClear();
 							trUnitSelect(""+1*trQuestVarGet("allUnits"));
 							yAddToDatabase("castTargets", "allUnits");
@@ -2668,6 +2668,7 @@ inactive
 			case SPELL_THE_CALLING:
 			{
 				// TODO: THE CALLING
+				done = false;
 			}
 			case SPELL_DUPLICATE_ME:
 			{
