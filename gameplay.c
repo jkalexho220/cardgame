@@ -139,7 +139,6 @@ bool attackUnitAtCursor(int p = 0) {
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
 		trSetUnitOrientation(trGetUnitVector("d1pos", "d2pos"), xsVectorSet(0,1,0), true);
-		trUnitOverrideAnimation(50, 0, false, true, -1);
 		switch(kbGetUnitBaseTypeID(id))
 		{
 			case kbGetProtoUnitID("Maceman Hero"):
@@ -149,6 +148,10 @@ bool attackUnitAtCursor(int p = 0) {
 			case kbGetProtoUnitID("Flying Purple Hippo"):
 			{
 				trUnitOverrideAnimation(1, 0, false, true, -1);
+			}
+			default:
+			{
+				trUnitOverrideAnimation(50, 0, false, true, -1);
 			}
 		}
 		healUnit(target, mGetVar(a, "attack"));
@@ -257,6 +260,7 @@ inactive
 		if (trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
 			int unit = findNearestUnit("p"+p+"clickPos", 8);
 			trQuestVarSet("activeUnit", unit);
+			trQuestVarSet("activeUnitID", kbGetBlockID(""+unit));
 			if (unit > -1) {
 				
 				/*
@@ -468,7 +472,6 @@ inactive
 						}
 						
 						trVectorSetUnitPos("moveDestination", "moveTile");
-						trQuestVarSet("activeUnitID", kbGetBlockID(""+1*trQuestVarGet("activeUnit"), true));
 						trUnitSelectClear();
 						trUnitSelectByID(1*trQuestVarGet("activeUnitID"));
 						trUnitMoveToVector("moveDestination");

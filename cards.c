@@ -687,31 +687,30 @@ void displayCardKeywordsAndDescription(int name = 0) {
 				trChatSend(0, "<color=0,1,0>Discount " + discount);
 				bonus = "Discount " + discount;
 			}
-			trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
-		} else {
-			xsSetContextPlayer(1*mGetVar(name, "player"));
-			float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
-			xsSetContextPlayer(0);
-			int diff = 1*mGetVar(name, "health") - health;
-			if (diff > 0) {
-				bonus = bonus + "HP +" + diff + " ";
-			}
-			
-			diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
-			if (diff > 0) {
-				bonus = bonus + "ATK +" + diff + " ";
-			} else if (diff < 0) {
-				bonus = bonus + "ATK " + diff + " ";
-			}
-			
-			diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
-			if (diff > 0) {
-				bonus = bonus + "SPD +" + diff;
-			} else if (diff < 0) {
-				bonus = bonus + "SPD " + diff;
-			}
-			trChatSend(0, colorizeStat(name, "Attack", "ATK") + " | " + colorizeStat(name, "Health", "HP") + " | " + colorizeStat(name, "Speed", "SPD") + " | " + colorizeStat(name, "Range", "RNG"));
+			//trChatSend(0, "ATK " + 1*trQuestVarGet("card_"+proto+"_attack") + " | HP " + 1*trQuestVarGet("card_"+proto+"_health") + " | SPD " + 1*trQuestVarGet("card_"+proto+"_speed") + " | RNG " + 1*trQuestVarGet("card_"+proto+"_range"));
 		}
+		xsSetContextPlayer(1*mGetVar(name, "player"));
+		float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+name, true));
+		xsSetContextPlayer(0);
+		int diff = 1*mGetVar(name, "health") - health;
+		if (diff > 0) {
+			bonus = bonus + "HP +" + diff + " ";
+		}
+		
+		diff = mGetVar(name, "attack") - trQuestVarGet("card_" + proto + "_Attack");
+		if (diff > 0) {
+			bonus = bonus + "ATK +" + diff + " ";
+		} else if (diff < 0) {
+			bonus = bonus + "ATK " + diff + " ";
+		}
+		
+		diff = mGetVar(name, "speed") - trQuestVarGet("card_" + proto + "_Speed");
+		if (diff > 0) {
+			bonus = bonus + "SPD +" + diff;
+		} else if (diff < 0) {
+			bonus = bonus + "SPD " + diff;
+		}
+		trChatSend(0, colorizeStat(name, "Attack", "ATK") + " | " + colorizeStat(name, "Health", "HP") + " | " + colorizeStat(name, "Speed", "SPD") + " | " + colorizeStat(name, "Range", "RNG"));
 		
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
@@ -820,7 +819,7 @@ void CardEvents(string protoName = "", int onAttack = 0, int onDeath = 0, string
 void CardSetup(string protoName="", int cost=1, string name="", int attack=1, int health=1, int speed=1, int range=0, int keywords=0, bool uncollectable = false){
 	int proto = kbGetProtoUnitID(protoName);
 	if(proto<0){
-		ThrowError("That's not a unit. Method: CardSetup");
+		ThrowError("That's not a unit: " + protoName);
 	}
 	
 	// this is so that the uncollectable card is assigned to the right class
@@ -1064,7 +1063,7 @@ highFrequency
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
-	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	2, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
+	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
@@ -1081,7 +1080,7 @@ highFrequency
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
 	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"A minion attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Ornlu",					4, "Pack Hunter",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to minions in your hand.
+	CardSetup("Ornlu",					4, "Pack Leader",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to minions in your hand.
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 2 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
@@ -1238,7 +1237,7 @@ highFrequency
 	// 110-114
 	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Hero Greek Atalanta",	4, "Thunderstepper",		2, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
+	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
@@ -1323,7 +1322,7 @@ highFrequency
 	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a minion.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("The Calling",			10, SPELL_THE_CALLING,		"Combine ALL minions into the ???, adding up attack, health, and keywords.", SPELL_TYPE_OTHER, 0, true);
-	CardSetup("Kronos",					10, "???",					1, 1, 2, 1, Keyword(WARD), true);
+	CardSetup("Titan Kronos",			10, "???",					1, 1, 2, 1, Keyword(WARD), true);
 	// 150-154
 	CardSetup("Hero Ragnorok",			3, "Taurus",				3, 1, 2, 1); // Play: Grant me +1 health for each card in your hand.
 	CardSetup("Golden Lion",			5, "Leo",					3, 3, 2, 1, Keyword(CHARGE)); // Each turn I spend in your hand, reduce my cost by 1.
@@ -1331,15 +1330,15 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		3, 5, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: I take 4 damage.
-	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		3, 11, 1, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: I take 6 damage.
-	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		6, 6, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: I take 5 damage.
-	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 18, 1, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: I take 8 damage.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
+	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
 	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random minion on a random tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
 	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied minion Armored and Ward.", SPELL_TYPE_OTHER);
 	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a minion for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
-	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all minions in your hand.");
+	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all minions in your hand.", SPELL_TYPE_OTHER);
 	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy minion to a tile next to me.
 	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. Attack: Summon a minion from your deck.
 	// 165-169
@@ -1349,7 +1348,7 @@ highFrequency
 	CardSetup("Promethean Small",		2, "Gemini",				1, 1, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
 	CardSetup("Lancer Hero",			4, "Capricorn",				3, 3, 3, 1); // Death: Summon a minion from your hand with cost less than or equal to my attack.
 	// 170-174
-	CardSetup("Carcinos",				6, "Cancer",				5, 6, 2, 1); // Death: Give my Keywords to cards in your hand.
+	CardSetup("Carcinos",				6, "Cancer",				5, 5, 2, 1); // Death: Give my Keywords to cards in your hand.
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
 	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand. Summon any minions discarded.", SPELL_TYPE_OTHER);
 	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
@@ -1387,7 +1386,7 @@ highFrequency
 	CardEvents("Hetairoi", 0, 0, 										"Play: Give an allied minion +1 speed and Pathfinder.");
 	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
-	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions that cost {Manaflow} or less.");
+	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions.");
 	CardEvents("Ornlu", Keyword(ATTACK_BOOST_HAND), 0,					"Attack: Give +1 attack to minions in your hand.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");

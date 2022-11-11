@@ -2637,26 +2637,28 @@ inactive
 			}
 			case SPELL_ARIES:
 			{
+				trSoundPlayFN("tartarianopen2.wav","1",-1,"","");
 				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
 				damageUnit(1*trQuestVarGet("spellTarget"), yGetDatabaseCount("p"+p+"hand") + trQuestVarGet("p"+p+"spellDamage"));
-				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
-				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
+				deployAtTile(0, "Arkantos God Out", 1*mGetVarByQV("spellTarget", "tile"));
+				deployAtTile(0, "Meteor Impact Ground", 1*mGetVarByQV("spellTarget", "tile"));
 			}
 			case SPELL_AQUARIUS:
 			{
-				trSoundPlayFN("xpack\xcinematics\gaiasparkle.mp3","1",-1,"","");
+				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
+				trSoundPlayFN("heal.wav","1",-1,"","");
 				healUnit(1*trQuestVarGet("p"+p+"commander"), yGetDatabaseCount("p"+p+"hand"));
 				deployAtTile(0, "Arkantos Boost SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
 			}
 			case SPELL_LIBRA:
 			{
-				trQuestVarSet("p"+p+"drawCards", xsMax(0, yGetDatabaseCount("p"+(3-p)+"hand") - yGetDatabaseCount("p"+p+"hand")));
-				trSoundPlayFN("ageadvance.wav","1",-1,"","");
+				trQuestVarSet("p"+p+"drawCards", xsMax(0, 1 + yGetDatabaseCount("p"+(3-p)+"hand") - yGetDatabaseCount("p"+p+"hand")));
+				trSoundPlayFN("temple.wav","1",-1,"","");
+				trSoundPlayFN("sentinelbirth.wav","1",-1,"","");
 			}
 			case SPELL_PISCES:
 			{
-				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
-				trSoundPlayFN("skypassageout.wav","1",-1,"","");
+				trSoundPlayFN("cinematics\14_in\chimes.mp3","1",-1,"","");
 				for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
 					mSetVarByQV("p"+p+"hand", "attack", 1 + mGetVarByQV("p"+p+"hand", "attack"));
@@ -2670,7 +2672,7 @@ inactive
 			case SPELL_DUPLICATE_ME:
 			{
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
-				activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Promethean Small"));
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Promethean Small"));
 				mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				mSetVar(activeUnit, "health", mGetVarByQV("spellCaster", "health"));
 				mSetVar(activeUnit, "attack", mGetVarByQV("spellCaster", "attack"));

@@ -1,3 +1,15 @@
+void checkKeys(int p = 0) {
+	if (trQuestVarGet("p"+p+"loveKey") + trQuestVarGet("p"+p+"laserKey") + trQuestVarGet("p"+p+"toyKey") == 3) {
+		trSoundPlayFN("cinematics\17_in\arrive.mp3","1",-1,"","");
+		trSoundPlayFN("spybirth.wav","1",-1,"","");
+		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has collected all the keys!");
+		addCardToDeck(p, "Statue of Lightning", SPELL_THE_CALLING);
+		trQuestVarSet("p"+p+"loveKey", 0);
+		trQuestVarSet("p"+p+"laserKey", 0);
+		trQuestVarSet("p"+p+"toyKey", 0);
+	}
+}
+
 void deathSummonQueue(int tile = 0, int p = 0, string proto = "", int hand = -1) {
 	int push = modularCounterNext("deathSummonPush");
 	trQuestVarSet("deathSummon"+push+"proto", kbGetProtoUnitID(proto));
@@ -132,12 +144,35 @@ bool OnDeath(int event = -1, int unit = 0){
 				if (HasKeyword(i, target)) {
 					for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 						yDatabaseNext("p"+p+"hand");
-						if (HasKeyword(i, mGetVarByQV("p"+p+"hand", "keywords")) == false) {
-							mSetVarByQV("p"+p+"hand", "keywords", Keyword(i) + mGetVarByQV("p"+p+"hand", "keywords"));
+						if (mGetVarByQV("p"+p+"hand", "spell") == 0) {
+							if (HasKeyword(i, mGetVarByQV("p"+p+"hand", "keywords")) == false) {
+								mSetVarByQV("p"+p+"hand", "keywords", Keyword(i) + mGetVarByQV("p"+p+"hand", "keywords"));
+							}
 						}
 					}
 				}
 			}
+		}
+		case DEATH_LOVE:
+		{
+			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LOVE key!");
+			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSet("p"+p+"loveKey", 1);
+			checkKeys(p);
+		}
+		case DEATH_LASERS:
+		{
+			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the LASER key!");
+			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSet("p"+p+"laserKey", 1);
+			checkKeys(p);
+		}
+		case DEATH_TOYS:
+		{
+			ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has acquired the TOY key!");
+			trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+			trQuestVarSet("p"+p+"toyKey", 1);
+			checkKeys(p);
 		}
 	}
 	return (checkAgain);

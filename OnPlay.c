@@ -186,8 +186,7 @@ void OnPlay(int unit = 0) {
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == 3 - p) {
-					if ((trQuestVarGet("p"+p+"manaflow") >= mGetVarByQV("allUnits", "cost")) &&
-						(mGetVarByQV("allUnits", "spell") == 0)) {
+					if (mGetVarByQV("allUnits", "spell") == 0) {
 						stunUnit(1*trQuestVarGet("allUnits"));
 					}
 				}
@@ -351,6 +350,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Flying Purple Hippo"):
 		{
+			/*
 			trSoundPlayFN("gaiaattack.wav","1",-1,"","");
 			trQuestVarSetFromRand("soundRandom", 1, 6, true);
 			switch(1*trQuestVarGet("soundRandom"))
@@ -392,29 +392,28 @@ void OnPlay(int unit = 0) {
 					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: TARIHDNADHADHDGNALAD!!!");
 				}
 			}
+			*/
 		}
 		case kbGetProtoUnitID("Villager Atlantean Hero"):
 		{
 			done = false;
 			chooseSpell(SPELL_FOOD);
 		}
-		case kbGetProtoUnitID("Trireme"):
+	case kbGetProtoUnitID("Transport Ship Norse"):
 		{
-			damageUnit(unit, 4);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 2 + trQuestVarGet("p"+p+"manaTax"));
+		}
+		case kbGetProtoUnitID("Siege Ship Greek"):
+		{
+			trQuestVarSet("p"+p+"manaTax", 2 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Fire Ship Atlantean"):
 		{
-			damageUnit(unit, 5);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 3 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Siege Ship Atlantean"):
 		{
-			damageUnit(unit, 8);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 4 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Hero Greek Argo"):
 		{
@@ -445,6 +444,12 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Hero Ragnorok"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + yGetDatabaseCount("p"+p+"hand"));
+		}
+		case kbGetProtoUnitID("Promethean Small"):
+		{
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DUPLICATE_ME);
+			done = false;
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
