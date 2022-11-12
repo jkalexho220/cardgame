@@ -186,8 +186,7 @@ void OnPlay(int unit = 0) {
 			for(x=yGetDatabaseCount("allUnits"); >0) {
 				yDatabaseNext("allUnits");
 				if (mGetVarByQV("allUnits", "player") == 3 - p) {
-					if ((trQuestVarGet("p"+p+"manaflow") >= mGetVarByQV("allUnits", "cost")) &&
-						(mGetVarByQV("allUnits", "spell") == 0)) {
+					if (mGetVarByQV("allUnits", "spell") == 0) {
 						stunUnit(1*trQuestVarGet("allUnits"));
 					}
 				}
@@ -311,9 +310,11 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Scorpion Man"):
 		{
-			done = false;
-			trQuestVarSet("spellCaster", unit);
-			chooseSpell(SPELL_SCORPION_STING);
+			if (yGetDatabaseCount("p"+p+"hand") > yGetDatabaseCount("p"+(3-p)+"hand")) {
+				done = false;
+				trQuestVarSet("spellCaster", unit);
+				chooseSpell(SPELL_SCORPION_STING);
+			}
 		}
 		case kbGetProtoUnitID("Anubite"):
 		{
@@ -349,6 +350,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Flying Purple Hippo"):
 		{
+			/*
 			trSoundPlayFN("gaiaattack.wav","1",-1,"","");
 			trQuestVarSetFromRand("soundRandom", 1, 6, true);
 			switch(1*trQuestVarGet("soundRandom"))
@@ -390,83 +392,28 @@ void OnPlay(int unit = 0) {
 					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: TARIHDNADHADHDGNALAD!!!");
 				}
 			}
+			*/
 		}
 		case kbGetProtoUnitID("Villager Atlantean Hero"):
 		{
 			done = false;
 			chooseSpell(SPELL_FOOD);
 		}
-		case kbGetProtoUnitID("Fishing Ship Egyptian"):
+	case kbGetProtoUnitID("Transport Ship Norse"):
 		{
-			damageUnit(unit, 2);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Greek"):
-		{
-			damageUnit(unit, 2);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Norse"):
-		{
-			damageUnit(unit, 3);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fishing Ship Atlantean"):
-		{
-			damageUnit(unit, 3);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Kebenit"):
-		{
-			damageUnit(unit, 4);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Trireme"):
-		{
-			damageUnit(unit, 4);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Longboat"):
-		{
-			damageUnit(unit, 5);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Fire Ship Atlantean"):
-		{
-			damageUnit(unit, 5);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
-		}
-		case kbGetProtoUnitID("Siege Ship Egyptian"):
-		{
-			damageUnit(unit, 6);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 2 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Siege Ship Greek"):
 		{
-			damageUnit(unit, 6);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 2 + trQuestVarGet("p"+p+"manaTax"));
 		}
-		case kbGetProtoUnitID("Siege Ship Norse"):
+		case kbGetProtoUnitID("Fire Ship Atlantean"):
 		{
-			damageUnit(unit, 8);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 3 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Siege Ship Atlantean"):
 		{
-			damageUnit(unit, 8);
-			trQuestVarSetFromRand("soundRandom", 1, 3, true);
-			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
+			trQuestVarSet("p"+p+"manaTax", 4 + trQuestVarGet("p"+p+"manaTax"));
 		}
 		case kbGetProtoUnitID("Hero Greek Argo"):
 		{
@@ -494,26 +441,15 @@ void OnPlay(int unit = 0) {
 			}
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");
 		}
-		case kbGetProtoUnitID("Catapult"):
+		case kbGetProtoUnitID("Hero Ragnorok"):
 		{
-			deployAtTile(0, "Meteor", 1*mGetVar(unit, "tile"));
-			trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*mGetVar(unit, "tile")));
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				yDatabaseNext("allUnits");
-				if ((1*mGetVarByQV("allUnits", "spell") == 0) && (1*trQuestVarGet("allUnits") != unit)) {
-					if (trDistanceToVectorSquared("allUnits", "pos") < 64) {
-						damageUnit(1*trQuestVarGet("allUnits"), 5);
-						deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("allUnits", "tile"));
-					}
-				}
-			}
-			trCameraShake(1.0, 0.1);
-			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
-			trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
-			trSoundPlayFN("gateramloud.wav","1",-1,"","");
-			trSoundPlayFN("gateramloud.wav","1",-1,"","");
-			trSoundPlayFN("chaos.wav","1",-1,"","");
-			trSoundPlayFN("chaos.wav","1",-1,"","");
+			mSetVar(unit, "health", mGetVar(unit, "health") + yGetDatabaseCount("p"+p+"hand"));
+		}
+		case kbGetProtoUnitID("Promethean Small"):
+		{
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DUPLICATE_ME);
+			done = false;
 		}
 	}
 	trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));

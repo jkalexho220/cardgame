@@ -163,7 +163,7 @@ int CommanderToProtounit(int commander = 0){
 		}
 		case COMMANDER_VENLESH:
 		{
-			return (kbGetProtoUnitID("Lancer Hero"));
+			return (kbGetProtoUnitID("Maceman Hero"));
 		}
 		case COMMANDER_NANO:
 		{

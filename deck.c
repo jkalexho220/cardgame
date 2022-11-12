@@ -175,7 +175,7 @@ void drawCard(int p = 0, bool fleeting = false) {
 		}
 	} else {
 		int proto = yDatabaseNext("p"+p+"deck");
-		if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 			if (trCurrentPlayer() == p) {
 				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 			}
@@ -205,7 +205,7 @@ void drawCard(int p = 0, bool fleeting = false) {
 }
 
 void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
-	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+	if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
 		}
@@ -235,9 +235,6 @@ active
 {
 	zBankInit("p1handPos", 849, 10);
 	zBankInit("p2handPos", 859, 10);
-	
-	trVectorQuestVarSet("p1deck", xsVectorSet(1,0,1));
-	trVectorQuestVarSet("p2deck", xsVectorSet(119,0,119));
 	
 	xsDisableRule("initializeHand");
 }
