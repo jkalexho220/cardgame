@@ -150,8 +150,8 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 	yAddUpdateVar("class"+class+"units", "proto", proto);
 	yAddUpdateVar("class"+class+"units", "spell", spell);
 	
-	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, 9999999999999999999.0);
-	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, -9999999999999999999.0);
+	//trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, 9999999999999999999.0);
+	//trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, -9999999999999999999.0);
 }
 
 int CommanderToProtounit(int commander = 0){
