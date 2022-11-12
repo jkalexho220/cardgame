@@ -705,7 +705,7 @@ highFrequency
 inactive
 {
 	int class = trQuestVarGet("p1ClickClass");
-	for(x=xsMin(3, yGetDatabaseCount("class"+class+"units")); >0) {
+	for(x=xsMin(10, yGetDatabaseCount("class"+class+"units")); >0) {
 		int id = yDatabaseNext("class"+class+"units", true);
 		if (trUnitIsSelected() && (trQuestVarGet("lastSelected") != trQuestVarGet("class"+class+"units"))) {
 			displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("class"+class+"units", "spell"));
