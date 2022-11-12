@@ -507,6 +507,7 @@ int GetSpellAnimation(int class = 0, int type = 0){
 		}
 	}
 	ThrowError("GetSpellAnimation");
+	return(0);
 }
 
 string getCardClassIcon(int card = 0) {

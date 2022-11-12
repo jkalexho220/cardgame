@@ -1267,7 +1267,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		}
 		case SPELL_THE_CALLING:
 		{
-			castAddTile("spellTarget", false);
+			castAddSummonLocations("spellTarget");
 			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
 		case SPELL_DUPLICATE_ME:
@@ -2667,8 +2667,16 @@ inactive
 			}
 			case SPELL_THE_CALLING:
 			{
-				// TODO: THE CALLING
 				done = false;
+				xsEnableRule("the_calling");
+				trQuestVarSet("theCallingStep", 1);
+				trQuestVarSet("theCallingRadius", 80);
+				trQuestVarSet("theCallingNext", trTimeMS());
+				trVectorQuestVarSet("theCallingPos", kbGetBlockPosition(""+1*trQuestVarGet("spellTarget")));
+				trCameraShake(5.0, 0.3);
+				trSoundPlayFN("cinematics\32_out\kronosbehinddorrlong.mp3","1",-1,"","");
+				trSoundPlayFN("cinematics\17_in\weirdthing.mp3","1",-1,"","");
+				trSoundPlayFN("cinematics\17_in\arrive.mp3","1",-1,"","");
 			}
 			case SPELL_DUPLICATE_ME:
 			{
@@ -3182,6 +3190,77 @@ inactive
 			}
 			castEnd();
 			xsDisableRule("spell_banhammer_activate");
+		}
+	}
+}
+
+rule the_calling
+inactive
+highFrequency
+{
+	float dist = 0;
+	int primary = 0;
+	int secondary = 0;
+	int p = trQuestVarGet("activePlayer");
+	vector data = vector(0,0,0);
+	vector pos = trVectorQuestVarGet("theCallingPos");
+	switch(1*trQuestVarGet("theCallingStep"))
+	{
+		case 1:
+		{
+			if (trTimeMS() > trQuestVarGet("theCallingNext")) {
+				trQuestVarSet("theCallingNext", trTimeMS() + 200);
+				trQuestVarSet("theCallingRadius", trQuestVarGet("theCallingRadius") - 4);
+				dist = xsPow(trQuestVarGet("theCallingRadius"), 2);
+				for(x=0; < 60) {
+					for(y=0; < 60) {
+						if (dist < distanceBetweenVectors(pos, xsVectorSet(x, 0, y) * 2.0)) {
+							trPaintTerrain(x, y, x, y, 5, 4, false); // paint black
+						}
+					}
+				}
+				if (trQuestVarGet("theCallingRadius") == 0) {
+					trQuestVarSet("theCallingStep", 2);
+					trSoundPlayFN("wonderdeath.wav","1",-1,"","");
+					trCameraShake(3.0, 0.5);
+					trQuestVarSet("theCallingRadius", 80);
+					int next = summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Titan Kronos"));
+					for(x=yGetDatabaseCount("allUnits"); >0) {
+						yDatabaseNext("allUnits");
+						if ((trQuestVarGet("allUnits") != next) && (mGetVarByQV("allUnits", "spell") == SPELL_NONE)) {
+							deployAtTile(0, "Kronny Birth SFX", mGetVarByQV("allUnits", "tile"));
+							magnetize(next, 1*trQuestVarGet("allUnits"));
+							yRemoveFromDatabase("allUnits");
+						}
+					}
+					mSetVar(next, "scale", 0);
+					trUnitSelectClear();
+					trUnitSelect(""+next);
+					trSetSelectedScale(0.1, 0.1, 0.1);
+				}
+			}
+		}
+		case 2:
+		{
+			if (trTimeMS() > trQuestVarGet("theCallingNext")) {
+				trQuestVarSet("theCallingNext", trTimeMS() + 200);
+				trQuestVarSet("theCallingRadius", trQuestVarGet("theCallingRadius") - 5);
+				dist = xsPow(trQuestVarGet("theCallingRadius"), 2);
+				for(x=0; < 60) {
+					for(y=0; < 60) {
+						if (dist < distanceBetweenVectors(pos, xsVectorSet(x, 0, y) * 2.0)) {
+							data = aiPlanGetUserVariableVector(terrainTiles, x, y);
+							primary = xsVectorGetX(data);
+							secondary = xsVectorGetY(data);
+							trPaintTerrain(x, y, x, y, primary, secondary, false); // paint black
+						}
+					}
+				}
+				if (trQuestVarGet("theCallingRadius") == 0) {
+					xsDisableSelf();
+					castEnd();
+				}
+			}
 		}
 	}
 }

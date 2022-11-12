@@ -981,9 +981,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_LIBRA);
 						addCardToDeck(2, "", SPELL_AQUARIUS);
 					}
-					addCardToDeck(2, "Flying Purple Hippo");
-					addCardToDeck(2, "Lazer Bear");
-					addCardToDeck(2, "Forkboy");
+					addCardToDeck(2, "", SPELL_THE_CALLING);
 					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 					addCardToDeck(2, "Hero Greek Achilles");
 					trQuestVarSet("p2class2", CLASS_SPACE);

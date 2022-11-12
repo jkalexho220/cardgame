@@ -286,7 +286,7 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if ((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 120))) {
+	if (((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 120))) && (trQuestVarGet("castDone") != CASTING_DONE)) {
 		if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
 			trUnitDestroy();
 		}
