@@ -669,7 +669,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Colossus");
 						addCardToDeck(2, "Petrobolos");
 						addCardToDeck(2, "", SPELL_GEAR_FACTORY);
-						addCardToDeck(2, "", SPELL_PORTABLE_SPELL_SHIELD);
+						addCardToDeck(2, "", SPELL_NANOMACHINES);
 					}
 					addCardToDeck(2, "", SPELL_POWER_SUIT);
 					trQuestVarSet("p2class2", CLASS_CLOCKWORK);
@@ -710,7 +710,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "", SPELL_WARNING_SHOT);
 						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
-						addCardToDeck(2, "", SPELL_PORTABLE_SPELL_SHIELD);
+						addCardToDeck(2, "", SPELL_NANOMACHINES);
 					}
 				}
 				case 3:
@@ -829,14 +829,14 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Javelin Cavalry");
 						addCardToDeck(2, "", SPELL_BANHAMMER);
 						addCardToDeck(2, "Crossbowman");
-						addCardToDeck(2, "Maceman Hero");
+						addCardToDeck(2, "Hero Norse");
 						addCardToDeck(2, "Chieroballista");
 						addCardToDeck(2, "Portable Ram");
 						addCardToDeck(2, "Prisoner");
 						addCardToDeck(2, "Priest");
 					}
 					
-					summonAtTile(190, 2, kbGetProtoUnitID("Eitri"));
+					summonAtTile(190, 2, kbGetProtoUnitID("Hero Greek Atalanta"));
 					summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
@@ -968,22 +968,23 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<6){
 						addCardToDeck(2, "Female");
 						addCardToDeck(2, "Archer Atlantean");
+						addCardToDeck(2, "Gemini");
+						addCardToDeck(2, "", SPELL_PISCES);
 					}
 					
 					for(x=0;<3) {
 						addCardToDeck(2, "Theris");
 						addCardToDeck(2, "Bireme");
-						addCardToDeck(2, "Hippocampus");
-						addCardToDeck(2, "Scylla");
 						addCardToDeck(2, "Mummy");
-						addCardToDeck(2, "Apep");
-						addCardToDeck(2, "Sea Turtle");
 						addCardToDeck(2, "", SPELL_DOMINANCE);
 						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+						addCardToDeck(2, "", SPELL_LIBRA);
+						addCardToDeck(2, "", SPELL_AQUARIUS);
 					}
+					addCardToDeck(2, "", SPELL_THE_CALLING);
 					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 					addCardToDeck(2, "Hero Greek Achilles");
-					trQuestVarSet("p2class2", CLASS_NAGA);
+					trQuestVarSet("p2class2", CLASS_SPACE);
 				}
 				case 6:
 				{

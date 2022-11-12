@@ -42,6 +42,8 @@ const int TILE_EMPTY = 0;
 const int TILE_IMPASSABLE = 1;
 const int TILE_OCCUPIED = 2;
 
+int terrainTiles = 0;
+
 int deployAtTile(int p = 0, string proto = "", int tile = 0) {
 	int next = trGetNextUnitScenarioNameNumber();
 	trArmyDispatch("1,10","Dwarf",1,119,0,1,0,true);
@@ -628,4 +630,13 @@ inactive
 		trCameraCut(vector(27.838341,112.294716,27.838341),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
 	}
 	trSoundPlayFN("default","1",-1," : ","");
+
+	// Save the terrain to a 2D array for The Calling
+	terrainTiles = aiPlanCreate("terrain", 8);
+	for(x=0; < 60) {
+		aiPlanAddUserVariableVector(terrainTiles, x, "row"+x, 60);
+		for(y=0; < 60) {
+			aiPlanSetUserVariableVector(terrainTiles, x, y, xsVectorSet(trGetTerrainType(x,y),trGetTerrainSubType(x,y),0));
+		}
+	}
 }

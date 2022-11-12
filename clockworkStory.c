@@ -104,7 +104,7 @@ inactive
 				} else if (x == 6) {
 					summonAtTile(1*trQuestVarGet("tile"), 2, kbGetProtoUnitID("Colossus"));
 				} else {
-					summonAtTile(1*trQuestVarGet("tile"), 2, kbGetProtoUnitID("Maceman Hero"));
+					summonAtTile(1*trQuestVarGet("tile"), 2, kbGetProtoUnitID("Hero Norse"));
 				}
 			}
 		}

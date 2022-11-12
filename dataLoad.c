@@ -87,11 +87,11 @@ void dataSave() {
 	*/
 	for(c=0; <6) {
 		data = 0;
-		if (trQuestVarGet("class2") == c) {
-			data = data + 3; // set the first bit
-		} else if (trQuestVarGet("class1") == c) {
+		if (trQuestVarGet("class1") == c) {
 			data = data + 1; // set the first 2 bits
 			data = data + 4 * (1 * trQuestVarGet("commander") - 2 * c); // set the commander bit
+		} else if (trQuestVarGet("class2") == c) {
+			data = data + 3; // set the first bit
 		}
 		data = data + 8 * trQuestVarGet("class"+c+"progress"); // progress is bits 3-5
 		

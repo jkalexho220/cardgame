@@ -13,7 +13,7 @@ import sys
 ###############################
 ####### CUSTOMIZE THESE #######
 ###############################
-FILENAME = 'cardGameAll.xml'
+FILENAME = 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Age of Mythology\\trigger2\\cardGameAll.xml'
 NAME = ' Card Game'
 files = ['memory.c', 'shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c', 'clockworkStory.c', 'otherworldStory.c', 'nagaStory.c']
 
@@ -40,6 +40,7 @@ STATE_DONE = 6
 
 STATE_WAITING_CLOSE_PARENTHESIS = 7
 STATE_CLOSED = 8
+STATE_WAITING_COLON = 9;
 
 DATATYPE = ['int', 'float', 'string', 'void', 'vector', 'bool']
 ARITHMETIC = ['/', '*', '+', '-']
@@ -261,8 +262,10 @@ class StackFrame(Job):
 					if self.name != 'if':
 						self.resolve()
 						self.parent.children.pop()
-				elif self.name == 'switch' and not token == 'case':
+				elif self.name == 'switch' and not token in ['case', 'default']:
 					accepted = False
+				elif self.name == 'switch' and token == 'default':
+					self.children.append(Logic(token, self))
 				elif token in LOGIC:
 					self.children.append(Logic(token, self))
 				elif token in DATATYPE:
@@ -301,6 +304,8 @@ class Logic(StackFrame):
 		self.fordepth = len(KNOWN_FOR)
 		if name == 'case':
 			self.state = STATE_IN_PARENTHESIS
+		if name == 'default':
+			self.state = STATE_WAITING_COLON
 
 	def resolve(self):
 		global KNOWN_FOR
@@ -382,6 +387,9 @@ class Logic(StackFrame):
 						self.state = STATE_WAITING_BRACKETS
 				else:
 					accepted = self.parseGeneric(token)
+			elif self.state == STATE_WAITING_COLON:
+				if token == ':':
+					self.state = STATE_WAITING_BRACKETS
 			elif self.state == STATE_WAITING_BRACKETS:
 				if token == 'if' and self.name == 'else':
 					self.state = STATE_NEED_PARENTHESIS
@@ -975,7 +983,7 @@ try:
 							if (len(templine) > 240):
 								print("Line length greater than 240! Length is " + str(len(templine)))
 								print("Line " + str(ln) + ":\n    " + line)
-							if len(templine) > 0 and not (templine[-1] == ';' or templine[-1] == '{' or templine[-1] == '}' or templine[-2:] == '||' or templine[-2:] == '&&' or templine[-1] == ',' or templine[-4:] == 'else' or templine[0:4] == 'rule' or templine == 'highFrequency' or templine == 'runImmediately' or templine[-1] == '/' or templine[-6:] == 'active' or templine[0:11] == 'minInterval' or templine[0:4] == 'case' or templine[0:7] == 'switch('):
+							if len(templine) > 0 and not (templine[-1] == ';' or templine[-1] == '{' or templine[-1] == '}' or templine[-2:] == '||' or templine[-2:] == '&&' or templine[-1] == ',' or templine[-4:] == 'else' or templine[0:4] == 'rule' or templine == 'highFrequency' or templine == 'runImmediately' or templine[-1] == '/' or templine[-6:] == 'active' or templine[0:11] == 'minInterval' or templine[0:4] == 'case' or templine[0:7] == 'default' or templine[0:7] == 'switch('):
 								print("Missing semicolon")
 								print("Line " + str(ln) + ":\n    " + line)
 
