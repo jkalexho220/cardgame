@@ -150,8 +150,8 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 	yAddUpdateVar("class"+class+"units", "proto", proto);
 	yAddUpdateVar("class"+class+"units", "spell", spell);
 	
-	//trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, 9999999999999999999.0);
-	//trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, -9999999999999999999.0);
+	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, 9999999999999999999.0);
+	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, -9999999999999999999.0);
 }
 
 int CommanderToProtounit(int commander = 0){
@@ -771,19 +771,6 @@ inactive
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
 				trCounterAbort("tooltipSpace");
 				dataSave();
-				/*
-				// do we really need this?
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					yDatabaseNext("allUnits");
-					string protoname = kbGetProtoUnitName(yGetVar("allUnits", "proto"));
-					if(protoname != "Cinematic Block"){
-						trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
-						trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
-						trModifyProtounit(protoname, 1, 1, 10);
-					}
-				}
-				yClearDatabase("allUnits");
-				*/
 				int next = trGetNextUnitScenarioNameNumber();
 				for(i=trQuestVarGet("idsStart");<next){
 					trUnitSelectClear();trUnitSelect(""+i);
@@ -792,6 +779,16 @@ inactive
 				xsEnableRule("MissionBegin");
 				for(i=0; < 6) {
 					if (trQuestVarGet("class"+i+"units") > 0) {
+						for(x=yGetDatabaseCount("class"+i+"units"); >0) {
+							yDatabaseNext("class"+i+"units");
+							string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
+							if(protoname != "Cinematic Block"){
+								trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
+								trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
+								trModifyProtounit(protoname, 1, 1, 10);
+							}
+						}
+						yClearDatabase("class"+i+"units");
 						yDeleteDatabase("class"+i+"units");
 					}
 				}
