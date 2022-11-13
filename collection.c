@@ -773,12 +773,13 @@ inactive
 				dataSave();
 				int next = trGetNextUnitScenarioNameNumber();
 				for(i=trQuestVarGet("idsStart");<next){
-					trUnitSelectClear();trUnitSelect(""+i);
+					trUnitSelectClear();
+					trUnitSelect(""+i);
 					trUnitDestroy();
 				}
 				xsEnableRule("MissionBegin");
 				for(i=0; < 6) {
-					if (trQuestVarGet("class"+i+"units") > 0) {
+					if (yDatabaseExists("class"+i+"units")) {
 						for(x=yGetDatabaseCount("class"+i+"units"); >0) {
 							yDatabaseNext("class"+i+"units");
 							string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));

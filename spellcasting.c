@@ -258,7 +258,7 @@ void castEnd() {
 					case kbGetProtoUnitID("Swordsman Hero"):
 					{
 						spyEffect("Einheriar Boost SFX");
-						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
 					case kbGetProtoUnitID("Petsuchos"):

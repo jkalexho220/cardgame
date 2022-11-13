@@ -1116,7 +1116,7 @@ highFrequency
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After you cast a spell, grant me +2 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -1393,7 +1393,7 @@ highFrequency
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	
-	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
+	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +2 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Create a Spark.");
 	CardEvents("Priest", 0, 0,							 				"Your spells cost 1 less.");
 	CardEvents("Oracle Scout", 0, 0,						 			"Your spells deal +1 damage.");

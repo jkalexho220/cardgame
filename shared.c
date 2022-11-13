@@ -490,6 +490,9 @@ string mGetStringByQV(string qv = "", string var = "") {
 	return(aiPlanGetUserVariableString(ARRAYS,1*trQuestVarGet("m"+var),1*trQuestVarGet(qv)));
 }
 
+bool yDatabaseExists(string dbname = "") {
+	return(trQuestVarGet("database"+dbname) > 0);
+}
 
 bool yDatabaseCreateIfNull(string dbname = "", int count = 0) {
 	bool created = false;
