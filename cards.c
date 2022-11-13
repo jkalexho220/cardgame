@@ -568,7 +568,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	if (spell > 1) {
 		keywords = trQuestVarGet("spell_"+spell+"_keywords");
 		message = trStringQuestVarGet("spell_"+spell+"_description");
-		card = SpellToCard(proto);
+		card = SpellToCard(spell);
 	}
 	
 	if (spell <= SPELL_COMMANDER) {
