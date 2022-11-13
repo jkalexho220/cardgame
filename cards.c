@@ -1056,7 +1056,7 @@ highFrequency
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	SpellSetup("Guardian of the Woods",	2, SPELL_GUARDIAN_OF_SEA,	"Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
 	// 5 - 9
-	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
+	CardSetup("Peltast", 				3, "Elven Ranger",	 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		4, "Party Leader", 		3, 3, 2, 1); // Play: Summon a random 1-cost minion from your deck.
@@ -1166,7 +1166,7 @@ highFrequency
 	CardSetup("Cyclops",				5, "Undercity Protector",	3, 5, 1, 1, Keyword(GUARD) + Keyword(OVERFLOW));
 	CardSetup("Lampades",				6, "Naga Sea Witch",		2, 2, 2, 2); // Play: Convert an enemy that costs {Manaflow} or less.
 	CardSetup("Behemoth",				5, "Mana Muncher",			1, 1, 1, 1); // Play: I gain {Manaflow} attack and health.
-	CardSetup("Nereid",					4, "Naga Sea Hunter",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
+	CardSetup("Nereid",					4, "Naga Tidecaller",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
 	// 70-74 (LEGENDARY at 74)
 	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
 	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
@@ -1331,7 +1331,7 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
