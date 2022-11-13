@@ -1956,7 +1956,7 @@ inactive
 {
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
-	if (trUnitPercentDamaged() > 50){
+	if (trUnitPercentDamaged() >= 50){
 		if(PlayerDefeated(1) == false){
 			xsDisableRule("StoryClass0Mission3_");
 			if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p2commander"))) == kbGetProtoUnitID("Qilin")){
@@ -1966,6 +1966,8 @@ inactive
 				trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
 				trUnitChangeProtoUnit("Victory Marker");
 				trDamageUnitPercent(100);
+				mSetVarByQV("p2commander", "health", 0);
+				removeDeadUnits();
 			}
 		}
 	}
