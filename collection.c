@@ -142,7 +142,7 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
-		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
+		trSetSelectedScale(0.75, 0.1 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.2, 0.75);
 		trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 

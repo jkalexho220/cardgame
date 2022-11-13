@@ -1076,7 +1076,7 @@ highFrequency
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"Draw 3 cards that cost 1 Mana.", SPELL_TYPE_OTHER);
-	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and health and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
@@ -1482,7 +1482,7 @@ highFrequency
 	CardEvents("Flying Purple Hippo", 0, Keyword(DEATH_LOVE),			"Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Lazer Bear", 0, Keyword(DEATH_LASERS),					"Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Forkboy", 0, Keyword(DEATH_TOYS),						"Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)");
-	CardEvents("Kronos", 0, 0,											"Their screams echo forever more.");
+	CardEvents("Titan Kronos", 0, 0,									"Their screams echo forever more.");
 	
 	xsDisableSelf();
 }

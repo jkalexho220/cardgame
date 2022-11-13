@@ -1564,6 +1564,7 @@ inactive
 			{
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
 				mSetVarByQV("cheerTarget", "attack", 1 + mGetVarByQV("cheerTarget", "attack"));
+				mSetVarByQV("cheerTarget", "health", 1 + mGetVarByQV("cheerTarget", "health"));
 				xsEnableRule("cheer_activate"); // this trigger is placed in OnPlay lol
 			}
 			case SPELL_DEFENDER:
