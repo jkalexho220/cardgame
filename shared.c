@@ -663,6 +663,10 @@ void yClearDatabase(string db = "") {
 	xClearDatabase(1*trQuestVarGet("database"+db));
 }
 
+void yDeleteDatabase(string db = "") {
+	aiPlanDestroy(1*trQuestVarGet("database"+db));
+}
+
 void yDatabaseSelectAll(string db = "") {
 	trUnitSelectClear();
 	for(x=yGetDatabaseCount(db); >0) {

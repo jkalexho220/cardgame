@@ -121,13 +121,12 @@ bool ValidateCollection(){
 	return (valid);
 }
 
-void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander = false){
+void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander = false, int class = 0){
 	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
 	trArmyDispatch("1,10","Dwarf",1,x,0,z,180,true);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
 	
-	yAddToDatabase("allUnits", "next");
 	int proto = CardToProto(card);
 	int spell = CardToSpell(card);
 	
@@ -146,10 +145,10 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
 		trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
-	
-	yAddUpdateVar("allUnits", "player", 1);
-	yAddUpdateVar("allUnits", "proto", proto);
-	yAddUpdateVar("allUnits", "spell", spell);
+
+	yAddToDatabase("class"+class+"units", "next");
+	yAddUpdateVar("class"+class+"units", "proto", proto);
+	yAddUpdateVar("class"+class+"units", "spell", spell);
 	
 	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, 9999999999999999999.0);
 	trModifyProtounit(kbGetProtoUnitName(proto), 1, 1, -9999999999999999999.0);
@@ -211,19 +210,19 @@ int CommanderToProtounit(int commander = 0){
 	//ThrowError("CommanderToProtounit");
 }
 
-void CollectionCommander(int commander = 0, int x = 0, int z = 0){
-	CollectionDeploy(CommanderToProtounit(commander), x, z, true);
+void CollectionCommander(int commander = 0, int x = 0, int z = 0, int class = 0){
+	CollectionDeploy(CommanderToProtounit(commander), x, z, true, class);
 }
 
-void CollectionCard(int index = 0, int x = 0, int z = 0) {
+void CollectionCard(int index = 0, int x = 0, int z = 0, int class = 0) {
 	int countDeck = getCardCountDeck(index);
 	int countCollection = getCardCountCollection(index);
 	for(i=0;<3){
 		if(countDeck > 0){
-			CollectionDeploy(index, x, z + 44);
+			CollectionDeploy(index, x, z + 44, false, class);
 			countDeck = countDeck - 1;
 		} else if(countCollection > 0){
-			CollectionDeploy(index, x, z);
+			CollectionDeploy(index, x, z, false, class);
 			countCollection = countCollection - 1;
 		}
 		for(j=0;<6){
@@ -453,12 +452,12 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 			}
 			if(i == 14 + 30 * class){
 				/* First Legendary */
-				CollectionCard(i,9 + 20 * class,35);
+				CollectionCard(i,9 + 20 * class,35, class);
 			} else if(i == 29 + 30 * class){
 				/* Second Legendary */
-				CollectionCard(i,13 + 20 * class,35);
+				CollectionCard(i,13 + 20 * class,35, class);
 			} else {
-				CollectionCard(i,x,z);
+				CollectionCard(i,x,z, class);
 				z = z - 4;
 				if(i == 9 + 30 * class){
 					x = 9 + 20 * class; z = 31;
@@ -476,14 +475,14 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 				trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 				z = z + 44;
 			}
-			CollectionCommander(2 * class, 5 + 20 * class, z);
+			CollectionCommander(2 * class, 5 + 20 * class, z, class);
 			if(progress > 6){
 				z = 41;
 				if(getDeckCommander() == (2 * class + 1)){
 					trQuestVarSet("currentCommander", trGetNextUnitScenarioNameNumber());
 					z = z + 44;
 				}
-				CollectionCommander(2 * class + 1, 17 + 20 * class, z);
+				CollectionCommander(2 * class + 1, 17 + 20 * class, z, class);
 			}
 			
 			/* Missions */
@@ -495,8 +494,6 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 				trUnitChangeName(GetMissionTitle(class,i));
 				trUnitChangeProtoUnit("Outpost");
 				trSetSelectedScale(1.0, 0.3, 1.0);
-				yAddToDatabase("allUnits", "class" + class + "Mission" + i);
-				yAddUpdateVar("allUnits", "proto", kbGetProtoUnitID("Cinematic Block"));
 				z = z + 4;
 			}
 			if(progress < 7){
@@ -546,15 +543,20 @@ inactive
 {
 	trCameraCut(vector(-58.161659,112.294716,-58.161659),vector(0.500000,-0.707107,0.500000),vector(0.500000,0.707107,0.500000),vector(0.707107,0.000000,-0.707107));
 	xsEnableRule("CollectionClick");
+	xsEnableRule("CollectionSelect");
+	trQuestVarSet("lastSelected", -1);
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
 	// trChatHistoryClear();
+	/*
+	// we used to need this for the collection reload but not anymore
 	for(x=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits", true);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	yClearDatabase("allUnits");
+	*/
 	trQuestVarSet("activePlayer", 1);
 	trQuestVarSet("idsStart", trGetNextUnitScenarioNameNumber());
 	collectionMission = "";
@@ -604,84 +606,97 @@ inactive
 	xsDisableRule("Collection");
 }
 
+// Given the click coordinates, which class are we looking at?
+int classFromPos(string v = "") {
+	int class = trVectorQuestVarGetX(v) / 20;
+	return(class);
+}
+
 rule CollectionClick
 highFrequency
 inactive
 {
-	switch(1*trQuestVarGet("p1click"))
-	{
-		case LEFT_CLICK:
+	if (trQuestVarGet("p1click") > 0) {
+		int class = classFromPos("p1ClickPos");
+		switch(1*trQuestVarGet("p1click"))
 		{
-			uiClearSelection();
-			trQuestVarSet("p1click", 0);
-			trClearCounterDisplay();
-			trSoundPlayDialog("default", "1", -1, false, " : ", "");
-			CollectionGodPowers();
-			trQuestVarSet("selectionTryAgain", 0);
-			xsDisableRule("CollectionSelect");
-			trDelayedRuleActivation("CollectionSelect");
-		}
-		case RIGHT_CLICK:
-		{
-			trQuestVarSet("p1click", 0);
-			for(x=yGetDatabaseCount("allUnits"); >0) {
-				int id = yDatabaseNext("allUnits", true);
-				float dist = trDistanceToVectorSquared("allUnits","p1clickPos");
-				if(dist < 4){
-					trVectorSetUnitPos("temp","allUnits");
-					if(1*yGetVar("allUnits", "spell") == SPELL_COMMANDER){
-						if(trVectorQuestVarGetZ("temp") < 44){
-							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
-							for(y=0; <12) {
-								if(kbGetUnitBaseTypeID(id) == CommanderToProtounit(y)){
-									setDeckCommander(y);
-									trQuestVarSet("class1", -1);
-									trQuestVarSet("class2", -1);
-									break;
+			case LEFT_CLICK:
+			{
+				uiClearSelection();
+				trClearCounterDisplay();
+				trSoundPlayDialog("default", "1", -1, false, " : ", "");
+				if (class != trQuestVarGet("p1ClickClass")) {
+					trQuestVarSet("canPressEnter", 0);
+					trQuestVarSet("missionSelection", 0);
+					trQuestVarSet("missionClass", 0);
+					collectionMission = "";
+					collectionReward = "";
+					trQuestVarSet("p1ClickClass", class);
+				}
+				CollectionGodPowers();
+			}
+			case RIGHT_CLICK:
+			{
+				for(x=yGetDatabaseCount("class"+class+"units"); >0) {
+					int id = yDatabaseNext("class"+class+"units", true);
+					float dist = trDistanceToVectorSquared("class"+class+"units","p1clickPos");
+					if(dist < 4){
+						trVectorSetUnitPos("temp","class"+class+"units");
+						if(1*yGetVar("class"+class+"units", "spell") == SPELL_COMMANDER){
+							if(trVectorQuestVarGetZ("temp") < 44){
+								trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
+								for(y=0; <12) {
+									if(kbGetUnitBaseTypeID(id) == CommanderToProtounit(y)){
+										setDeckCommander(y);
+										trQuestVarSet("class1", -1);
+										trQuestVarSet("class2", -1);
+										break;
+									}
 								}
+								trVectorSetUnitPos("temp","currentCommander");
+								trUnitSelectClear();
+								trUnitSelect(""+1*trQuestVarGet("currentCommander"), true);
+								trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
+								trQuestVarSet("currentCommander", trQuestVarGet("class"+class+"units"));
+								ChatLog(1, "Commander chosen");
+							} else {
+								ChatLog(1, "Deck must have a Commander");
 							}
-							trVectorSetUnitPos("temp","currentCommander");
-							trUnitSelectClear();
-							trUnitSelect(""+1*trQuestVarGet("currentCommander"), true);
-							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
-							trQuestVarSet("currentCommander", trQuestVarGet("allUnits"));
-							ChatLog(1, "Commander chosen");
 						} else {
-							ChatLog(1, "Deck must have a Commander");
+							int card = 0;
+							string name = "";
+							if(1*yGetVar("class"+class+"units", "spell") == 0){
+								card = ProtoToCard(kbGetUnitBaseTypeID(id));
+								name = trStringQuestVarGet("card_"+kbGetUnitBaseTypeID(id)+"_Name");
+							} else {
+								card = SpellToCard(1*yGetVar("class"+class+"units", "spell"));
+								name = trStringQuestVarGet("spell_"+1*yGetVar("class"+class+"units", "spell")+"_Name");
+							}
+							
+							if(trVectorQuestVarGetZ("temp") < 44){
+								trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
+								setCardCountDeck(card, getCardCountDeck(card) + 1);
+								ChatLog(1, name + " added to deck");
+							} else {
+								trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
+								setCardCountDeck(card, getCardCountDeck(card) - 1);
+								ChatLog(1, name + " removed from deck");
+							}
 						}
-					} else {
-						int card = 0;
-						string name = "";
-						if(1*yGetVar("allUnits", "spell") == 0){
-							card = ProtoToCard(kbGetUnitBaseTypeID(id));
-							name = trStringQuestVarGet("card_"+kbGetUnitBaseTypeID(id)+"_Name");
+						if(ValidateCollection()){
+							xsEnableRule("CollectionSpace");
+							trQuestVarSet("canPressSpace", 1);
 						} else {
-							card = SpellToCard(1*yGetVar("allUnits", "spell"));
-							name = trStringQuestVarGet("spell_"+1*yGetVar("allUnits", "spell")+"_Name");
+							xsDisableRule("CollectionSpace");
+							trQuestVarSet("canPressSpace", 0);
 						}
-						
-						if(trVectorQuestVarGetZ("temp") < 44){
-							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") + 44);
-							setCardCountDeck(card, getCardCountDeck(card) + 1);
-							ChatLog(1, name + " added to deck");
-						} else {
-							trUnitTeleport(trVectorQuestVarGetX("temp"),trVectorQuestVarGetY("temp"),trVectorQuestVarGetZ("temp") - 44);
-							setCardCountDeck(card, getCardCountDeck(card) - 1);
-							ChatLog(1, name + " removed from deck");
-						}
+						CollectionGodPowers();
+						break;
 					}
-					if(ValidateCollection()){
-						xsEnableRule("CollectionSpace");
-						trQuestVarSet("canPressSpace", 1);
-					} else {
-						xsDisableRule("CollectionSpace");
-						trQuestVarSet("canPressSpace", 0);
-					}
-					CollectionGodPowers();
-					break;
 				}
 			}
 		}
+		trQuestVarSet("p1click", 0);
 	}
 }
 
@@ -689,49 +704,46 @@ rule CollectionSelect
 highFrequency
 inactive
 {
-	if ((trTimeMS()-(cActivationTime*1000)) > 470){
-		bool nothing = true;
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			int id = yDatabaseNext("allUnits", true);
-			//trUnitHighlight(1.0, false);
-			if (trUnitIsSelected()) {
-				trVectorSetUnitPos("temp","allUnits");
-				if(trVectorQuestVarGetZ("temp") < 90){
-					displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("allUnits", "spell"));
-				} else {
-					trQuestVarSet("canPressEnter", 0);
-					collectionMission = "";
-					collectionReward = "";
-					for(class=0;<6){
-						for(i=1;<=xsMin(getClassProgress(class),6)){
-							if(trDistanceToVector("class" + class + "Mission" + i,"temp") < 2){
-								int cards = 2 + i;
-								if(getClassProgress(class) == i){
-									trQuestVarSet("missionHardmode", 0);
-									collectionMission = GetMissionTitle(class,i);
-									collectionReward = "Reward: " + cards + " Class Cards";
-								} else {
-									trQuestVarSet("missionHardmode", 1);
-									collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-									collectionReward = "Reward: " + cards + " Random Cards";
-								}
-								trQuestVarSet("missionSelection", i);
-								trQuestVarSet("missionClass", class);
-								xsEnableRule("CollectionEnter");
-								trQuestVarSet("canPressEnter", 1);
-								CollectionGodPowers();
-							}
-						}
-					}
-				}
-				nothing = false;
-				break;
-			}
+	int class = trQuestVarGet("p1ClickClass");
+	for(x=xsMin(10, yGetDatabaseCount("class"+class+"units")); >0) {
+		int id = yDatabaseNext("class"+class+"units", true);
+		if (trUnitIsSelected() && (trQuestVarGet("lastSelected") != trQuestVarGet("class"+class+"units"))) {
+			displayCardDetails(kbGetUnitBaseTypeID(id), 1*yGetVar("class"+class+"units", "spell"));
+			trQuestVarCopy("lastSelected", "class"+class+"units");
+			break;
 		}
-		xsDisableRule("CollectionSelect");
-		if(nothing && trQuestVarGet("selectionTryAgain") < 3){
-			trQuestVarSet("selectionTryAgain", trQuestVarGet("selectionTryAgain") + 1);
-			trDelayedRuleActivation("CollectionSelect");
+	}
+
+	for(i=1;<=xsMin(getClassProgress(class),6)){
+		// if we newly selected this one
+		trUnitSelectClear();
+		trUnitSelectByQV("class"+class+"mission"+i);
+		if(trUnitIsSelected()){
+			if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
+				int cards = 2 + i;
+				if(getClassProgress(class) == i){
+					trQuestVarSet("missionHardmode", 0);
+					collectionMission = GetMissionTitle(class,i);
+					collectionReward = "Reward: " + cards + " Class Cards";
+				} else {
+					trQuestVarSet("missionHardmode", 1);
+					collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+					collectionReward = "Reward: " + cards + " Random Cards";
+				}
+				trQuestVarSet("missionSelection", i);
+				trQuestVarSet("missionClass", class);
+				xsEnableRule("CollectionEnter");
+				trQuestVarSet("canPressEnter", 1);
+				CollectionGodPowers();
+			}
+		} else if ((trQuestVarGet("missionSelection") == i) && (trQuestVarGet("missionClass") == class)) { 
+			// if deselect
+			trQuestVarSet("canPressEnter", 0);
+			trQuestVarSet("missionSelection", 0);
+			trQuestVarSet("missionClass", 0);
+			collectionMission = "";
+			collectionReward = "";
+			CollectionGodPowers();
 		}
 	}
 }
@@ -754,26 +766,32 @@ inactive
 				trCounterAbort("mission");
 				trCounterAbort("reward");
 				xsDisableRule("CollectionClick");
+				xsDisableRule("CollectionSelect");
 				xsDisableRule("CollectionSpace");
 				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
 				trCounterAbort("tooltipSpace");
 				dataSave();
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					yDatabaseNext("allUnits");
-					string protoname = kbGetProtoUnitName(yGetVar("allUnits", "proto"));
-					if(protoname != "Cinematic Block"){
-						trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
-						trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
-						trModifyProtounit(protoname, 1, 1, 10);
-					}
-				}
-				yClearDatabase("allUnits");
 				int next = trGetNextUnitScenarioNameNumber();
 				for(i=trQuestVarGet("idsStart");<next){
 					trUnitSelectClear();trUnitSelect(""+i);
 					trUnitDestroy();
 				}
 				xsEnableRule("MissionBegin");
+				for(i=0; < 6) {
+					if (trQuestVarGet("class"+i+"units") > 0) {
+						for(x=yGetDatabaseCount("class"+i+"units"); >0) {
+							yDatabaseNext("class"+i+"units");
+							string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
+							if(protoname != "Cinematic Block"){
+								trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
+								trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
+								trModifyProtounit(protoname, 1, 1, 10);
+							}
+						}
+						yClearDatabase("class"+i+"units");
+						yDeleteDatabase("class"+i+"units");
+					}
+				}
 			}
 		} else {
 			ThrowError();
