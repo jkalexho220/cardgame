@@ -1048,7 +1048,7 @@ highFrequency
 	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Maceman Hero",			0, "Venlesh", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);
-	
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
@@ -1068,7 +1068,7 @@ highFrequency
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
+	CardSetup("Lancer Hero",			4, "Dragon Knight",		3, 6, 3, 1, Keyword(FURIOUS) + Keyword(ARMORED)); // Play: I take 4 damage.
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"Select an ally that has already acted. Grant it another action.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
@@ -1238,7 +1238,7 @@ highFrequency
 	// 110-114
 	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
+	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
@@ -1347,7 +1347,7 @@ highFrequency
 	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Forkboy",				7, "Servant of Toys",		7, 7, 2, 1); // Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Promethean Small",		2, "Gemini",				1, 1, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
-	CardSetup("Lancer Hero",			4, "Capricorn",				3, 3, 3, 1); // Death: Summon a minion from your hand with cost less than or equal to my attack.
+	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 2); // Death: Summon a minion from your hand with cost less than or equal to my attack.
 	// 170-174
 	CardSetup("Carcinos",				6, "Cancer",				5, 5, 2, 1); // Death: Give my Keywords to cards in your hand.
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
@@ -1355,7 +1355,7 @@ highFrequency
 	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
 	CardSetup("Stymphalian Bird",		4, "Mech Bird",				1, 1, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));
 	// 175-179 (LEGENDARY at 179)
-	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));
+	CardSetup("Chariot Archer",			3, "Multiverse Chariot",	2, 2, 3, 2, Keyword(REPEATABLE));
 	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
 	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1
 	SpellSetup("Space Flow", 			1, SPELL_REFRESH_MANA, 		"Convert your Manaflow into mana.", SPELL_TYPE_OTHER);	
@@ -1389,6 +1389,7 @@ highFrequency
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions.");
 	CardEvents("Ornlu", Keyword(ATTACK_BOOST_HAND), 0,					"Attack: Give +1 attack to minions in your hand.");
+	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
@@ -1477,7 +1478,7 @@ highFrequency
 	CardEvents("Hero Ragnorok", 0, 0,									"Play: Grant me +1 health for each card in your hand.");
 	CardEvents("Golden Lion", 0, 0,										"Each turn I spend in your hand, reduce my cost by 1.");
 	CardEvents("Carcinos", 0, Keyword(DEATH_BOOST_HAND),				"Death: Give my Keywords to all minions in your hand.");
-	CardEvents("Lancer Hero", 0, Keyword(DEATH_SUMMON_FROM_HAND),		"Death: Summon a minion from your hand with cost less than or equal to my attack.");
+	CardEvents("Lancer", 0, Keyword(DEATH_SUMMON_FROM_HAND),			"Death: Summon a minion from your hand with cost less than or equal to my attack.");
 	
 	CardEvents("Flying Purple Hippo", 0, Keyword(DEATH_LOVE),			"Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Lazer Bear", 0, Keyword(DEATH_LASERS),					"Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)");

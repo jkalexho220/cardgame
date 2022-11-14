@@ -34,6 +34,12 @@ void OnPlay(int unit = 0) {
 				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Growl!!!");
 			}
 		}
+		case kbGetProtoUnitID("Lancer Hero"):
+		{
+			damageUnit(unit, 4);
+			spyEffect("Phoenix From Egg");
+			trSoundPlayFN("firegiantdie.wav","1",-1,"","");
+		}
 		case kbGetProtoUnitID("Bondi"):
 		{
 			trSoundPlayFN("militarycreate.wav","1",-1,"","");
