@@ -106,14 +106,18 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_SUMMON_RANDOM:
 		{
+			bool success = false;
 			for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
 				proto = yDatabaseNext("p"+p+"deck");
 				if (yGetVar("p"+p+"deck", "spell") == SPELL_NONE) {
 					yRemoveFromDatabase("p"+p+"deck");
+					success = true;
 					break;
 				}
 			}
-			deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(proto));
+			if (success) {
+				deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(proto));
+			}
 		}
 		case DEATH_SUMMON_BEETLE:
 		{

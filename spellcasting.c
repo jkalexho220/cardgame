@@ -1808,6 +1808,8 @@ inactive
 				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
 				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
 				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
+				mSetVar(activeUnit, "scale", mGetVar(target, "scale"));
+				scaleUnit(activeUnit);
 				mSetString(activeUnit, "ability", mGetString(target, "ability"));
 				deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(activeUnit, "tile"));
 				trUnitSelectClear();
@@ -2554,54 +2556,53 @@ inactive
 				trSoundPlayFN("pigout.wav","1",-1,"","");
 				
 				//for(ventPlayer=2; >0) {
-					int ventPlayer = p;
-					string disText = "";
-					int disCount = 0;
-					for(x=yGetDatabaseCount("p"+ventPlayer+"hand"); >0) {
-						disCount = disCount + 1;
-						yDatabaseNext("p"+ventPlayer+"hand", true);
-						trSoundPlayFN("pigout.wav","1",-1,"","");
-						trVectorSetUnitPos("pos", "p"+ventPlayer+"hand");
-						trUnitSelectClear();
-						trUnitSelectByID(1*yGetVar("p"+ventPlayer+"hand", "pos"));
-						trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-						trUnitSelectClear();
-						trUnitSelect(""+1*trQuestVarGet("p"+ventPlayer+"hand"), true);
-						trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-						trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
-						trUnitSelectClear();
-						trArmySelect("1,10");
-						trUnitChangeProtoUnit("Hero Death");
-						if (mGetVarByQV("p"+ventPlayer+"hand", "spell") == SPELL_NONE) {
-							yClearDatabase("ventTiles");
-							findAvailableTiles(1*mGetVarByQV("p"+ventPlayer+"commander", "tile"), 1, "ventTiles", false);
-							if(yGetDatabaseCount("ventTiles") > 0){
-								int ventUnit = summonAtTile(1*yDatabaseNext("ventTiles"),ventPlayer,1*mGetVarByQV("p"+ventPlayer+"hand", "proto"));			
-								if(HasKeyword(CHARGE, 1*mGetVar(ventUnit, "keywords")) == true){
-									mSetVar(ventUnit, "action", ACTION_READY);
-								} else {
-									mSetVar(ventUnit, "action", ACTION_SLEEPING);				
-								}
-								stunUnit(ventUnit);							
+				int ventPlayer = p;
+				string disText = "";
+				int disCount = 0;
+				for(x=yGetDatabaseCount("p"+ventPlayer+"hand"); >0) {
+					disCount = disCount + 1;
+					yDatabaseNext("p"+ventPlayer+"hand", true);
+					trSoundPlayFN("pigout.wav","1",-1,"","");
+					trVectorSetUnitPos("pos", "p"+ventPlayer+"hand");
+					trUnitSelectClear();
+					trUnitSelectByID(1*yGetVar("p"+ventPlayer+"hand", "pos"));
+					trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+					trUnitSelectClear();
+					trUnitSelect(""+1*trQuestVarGet("p"+ventPlayer+"hand"), true);
+					trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+					trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("pos"),0,trVectorQuestVarGetZ("pos"),0, true);
+					trUnitSelectClear();
+					trArmySelect("1,10");
+					trUnitChangeProtoUnit("Hero Death");
+					if (mGetVarByQV("p"+ventPlayer+"hand", "spell") == SPELL_NONE) {
+						yClearDatabase("ventTiles");
+						findAvailableTiles(1*mGetVarByQV("p"+ventPlayer+"commander", "tile"), 1, "ventTiles", false);
+						if(yGetDatabaseCount("ventTiles") > 0){
+							int ventUnit = summonAtTile(1*yDatabaseNext("ventTiles"),ventPlayer,1*mGetVarByQV("p"+ventPlayer+"hand", "proto"));			
+							if(HasKeyword(CHARGE, 1*mGetVar(ventUnit, "keywords")) == true){
+								mSetVar(ventUnit, "action", ACTION_READY);
 							} else {
-								if(disCount < 4){
-									disText = disText + trStringQuestVarGet("card_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "proto") + "_name") + " ";
-								} else {
-									disText = "" + disCount + " cards";
-								}
-							}
+								mSetVar(ventUnit, "action", ACTION_SLEEPING);				
+							}				
 						} else {
 							if(disCount < 4){
-								disText = disText + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "spell") + "_name") + " ";
+								disText = disText + trStringQuestVarGet("card_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "proto") + "_name") + " ";
 							} else {
 								disText = "" + disCount + " cards";
 							}
 						}
-						zSetVarByIndex("p"+ventPlayer+"handPos", "occupied", 1*yGetVar("p"+ventPlayer+"hand", "pos"), 0);
-						yRemoveFromDatabase("p"+ventPlayer+"hand");
+					} else {
+						if(disCount < 4){
+							disText = disText + trStringQuestVarGet("spell_" + 1*mGetVarByQV("p"+ventPlayer+"hand", "spell") + "_name") + " ";
+						} else {
+							disText = "" + disCount + " cards";
+						}
 					}
-					ChatLog(ventPlayer, "Discarded " + disText);
-					ChatLog((3-ventPlayer), "Opponent discarded " + disText);
+					zSetVarByIndex("p"+ventPlayer+"handPos", "occupied", 1*yGetVar("p"+ventPlayer+"hand", "pos"), 0);
+					yRemoveFromDatabase("p"+ventPlayer+"hand");
+				}
+				ChatLog(ventPlayer, "Discarded " + disText);
+				ChatLog((3-ventPlayer), "Opponent discarded " + disText);
 				//}
 
 			}
@@ -2718,7 +2719,7 @@ inactive
 			if (yGetVar("p"+p+"deck", "spell") > 0) {
 				proto = yGetVar("p"+p+"deck", "spell");
 				if (trQuestVarGet("spell_"+proto+"_cost") == 1) {
-					ySetPointer("p"+p+"deck", 1 + yGetPointer("p"+p+"deck"));
+					yDatabaseNext("p"+p+"deck", false, true);
 					drawCard(p);
 					target = target - 1;
 					if (target == 0) {
