@@ -809,9 +809,9 @@ inactive
 			trQuestVarSet("p1rain", 1);
 			// trChatHistoryClear();
 			dataSave();
-			map("mouse1down", "game", "");
+			map("mouse1down", "game", "uiSelectionButtonDown");
 			map("mouse2up", "game", "");
-			map("space", "game", "");
+			map("space", "game", "uiLookAtSelection");
 			map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 			trModeEnter("Pregame");
 		}
