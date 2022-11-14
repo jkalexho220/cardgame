@@ -1063,7 +1063,7 @@ highFrequency
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
+	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
@@ -1228,7 +1228,7 @@ highFrequency
 	CardSetup("Colossus",				8, "Steam Giant",			6, 8, 1, 1, Keyword(MAGNETIC) + Keyword(GUARD));
 	CardSetup("Battle Boar",			5, "Bulldozer",				4, 4, 2, 1, Keyword(MAGNETIC) + Keyword(CHARGE));
 	CardSetup("Ape of Set",				2, "Robot Monkey",			1, 1, 2, 1, Keyword(MAGNETIC)); // Death: I attack all adjacent units.
-	CardSetup("Tower Mirror",			10, "Thunder Cannon",		8, 8, 0, 3, Keyword(LIGHTNING));
+	CardSetup("Tower Mirror",			10, "Extinction Cannon",	8, 8, 0, 3, Keyword(LIGHTNING));
 	// 105-109
 	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied minion Lightning.", SPELL_TYPE_DEFENSIVE);
