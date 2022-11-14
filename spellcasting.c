@@ -255,12 +255,6 @@ void castEnd() {
 			if (mGetVarByQV("allUnits", "player") == p) {
 				switch(1*mGetVarByQV("allUnits", "proto"))
 				{
-					case kbGetProtoUnitID("Swordsman Hero"):
-					{
-						spyEffect("Einheriar Boost SFX");
-						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
-						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-					}
 					case kbGetProtoUnitID("Petsuchos"):
 					{
 						spyEffect("Einheriar Boost SFX");
@@ -281,6 +275,11 @@ void castEnd() {
 						trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
 					}
 				}
+			}
+			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Swordsman Hero")) {
+				spyEffect("Einheriar Boost SFX");
+				mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
+				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 			}
 		}
 	}
