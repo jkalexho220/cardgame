@@ -215,11 +215,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
 			trQuestVarSet("starty", 8);
 			trVectorQuestVarSet("dir1", trGetUnitVector3d("start", "end"));
-			trVectorQuestVarSet("dir2", trGetUnitVector("start", "end"));
-			// rotating the vector dir2 by 90 degrees
-			trQuestVarSet("temp", trQuestVarGet("dir2x"));
-			trQuestVarSet("dir2x", 0.0 - trQuestVarGet("dir2z"));
-			trQuestVarSet("dir2z", trQuestVarGet("temp"));
+			trVectorQuestVarSet("dir2", rotationMatrix(trGetUnitVector("start", "end"), 0.0, 1.0));
 			
 			trSetUnitOrientation(trVectorQuestVarGet("dir1"), trVectorQuestVarGet("dir2"), true);
 			trUnitHighlight(3.0, false);

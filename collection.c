@@ -142,7 +142,7 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
-		trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
+		trSetSelectedScale(0.75, 0.1 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.2, 0.75);
 		trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
 
@@ -773,12 +773,13 @@ inactive
 				dataSave();
 				int next = trGetNextUnitScenarioNameNumber();
 				for(i=trQuestVarGet("idsStart");<next){
-					trUnitSelectClear();trUnitSelect(""+i);
+					trUnitSelectClear();
+					trUnitSelect(""+i);
 					trUnitDestroy();
 				}
 				xsEnableRule("MissionBegin");
 				for(i=0; < 6) {
-					if (trQuestVarGet("class"+i+"units") > 0) {
+					if (yDatabaseExists("class"+i+"units")) {
 						for(x=yGetDatabaseCount("class"+i+"units"); >0) {
 							yDatabaseNext("class"+i+"units");
 							string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
@@ -808,9 +809,9 @@ inactive
 			trQuestVarSet("p1rain", 1);
 			// trChatHistoryClear();
 			dataSave();
-			map("mouse1down", "game", "");
+			map("mouse1down", "game", "uiSelectionButtonDown");
 			map("mouse2up", "game", "");
-			map("space", "game", "");
+			map("space", "game", "uiLookAtSelection");
 			map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 			trModeEnter("Pregame");
 		}

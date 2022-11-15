@@ -568,7 +568,7 @@ void displayCardDetails(int proto = 0, int spell = 0) {
 	if (spell > 1) {
 		keywords = trQuestVarGet("spell_"+spell+"_keywords");
 		message = trStringQuestVarGet("spell_"+spell+"_description");
-		card = SpellToCard(proto);
+		card = SpellToCard(spell);
 	}
 	
 	if (spell <= SPELL_COMMANDER) {
@@ -1048,7 +1048,7 @@ highFrequency
 	// Created cards
 	CardSetup("Hero Greek Jason",		0, "phdorogers4", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Maceman Hero",			0, "Venlesh", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(HEALER), true);
-	
+	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD), true);
 	// 0 - 4
 	CardSetup("Swordsman", 				1, "New Recruit", 		1, 3, 2, 1, Keyword(ETHEREAL));
 	CardSetup("Khopesh", 				2, "Thief", 			1, 2, 2, 1); // Attack: Draw 1 card.
@@ -1056,19 +1056,19 @@ highFrequency
 	CardSetup("Toxotes", 				2, "Sharpshooter",	 	2, 2, 2, 2);
 	SpellSetup("Guardian of the Woods",	2, SPELL_GUARDIAN_OF_SEA,	"Grant your Commander Armored and Guard until the start of your next turn.", SPELL_TYPE_OTHER);
 	// 5 - 9
-	CardSetup("Peltast", 				3, "Forest Ranger", 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
+	CardSetup("Peltast", 				3, "Elven Ranger",	 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
 	CardSetup("Hero Greek Ajax", 		4, "Party Leader", 		3, 3, 2, 1); // Play: Summon a random 1-cost minion from your deck.
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Wanderer", 			1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
+	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
-	CardSetup("Wolf",					1, "Loyal Wolf",		1, 1, 2, 1, Keyword(GUARD));
+	CardSetup("Lancer Hero",			4, "Dragon Knight",		3, 6, 3, 1, Keyword(FURIOUS) + Keyword(ARMORED)); // Play: I take 4 damage.
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"Select an ally that has already acted. Grant it another action.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
@@ -1076,7 +1076,7 @@ highFrequency
 	// 20 - 24
 	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"Draw 3 cards that cost 1 Mana.", SPELL_TYPE_OTHER);
-	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and health and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
@@ -1116,7 +1116,7 @@ highFrequency
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After you cast a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After ANY player casts a spell, grant me +1 attack.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -1166,7 +1166,7 @@ highFrequency
 	CardSetup("Cyclops",				5, "Undercity Protector",	3, 5, 1, 1, Keyword(GUARD) + Keyword(OVERFLOW));
 	CardSetup("Lampades",				6, "Naga Sea Witch",		2, 2, 2, 2); // Play: Convert an enemy that costs {Manaflow} or less.
 	CardSetup("Behemoth",				5, "Mana Muncher",			1, 1, 1, 1); // Play: I gain {Manaflow} attack and health.
-	CardSetup("Nereid",					4, "Naga Sea Hunter",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
+	CardSetup("Nereid",					4, "Naga Tidecaller",		4, 1, 2, 1, Keyword(CHARGE) + Keyword(AMBUSH));
 	// 70-74 (LEGENDARY at 74)
 	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
 	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
@@ -1228,7 +1228,7 @@ highFrequency
 	CardSetup("Colossus",				8, "Steam Giant",			6, 8, 1, 1, Keyword(MAGNETIC) + Keyword(GUARD));
 	CardSetup("Battle Boar",			5, "Bulldozer",				4, 4, 2, 1, Keyword(MAGNETIC) + Keyword(CHARGE));
 	CardSetup("Ape of Set",				2, "Robot Monkey",			1, 1, 2, 1, Keyword(MAGNETIC)); // Death: I attack all adjacent units.
-	CardSetup("Tower Mirror",			10, "Thunder Cannon",		8, 8, 0, 3, Keyword(LIGHTNING));
+	CardSetup("Tower Mirror",			10, "Extinction Cannon",	8, 8, 0, 3, Keyword(LIGHTNING));
 	// 105-109
 	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied minion Lightning.", SPELL_TYPE_DEFENSIVE);
@@ -1238,7 +1238,7 @@ highFrequency
 	// 110-114
 	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
+	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
@@ -1331,7 +1331,7 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(STEALTH)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
@@ -1347,7 +1347,7 @@ highFrequency
 	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Forkboy",				7, "Servant of Toys",		7, 7, 2, 1); // Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Promethean Small",		2, "Gemini",				1, 1, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
-	CardSetup("Lancer Hero",			4, "Capricorn",				3, 3, 3, 1); // Death: Summon a minion from your hand with cost less than or equal to my attack.
+	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 2); // Death: Summon a minion from your hand with cost less than or equal to my attack.
 	// 170-174
 	CardSetup("Carcinos",				6, "Cancer",				5, 5, 2, 1); // Death: Give my Keywords to cards in your hand.
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
@@ -1355,7 +1355,7 @@ highFrequency
 	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
 	CardSetup("Stymphalian Bird",		4, "Mech Bird",				1, 1, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));
 	// 175-179 (LEGENDARY at 179)
-	CardSetup("Lancer",					3, "Multiverse Knight",		2, 4, 3, 1, Keyword(GUARD) + Keyword(REPEATABLE));
+	CardSetup("Chariot Archer",			3, "Multiverse Chariot",	2, 2, 3, 2, Keyword(REPEATABLE));
 	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
 	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1
 	SpellSetup("Space Flow", 			1, SPELL_REFRESH_MANA, 		"Convert your Manaflow into mana.", SPELL_TYPE_OTHER);	
@@ -1389,11 +1389,12 @@ highFrequency
 	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
 	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions.");
 	CardEvents("Ornlu", Keyword(ATTACK_BOOST_HAND), 0,					"Attack: Give +1 attack to minions in your hand.");
+	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
 	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	
-	CardEvents("Swordsman Hero", 0, 0, 									"After you cast a spell, grant me +1 attack.");
+	CardEvents("Swordsman Hero", 0, 0, 									"After ANY player casts a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Create a Spark.");
 	CardEvents("Priest", 0, 0,							 				"Your spells cost 1 less.");
 	CardEvents("Oracle Scout", 0, 0,						 			"Your spells deal +1 damage.");
@@ -1477,12 +1478,12 @@ highFrequency
 	CardEvents("Hero Ragnorok", 0, 0,									"Play: Grant me +1 health for each card in your hand.");
 	CardEvents("Golden Lion", 0, 0,										"Each turn I spend in your hand, reduce my cost by 1.");
 	CardEvents("Carcinos", 0, Keyword(DEATH_BOOST_HAND),				"Death: Give my Keywords to all minions in your hand.");
-	CardEvents("Lancer Hero", 0, Keyword(DEATH_SUMMON_FROM_HAND),		"Death: Summon a minion from your hand with cost less than or equal to my attack.");
+	CardEvents("Lancer", 0, Keyword(DEATH_SUMMON_FROM_HAND),			"Death: Summon a minion from your hand with cost less than or equal to my attack.");
 	
 	CardEvents("Flying Purple Hippo", 0, Keyword(DEATH_LOVE),			"Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Lazer Bear", 0, Keyword(DEATH_LASERS),					"Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Forkboy", 0, Keyword(DEATH_TOYS),						"Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)");
-	CardEvents("Kronos", 0, 0,											"Their screams echo forever more.");
+	CardEvents("Titan Kronos", 0, 0,									"Their screams echo forever more.");
 	
 	xsDisableSelf();
 }

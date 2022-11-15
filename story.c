@@ -2072,7 +2072,7 @@ inactive
 		trShowImageDialog("icons\Animal Boar icon 64", "Hey I have to be somewhere, can we do this challenge thing in the elevator? Thanks.");
 		trSoundPlayFN("pigambient.wav","1",-1,"","");
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(0, 2, kbGetProtoUnitID("Maceman"));
+			summonAtTile(129, 2, kbGetProtoUnitID("Maceman"));
 		}
 	}
 }
