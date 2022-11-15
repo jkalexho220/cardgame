@@ -1021,9 +1021,16 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SCORPION_STING:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion to give to teleport.");
+			castInstructions("Choose a minion to teleport.");
 			castAddAdjacentTile("spellTile", "spellCaster");
 			castInstructions("Choose a tile to teleport it to.");
+		}
+		case SPELL_DUPLICATE_FRIEND:
+		{
+			castAddUnit("spellTarget", p, false);
+			castInstructions("Choose an allied minion to duplicate.");
+			castAddAdjacentTile("spellTile", "spellTarget");
+			castInstructions("Choose a tile to summon the duplicate.");
 		}
 		case SPELL_WORLD_SPLITTER:
 		{
@@ -1298,7 +1305,6 @@ inactive
 		float dist = 0;
 		int neighbor = 0;
 		trSoundPlayFN("godpower.wav","1",-1,"","");
-		bool battlecry = false;
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
 		switch(spell)
 		{
@@ -1515,7 +1521,6 @@ inactive
 			}
 			case SPELL_FOOD:
 			{
-				battlecry = true;
 				target = 1*trQuestVarGet("spellTarget");
 				mSetVar(target, "attack", 1 + mGetVar(target, "attack"));
 				mSetVar(target, "health", 1 + mGetVar(target, "health"));
@@ -1578,7 +1583,6 @@ inactive
 			}
 			case SPELL_WOLF:
 			{
-				battlecry = true;
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
 				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Wolf"));
 				mSetVar(activeUnit, "action", ACTION_SLEEPING);
@@ -1604,7 +1608,6 @@ inactive
 			}
 			case SPELL_SUMMON_ONE:
 			{
-				battlecry = true;
 				done = false;
 				trSoundPlayFN("mythcreate.wav","1",-1,"","");
 				for(x=yGetDatabaseCount("p"+p+"deck"); >0) {
@@ -1656,7 +1659,6 @@ inactive
 				trSoundPlayFN("cinematics\23_in\arrow1.mp3","1",-1,"","");
 				damageUnit(1*trQuestVarGet("spellTarget"), 1);
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
-				battlecry = true;
 			}
 			case SPELL_FIRST_AID:
 			{
@@ -1755,7 +1757,6 @@ inactive
 			}
 			case SPELL_VALKYRIE_HEAL:
 			{
-				battlecry = true;
 				trVectorSetUnitPos("healerPos", "spellCaster");
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
@@ -1791,7 +1792,6 @@ inactive
 			}
 			case SPELL_SHAPESHIFT:
 			{
-				battlecry = true;
 				trSoundPlayFN("changeunit.wav","1",-1,"","");
 				target = trQuestVarGet("copyTarget");
 				activeUnit = trQuestVarGet("transformTarget");
@@ -1841,7 +1841,6 @@ inactive
 			}
 			case SPELL_MEDUSA_STUN:
 			{
-				battlecry = true;
 				trVectorSetUnitPos("casterPos", "spellCaster");
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
@@ -1852,7 +1851,6 @@ inactive
 			}
 			case SPELL_LAMPADES_CONVERT:
 			{
-				battlecry = true;
 				trVectorSetUnitPos("casterPos", "spellCaster");
 				trVectorSetUnitPos("targetPos", "spellTarget");
 				trUnitSelectClear();
@@ -2010,7 +2008,6 @@ inactive
 			}
 			case SPELL_SCORPION_STING:
 			{
-				battlecry = true;
 				trVectorSetUnitPos("casterPos", "spellCaster");
 				trVectorSetUnitPos("targetPos", "spellTile");
 				trUnitSelectClear();
@@ -2021,6 +2018,24 @@ inactive
 				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("spellTile"));
 				trSoundPlayFN("relicselect.wav","1",-1,"","");
 				trSoundPlayFN("dialog\genr122f.mp3","1",-1,"","");
+			}
+			case SPELL_DUPLICATE_FRIEND:
+			{
+				trVectorSetUnitPos("casterPos", "spellCaster");
+				trVectorSetUnitPos("targetPos", "spellTile");
+				trUnitSelectClear();
+				trUnitSelectByQV("spellCaster");
+				trSetUnitOrientation(trGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
+				trUnitOverrideAnimation(33, 0, false, true, -1);
+				target = summonAtTile(1*trQuestVarGet("spellTile"), p, mGetVarByQV("spellTarget", "proto"));
+				mSetVar(target, "health", mGetVarByQV("spellTarget", "health"));
+				mSetVar(target, "attack", mGetVarByQV("spellTarget", "attack"));
+				mSetVar(target, "keywords", mGetVarByQV("spellTarget", "keywords"));
+				if (HasKeyword(DECAY, mGetVar(target, "keywords")) == false) {
+					mSetVar(target, "keywords", Keyword(DECAY) + mGetVar(target, "keywords"));
+				}
+				trSoundPlayFN("sonofosirisbirth.wav","1",-1,"","");
+				deployAtTile(p, "Kronny Birth SFX", 1*trQuestVarGet("spellTile"));
 			}
 			case SPELL_WORLD_SPLITTER:
 			{

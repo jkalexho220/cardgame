@@ -131,7 +131,7 @@ const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
 const int SPELL_DEMON_EAT = 56;
-const int SPELL_SCORPION_STING = 57;
+const int SPELL_DUPLICATE_FRIEND = 57;
 
 // Clockwork
 const int SPELL_CHOOSE_DIRECTION = 58;
@@ -171,6 +171,7 @@ const int SPELL_LIBRA = 88;
 const int SPELL_PISCES = 89;
 
 const int SPELL_DUPLICATE_ME = 90;
+const int SPELL_SCORPION_STING = 91;
 
 /*
 OnAttack events (bit positions)
@@ -1120,7 +1121,7 @@ highFrequency
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
-	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD));
+	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD)); // After you cast a spell, grant me another action.
 	// 45-49
 	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"Summon a Blaze Elemental and a Frost Elemental.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
@@ -1282,7 +1283,7 @@ highFrequency
 	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent minions.
 	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2, Keyword(DECAY)); // At the start of your turn, draw a card and give it Fleeting.
 	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // At the end of your turn, deal 1 damage to all units with Decay.
-	CardSetup("Pharaoh",				5, "Dark Summoner",			2, 3, 2, 2, Keyword(AIRDROP) + Keyword(BEACON) + Keyword(HEALER));
+	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied minion and give it Decay.
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
 	// 135-139
 	CardSetup("Spider Egg",				3, "Festering Egg",			0, 3, 0, 0, Keyword(DECAY)); // Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.
@@ -1331,7 +1332,7 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
@@ -1347,7 +1348,7 @@ highFrequency
 	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Forkboy",				7, "Servant of Toys",		7, 7, 2, 1); // Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Promethean Small",		2, "Gemini",				1, 1, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
-	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 2); // Death: Summon a minion from your hand with cost less than or equal to my attack.
+	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 1); // Death: Summon a minion from your hand with cost less than or equal to my attack.
 	// 170-174
 	CardSetup("Carcinos",				6, "Cancer",				5, 5, 2, 1); // Death: Give my Keywords to cards in your hand.
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
@@ -1441,6 +1442,7 @@ highFrequency
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");
 	CardEvents("Hero Greek Atalanta", 0, 0,								"After I move, I gain +1 attack.");
+	CardEvents("Pharaoh", 0, 0, 										"Play: Summon an exact copy of an allied minion and give it Decay.");
 	
 	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");

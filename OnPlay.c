@@ -322,6 +322,12 @@ void OnPlay(int unit = 0) {
 				chooseSpell(SPELL_SCORPION_STING);
 			}
 		}
+		case kbGetProtoUnitID("Pharaoh"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DUPLICATE_FRIEND);
+		}
 		case kbGetProtoUnitID("Anubite"):
 		{
 			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
