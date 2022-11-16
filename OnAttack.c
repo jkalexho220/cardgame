@@ -114,7 +114,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		*/
 		case ATTACK_POLYMORPH:
 		{
-			if (mGetVar(target, "health") > 0) {
+			if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == SPELL_NONE)) {
 				trSoundPlayFN("pigpower.wav","1",-1,"","");
 				trUnitSelectClear();
 				trUnitSelect(""+target);
@@ -131,6 +131,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				mSetVar(target, "onAttack", 0);
 				mSetVar(target, "onDeath", 0);
 				mSetVar(target, "scale", 1);
+				mSetString(target, "ability", "");
 			}
 		}
 		case ATTACK_DRAW_CARD_ENEMY_COST:

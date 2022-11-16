@@ -303,7 +303,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case DEADLY: return ("I kill any minion that I attack.");
 		case ETHEREAL: return ("Can pass through units and impassable terrain.");
 		case ARMORED: return ("I take 1 less damage from all sources.");
-		case WARD: return ("I cannot be targeted by spells or play effects.");
+		case WARD: return ("I cannot be targeted by spells.");
 		case BEACON: return ("Allies can be summoned next to me.");
 		case AMBUSH: return ("When initiating combat, I attack first.");
 		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
@@ -926,6 +926,8 @@ active
 		trForbidProtounit(p, "Ulfsark");
 		trModifyProtounit("Minion", p, 8, -99); // minion lifespan
 	}
+
+	trModifyProtounit("Phoenix Egg", 0, 0, -999); // kill gaia phoenix eggs
 	
 	/*
 	Don't use unit 0 because a lot of things are default 0
@@ -1081,7 +1083,7 @@ highFrequency
 	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"A minion attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Ornlu",					4, "Pack Leader",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to minions in your hand.
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
-	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 2 health to it.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 5 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_02");
@@ -1115,7 +1117,7 @@ highFrequency
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
 	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After ANY player casts a spell, grant me +1 attack.
 	// 40-44 (LEGENDARY at 44)
-	CardSetup("Circe",					8, "Spark Witch",		0, 5, 2, 1); // Attack: Transform my target into a 1|1 boar.
+	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
@@ -1127,17 +1129,17 @@ highFrequency
 	CardSetup("Chimera",				7, "Escaped Amalgam",	3, 7, 2, 1, Keyword(WARD)); // Attack: Create a random Arcane spell.
 	CardSetup("Petsuchos", 				5, "Bejeweled Sunlisk",	0, 4, 1, 3); // I have 3 range. Each time you cast a spell, grant me +2 attack.
 	// 50-54
-	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
 	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
 	CardSetup("Centaur",				3, "Book Courier",		2, 3, 3, 2); // Play: Draw a card. Death: Your opponent draws a card.
+	CardSetup("Hero Greek Chiron",		5, "Librarian",			3, 4, 3, 2); // At the start of your turn, both players draw a card.
 	// 55-59 (LEGENDARY at 59)
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"Both players draw two cards.", SPELL_TYPE_OTHER);
 	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
 	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Hero Greek Chiron",		6, "The Librarian",		3, 6, 3, 2); // At the start of your turn, both players draw a card.
+	CardSetup("Circe",					7, "Spark Witch",		0, 7, 2, 2, Keyword(WARD)); // Attack: Transform my target into a 1|1 boar.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_03");
 }

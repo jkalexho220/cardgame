@@ -1658,7 +1658,7 @@ inactive
 				trSoundPlayFN("villagercreate.wav","1",-1,"","");
 				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
 				teleportToTile(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("tileTarget"));
-				healUnit(1*trQuestVarGet("spellTarget"), 2);
+				healUnit(1*trQuestVarGet("spellTarget"), 5);
 			}
 			case SPELL_CLASS_TIME:
 			{
@@ -2039,6 +2039,11 @@ inactive
 				mSetString(activeUnit, "ability", mGetString(target, "ability"));
 				if (HasKeyword(DECAY, mGetVar(activeUnit, "keywords")) == false) {
 					mSetVar(activeUnit, "keywords", Keyword(DECAY) + mGetVar(activeUnit, "keywords"));
+				}
+				if (HasKeyword(CHARGE, mGetVar(activeUnit, "keywords"))) {
+					mSetVar(activeUnit, "action", ACTION_READY);
+				} else {
+					mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				}
 				trSoundPlayFN("sonofosirisbirth.wav","1",-1,"","");
 				deployAtTile(p, "Kronny Birth SFX", 1*trQuestVarGet("spellTile"));
