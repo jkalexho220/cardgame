@@ -96,8 +96,8 @@ const int SPELL_COPY_HOMEWORK = 25;
 const int SPELL_METEOR = 26;
 const int SPELL_MIRROR_IMAGE = 27;
 const int SPELL_FINAL_EXAM = 28;
-const int SPELL_APOCALYPSE = 29;
-const int SPELL_SNIPE = 30;
+const int SPELL_SNIPE = 29;
+const int SPELL_APOCALYPSE = 30;
 
 const int SPELL_VALKYRIE_HEAL = 31;
 const int SPELL_SHAPESHIFT = 32;
@@ -196,7 +196,7 @@ const int ATTACK_BOOST_HAND = 16;
 const int ATTACK_ANIMATE_TOWER = 17;
 const int ATTACK_OVERKILL_HEALS = 18;
 const int ATTACK_RALLY = 19;
-const int ATTACK_ARCANE_MISSLE = 20;
+const int ATTACK_POLYMORPH = 20;
 const int ATTACK_SPELL_DAMAGE = 21;
 const int ATTACK_DRAW_CARD_ENEMY_COST = 22;
 const int ATTACK_SUMMON_TREE = 23;
@@ -953,9 +953,6 @@ active
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	CardSetup("Setna",					0, "Archmage", 				2, 20, 2, 2, Keyword(BEACON), true);
-	CardEvents("Setna", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
-	CardSetup("Circe",					0, "Archmage's Mom", 		2, 40, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
-	CardEvents("Circe", Keyword(ATTACK_ARCANE_MISSLE), 0, 	"Attack: Deal 1 Damage to a random enemy.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
@@ -1103,7 +1100,8 @@ highFrequency
 	CardSetup("Fire Giant",				5, "Blaze Elemental",	4, 6, 2, 2, Keyword(FURIOUS), true);
 	CardSetup("Frost Giant",			5, "Frost Elemental",	3, 6, 2, 1, 0, true); // stuns its targets.
 	CardSetup("Phoenix Egg",			5, "Reviving Egg",		0, 3, 0, 0, 0, true); // At the start of your turn, destroy me and summon a Fading Lightwing on my tile.
-	
+	SpellSetup("Spark", 				1, SPELL_SPARK, 		"Deal 1 damage.",SPELL_TYPE_OFFENSIVE, 0, true);
+	CardSetup("Hero Boar 2",			1, "Boar",		 		1, 1, 2, 1, 0, true);
 	// 30-34
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
@@ -1111,17 +1109,17 @@ highFrequency
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON) + Keyword(WARD));
 	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
-	SpellSetup("Spark", 				1, SPELL_SPARK, 		"Deal 1 damage.",SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a minion.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 1, 0); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
-	// 40-44 (LEGENDARY at 44)
 	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After ANY player casts a spell, grant me +1 attack.
+	// 40-44 (LEGENDARY at 44)
+	CardSetup("Circe",					8, "Spark Witch",		0, 5, 2, 1); // Attack: Transform my target into a 1|1 boar.
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Ice",			5, SPELL_RUNE_OF_ICE,	"Stun your Commander to summon a 3|6 Frost Elemental that stuns its target.", SPELL_TYPE_OTHER);
 	SpellSetup("Electrosurge",			6, SPELL_ELECTROSURGE,	"Deal 2 damage with Lightning.", SPELL_TYPE_OFFENSIVE, Keyword(LIGHTNING));
-	CardSetup("Hero Greek Bellerophon",	10, "Royal Executioner",6, 4, 3, 1, Keyword(AIRDROP) + Keyword(AMBUSH) + Keyword(WARD)); // After you cast a spell, grant me another action.
+	CardSetup("Hero Greek Bellerophon",	9, "Savior",			8, 8, 3, 1, Keyword(AIRDROP) + Keyword(BEACON)); // Play: Restore 10 health to your Commander.
 	// 45-49
 	SpellSetup("Fire and Ice",			15, SPELL_FIRE_AND_ICE,	"Summon a Blaze Elemental and a Frost Elemental.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	CardSetup("Phoenix From Egg",		5, "Fading Lightwing",	4, 3, 2, 1, Keyword(FLYING) + Keyword(DECAY));
@@ -1410,7 +1408,8 @@ highFrequency
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
 	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
-	CardEvents("Hero Greek Bellerophon", 0, 0,							"After you cast a spell, grant me another action.");
+	CardEvents("Hero Greek Bellerophon", 0, 0,							"Play: Restore 10 health to your Commander.");
+	CardEvents("Circe", Keyword(ATTACK_POLYMORPH), 0, 					"Attack: Transform my target into a 1|1 Boar. (Except Commanders)");
 	
 	CardEvents("Royal Guard Hero", 0, 0, 								"Your Mana spent on spells will still count as Manaflow next turn.");
 	// CardEvents("Archer Atlantean Hero", 0, 0, 							"I have 3 range.");

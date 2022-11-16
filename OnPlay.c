@@ -333,6 +333,13 @@ void OnPlay(int unit = 0) {
 			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
 			damageUnit(1*trQuestVarGet("p"+p+"commander"), 3);
 		}
+		case kbGetProtoUnitID("Hero Greek Bellerophon"):
+		{
+			deployAtTile(0, "Arkantos God Out", mGetVar(unit, "tile"));
+			trSoundPlayFN("arkantosarrive.wav","1",-1,"","");
+			healUnit(1*trQuestVarGet("p"+p+"commander"), 10);
+			deployAtTile(0, "Regeneration SFX", mGetVarByQV("p"+p+"commander", "tile"));
+		}
 		case kbGetProtoUnitID("Hero Greek Ajax"):
 		{
 			trQuestVarSet("summonedUnit", unit);

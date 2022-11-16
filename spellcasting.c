@@ -261,13 +261,6 @@ void castEnd() {
 						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
-					case kbGetProtoUnitID("Hero Greek Bellerophon"):
-					{
-						if (mGetVarByQV("allUnits", "action") < ACTION_SLEEPING) {
-							mSetVarByQV("allUnits", "action", ACTION_READY);
-							deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
-						}
-					}
 					case kbGetProtoUnitID("Pharaoh of Osiris"):
 					{
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
@@ -2027,12 +2020,25 @@ inactive
 				trUnitSelectByQV("spellCaster");
 				trSetUnitOrientation(trGetUnitVector("casterPos", "targetPos"), xsVectorSet(0,1,0), true);
 				trUnitOverrideAnimation(33, 0, false, true, -1);
-				target = summonAtTile(1*trQuestVarGet("spellTile"), p, mGetVarByQV("spellTarget", "proto"));
-				mSetVar(target, "health", mGetVarByQV("spellTarget", "health"));
-				mSetVar(target, "attack", mGetVarByQV("spellTarget", "attack"));
-				mSetVar(target, "keywords", mGetVarByQV("spellTarget", "keywords"));
-				if (HasKeyword(DECAY, mGetVar(target, "keywords")) == false) {
-					mSetVar(target, "keywords", Keyword(DECAY) + mGetVar(target, "keywords"));
+				target = trQuestVarGet("spellTarget");
+				activeUnit = summonAtTile(1*trQuestVarGet("spellTile"), p, mGetVarByQV("spellTarget", "proto"));
+				mSetVar(activeUnit, "proto", mGetVar(target, "proto"));
+				mSetVar(activeUnit, "spell", mGetVar(target, "spell"));
+				mSetVar(activeUnit, "cost", mGetVar(target, "cost"));
+				mSetVar(activeUnit, "attack", mGetVar(target, "attack"));
+				mSetVar(activeUnit, "health", mGetVar(target, "health"));
+				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
+				mSetVar(activeUnit, "range", mGetVar(target, "range"));
+				mSetVar(activeUnit, "laserDirx", mGetVar(target, "laserDirx"));
+				mSetVar(activeUnit, "laserDirz", mGetVar(target, "laserDirz"));
+				mSetVar(activeUnit, "keywords", mGetVar(target, "keywords"));
+				mSetVar(activeUnit, "onAttack", mGetVar(target, "onAttack"));
+				mSetVar(activeUnit, "onDeath", mGetVar(target, "onDeath"));
+				mSetVar(activeUnit, "scale", mGetVar(target, "scale"));
+				scaleUnit(activeUnit);
+				mSetString(activeUnit, "ability", mGetString(target, "ability"));
+				if (HasKeyword(DECAY, mGetVar(activeUnit, "keywords")) == false) {
+					mSetVar(activeUnit, "keywords", Keyword(DECAY) + mGetVar(activeUnit, "keywords"));
 				}
 				trSoundPlayFN("sonofosirisbirth.wav","1",-1,"","");
 				deployAtTile(p, "Kronny Birth SFX", 1*trQuestVarGet("spellTile"));
