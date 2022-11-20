@@ -36,7 +36,7 @@ const int COMMANDER_GOD = 11;
 Spells
 */
 const int SPELL_NONE = 0;
-const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal minions, we use it here to mark a unit as the Commander
+const int SPELL_COMMANDER = 1; // Since the "spell" variable is unused on normal units, we use it here to mark a unit as the Commander
 
 const int SPELL_TYPE_DEFENSIVE = 1;
 const int SPELL_TYPE_OTHER = 2;
@@ -172,6 +172,7 @@ const int SPELL_PISCES = 89;
 
 const int SPELL_DUPLICATE_ME = 90;
 const int SPELL_SCORPION_STING = 91;
+const int SPELL_BAD_FOOD = 92;
 
 /*
 OnAttack events (bit positions)
@@ -300,7 +301,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case FURIOUS: return ("Two attacks each turn.");
 		case LIGHTNING: return ("Attack will chain through connected enemies.");
 		case REGENERATE: return ("Restores to full health at the start of your turn.");
-		case DEADLY: return ("I kill any minion that I attack.");
+		case DEADLY: return ("I kill any unit that I attack.");
 		case ETHEREAL: return ("Can pass through units and impassable terrain.");
 		case ARMORED: return ("I take 1 less damage from all sources.");
 		case WARD: return ("I cannot be targeted by spells.");
@@ -311,7 +312,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case DECAY: return("I take 1 damage at the end of your turn.");
 		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
 		case OVERFLOW: return("Cost is reduced by your Manaflow.");
-		case MAGNETIC: return("When played next to another Magnetic minion, you can combine them, adding attack, health, and keywords.");
+		case MAGNETIC: return("When played next to another Magnetic unit, you can combine them, adding attack, health, and keywords.");
 		case CONDUCTOR: return("Allied Lightning effects can pass through me.");
 		case STEALTH: return("I cannot be targeted until I take damage.");
 		case REPEATABLE: return("This card may be played an additional time.");
@@ -681,7 +682,7 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		
 		trChatSend(0, "<color={Playercolor("+p+")}>==== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("card_"+proto+"_name")+" ====</color>");
 		if (trDistanceBetweenVectorsSquared("pos", "center") > 2025) {
-			discount = trQuestVarGet("p"+p+"minionDiscount");
+			discount = trQuestVarGet("p"+p+"unitDiscount");
 			if (HasKeyword(OVERFLOW, 1*mGetVar(name, "keywords"))) {
 				discount = discount + trQuestVarGet("p"+p+"manaflow");
 			}
@@ -924,7 +925,7 @@ active
 		trForbidProtounit(p, "Wall Connector");
 		trForbidProtounit(p, "Temple");
 		trForbidProtounit(p, "Ulfsark");
-		trModifyProtounit("Minion", p, 8, -99); // minion lifespan
+		trModifyProtounit("Minion", p, 8, -99); // unit lifespan
 	}
 
 	trModifyProtounit("Phoenix Egg", 0, 0, -999); // kill gaia phoenix eggs
@@ -940,7 +941,7 @@ active
 	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
 	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);
-	CardEvents("General Melagius", Keyword(ATTACK_RALLY), 0,	"Attack: If it's my turn, give allied minions +1 Attack.");
+	CardEvents("General Melagius", Keyword(ATTACK_RALLY), 0,	"Attack: If it's my turn, give allied units +1 Attack.");
 	CardSetup("Shaba Ka",				0, "Mister Pirate", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("Shaba Ka", 0, 0,	"At the start of your turn, the player with the most units gets a random treasure.");
 	CardSetup("Qilin",					0, "Forest Protector",		2, 40, 2, 1, Keyword(BEACON), true);
@@ -958,21 +959,21 @@ active
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Boots Treasure", 		2, SPELL_BOOTS_TREASURE, 	"Give your minions Pathfinder.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Weapons Treasure", 		4, SPELL_WEAPONS_TREASURE, 	"Give your minions +2 Attack.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Shields Treasure", 		6, SPELL_SHIELDS_TREASURE, 	"Give your minions +3 Health.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 		"Kill a minion. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Boots Treasure", 		2, SPELL_BOOTS_TREASURE, 	"Give your units Pathfinder.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Weapons Treasure", 		4, SPELL_WEAPONS_TREASURE, 	"Give your units +2 Attack.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Shields Treasure", 		6, SPELL_SHIELDS_TREASURE, 	"Give your units +3 Health.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 		"Kill a unit. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Reload", 				5, SPELL_RELOAD, 			"Draw a card.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a minion on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
+	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a unit on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
 	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 			"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy minions. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy minions Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy units. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy units Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
 	
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
-	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a minion's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
-	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random minion on a random tile.", SPELL_TYPE_OTHER, 0, true);
+	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
+	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random unit on a random tile.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
 	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
@@ -990,13 +991,13 @@ active
 	
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
-	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged minions.");
+	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged units.");
 	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 5, 0, 0, true);
 	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander.");
 	CardSetup("Monument 3",				6, "Floating Steward",		0, 15, 5, 0, 0, true);
 	CardEvents("Monument 3", 0, 0, 		"Turn Start: Opponent discards a random card.");
 	CardSetup("Monument 4",				8, "Floating Twins",		0, 20, 5, 0, 0, true);
-	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane minion and play a random Arcane spell.");
+	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane unit and play a random Arcane spell.");
 	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
 	
@@ -1059,32 +1060,32 @@ highFrequency
 	CardSetup("Peltast", 				3, "Elven Ranger",	 	2, 1, 2, 2, Keyword(ETHEREAL)); // Play: Deal 1 damage.
 	CardSetup("Mountain Giant",	 		5, "Big Friendly Giant",6, 7, 1, 1);
 	CardSetup("Physician",				3, "Bard", 				1, 3, 2, 1, Keyword(HEALER));
-	CardSetup("Hero Greek Ajax", 		4, "Party Leader", 		3, 3, 2, 1); // Play: Summon a random 1-cost minion from your deck.
+	CardSetup("Hero Greek Ajax", 		4, "Party Leader", 		3, 3, 2, 1); // Play: Summon a random 1-cost unit from your deck.
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
-	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied minions +1|+1
+	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied units +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
 	CardSetup("Lancer Hero",			4, "Dragon Knight",		3, 6, 3, 1, Keyword(FURIOUS) + Keyword(ARMORED)); // Play: I take 4 damage.
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
 	SpellSetup("Windsong", 				2, SPELL_SING, 			"Select an ally that has already acted. Grant it another action.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied minion +1|+1
+	CardSetup("Villager Atlantean",		2, "Traveling Chef",	1, 2, 2, 1); // Play: Grant an allied unit +1|+1
 	SpellSetup("Backstab", 				1, SPELL_BACKSTAB, 		"Deal 2 damage to an enemy next to another enemy.", SPELL_TYPE_OFFENSIVE);
 	// 20 - 24
-	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied minion and an enemy minion attack each other, regardless of distance.", SPELL_TYPE_OTHER);
+	SpellSetup("Duel", 					2, SPELL_DUEL, 			"An allied unit and an enemy unit attack each other, regardless of distance.", SPELL_TYPE_OTHER);
 	SpellSetup("Party Up!", 			3, SPELL_PARTY_UP, 		"Draw 3 cards that cost 1 Mana.", SPELL_TYPE_OTHER);
-	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied minion +1 attack and health and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied minion +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied minions +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Cheers", 				1, SPELL_TEAMWORK, 		"Give an allied unit +1 attack and health and activate its Play effect.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied unit +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied units +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
-	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"A minion attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Ornlu",					4, "Pack Leader",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to minions in your hand.
+	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"A unit attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Ornlu",					4, "Pack Leader",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to units in your hand.
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
-	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied minion next to your Commander and restore 5 health to it.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy minions that cost {Manaflow} or less.
+	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied unit next to your Commander and restore 5 health to it.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy units that cost {Manaflow} or less.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_02");
 }
@@ -1111,7 +1112,7 @@ highFrequency
 	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON)); // After you cast a spell, grant me another action.
 	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
-	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a minion.", SPELL_TYPE_OTHER);
+	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
 	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
@@ -1136,9 +1137,9 @@ highFrequency
 	CardSetup("Hero Greek Chiron",		5, "Librarian",			3, 4, 3, 2); // At the start of your turn, both players draw a card.
 	// 55-59 (LEGENDARY at 59)
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"Both players draw two cards.", SPELL_TYPE_OTHER);
-	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a minion into a copy of another one.
+	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a unit into a copy of another one.
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
-	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a minion to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a unit to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Circe",					7, "Spark Witch",		0, 7, 2, 2, Keyword(WARD)); // Attack: Transform my target into a 1|1 boar.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_03");
@@ -1159,11 +1160,11 @@ highFrequency
 	// 60-64
 	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
-	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied minion and your Commander.", SPELL_TYPE_DEFENSIVE);
-	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive minion.
+	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied unit and your Commander.", SPELL_TYPE_DEFENSIVE);
+	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive unit.
 	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
 	// 65-69
-	CardSetup("Medusa",					4, "Naga Archer",			2, 3, 2, 2); // Play: Stun an enemy minion.
+	CardSetup("Medusa",					4, "Naga Archer",			2, 3, 2, 2); // Play: Stun an enemy unit.
 	CardSetup("Cyclops",				5, "Undercity Protector",	3, 5, 1, 1, Keyword(GUARD) + Keyword(OVERFLOW));
 	CardSetup("Lampades",				6, "Naga Sea Witch",		2, 2, 2, 2); // Play: Convert an enemy that costs {Manaflow} or less.
 	CardSetup("Behemoth",				5, "Mana Muncher",			1, 1, 1, 1); // Play: I gain {Manaflow} attack and health.
@@ -1173,23 +1174,23 @@ highFrequency
 	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
 	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"Push an enemy in any direction.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(GUARD) + Keyword(ARMORED));
-	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your minions have Overflow.
+	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your units have Overflow.
 	// 75-79
 	CardSetup("Hippikon",				4, "Undercity Captain",		3, 3, 3, 1); // Play: Give your Commander another action if they have already acted.
 	CardSetup("Kraken",					5, "Kraken",				1, 5, 2, 1, Keyword(REGENERATE)); // Attack: Return my target to its owner's hand.
 	CardSetup("Jormund Elver",			2, "Mana Spitter",			1, 3, 2, 2); // Attack: Gain 2 {Manaflow} this turn.
-	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"Stun all minions that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
-	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent minions away from your Commander.", SPELL_TYPE_OTHER);
+	SpellSetup("Tidal Wave",			4, SPELL_TIDAL_WAVE,		"Stun all units that have {Manaflow} or less health.", SPELL_TYPE_OTHER);
+	SpellSetup("Flush",					2, SPELL_FLUSH,				"Push all adjacent units away from your Commander.", SPELL_TYPE_OTHER);
 	// 80-84
 	SpellSetup("Deep Dive",				2, SPELL_DEEP_DIVE,			"Draw {Manaflow / 2} cards.", SPELL_TYPE_OTHER);
 	CardSetup("Archer Atlantean",		3, "Undercity Sniper",		1, 3, 2, 2); // Whenever your Commander attacks an enemy, I attack it too.
-	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied minion to any available tile.", SPELL_TYPE_OTHER);
+	SpellSetup("Teletide",				1, SPELL_TELETIDE,			"Teleport an allied unit to any available tile.", SPELL_TYPE_OTHER);
 	CardSetup("Man O War",				6, "Lightning Jellyfish",	3, 4, 2, 2, Keyword(LIGHTNING));
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Drown",					7, SPELL_DROWN,		 		"Shuffle a minion into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Drown",					7, SPELL_DROWN,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
 	
@@ -1222,28 +1223,28 @@ highFrequency
 	CardSetup("Hero Norse",				3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
 	CardSetup("Automaton SPC",			2, "Gearwalker",			2, 2, 2, 1, Keyword(MAGNETIC));
 	CardSetup("Onager",					4, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
-	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your minions cost 1 less.
+	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your units cost 1 less.
 	CardSetup("Ballista",				4, "Mechanized Bow",		3, 1, 1, 3, Keyword(MAGNETIC));
 	// 100-104 (LEGENDARY at 104)
-	CardSetup("Helepolis",				5, "Troop Transport",		2, 5, 1, 1); // Death: Summon a random minion from your deck on my tile.
+	CardSetup("Helepolis",				5, "Troop Transport",		2, 5, 1, 1); // Death: Summon a random unit from your deck on my tile.
 	CardSetup("Colossus",				8, "Steam Giant",			6, 8, 1, 1, Keyword(MAGNETIC) + Keyword(WARD));
 	CardSetup("Battle Boar",			5, "Bulldozer",				4, 4, 2, 1, Keyword(MAGNETIC) + Keyword(CHARGE));
 	CardSetup("Ape of Set",				2, "Robot Monkey",			1, 1, 2, 1, Keyword(MAGNETIC)); // Death: I attack all adjacent units.
 	CardSetup("Tower Mirror",			10, "Extinction Cannon",	8, 8, 0, 3, Keyword(LIGHTNING));
 	// 105-109
 	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
-	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied minion Lightning.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied unit Lightning.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Fire Siphon",			3, "Directional Cannon",	2, 5, 0, 0); // Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.
-	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a minion with all of its adjacent allied minions, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied minion +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a unit with all of its adjacent allied units, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied unit +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
 	// 110-114
-	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a minion 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a unit 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH)); // After I move, I gain +1 attack.
-	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy minion to your opponent's hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy unit to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
-	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy minion. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
+	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy unit. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
 	SpellSetup("Assembly Line",			3, SPELL_ASSEMBLY_LINE,		"Shuffle a copy of your hand into your deck. Draw a card.", SPELL_TYPE_OTHER);
 	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Borrowed Time",			20, SPELL_BORROWED_TIME,	"Gain an extra turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
@@ -1271,37 +1272,37 @@ highFrequency
 	CardSetup("Spearman",				1, "Cultist",				1, 1, 2, 1); // Death: Summon a Zombie on my tile.
 	CardSetup("Shade",					2, "Vengeful Spirit",		1, 2, 2, 1, Keyword(GUARD) + Keyword(DEADLY));
 	CardSetup("Axeman",					2, "Executioner",			3, 1, 2, 1); // Play and Death: Give your Commander +1 attack this turn.
-	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied minion to draw 2 cards.", SPELL_TYPE_OTHER);
+	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied unit to draw 2 cards.", SPELL_TYPE_OTHER);
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
 	CardSetup("Prodromos",				3, "Pillager",				3, 1, 3, 1); // Death: Draw a card.
-	CardSetup("Tartarian Gate spawn",	3, "Demon",					2, 2, 2, 1, Keyword(CHARGE)); // Play: Kill an allied minion and grant me its attack and health.
+	CardSetup("Tartarian Gate spawn",	3, "Demon",					2, 2, 2, 1, Keyword(CHARGE)); // Play: Kill an allied unit and grant me its attack and health.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
-	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent minions.
+	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent units.
 	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2, Keyword(DECAY)); // At the start of your turn, draw a card and give it Fleeting.
 	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // At the end of your turn, deal 1 damage to all units with Decay.
-	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied minion and give it Decay.
+	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied unit and give it Decay.
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
 	// 135-139
 	CardSetup("Spider Egg",				3, "Festering Egg",			0, 3, 0, 0, Keyword(DECAY)); // Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.
-	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A minion attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A unit attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE));
-	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied minion and an enemy.", SPELL_TYPE_OTHER);
+	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied unit and an enemy.", SPELL_TYPE_OTHER);
 	SpellSetup("Death Approaches",		4, SPELL_DEATH_APPROACHES,	"Summon a 4|3 Shadow Elemental with Ambush on a tile next to the enemy Commander.", SPELL_TYPE_OTHER);
 	// 140-144
 	SpellSetup("Doom",					3, SPELL_DOOM,				"Deal 2 damage to a unit. If it has Decay, add a Doom to your hand.", SPELL_TYPE_OFFENSIVE);
-	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied minion.", SPELL_TYPE_OTHER);
-	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a minion Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
+	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Corpse Party",			3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Undeath",				4, SPELL_UNDEATH,			"Give all allied minions, 'Death: Summon a Zombie on my tile.'", SPELL_TYPE_OTHER);
+	SpellSetup("Undeath",				4, SPELL_UNDEATH,			"Give all allied units, 'Death: Summon a Zombie on my tile.'", SPELL_TYPE_OTHER);
 	// 145-149 (LEGENDARY at 149)
-	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 2, 2, 2); // Attack: If my target is a minion, give it Decay.
-	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied minion to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
-	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied minion and an enemy minion swap spaces.", SPELL_TYPE_OTHER);
-	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a minion, give it Decay.
+	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 2, 2, 2); // Attack: If my target is a unit, give it Decay.
+	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
+	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied unit and an enemy unit swap spaces.", SPELL_TYPE_OTHER);
+	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a unit, give it Decay.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_06");
@@ -1319,46 +1320,46 @@ highFrequency
 	// Created cards
 	CardSetup("Hero Greek Odysseus",	0, "Nickonhawk, Portal Master",	1, 20, 2, 2, Keyword(BEACON), true);
 	CardSetup("Caravan Atlantean",		0, "Nickonhawk, God", 			2, 20, 2, 1, Keyword(BEACON), true);
-	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a minion. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a minion. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a minion. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a minion.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("The Calling",			10, SPELL_THE_CALLING,		"Combine ALL minions into the ???, adding up attack, health, and keywords.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Thick Laser", 			4, SPELL_THICK_LASER, 		"Deal 4 Damage to a unit. Shuffle a Grand Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Grand Laser", 			6, SPELL_GRAND_LASER, 		"Deal 6 Damage to a unit. Shuffle a Omega Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Omega Laser", 			8, SPELL_OMEGA_LASER, 		"Deal 8 Damage to a unit. Shuffle a Godly Laser in your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Godly Laser", 			10, SPELL_GODLY_LASER, 		"Deal 10 Damage to a unit.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("The Calling",			10, SPELL_THE_CALLING,		"Combine ALL units into the ???, adding up attack, health, and keywords.", SPELL_TYPE_OTHER, 0, true);
 	CardSetup("Titan Kronos",			10, "???",					1, 1, 2, 1, Keyword(WARD), true);
 	// 150-154
 	CardSetup("Hero Ragnorok",			3, "Taurus",				3, 1, 2, 1); // Play: Grant me +1 health for each card in your hand.
 	CardSetup("Golden Lion",			5, "Leo",					3, 3, 2, 1, Keyword(CHARGE)); // Each turn I spend in your hand, reduce my cost by 1.
 	SpellSetup("Aquarius",				2, SPELL_AQUARIUS,			"Restore 1 health to your Commander for each card in your hand (including this).", SPELL_TYPE_OTHER);
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
-	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a minion. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a unit. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
 	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
-	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random minion on a random tile.", SPELL_TYPE_OTHER);	
+	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random unit on a random tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
-	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied minion Armored and Ward.", SPELL_TYPE_OTHER);
-	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a minion for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
-	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all minions in your hand.", SPELL_TYPE_OTHER);
-	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy minion to a tile next to me.
-	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. Attack: Summon a minion from your deck.
+	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied unit Armored and Ward.", SPELL_TYPE_OTHER);
+	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a unit for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all units in your hand.", SPELL_TYPE_OTHER);
+	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy unit to a tile next to me.
+	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. Attack: Summon a unit from your deck.
 	// 165-169
 	CardSetup("Flying Purple Hippo",	3, "Servant of Love",		2, 1, 2, 1, Keyword(FLYING) + Keyword(HEALER)); // Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Forkboy",				7, "Servant of Toys",		7, 7, 2, 1); // Death: Acquire the TOY Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Promethean Small",		2, "Gemini",				1, 1, 2, 1); // Play: Summon an exact copy of me on an adjacent tile.
-	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 1); // Death: Summon a minion from your hand with cost less than or equal to my attack.
+	CardSetup("Lancer",					4, "Capricorn",				3, 2, 3, 1); // Death: Summon a unit from your hand with cost less than or equal to my attack.
 	// 170-174
 	CardSetup("Carcinos",				6, "Cancer",				5, 5, 2, 1); // Death: Give my Keywords to cards in your hand.
 	CardSetup("Catapult",				20, "CATAPULT OF DOOM",		5, 5, 1, 5, Keyword(AIRDROP) + Keyword(OVERFLOW)); // Attack: Also damage enemies adjacent to my target.
-	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand. Summon any minions discarded.", SPELL_TYPE_OTHER);
+	SpellSetup("Airlock Vent", 			10, SPELL_SPACE_VENT, 		"Discard your hand. Summon any units discarded.", SPELL_TYPE_OTHER);
 	CardSetup("Regent",					4, "Celestial Ambassador",	1, 1, 2, 1, Keyword(IMMUNE));
 	CardSetup("Stymphalian Bird",		4, "Mech Bird",				1, 1, 2, 2, Keyword(FLYING) + Keyword(MAGNETIC));
 	// 175-179 (LEGENDARY at 179)
 	CardSetup("Chariot Archer",			3, "Multiverse Chariot",	2, 2, 3, 2, Keyword(REPEATABLE));
 	CardSetup("Camelry",				3, "Multiverse Bandit",		3, 1, 3, 1, Keyword(CHARGE) + Keyword(REPEATABLE));
-	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Grant an allied minion +1|+1
+	CardSetup("Villager Atlantean Hero",2, "Multiverse Chef",		1, 1, 2, 1, Keyword(REPEATABLE)); // Play: Reduce an enemy unit's attack by 2.
 	SpellSetup("Space Flow", 			1, SPELL_REFRESH_MANA, 		"Convert your Manaflow into mana.", SPELL_TYPE_OTHER);	
 	CardSetup("Hero Greek Heracles",	7, "Multiverse Champion",	5, 6, 2, 1); //Your cards have Echo.
 	xsDisableSelf();
@@ -1381,15 +1382,15 @@ highFrequency
 	CardEvents("Khopesh", Keyword(ATTACK_DRAW_CARD), 0, 				"Attack: Draw a card.");
 	CardEvents("Skraeling", 0, 0, 										"Play: Summon a 1|1 Loyal Wolf with Guard.");
 	CardEvents("Avenger", 0, 0, 										"Play: Deal 1 damage to all adjacent enemies.");
-	CardEvents("Villager Atlantean", 0, 0, 								"Play: Grant an allied minion +1 attack and health.");
-	CardEvents("Hero Greek Ajax", 0, 0, 								"Play: Summon a random 1-cost minion from your deck.");
-	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"Minions I kill don't trigger their Death effect.");
-	CardEvents("Physician", Keyword(ATTACK_SING), 0, 					"When I heal an ally that has acted, grant them another action.");
-	CardEvents("Hetairoi", 0, 0, 										"Play: Give an allied minion +1 speed and Pathfinder.");
+	CardEvents("Villager Atlantean", 0, 0, 								"Play: Grant an allied unit +1 attack and health.");
+	CardEvents("Hero Greek Ajax", 0, 0, 								"Play: Summon a random 1-cost unit from your deck.");
+	CardEvents("Hero Greek Theseus", Keyword(ATTACK_BLOCK_DEATH), 0,	"When I kill a unit, disable its Death effect.");
+	CardEvents("Physician", 0, 0, 										"When I heal an ally that has acted, grant them another action.");
+	CardEvents("Hetairoi", 0, 0, 										"Play: Give an allied unit +1 speed and Pathfinder.");
 	CardEvents("Peltast", 0, 0, 										"Play: Deal 1 damage.");
-	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied minions +1 attack and health.");
-	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy minions.");
-	CardEvents("Ornlu", Keyword(ATTACK_BOOST_HAND), 0,					"Attack: Give +1 attack to minions in your hand.");
+	CardEvents("Huskarl", 0, 0, 										"Play: Grant adjacent allied units +1 attack and health.");
+	CardEvents("Nemean Lion", 0, 0, 									"Play: Stun all enemy units.");
+	CardEvents("Ornlu", Keyword(ATTACK_BOOST_HAND), 0,					"Attack: Give +1 attack to units in your hand.");
 	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
@@ -1410,7 +1411,7 @@ highFrequency
 	CardEvents("Valkyrie", 0, 0,										"Play: Restore 3 health to an ally.");
 	CardEvents("Centaur", 0, Keyword(DEATH_OPPONENT_DRAW_CARD),			"Play: Draw a card. Death: Your opponent draws a card.");
 	CardEvents("Hero Greek Chiron", 0, 0,								"At the start of your turn, both players draw a card.");
-	CardEvents("Sphinx", 0, 0,											"Play: Transform a minion into a copy of another one.");
+	CardEvents("Sphinx", 0, 0,											"Play: Transform a unit into a copy of another one.");
 	CardEvents("Hero Greek Bellerophon", 0, 0,							"Play: Restore 10 health to your Commander.");
 	CardEvents("Circe", Keyword(ATTACK_POLYMORPH), 0, 					"Attack: Transform my target into a 1|1 Boar. (Except Commanders)");
 	
@@ -1420,12 +1421,12 @@ highFrequency
 	CardEvents("Hypaspist", 0, 0,										"Play: Grant your Commander +1 attack this turn.");
 	CardEvents("Myrmidon", 0, 0,										"Play: I gain {Manaflow} health.");
 	CardEvents("Archer Atlantean", 0, 0,								"Whenever your Commander attacks an enemy, I attack it too.");
-	CardEvents("Hippocampus", 0, 0,										"Play: Draw the most expensive minion from your deck.");
-	CardEvents("Medusa", 0, 0,											"Play: Stun an enemy minion.");
-	CardEvents("Lampades", 0, 0,										"Play: Convert an enemy minion that costs {Manaflow} or less.");
+	CardEvents("Hippocampus", 0, 0,										"Play: Draw the most expensive unit from your deck.");
+	CardEvents("Medusa", 0, 0,											"Play: Stun an enemy unit.");
+	CardEvents("Lampades", 0, 0,										"Play: Convert an enemy unit that costs {Manaflow} or less.");
 	CardEvents("Behemoth", 0, 0,										"Play: I gain {Manaflow} attack and health.");
 	CardEvents("Servant", Keyword(ATTACK_PUSH), 0,						"Attack: Push my target away from me.");
-	CardEvents("Heka Gigantes", 0, 0,									"All your minions have Overflow.");
+	CardEvents("Heka Gigantes", 0, 0,									"All your units have Overflow.");
 	CardEvents("Hippikon", 0, 0,										"Play: Give your Commander another action if they have already acted.");
 	CardEvents("Kraken", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to its owner's hand.");
 	CardEvents("Jormund Elver", Keyword(ATTACK_GET_MANAFLOW), 0,		"Attack: Gain 2 Manaflow this turn.");
@@ -1436,38 +1437,38 @@ highFrequency
 	
 	CardEvents("Dwarf", 0, Keyword(DEATH_GET_SCRAP),					"Death: Add a Scrap Metal to your hand.");
 	CardEvents("Petrobolos", Keyword(ATTACK_STUN_TARGET), 0, 			"Attack: Stun my target.");
-	CardEvents("Throwing Axeman", 0, 0,									"Your minions cost 1 less.");
-	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random minion from your deck on my tile.");
+	CardEvents("Throwing Axeman", 0, 0,									"Your units cost 1 less.");
+	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random unit from your deck on my tile.");
 	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
 	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
 	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");
 	CardEvents("Hero Greek Atalanta", 0, 0,								"After I move, I gain +1 attack.");
-	CardEvents("Pharaoh", 0, 0, 										"Play: Summon an exact copy of an allied minion and give it Decay.");
+	CardEvents("Pharaoh", 0, 0, 										"Play: Summon an exact copy of an allied unit and give it Decay.");
 	
-	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a minion, add a copy of it to your hand.");
+	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a unit, add a copy of it to your hand.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
 	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
 	CardEvents("Axeman", 0, Keyword(DEATH_GET_ATTACK),					"Play and Death: Give your Commander +1 attack this turn.");
 	CardEvents("Anubite", 0, 0,											"Play: Deal 3 damage to your Commander.");
 	CardEvents("Satyr", Keyword(ATTACK_GET_ZOMBIE), 0, 					"Attack: Create a Zombie.");
 	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
-	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an allied minion and grant me its attack and health.");
+	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an allied unit and grant me its attack and health.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
 	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
-	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent minions.");
+	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent units.");
 	CardEvents("Theocrat", 0, 0,										"At the start of your turn, draw a card and give it Fleeting.");
 	CardEvents("Argus", 0, 0,											"At the end of your turn, deal 1 damage to all units with Decay.");
 	CardEvents("Guardian", 0, Keyword(DEATH_DARKNESS_RETURNS),			"Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deck.");
 	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
 	CardEvents("Spider Egg", 0, Keyword(DEATH_SUMMON_BEETLE),			"Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.");
-	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
-	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a minion, give it Decay.");
+	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a unit, give it Decay.");
+	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a unit, give it Decay.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 	
-	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Spend all your mana and summon a minion from your deck with equal cost.");
+	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Spend all your mana and summon a unit from your deck with equal cost.");
 	CardEvents("Caravan Atlantean", 0, 0, 								"Your hand size is increased to 15.");
 	CardEvents("Transport Ship Norse", 0, 0,							"Play: Pay 2 mana next turn.");
 	CardEvents("Siege Ship Greek", 0, 0, 								"Play: Pay 2 mana next turn.");
@@ -1475,14 +1476,14 @@ highFrequency
 	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: Pay 4 mana next turn.");
 	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards have Echo.");
-	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Grant an allied minion +1 attack and health.");
+	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Reduce an enemy unit's attack by 2.");
 	CardEvents("Catapult", Keyword(ATTACK_SPLASH), 0,					"Attack: Also damage enemies adjacent to my target.");
-	CardEvents("Scorpion Man", 0, 0,									"Play: If you hold more cards than your opponent, teleport an enemy minion next to me.");
+	CardEvents("Scorpion Man", 0, 0,									"Play: If you hold more cards than your opponent, teleport an enemy unit next to me.");
 	CardEvents("Promethean Small", 0, 0,								"Play: Summon an exact copy of me on an adjacent tile.");
 	CardEvents("Hero Ragnorok", 0, 0,									"Play: Grant me +1 health for each card in your hand.");
 	CardEvents("Golden Lion", 0, 0,										"Each turn I spend in your hand, reduce my cost by 1.");
-	CardEvents("Carcinos", 0, Keyword(DEATH_BOOST_HAND),				"Death: Give my Keywords to all minions in your hand.");
-	CardEvents("Lancer", 0, Keyword(DEATH_SUMMON_FROM_HAND),			"Death: Summon a minion from your hand with cost less than or equal to my attack.");
+	CardEvents("Carcinos", 0, Keyword(DEATH_BOOST_HAND),				"Death: Give my Keywords to all units in your hand.");
+	CardEvents("Lancer", 0, Keyword(DEATH_SUMMON_FROM_HAND),			"Death: Summon a unit from your hand with cost less than or equal to my attack.");
 	
 	CardEvents("Flying Purple Hippo", 0, Keyword(DEATH_LOVE),			"Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)");
 	CardEvents("Lazer Bear", 0, Keyword(DEATH_LASERS),					"Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)");

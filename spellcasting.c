@@ -729,7 +729,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_PISTOL_SHOT:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_RELOAD:
 		{
@@ -754,12 +754,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_MIRROR_REFLECTION:
 		{
 			castAddMirrorReflectionUnit("spellTarget", 0);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_PYROBALL:
 		{
 			castAddUnit("spellTarget", 0, trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"spellDamage") > 0);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_KRAKEN_HUG:
 		{
@@ -769,7 +769,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_WATER_PRESSURE:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion.");
+			castInstructions("Choose a unit.");
 		}
 		case SPELL_OXYGEN_TANK:
 		{
@@ -784,7 +784,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_FOOD:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion to give +1 attack and health to.");
+			castInstructions("Choose an allied unit to give +1 attack and health to.");
+		}
+		case SPELL_BAD_FOOD:
+		{
+			castAddUnit("spellTarget", 3 - p, false);
+			castInstructions("Choose an enemy unit to give -2 attack.");
 		}
 		case SPELL_SING:
 		{
@@ -794,7 +799,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_MAP:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion to give +1 speed and Pathfinder to.");
+			castInstructions("Choose an allied unit to give +1 speed and Pathfinder to.");
 		}
 		case SPELL_BACKSTAB:
 		{
@@ -804,9 +809,9 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_DUEL:
 		{
 			castAddUnit("allyTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddUnit("enemyTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castInstructions("Choose an enemy unit. Right click to cancel.");
 		}
 		case SPELL_PARTY_UP:
 		{
@@ -816,12 +821,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_TEAMWORK:
 		{
 			castAddUnit("cheerTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_DEFENDER:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_VICTORY:
 		{
@@ -831,12 +836,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_WHIRLWIND:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_SUMMON_ONE:
 		{
 			castAddAdjacentTile("spellTarget", "summonedUnit");
-			castInstructions("Choose a tile to summon a random 1-cost minion from your deck.");
+			castInstructions("Choose a tile to summon a random 1-cost unit from your deck.");
 		}
 		case SPELL_WOLF:
 		{
@@ -851,7 +856,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_FIRST_AID:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddAdjacentTile("tileTarget", "p"+p+"commander");
 			castInstructions("Choose a tile to teleport it to. Right click to cancel.");
 		}
@@ -868,7 +873,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SNIPE:
 		{
 			castAddUnit("spellShooter", p, true);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddTarget("spellTarget", "spellShooter");
 			castInstructions("Choose an enemy within range to attack. Right click to cancel.");
 		}
@@ -929,9 +934,9 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SHAPESHIFT:
 		{
 			castAddUnit("transformTarget", 0, false);
-			castInstructions("Choose a minion to transform.");
+			castInstructions("Choose a unit to transform.");
 			castAddUnit("copyTarget", 0, false);
-			castInstructions("Choose a minion to copy.");
+			castInstructions("Choose a unit to copy.");
 		}
 		case SPELL_APOCALYPSE:
 		{
@@ -941,7 +946,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_MIRROR_IMAGE:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_MEDUSA_STUN:
 		{
@@ -951,12 +956,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_LAMPADES_CONVERT:
 		{
 			castAddConvertUnit("spellTarget", 3 - p);
-			castInstructions("Choose an enemy minion that costs {Manaflow} or less to convert.");
+			castInstructions("Choose an enemy unit that costs {Manaflow} or less to convert.");
 		}
 		case SPELL_WATER_CANNON:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 			castAddDirection("spellDirection", "spellTarget", true);
 			castInstructions("Choose a direction. Right click to cancel.");
 		}
@@ -983,12 +988,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SEA_EMBRACE:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_TELETIDE:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddTile("spellDestination", false);
 			castInstructions("Choose a tile to teleport it to. Right click to cancel.");
 		}
@@ -1010,24 +1015,24 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_DROWN:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_DEMON_EAT:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose a minion to devour.");
+			castInstructions("Choose a unit to devour.");
 		}
 		case SPELL_SCORPION_STING:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion to teleport.");
+			castInstructions("Choose a unit to teleport.");
 			castAddAdjacentTile("spellTile", "spellCaster");
 			castInstructions("Choose a tile to teleport it to.");
 		}
 		case SPELL_DUPLICATE_FRIEND:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion to duplicate.");
+			castInstructions("Choose an allied unit to duplicate.");
 			castAddAdjacentTile("spellTile", "spellTarget");
 			castInstructions("Choose a tile to summon the duplicate.");
 		}
@@ -1038,7 +1043,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 				castInstructions("Choose an ally. Right click to cancel.");
 			} else {
 				castAddUnit("spellTarget", p, false);
-				castInstructions("Choose an allied minion. Right click to cancel.");
+				castInstructions("Choose an allied unit. Right click to cancel.");
 			}
 			castAddDirection("spellDirection", "spellTarget", true);
 			castInstructions("Choose a direction. Right click to cancel.");
@@ -1046,12 +1051,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SOUL_SIPHON:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_BLOOD_PRICE:
 		{
 			castAddUnit("allyTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddUnit("enemyTarget", 3-p, true);
 			castInstructions("Choose an enemy. Right click to cancel.");
 		}
@@ -1068,12 +1073,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_SHADOWSTEP:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_FINAL_FRENZY:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_CORPSE_PARTY:
 		{
@@ -1092,7 +1097,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_RUNE_OF_DARKNESS:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddSummonLocations("spellTarget1");
 			castInstructions("Choose a tile (1/2). Right click to cancel.");
 			castAddSummonLocations("spellTarget2");
@@ -1101,9 +1106,9 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_ZENOS_PARADOX:
 		{
 			castAddUnit("spellTarget1", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 			castAddUnit("spellTarget2", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castInstructions("Choose an enemy unit. Right click to cancel.");
 		}
 		case SPELL_SCRAP_METAL:
 		{
@@ -1113,7 +1118,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_MAGNETIZE:
 		{
 			castAddMagnetize("spellTarget", "spellCaster");
-			castInstructions("Choose a minion to Magnetize to. Right click to cancel.");
+			castInstructions("Choose a unit to Magnetize to. Right click to cancel.");
 		}
 		case SPELL_ELECTRIC_GRID:
 		{
@@ -1128,17 +1133,17 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_COMPRESS:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_UPGRADE:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_PROFITEERING:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_WARNING_SHOT:
 		{
@@ -1148,12 +1153,12 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_NANOMACHINES:
 		{
 			castAddUnit("spellTarget", p, false);
-			castInstructions("Choose an allied minion. Right click to cancel.");
+			castInstructions("Choose an allied unit. Right click to cancel.");
 		}
 		case SPELL_REWIND:
 		{
 			castAddUnit("spellTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castInstructions("Choose an enemy unit. Right click to cancel.");
 		}
 		case SPELL_TIME_POCKET:
 		{
@@ -1163,7 +1168,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_BANHAMMER:
 		{
 			castAddUnit("spellTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castInstructions("Choose an enemy unit. Right click to cancel.");
 		}
 		case SPELL_POWER_SUIT:
 		{
@@ -1208,7 +1213,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_DOMINANCE:
 		{
 			castAddUnit("spellTarget", 3 - p, false);
-			castInstructions("Choose an enemy minion. Right click to cancel.");
+			castInstructions("Choose an enemy unit. Right click to cancel.");
 		}
 		case SPELL_NICKS_PORTAL:
 		{
@@ -1218,27 +1223,27 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_PETTY_LASER:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_THICK_LASER:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_GRAND_LASER:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_OMEGA_LASER:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_GODLY_LASER:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_SPACE_VENT:
 		{
@@ -1253,7 +1258,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		case SPELL_ARIES:
 		{
 			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a minion. Right click to cancel.");
+			castInstructions("Choose a unit. Right click to cancel.");
 		}
 		case SPELL_AQUARIUS:
 		{
@@ -1529,6 +1534,14 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+target);
 				spyEffect("Einheriar Boost SFX");
+			}
+			case SPELL_BAD_FOOD:
+			{
+				target = 1*trQuestVarGet("spellTarget");
+				mSetVar(target, "attack", xsMax(0, mGetVar(target, "attack") - 2));
+				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+				trSoundPlayFN("colossuseat.wav","1",-1,"","");
+				trSoundPlayFN("pestilencebirth.wav","1",-1,"","");
 			}
 			case SPELL_SING:
 			{

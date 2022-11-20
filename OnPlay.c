@@ -416,7 +416,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Villager Atlantean Hero"):
 		{
 			done = false;
-			chooseSpell(SPELL_FOOD);
+			chooseSpell(SPELL_BAD_FOOD);
 		}
 	case kbGetProtoUnitID("Transport Ship Norse"):
 		{
