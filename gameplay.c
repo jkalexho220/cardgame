@@ -302,7 +302,7 @@ inactive
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
 					} else {
-						cost = cost - trQuestVarGet("p"+p+"minionDiscount");
+						cost = cost - trQuestVarGet("p"+p+"unitDiscount");
 					}
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 						cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -706,7 +706,7 @@ inactive
 					teleportToTile(unit, tile);
 					
 					int cost = mGetVar(unit, "cost");
-					cost = xsMax(0, cost - trQuestVarGet("p"+p+"minionDiscount"));
+					cost = xsMax(0, cost - trQuestVarGet("p"+p+"unitDiscount"));
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 						cost = xsMax(0, mGetVar(unit, "cost") - trQuestVarGet("p"+p+"manaflow"));
 					}

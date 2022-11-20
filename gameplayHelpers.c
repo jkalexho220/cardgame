@@ -568,7 +568,7 @@ void updateAuras() {
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
 		trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
 		// trCountUnitsInArea("128",3-p,"Argus",45) we can use a different unit for this effect
-		trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
+		trQuestVarSet("p"+p+"unitDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
 		if (trQuestVarGet("p"+p+"guardianOfTheSea") == 0) {
 			if (trCountUnitsInArea("128",p,"Trident Soldier Hero", 45) > 0) {
 				mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), GUARD));
