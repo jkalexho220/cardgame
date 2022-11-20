@@ -1109,7 +1109,7 @@ highFrequency
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"Deal 1 damage to enemies within 1 space of the target location.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	1, 1, 3, 2, Keyword(BEACON)); // After you cast a spell, grant me another action.
+	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	2, 2, 3, 2); // After you cast a spell, grant me another action.
 	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a unit.", SPELL_TYPE_OTHER);
