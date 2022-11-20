@@ -257,8 +257,7 @@ void castEnd() {
 				{
 					case kbGetProtoUnitID("Petsuchos"):
 					{
-						spyEffect("Einheriar Boost SFX");
-						mSetVarByQV("allUnits", "attack", 2 + mGetVarByQV("allUnits", "attack"));
+						mSetVarByQV("allUnits", "range", 3);
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 					}
 					case kbGetProtoUnitID("Pharaoh of Osiris"):
@@ -266,6 +265,13 @@ void castEnd() {
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						trQuestVarSet("p"+p+"yeebbonus", 1 + trQuestVarGet("p"+p+"yeebbonus"));
+					}
+					case kbGetProtoUnitID("Javelin Cavalry Hero"):
+					{
+						if (mGetVarByQV("allUnits", "action") == ACTION_DONE) {
+							mSetVarByQV("allUnits", "action", ACTION_READY);
+							deployAtTile(0, "Arkantos Boost SFX", 1*mGetVarByQV("allUnits", "tile"));
+						}
 					}
 				}
 			}
@@ -1529,6 +1535,7 @@ inactive
 				target = 1*trQuestVarGet("spellTarget");
 				mSetVar(target, "action", ACTION_READY);
 				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
+				deployAtTile(0, "Arkantos Boost SFX", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("restorationbirth.wav","1",-1,"","");
 			}
 			case SPELL_MAP:

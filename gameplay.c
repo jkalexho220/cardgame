@@ -158,6 +158,7 @@ bool attackUnitAtCursor(int p = 0) {
 		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
 			if (mGetVar(target, "action") < ACTION_SLEEPING) {
 				mSetVar(target, "action", ACTION_READY);
+				deployAtTile(0, "Arkantos Boost SFX", 1*mGetVar(target, "tile"));
 			}
 		}
 		deployAtTile(0, "Regeneration SFX", 1*mGetVar(target, "tile"));

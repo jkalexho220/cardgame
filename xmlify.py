@@ -13,7 +13,7 @@ import sys
 ###############################
 ####### CUSTOMIZE THESE #######
 ###############################
-FILENAME = 'D:\\Stuff\\cardgame\\cardgame\\cardGameAll.xml'
+FILENAME = 'cardGameAll.xml'
 NAME = ' Card Game'
 files = ['memory.c', 'shared.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c', 'clockworkStory.c', 'otherworldStory.c', 'nagaStory.c']
 
