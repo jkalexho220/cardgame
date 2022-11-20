@@ -158,6 +158,7 @@ bool attackUnitAtCursor(int p = 0) {
 		if (kbGetUnitBaseTypeID(kbGetBlockID(""+a)) == kbGetProtoUnitID("Physician")) {
 			if (mGetVar(target, "action") < ACTION_SLEEPING) {
 				mSetVar(target, "action", ACTION_READY);
+				deployAtTile(0, "Arkantos Boost SFX", 1*mGetVar(target, "tile"));
 			}
 		}
 		deployAtTile(0, "Regeneration SFX", 1*mGetVar(target, "tile"));
@@ -301,7 +302,7 @@ inactive
 					if (mGetVar(unit, "spell") > 0) {
 						cost = cost - trQuestVarGet("p"+p+"spellDiscount");
 					} else {
-						cost = cost - trQuestVarGet("p"+p+"minionDiscount");
+						cost = cost - trQuestVarGet("p"+p+"unitDiscount");
 					}
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 						cost = cost - trQuestVarGet("p"+p+"manaflow");
@@ -705,7 +706,7 @@ inactive
 					teleportToTile(unit, tile);
 					
 					int cost = mGetVar(unit, "cost");
-					cost = xsMax(0, cost - trQuestVarGet("p"+p+"minionDiscount"));
+					cost = xsMax(0, cost - trQuestVarGet("p"+p+"unitDiscount"));
 					if (HasKeyword(OVERFLOW, 1*mGetVar(unit, "keywords"))) {
 						cost = xsMax(0, mGetVar(unit, "cost") - trQuestVarGet("p"+p+"manaflow"));
 					}

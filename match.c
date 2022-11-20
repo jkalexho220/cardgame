@@ -354,6 +354,10 @@ inactive
 						trUnitSelect(""+1*trQuestVarGet("allUnits"));
 						trUnitOverrideAnimation(40,0,false,true,-1);
 					}
+					case kbGetProtoUnitID("Petsuchos"):
+					{
+						mSetVarByQV("allUnits", "range", 0);
+					}
 				}
 			}
 		}

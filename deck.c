@@ -46,7 +46,7 @@ void updateHandPlayable(int p = 0) {
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 	}
 	int cost = 0;
-	trQuestVarSet("p"+p+"minionDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
+	trQuestVarSet("p"+p+"unitDiscount", trCountUnitsInArea("128",p,"Throwing Axeman",45));
 	trQuestVarSet("p"+p+"spellDiscount", trCountUnitsInArea("128",p,"Priest",45));
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
@@ -54,7 +54,7 @@ void updateHandPlayable(int p = 0) {
 		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
 			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
 		} else {
-			cost = cost - trQuestVarGet("p"+p+"minionDiscount");
+			cost = cost - trQuestVarGet("p"+p+"unitDiscount");
 		}
 		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");

@@ -170,6 +170,7 @@ bool OnTurnStart(int unit = 0) {
 			trVectorQuestVarSet("pos", kbGetBlockPosition(""+unit));
 			mSetVar(unit, "action", ACTION_SLEEPING);
 			if (trDistanceToVectorSquared("p1commander", "pos") < 64) {
+				mSetVar(unit, "health", 0);
 				damageUnit(unit, 9999);
 				trSoundPlayFN("favordump.wav","1",-1,"","");
 			}

@@ -322,10 +322,23 @@ void OnPlay(int unit = 0) {
 				chooseSpell(SPELL_SCORPION_STING);
 			}
 		}
+		case kbGetProtoUnitID("Pharaoh"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_DUPLICATE_FRIEND);
+		}
 		case kbGetProtoUnitID("Anubite"):
 		{
 			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
 			damageUnit(1*trQuestVarGet("p"+p+"commander"), 3);
+		}
+		case kbGetProtoUnitID("Hero Greek Bellerophon"):
+		{
+			deployAtTile(0, "Arkantos God Out", mGetVar(unit, "tile"));
+			trSoundPlayFN("arkantosarrive.wav","1",-1,"","");
+			healUnit(1*trQuestVarGet("p"+p+"commander"), 10);
+			deployAtTile(0, "Regeneration SFX", mGetVarByQV("p"+p+"commander", "tile"));
 		}
 		case kbGetProtoUnitID("Hero Greek Ajax"):
 		{
@@ -403,7 +416,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Villager Atlantean Hero"):
 		{
 			done = false;
-			chooseSpell(SPELL_FOOD);
+			chooseSpell(SPELL_BAD_FOOD);
 		}
 	case kbGetProtoUnitID("Transport Ship Norse"):
 		{

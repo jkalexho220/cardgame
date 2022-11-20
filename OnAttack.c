@@ -88,6 +88,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 			}
 		}
+		/*
 		case ATTACK_ARCANE_MISSLE:
 		{
 			yClearDatabase("randomEnemy");
@@ -109,6 +110,29 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				damageUnit(1*trQuestVarGet("randomEnemy"), 1 + trQuestVarGet("p"+p+"spellDamage"));
 			}
 			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("randomEnemy", "tile"));
+		}
+		*/
+		case ATTACK_POLYMORPH:
+		{
+			if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == SPELL_NONE)) {
+				trSoundPlayFN("pigpower.wav","1",-1,"","");
+				trUnitSelectClear();
+				trUnitSelect(""+target);
+				trMutateSelected(kbGetProtoUnitID("Hero Boar 2"));
+				deployAtTile(0, "Curse SFX", mGetVar(target, "tile"));
+				mSetVar(target, "proto", kbGetProtoUnitID("Hero Boar 2"));
+				mSetVar(target, "spell", 0);
+				mSetVar(target, "cost", 1);
+				mSetVar(target, "attack", 1);
+				mSetVar(target, "health", 1);
+				mSetVar(target, "speed", 2);
+				mSetVar(target, "range", 1);
+				mSetVar(target, "keywords", 0);
+				mSetVar(target, "onAttack", 0);
+				mSetVar(target, "onDeath", 0);
+				mSetVar(target, "scale", 1);
+				mSetString(target, "ability", "");
+			}
 		}
 		case ATTACK_DRAW_CARD_ENEMY_COST:
 		{

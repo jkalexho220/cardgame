@@ -308,7 +308,7 @@ float dotProduct(vector a = vector(0,0,0), vector b = vector(0,0,0)) {
 
 bool terrainIsType(vector v = vector(0,0,0), int type = 0, int subtype = 0) {
 	bool isType = trGetTerrainType(xsVectorGetX(v),xsVectorGetZ(v)) == type;
-	isType = trGetTerrainSubType(xsVectorGetX(v),xsVectorGetZ(v)) == subtype;
+	isType = isType && (trGetTerrainSubType(xsVectorGetX(v),xsVectorGetZ(v)) == subtype);
 	return(isType);
 }
 
