@@ -977,7 +977,7 @@ highFrequency
 		if (trQuestVarGet("canPressEnter") == 1) { // we can save
 			trQuestVarSet("filenum", 0);
 			trQuestVarSet("selectionLimit", getDeckCount() + 1);
-			trShowChoiceDialog("", "Save deck file", EVENT_NEXT_SAVE, "Load/Delete Deck", EVENT_CHOOSE_LOAD_DELETE);
+			trShowChoiceDialog("Save, Load, or Delete a deck?", "Save deck file", EVENT_NEXT_SAVE, "Load/Delete Deck", EVENT_CHOOSE_LOAD_DELETE);
 		} else {
 			trEventFire(EVENT_CHOOSE_LOAD_DELETE);
 		}
