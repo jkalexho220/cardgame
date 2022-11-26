@@ -1,3 +1,14 @@
+void copyDeckData(int slot = 0) {
+	// copy current deck data
+	string fn = mainFilename;
+	if (slot > 0) {
+		fn = slotFilename(slot);
+	}
+	for(i=6; <= 10) {
+		trSetCurrentScenarioUserData(i, trGetScenarioUserData(i, fn));
+	}
+}
+
 vector readDeckCommanderAndClass(int slot = 0) {
 	string fn = slotFilename(slot);
 	int bit = 0;

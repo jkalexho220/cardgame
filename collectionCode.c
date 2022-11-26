@@ -62,13 +62,13 @@ highFrequency
 		{
 			int deckCount = trGetScenarioUserData(12);
 			int deckSlotCount = trGetScenarioUserData(13);
-			data = trGetScenarioUserData(12, mainFilename);
+			data = trGetScenarioUserData(COMMANDS + 1, mainFilename);
 			if (data > deckCount) { // new deck
 				deckCount = data;
 				trSetCurrentScenarioUserData(12, deckCount);
 				if (data > deckSlotCount) { // we need to write a new file
 					done = true;
-					deckSlotCount = data + 1;
+					deckSlotCount = data;
 					trSetCurrentScenarioUserData(13, deckSlotCount);
 					trSetCurrentScenarioUserData(14, 1);
 					trGameLoadScenario(newDeckFilename);
@@ -83,7 +83,7 @@ highFrequency
 		case COMMAND_DELETE_DECK:
 		{
 			trSetCurrentScenarioUserData(12, trGetScenarioUserData(12) - 1); // reduce deck count by 1
-			data = trGetScenarioUserData(12, mainFilename);
+			data = trGetScenarioUserData(COMMANDS + 1, mainFilename);
 			trGameLoadScenario(slotFilename(data));
 		}
 	}

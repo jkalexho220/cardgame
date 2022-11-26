@@ -28,6 +28,38 @@ void CinematicStart(string m = "") {
 	xsEnableRule("Story_Cinematic_Play");
 }
 
+string ClassName(int class = 0) {
+	string cn = "Not a class";
+	switch(class)
+	{
+		case CLASS_ADVENTURER:
+		{
+			cn = "Adventurer";
+		}
+		case CLASS_ARCANE:
+		{
+			cn = "Arcane";
+		}
+		case CLASS_NAGA:
+		{
+			cn = "Naga";
+		}
+		case CLASS_CLOCKWORK:
+		{
+			cn = "Clockwork";
+		}
+		case CLASS_EVIL:
+		{
+			cn = "Otherworld";
+		}
+		case CLASS_SPACE:
+		{
+			cn = "Space";
+		}
+	}
+	return(cn);
+}
+
 bool ValidateClass(int class = 0){
 	bool valid = true;
 	bool hasCardsInDeck = false;
@@ -207,6 +239,63 @@ int CommanderToProtounit(int commander = 0){
 		}
 	}
 	return (commander);
+	//ThrowError("CommanderToProtounit");
+}
+
+string CommanderName(int commander = 0){
+	string name = "WHO DA FUCK";
+	switch(commander)
+	{
+		case COMMANDER_ROGERS:
+		{
+			name = "phdorogers4";
+		}
+		case COMMANDER_VENLESH:
+		{
+			name = "Venlesh";
+		}
+		case COMMANDER_NANO:
+		{
+			name = "nanodude";
+		}
+		case COMMANDER_NOTTUD:
+		{
+			name = "nottud";
+		}
+		case COMMANDER_REACH:
+		{
+			name = "out reach";
+		}
+		case COMMANDER_SCRAGINS:
+		{
+			name = "scragins";
+		}
+		case COMMANDER_ROXAS:
+		{
+			name = "Roxas";
+		}
+		case COMMANDER_YEEBAAGOOON:
+		{
+			name = "Yeebaagooon";
+		}
+		case COMMANDER_ZENOPHOBIA:
+		{
+			name = "Zenophobia";
+		}
+		case COMMANDER_ANRAHEIR:
+		{
+			name = "Anraheir";
+		}
+		case COMMANDER_NICK:
+		{
+			name = "Nickonhawk, Portal Master";
+		}
+		case COMMANDER_GOD:
+		{
+			name = "Nickonhawk, God";
+		}
+	}
+	return (name);
 	//ThrowError("CommanderToProtounit");
 }
 
@@ -565,6 +654,7 @@ inactive
 	if(true){
 		trUIFadeToColor(0,0,0,1000,0,false);
 		xsEnableRule("CollectionEnter");
+		xsEnableRule("CollectionSpace");
 		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
 			CinematicReset();
@@ -754,6 +844,7 @@ void CollectionStartGame(int eventId = -1) {
 	xsDisableRule("CollectionClick");
 	xsDisableRule("CollectionSelect");
 	xsDisableRule("CollectionEnter");
+	xsDisableRule("CollectionSpace");
 	ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
 	trCounterAbort("tooltipSpace");
 	saveDeckAndProgress();
@@ -794,6 +885,102 @@ inactive
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 		trModeEnter("Pregame");
+	}
+}
+
+string displayDeckDetails(int slot = 0) {
+	string result = "Empty slot";
+	if (slot <= getDeckCount()) {
+		vector metadata = readDeckCommanderAndClass(slot);
+		vector counts = readDeckCardCount(slot);
+		string commander = CommanderName(1*xsVectorGetX(metadata));
+		string first = ClassName(1*xsVectorGetY(metadata)) + " x" + 1*xsVectorGetX(counts);
+		string second = ClassName(1*xsVectorGetZ(metadata)) + " x" + 1*xsVectorGetY(counts);
+		result = commander + " - " + first + ", " + second;
+	}
+	return(result);
+}
+
+void loadOrDeleteFile(int eventId = -1) {
+	trQuestVarSet("selectionLimit", getDeckCount());
+	trShowChoiceDialog("Load or delete a deck?", "Load", EVENT_NEXT_LOAD, "Delete", EVENT_NEXT_DELETE);
+}
+
+void nextFile(int eventId = -1) {
+	trQuestVarSet("collectionEvent", eventId);
+	trDelayedRuleActivation("CollectionScrollThroughFiles");
+}
+
+void saveToFile(int eventId = -1) {
+	trSetCurrentScenarioUserData(COMMANDS, COMMAND_SAVE_DECK);
+	trSetCurrentScenarioUserData(COMMANDS + 1, 1*trQuestVarGet("filenum"));
+	saveDeckAndProgress();
+	trGameLoadScenario(collectionFilename);
+}
+
+void loadFromFile(int eventId = -1) {
+	copyDeckData(1*trQuestVarGet("filenum"));
+	subModeEnter("Simulation", "Editor");
+	uiMessageBox("moo","restartCurrentGame()");
+	uiCycleCurrentActivate();
+	subModeLeave("Simulation", "Editor");
+	modeEnter("pregame");
+	modeEnter("Simulation");
+}
+
+void deleteFile(int eventId = -1) {
+	trSetCurrentScenarioUserData(COMMANDS, COMMAND_DELETE_DECK);
+	trSetCurrentScenarioUserData(COMMANDS + 1, 1*trQuestVarGet("filenum"));
+	trGameLoadScenario(collectionFilename);
+}
+
+rule CollectionScrollThroughFiles
+inactive
+highFrequency
+{
+	int eventId = trQuestVarGet("collectionEvent");
+	trQuestVarSet("filenum", 1 + trQuestVarGet("filenum"));
+	int fn = trQuestVarGet("filenum");
+	string confirm = "What";
+	switch(eventId)
+	{
+		case EVENT_NEXT_SAVE:
+		{
+			confirm = "Save (Overwrite this file)";
+		}
+		case EVENT_NEXT_LOAD:
+		{
+			confirm = "Load";
+		}
+		case EVENT_NEXT_DELETE:
+		{
+			confirm = "Delete";
+		}
+	}
+	if (trQuestVarGet("filenum") == trQuestVarGet("selectionLimit")) {
+		if (eventId == EVENT_NEXT_SAVE) {
+			confirm = "Save";
+		}
+		trShowChoiceDialog(displayDeckDetails(fn), confirm, eventId - 1, "Cancel", -1);
+	} else {
+		trShowChoiceDialog(displayDeckDetails(fn), confirm, eventId - 1, "Next...", eventId);
+	}
+	xsDisableSelf();
+}
+
+rule CollectionSpace
+inactive
+highFrequency
+{
+	if (trQuestVarGet("pressSpace") == 1) {
+		trQuestVarSet("pressSpace", 0);
+		if (trQuestVarGet("canPressEnter") == 1) { // we can save
+			trQuestVarSet("filenum", 0);
+			trQuestVarSet("selectionLimit", getDeckCount() + 1);
+			trShowChoiceDialog("", "Save deck file", EVENT_NEXT_SAVE, "Load/Delete Deck", EVENT_CHOOSE_LOAD_DELETE);
+		} else {
+			trEventFire(EVENT_CHOOSE_LOAD_DELETE);
+		}
 	}
 }
 

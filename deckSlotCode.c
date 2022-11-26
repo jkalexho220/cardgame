@@ -5,19 +5,6 @@ slots 8-9: class 2 cards
 slot 10: which commander + which two classes
 */
 
-void saveDeckSlot(int slot = 0) {
-	// copy current deck data
-	for(i=6; <= 10) {
-		trSetCurrentScenarioUserData(i, trGetScenarioUserData(i, mainFilename));
-	}
-	// copy first three bits of class metadata
-	/*
-	for(i=0; < 6) {
-		trSetCurrentScenarioUserData(i, iModulo(8, trGetScenarioUserData(i, mainFilename)));
-	}
-	*/
-}
-
 rule deckSlotRun
 highFrequency
 {
@@ -38,9 +25,14 @@ highFrequency
 				subModeEnter("Simulation", "Singleplayer");
 				trGameLoadScenario(collectionFilename);
 			} else {
-				saveDeckSlot();
+				copyDeckData();
 				trGameLoadScenario(mainFilename);
 			}
+		}
+		case COMMAND_DELETE_DECK:
+		{
+			copyDeckData(trGetScenarioUserData(12, collectionFilename) + 1); // copy deck data from the last deck
+			trGameLoadScenario(mainFilename);
 		}
 	}
 }
