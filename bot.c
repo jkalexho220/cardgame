@@ -32,7 +32,7 @@ inactive
 	if (trTime() > trQuestVarGet("botTimer")){
 		xsDisableSelf();
 		ChatLog(0, "Bot ran out of time.");
-		trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
+		trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
 		xsDisableRule("Bot1");
 	}
 }
@@ -50,7 +50,7 @@ inactive
 {
 	if (trTimeMS() > trQuestVarGet("botTimeNext")) {
 		if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
-			trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
+			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
 			xsDisableRule("Bot1");
 			xsDisableRule("BotTimer");
 			trQuestVarSet("gameplayPhase", -1);
@@ -78,7 +78,7 @@ inactive
 				}
 				// If no more options left
 				if (trQuestVarGet("botChooseHand") + trQuestVarGet("botChooseUnit") == 0) {
-					trTechInvokeGodPower(2, "Nidhogg", vector(110,0,110), vector(110,0,110));
+					trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
 					xsDisableRule("Bot1");
 					xsDisableRule("BotTimer");
 					// If choose hand

@@ -523,10 +523,11 @@ void CollectionGodPowers(){
 	trTechGodPower(1, "animal magnetism", 1);
 	trTechGodPower(1, "create gold", 1);
 	if(trQuestVarGet("canPressSpace") == 1){
-		trTechGodPower(1, "rain", 1);
+		//trTechGodPower(1, "rain", 1);
+		trQuestVarSet("pressSpace", 0);
 		if(trQuestVarGet("canPressEnter") == 1){
 			trCounterAddTime("tooltipEnter", -1, -9999999, "(Press ENTER to start mission)");
-			trTechGodPower(1, "nidhogg", 1);
+			trTechGodPower(1, "rain", 1);
 		} else {
 			xsDisableRule("CollectionEnter");
 		}
@@ -752,50 +753,45 @@ rule CollectionEnter
 highFrequency
 inactive
 {
-	if (trPlayerUnitCountSpecific(1, "Nidhogg") > 0) {
-		if (yFindLatestReverse("nidhoggNext", "Nidhogg", 1) > 0) {
-			if(true){
+	if (trCheckGPActive("rain", 1)) {
+		if(true){
+			uiClearSelection();
+			trPlayerKillAllGodPowers(1);
+			trCounterAbort("tooltipEnter");
+			xsDisableRule("CollectionEnter");
+			trClearCounterDisplay();
+			trSoundPlayDialog("default", "1", -1, false, " : ", "");
+			trCounterAbort("deckCount");
+			trCounterAbort("mission");
+			trCounterAbort("reward");
+			xsDisableRule("CollectionClick");
+			xsDisableRule("CollectionSelect");
+			xsDisableRule("CollectionSpace");
+			ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
+			trCounterAbort("tooltipSpace");
+			saveDeckAndProgress();
+			int next = trGetNextUnitScenarioNameNumber();
+			for(i=trQuestVarGet("idsStart");<next){
+				trUnitSelectClear();
+				trUnitSelect(""+i);
 				trUnitDestroy();
-				uiClearSelection();
-				trPlayerKillAllGodPowers(1);
-				trCounterAbort("tooltipEnter");
-				xsDisableRule("CollectionEnter");
-				trClearCounterDisplay();
-				trSoundPlayDialog("default", "1", -1, false, " : ", "");
-				trCounterAbort("deckCount");
-				trCounterAbort("mission");
-				trCounterAbort("reward");
-				xsDisableRule("CollectionClick");
-				xsDisableRule("CollectionSelect");
-				xsDisableRule("CollectionSpace");
-				ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
-				trCounterAbort("tooltipSpace");
-				dataSave();
-				int next = trGetNextUnitScenarioNameNumber();
-				for(i=trQuestVarGet("idsStart");<next){
-					trUnitSelectClear();
-					trUnitSelect(""+i);
-					trUnitDestroy();
-				}
-				xsEnableRule("MissionBegin");
-				for(i=0; < 6) {
-					if (yDatabaseExists("class"+i+"units")) {
-						for(x=yGetDatabaseCount("class"+i+"units"); >0) {
-							yDatabaseNext("class"+i+"units");
-							string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
-							if(protoname != "Cinematic Block"){
-								trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
-								trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
-								trModifyProtounit(protoname, 1, 1, 10);
-							}
+			}
+			xsEnableRule("MissionBegin");
+			for(i=0; < 6) {
+				if (yDatabaseExists("class"+i+"units")) {
+					for(x=yGetDatabaseCount("class"+i+"units"); >0) {
+						yDatabaseNext("class"+i+"units");
+						string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
+						if(protoname != "Cinematic Block"){
+							trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
+							trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
+							trModifyProtounit(protoname, 1, 1, 10);
 						}
-						yClearDatabase("class"+i+"units");
-						yDeleteDatabase("class"+i+"units");
 					}
+					yClearDatabase("class"+i+"units");
+					yDeleteDatabase("class"+i+"units");
 				}
 			}
-		} else {
-			ThrowError();
 		}
 	}
 }
@@ -804,20 +800,15 @@ rule CollectionSpace
 highFrequency
 inactive
 {
-	if (trCheckGPActive("rain", 1)) {
-		if (trQuestVarGet("p1rain") == 0) {
-			trQuestVarSet("p1rain", 1);
-			// trChatHistoryClear();
-			dataSave();
-			map("mouse1down", "game", "uiSelectionButtonDown");
-			map("mouse2up", "game", "");
-			map("space", "game", "uiLookAtSelection");
-			map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
-			trModeEnter("Pregame");
-		}
-	} else if (trQuestVarGet("p1rain") == 1) {
-		trTechGodPower(1, "rain", 1);
-		trQuestVarSet("p1rain", 0);
+	if (trQuestVarGet("pressSpace") == 1) {
+		trQuestVarSet("pressSpace", 0);
+		// trChatHistoryClear();
+		saveDeckAndProgress();
+		map("mouse1down", "game", "uiSelectionButtonDown");
+		map("mouse2up", "game", "");
+		map("space", "game", "uiLookAtSelection");
+		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
+		trModeEnter("Pregame");
 	}
 }
 
