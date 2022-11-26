@@ -513,29 +513,26 @@ void CollectionGodPowers(){
 	trCounterAbort("tooltipEnter");
 	trCounterAbort("mission");
 	trCounterAbort("reward");
+	/*
 	if(collectionMission != ""){
 		trCounterAddTime("mission", -1, -9999999, collectionMission);
 	}
 	if(collectionReward != ""){
 		trCounterAddTime("reward", -1, -9999999, collectionReward);
 	}
+	*/
 	trPlayerKillAllGodPowers(1);
 	trTechGodPower(1, "animal magnetism", 1);
 	trTechGodPower(1, "create gold", 1);
-	if(trQuestVarGet("canPressSpace") == 1){
+
+	if(trQuestVarGet("canPressEnter") == 1){
 		//trTechGodPower(1, "rain", 1);
-		trQuestVarSet("pressSpace", 0);
-		if(trQuestVarGet("canPressEnter") == 1){
-			trCounterAddTime("tooltipEnter", -1, -9999999, "(Press ENTER to start mission)");
-			trTechGodPower(1, "rain", 1);
-		} else {
-			xsDisableRule("CollectionEnter");
-		}
-		trCounterAddTime("tooltipSpace", -1, -9999999, "(Press SPACE to save deck and QUIT)");
+		trTechGodPower(1, "rain", 1);
+		trCounterAddTime("tooltipEnter", -1, -9999999, "(Press ENTER to save and quit)");
 	} else {
-		xsDisableRule("CollectionSpace");
 		xsDisableRule("CollectionEnter");
 	}
+	trCounterAddTime("tooltipSpace", -1, -9999999, "(Press SPACE to save/load/delete decks)");
 }
 
 rule Collection
@@ -564,13 +561,11 @@ inactive
 	collectionReward = "";
 	trQuestVarSet("missionSelection", -1);
 	trQuestVarSet("missionClass", -1);
-	trQuestVarSet("canPressEnter", -1);
 	ValidateCollection();
 	if(true){
 		trUIFadeToColor(0,0,0,1000,0,false);
-		xsEnableRule("CollectionSpace");
-		trCounterAddTime("tooltipSpace", -1, -9999999, "(Press SPACE to save deck and QUIT)");
-		trQuestVarSet("canPressSpace", 1);
+		xsEnableRule("CollectionEnter");
+		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
 			CinematicReset();
 			CinematicAdd("icons\improvement architects icon 64", "This is your Collection and Deck. Right Click a Card to move it between the two.");
@@ -627,7 +622,6 @@ inactive
 				trClearCounterDisplay();
 				trSoundPlayDialog("default", "1", -1, false, " : ", "");
 				if (class != trQuestVarGet("p1ClickClass")) {
-					trQuestVarSet("canPressEnter", 0);
 					trQuestVarSet("missionSelection", 0);
 					trQuestVarSet("missionClass", 0);
 					collectionMission = "";
@@ -685,11 +679,11 @@ inactive
 							}
 						}
 						if(ValidateCollection()){
-							xsEnableRule("CollectionSpace");
-							trQuestVarSet("canPressSpace", 1);
+							xsEnableRule("CollectionEnter");
+							trQuestVarSet("canPressEnter", 1);
 						} else {
-							xsDisableRule("CollectionSpace");
-							trQuestVarSet("canPressSpace", 0);
+							xsDisableRule("CollectionEnter");
+							trQuestVarSet("canPressEnter", 0);
 						}
 						CollectionGodPowers();
 						break;
@@ -725,21 +719,20 @@ inactive
 				if(getClassProgress(class) == i){
 					trQuestVarSet("missionHardmode", 0);
 					collectionMission = GetMissionTitle(class,i);
-					collectionReward = "Reward: " + cards + " Class Cards";
+					collectionReward = "(Reward: " + cards + " Class Cards)";
 				} else {
 					trQuestVarSet("missionHardmode", 1);
 					collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-					collectionReward = "Reward: " + cards + " Random Cards";
+					collectionReward = "(Reward: " + cards + " Random Cards)";
 				}
 				trQuestVarSet("missionSelection", i);
 				trQuestVarSet("missionClass", class);
-				xsEnableRule("CollectionEnter");
-				trQuestVarSet("canPressEnter", 1);
+				//xsEnableRule("CollectionEnter");
+				trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
 				CollectionGodPowers();
 			}
 		} else if ((trQuestVarGet("missionSelection") == i) && (trQuestVarGet("missionClass") == class)) { 
 			// if deselect
-			trQuestVarSet("canPressEnter", 0);
 			trQuestVarSet("missionSelection", 0);
 			trQuestVarSet("missionClass", 0);
 			collectionMission = "";
@@ -749,59 +742,51 @@ inactive
 	}
 }
 
+void CollectionStartGame(int eventId = -1) {
+	trPlayerKillAllGodPowers(1);
+	trCounterAbort("tooltipEnter");
+	//xsDisableRule("CollectionEnter");
+	trClearCounterDisplay();
+	trSoundPlayDialog("default", "1", -1, false, " : ", "");
+	trCounterAbort("deckCount");
+	trCounterAbort("mission");
+	trCounterAbort("reward");
+	xsDisableRule("CollectionClick");
+	xsDisableRule("CollectionSelect");
+	xsDisableRule("CollectionEnter");
+	ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
+	trCounterAbort("tooltipSpace");
+	saveDeckAndProgress();
+	int next = trGetNextUnitScenarioNameNumber();
+	for(i=trQuestVarGet("idsStart");<next){
+		trUnitSelectClear();
+		trUnitSelect(""+i);
+		trUnitDestroy();
+	}
+	xsEnableRule("MissionBegin");
+	for(i=0; < 6) {
+		if (yDatabaseExists("class"+i+"units")) {
+			for(x=yGetDatabaseCount("class"+i+"units"); >0) {
+				yDatabaseNext("class"+i+"units");
+				string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
+				if(protoname != "Cinematic Block"){
+					trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
+					trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
+					trModifyProtounit(protoname, 1, 1, 10);
+				}
+			}
+			yClearDatabase("class"+i+"units");
+			yDeleteDatabase("class"+i+"units");
+		}
+	}
+}
+
+
 rule CollectionEnter
 highFrequency
 inactive
 {
 	if (trCheckGPActive("rain", 1)) {
-		if(true){
-			uiClearSelection();
-			trPlayerKillAllGodPowers(1);
-			trCounterAbort("tooltipEnter");
-			xsDisableRule("CollectionEnter");
-			trClearCounterDisplay();
-			trSoundPlayDialog("default", "1", -1, false, " : ", "");
-			trCounterAbort("deckCount");
-			trCounterAbort("mission");
-			trCounterAbort("reward");
-			xsDisableRule("CollectionClick");
-			xsDisableRule("CollectionSelect");
-			xsDisableRule("CollectionSpace");
-			ChatLog(1, "Starting Mission: " + GetMissionTitle(trQuestVarGet("missionClass"),trQuestVarGet("missionSelection")));
-			trCounterAbort("tooltipSpace");
-			saveDeckAndProgress();
-			int next = trGetNextUnitScenarioNameNumber();
-			for(i=trQuestVarGet("idsStart");<next){
-				trUnitSelectClear();
-				trUnitSelect(""+i);
-				trUnitDestroy();
-			}
-			xsEnableRule("MissionBegin");
-			for(i=0; < 6) {
-				if (yDatabaseExists("class"+i+"units")) {
-					for(x=yGetDatabaseCount("class"+i+"units"); >0) {
-						yDatabaseNext("class"+i+"units");
-						string protoname = kbGetProtoUnitName(1*yGetVar("class"+i+"units", "proto"));
-						if(protoname != "Cinematic Block"){
-							trModifyProtounit(protoname, 1, 1, 9999999999999999999.0);
-							trModifyProtounit(protoname, 1, 1, -9999999999999999999.0);
-							trModifyProtounit(protoname, 1, 1, 10);
-						}
-					}
-					yClearDatabase("class"+i+"units");
-					yDeleteDatabase("class"+i+"units");
-				}
-			}
-		}
-	}
-}
-
-rule CollectionSpace
-highFrequency
-inactive
-{
-	if (trQuestVarGet("pressSpace") == 1) {
-		trQuestVarSet("pressSpace", 0);
 		// trChatHistoryClear();
 		saveDeckAndProgress();
 		map("mouse1down", "game", "uiSelectionButtonDown");
