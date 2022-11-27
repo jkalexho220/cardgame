@@ -11,7 +11,7 @@ const string mainFilename = "!HeavenGames.scx";
 string slotFilename(int slot = 0) {
 	string fn = "!HeavenGames.scx";
 	if (slot > 0) {
-		fn = "HG-Data\HG-Slot-" + slot + ".scx";
+		fn = "~HG-Slot-" + slot + ".scx";
 	}
 	return(fn);
 }

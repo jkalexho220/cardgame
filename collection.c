@@ -902,8 +902,12 @@ string displayDeckDetails(int slot = 0) {
 }
 
 void loadOrDeleteFile(int eventId = -1) {
-	trQuestVarSet("selectionLimit", getDeckCount());
-	trShowChoiceDialog("Load or delete a deck?", "Load", EVENT_NEXT_LOAD, "Delete", EVENT_NEXT_DELETE);
+	if (getDeckCount() > 0) {
+		trQuestVarSet("selectionLimit", getDeckCount());
+		trShowChoiceDialog("Load or delete a deck?", "Load", EVENT_NEXT_LOAD, "Delete", EVENT_NEXT_DELETE);
+	} else {
+		uiMessageBox("No decks to load or delete.");
+	}
 }
 
 void nextFile(int eventId = -1) {
