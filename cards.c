@@ -937,7 +937,7 @@ active
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 127);
 	
-	CardSetup("Automaton",		0, "Training Dummy", 		0, 10, 0, 0, 0, true);
+	CardSetup("Automaton",		0, "Training Dummy", 		0, 1, 0, 0, 0, true);
 	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
 	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);

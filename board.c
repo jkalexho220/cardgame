@@ -522,6 +522,7 @@ rule initializeBoardStuff
 highFrequency
 active
 {
+	uiChatScroll(1);
 	int tiles = 1 + 3 * (xsPow(8, 2) - 8);
 	zBankInit("tiles", 128, tiles);
 	zBankInit("borders", 297, 552);

@@ -89,10 +89,6 @@ void trVectorSnapToGrid(string qv = "") {
 	trVectorQuestVarSet(qv, vectorSnapToGrid(trVectorQuestVarGet(qv)));
 }
 
-int iModulo(int mod = 10, int val = 0) {
-	return(val - val / mod * mod);
-}
-
 float fModulo(float mod = 0, float val = 0) {
 	int c = 0;
 	if (val > 0) {

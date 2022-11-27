@@ -43,8 +43,8 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
-		trTechGodPower(1, "nidhogg", 1);
-		trTechGodPower(2, "nidhogg", 1);
+		trTechGodPower(1, "rain", 1);
+		trTechGodPower(2, "rain", 1);
 		for(p=2; >0) {
 			for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 				yDatabaseNext("p"+p+"hand");
@@ -79,10 +79,7 @@ inactive
 		int unit = -1;
 		for(p=2; >0) {
 			if (trQuestVarGet("p"+p+"done") == 0) {
-				if (trPlayerUnitCountSpecific(p, "Nidhogg") > 0) {
-					if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
-						trUnitDestroy();
-					}
+				if (trCheckGPActive("rain", p)) {
 					trQuestVarSet("p"+p+"done", 1);
 				}
 				if (1*trQuestVarGet("p"+p+"click") == LEFT_CLICK) {
@@ -123,7 +120,6 @@ inactive
 	trCounterAbort("counter");
 	for(p=2; >0) {
 		trPlayerKillAllGodPowers(p);
-		trTechGodPower(p, "rain", 1);
 		updateHandPlayable(p);
 		for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 			yDatabaseNext("p"+p+"hand", true);
@@ -249,7 +245,6 @@ inactive
 			trTechGodPower(p, "create gold", 1);
 			trTechGodPower(p, "animal magnetism", 1);
 			trTechGodPower(p, "rain", 1);
-			trTechGodPower(p, "nidhogg", 1);
 			
 			if(Multiplayer){
 				trCounterAddTime("turnTimer", 121, 1, "Turn end", -1);
@@ -286,10 +281,7 @@ highFrequency
 inactive
 {
 	int p = trQuestVarGet("activePlayer");
-	if (((trPlayerUnitCountSpecific(p, "Nidhogg") > 0) || (Multiplayer && (trTime() > cActivationTime + 120))) && (trQuestVarGet("castDone") != CASTING_DONE)) {
-		if (yFindLatestReverse("nidhoggNext", "Nidhogg", p) > 0) {
-			trUnitDestroy();
-		}
+	if ((trCheckGPActive("rain", p) || (Multiplayer && (trTime() > cActivationTime + 120))) && (trQuestVarGet("castDone") != CASTING_DONE)) {
 		ChatLogShow();
 		trQuestVarSet("p"+p+"manaflow", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"extraManaflow"));
 		trQuestVarSet("p"+p+"mana", -1);
@@ -297,7 +289,6 @@ inactive
 		updateHandPlayable(p);
 		
 		trPlayerKillAllGodPowers(p);
-		trTechGodPower(p, "rain", 1);
 		trCounterAbort("mana");
 		trCounterAbort("handAndDeck");
 		trCounterAbort("turnTimer");

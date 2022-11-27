@@ -419,7 +419,7 @@ inactive
 	{
 		if ((trTime()-cActivationTime) > 0){
 			xsDisableSelf();
-			trShowImageDialog("icons\god power ancestors icon 64", "Class Unlocked: Evil");
+			trShowImageDialog("icons\god power ancestors icon 64", "Class Unlocked: Otherworld");
 			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 		}
 	}

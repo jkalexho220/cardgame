@@ -29,6 +29,10 @@ void scaleUnit(int unit = 0) {
 	trSetSelectedScale(scale, scale, scale);
 }
 
+void deselectAll(int eventId = -1) {
+	uiClearSelection();
+}
+
 void refreshGuardAll() {
 	yClearDatabase("guardUnits");
 	for(x=yGetDatabaseCount("allUnits"); >0) {

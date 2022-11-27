@@ -1189,16 +1189,16 @@ inactive
 			/* Starter Deck */
 			for(i = 0;<180){
 				setCardCountDeck(i, 0);
-				setCardCountCollection(i, 0);
+				//setCardCountCollection(i, 0);
 			}
 			for(i = 0;<6){
 				setCardCountDeck(i, 3);
 				setCardCountDeck(i + 30, 3);
 			}
 			setCardCountDeck(6, 2);
-			setCardCountCollection(6, 3);
+			//setCardCountCollection(6, 3);
 			setCardCountDeck(36, 2);
-			setCardCountCollection(36, 3);
+			//setCardCountCollection(36, 3);
 			setClassProgress(CLASS_ADVENTURER, 1);
 			setClassProgress(CLASS_ARCANE, 1);
 			setClassProgress(CLASS_NAGA, 0);
@@ -1382,13 +1382,13 @@ inactive
 				for(i = 0;<6){
 					setCardCountDeck(i, 3);
 					setCardCountDeck(i + 30, 3);
-					setCardCountCollection(i, 0);
-					setCardCountCollection(i + 30, 0);
+					//setCardCountCollection(i, 0);
+					//setCardCountCollection(i + 30, 0);
 				}
 				setCardCountDeck(6, 2);
-				setCardCountCollection(6, 3);
+				//setCardCountCollection(6, 3);
 				setCardCountDeck(36, 2);
-				setCardCountCollection(36, 3);
+				//setCardCountCollection(36, 3);
 				setClassProgress(CLASS_ADVENTURER, 1);
 				setClassProgress(CLASS_ARCANE, 1);
 			} else {
@@ -1471,7 +1471,8 @@ inactive
 						reward = 1*trQuestVarGet("reward") + 30 * class;
 						
 						if((getCardCountDeck(reward) + getCardCountCollection(reward)) < maxCopies){
-							setCardCountCollection(reward, getCardCountDeck(reward) + getCardCountCollection(reward) + 1);
+							//setCardCountCollection(reward, getCardCountDeck(reward) + getCardCountCollection(reward) + 1);
+							getNewCard(reward);
 							trQuestVarSet("packReward" + i, reward);
 							break;
 						}
@@ -1494,7 +1495,7 @@ inactive
 					trModifyProtounit(kbGetProtoUnitName(CardToProto(reward)), 1, 1, -9999999999999999999.0);
 				}
 			}
-			dataSave();
+			saveDeckAndProgress();
 		}
 		xsDisableRule("MissionEnd1");
 		xsEnableRule("MissionEnd2");
@@ -1515,13 +1516,16 @@ inactive
 		} else {
 			/* restart */
 			if(true){
-				dataSave();
+				saveDeckAndProgress();
+				saveCollection();
+				/*
 				subModeEnter("Simulation", "Editor");
 				uiMessageBox("moo","restartCurrentGame()");
 				uiCycleCurrentActivate();
 				subModeLeave("Simulation", "Editor");
 				modeEnter("pregame");
 				modeEnter("Simulation");
+				*/
 			} else {
 				xsEnableRule("Collection");
 			}
@@ -1632,7 +1636,7 @@ inactive
 					if(trQuestVarGet("newCardsCount") < 1){
 						trCounterAddTime("tooltipEnter", -1, -9999999, "(Press ENTER to continue)");
 						trPlayerKillAllGodPowers(1);
-						trTechGodPower(1, "nidhogg", 1);
+						trTechGodPower(1, "rain", 1);
 						xsEnableRule("NewCardsEnter");
 					}
 				}
@@ -1647,20 +1651,16 @@ rule NewCardsEnter
 highFrequency
 inactive
 {
-	if (trPlayerUnitCountSpecific(1, "Nidhogg") > 0) {
-		if (yFindLatestReverse("nidhoggNext", "Nidhogg", 1) > 0) {
-			trUnitDestroy();
-			uiClearSelection();
-			trCounterAbort("tooltipEnter");
-			trPlayerKillAllGodPowers(1);
-			trSoundPlayDialog("default", "1", -1, false, " : ", "");
-			trQuestVarSet("newCards", 0);
-			unitTransform("Gaia Forest effect", "Cinematic Block");
-			xsDisableRule("NewCardsClick");
-			xsDisableRule("NewCardsEnter");
-		} else {
-			ThrowError();
-		}
+	if (trCheckGPActive("rain", 1)) {
+		trUnitDestroy();
+		uiClearSelection();
+		trCounterAbort("tooltipEnter");
+		trPlayerKillAllGodPowers(1);
+		trSoundPlayDialog("default", "1", -1, false, " : ", "");
+		trQuestVarSet("newCards", 0);
+		unitTransform("Gaia Forest effect", "Cinematic Block");
+		xsDisableRule("NewCardsClick");
+		xsDisableRule("NewCardsEnter");
 	}
 }
 
@@ -1722,10 +1722,12 @@ void UnlockClass(int class = 0){
 	CommanderUnlockLine(class, true);
 	trDelayedRuleActivation("ClassUnlockMessage_" + class);
 	setClassProgress(class, 1);
+	/*
 	for (x=0; < 7) {
 		setCardCountCollection(x + 30 * class, 3);
 	}
-	dataSave();
+	*/
+	saveDeckAndProgress();
 }
 
 rule NewCommander3

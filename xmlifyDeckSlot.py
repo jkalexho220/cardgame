@@ -13,9 +13,9 @@ import sys
 ###############################
 ####### CUSTOMIZE THESE #######
 ###############################
-FILENAME = 'cardGameAll.xml'
-NAME = ' Card Game'
-files = ['memory.c', 'modulo.c', 'shared.c', 'commands.c', 'events.c', 'cards.c', 'board.c', 'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataCollectionFunctions.c', 'dataDeckFunctions.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'story.c', 'clockworkStory.c', 'otherworldStory.c', 'nagaStory.c']
+FILENAME = 'deckSlot.xml'
+NAME = ' Card Deck Slot'
+files = ['commands.c', 'modulo.c', 'dataDeckFunctions.c', 'deckSlotCode.c']
 
 #########################################
 ####### CODE BELOW (DO NOT TOUCH) #######

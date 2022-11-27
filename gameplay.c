@@ -204,24 +204,15 @@ rule gameplay_toggle_camera
 highFrequency
 inactive
 {
-	for(p=2; >0) {
-		if (trCheckGPActive("rain", p)) {
-			if (trQuestVarGet("p"+p+"rain") == 0) {
-				trQuestVarSet("p"+p+"rain", 1);
-				if (trCurrentPlayer() == p) {
-					trQuestVarSet("cameraCut", 1 - trQuestVarGet("cameraCut"));
-					if (trQuestVarGet("cameraCut") == 1) {
-						uiLookAtUnit(1*trQuestVarGet("p"+p+"block"));
-					} else {
-						uiLookAtUnit(kbGetBlockID(""+1*trQuestVarGet("p"+p+"commander"), true));
-					}
-				}
-				ChatLogShow();
-			}
-		} else if (trQuestVarGet("p"+p+"rain") == 1) {
-			trTechGodPower(p, "rain", 1);
-			trQuestVarSet("p"+p+"rain", 0);
+	if (trQuestVarGet("pressSpace") == 1) {
+		int p = trCurrentPlayer();
+		trQuestVarSet("cameraCut", 1 - trQuestVarGet("cameraCut"));
+		if (trQuestVarGet("cameraCut") == 1) {
+			uiLookAtUnit(1*trQuestVarGet("p"+p+"block"));
+		} else {
+			uiLookAtUnit(kbGetBlockID(""+1*trQuestVarGet("p"+p+"commander"), true));
 		}
+		trQuestVarSet("pressSpace", 0);
 	}
 }
 
