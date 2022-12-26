@@ -695,6 +695,8 @@ inactive
 					yAddToDatabase("allUnits", "summonUnit");
 					
 					teleportToTile(unit, tile);
+
+					trQuestVarSet("p"+p+"lastProto", kbGetUnitBaseTypeID(unit));
 					
 					int cost = mGetVar(unit, "cost");
 					cost = xsMax(0, cost - trQuestVarGet("p"+p+"unitDiscount"));

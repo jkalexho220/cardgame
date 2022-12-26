@@ -1065,6 +1065,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddAdjacentTile("spellTarget", "p"+(3-p)+"commander");
 			castInstructions("Choose a tile. Right click to cancel.");
 		}
+		case SPELL_LAST_LAUGH:
+		{
+			castAddUnit("spellTarget", p, false);
+			castInstructions("Choose an allied unit. Right click to cancel.");
+		}
 		case SPELL_DOOM:
 		{
 			castAddUnit("spellTarget", 0, true);
@@ -1185,7 +1190,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
 		}
-		case SPELL_BORROWED_TIME:
+		case SPELL_BULLET_TIME:
 		{
 			castAddTile("spellTarget", true);
 			castInstructions("Click on a tile to cast. Right click to cancel.");
@@ -1284,6 +1289,16 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddAdjacentTile("spellTarget", "spellCaster");
 			castInstructions("Click on a tile to summon a duplicate.");
+		}
+		case SPELL_BULLET_STORM:
+		{
+			castAddTarget("spellTarget", "p"+p+"commander");
+			castInstructions("Choose a target to cast. Right click to cancel.");
+		}
+		case SPELL_COPY_ATTACK_EFFECT:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a unit to copy the Attack effect of.");
 		}
 	}
 	castStart();
@@ -2213,6 +2228,11 @@ inactive
 				target = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Shade of Hades"));
 				mSetVar(target, "action", ACTION_SLEEPING);
 			}
+			case SPELL_LAST_LAUGH:
+			{
+				trSoundPlayFN("shadeofhadesbirth.wav","1",-1,"","");
+				mSetVarByQV("spellTarget", "keywords", SetBit(mGetVarByQV("spellTarget", "keywords"), DEATH_SUMMON_JESTER));
+			}
 			case SPELL_DOOM:
 			{
 				trSoundPlayFN("shadeofhadesacknowledge2.wav","1",-1,"","");
@@ -2267,8 +2287,8 @@ inactive
 				trSoundPlayFN("mummyflies.wav","1",-1,"","");
 				for(x=yGetDatabaseCount("allUnits"); >0) {
 					yDatabaseNext("allUnits");
-					if ((mGetVarByQV("allUnits", "player") == p) && (mGetVarByQV("allUnits", "spell") == SPELL_NONE)) {
-						mSetVarByQV("allUnits", "OnDeath", SetBit(1*mGetVarByQV("allUnits", "OnDeath"), DEATH_SUMMON_ZOMBIE));
+					if (mGetVarByQV("allUnits", "spell") == SPELL_NONE) {
+						mSetVarByQV("allUnits", "OnDeath", SetBit(1*mGetVarByQV("allUnits", "OnDeath"), DEATH_DRAW_CARD));
 					}
 				}
 			}
@@ -2451,9 +2471,9 @@ inactive
 				}
 				trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 			}
-			case SPELL_BORROWED_TIME:
+			case SPELL_BULLET_TIME:
 			{
-				trSoundPlayFN("sentinelbirth.wav","1",-1,"","");
+				trSoundPlayFN("storehouse.wav","1",-1,"","");
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
 				trQuestVarSet("p"+p+"borrowedTime", 1 + trQuestVarGet("p"+p+"borrowedTime"));
 			}
@@ -2733,6 +2753,20 @@ inactive
 				mSetVar(activeUnit, "health", mGetVarByQV("spellCaster", "health"));
 				mSetVar(activeUnit, "attack", mGetVarByQV("spellCaster", "attack"));
 				mSetVar(activeUnit, "keywords", mGetVarByQV("spellCaster", "keywords"));
+			}
+			case SPELL_COPY_ATTACK_EFFECT:
+			{
+				trSoundPlayFN("changeunit.wav","1",-1,"","");
+				mSetVarByQV("spellCaster", "OnAttack", mGetVarByQV("spellTarget", "OnAttack"));
+				if (mGetVarByQV("spellCaster", "OnAttack") > 0) {
+					mSetStringByQV("spellCaster", "ability", mGetStringByQV("spellTarget", "ability"));
+				}
+			}
+			case SPELL_BULLET_STORM:
+			{
+				done = false;
+				trSoundPlayFN("manticorespecialattack.wav", "1", -1, "", "");
+				xsEnableRule("bullet_storm_active");
 			}
 		}
 		

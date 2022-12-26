@@ -810,7 +810,6 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
 					yClearDatabase("p1deck");
 					for(x=40; >0) {
-						addCardToDeck(1, "", SPELL_BORROWED_TIME);
 						addCardToDeck(2, "Monkey");
 					}
 				}

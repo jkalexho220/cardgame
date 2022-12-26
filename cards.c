@@ -121,7 +121,7 @@ const int SPELL_MEDUSA_STUN = 44;
 const int SPELL_WORLD_SPLITTER = 45;
 const int SPELL_SOUL_SIPHON = 46;
 const int SPELL_BLOOD_PRICE = 47;
-const int SPELL_DEATH_APPROACHES = 48;
+const int SPELL_LAST_LAUGH = 48;
 const int SPELL_DOOM = 49;
 const int SPELL_SHADOWSTEP = 50;
 const int SPELL_FINAL_FRENZY = 51;
@@ -130,7 +130,7 @@ const int SPELL_UNDEATH = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
-const int SPELL_DEMON_EAT = 56;
+const int SPELL_DEATH_APPROACHES = 56;
 const int SPELL_DUPLICATE_FRIEND = 57;
 
 // Clockwork
@@ -150,7 +150,7 @@ const int SPELL_TIME_POCKET = 70;
 const int SPELL_BANHAMMER = 71;
 const int SPELL_ASSEMBLY_LINE = 72;
 const int SPELL_POWER_SUIT = 73;
-const int SPELL_BORROWED_TIME = 74;
+const int SPELL_BULLET_STORM = 74;
 const int SPELL_FORTIFY = 75;
 
 
@@ -173,6 +173,9 @@ const int SPELL_PISCES = 89;
 const int SPELL_DUPLICATE_ME = 90;
 const int SPELL_SCORPION_STING = 91;
 const int SPELL_BAD_FOOD = 92;
+const int SPELL_BULLET_TIME = 93;
+const int SPELL_DEMON_EAT = 94;
+const int SPELL_COPY_ATTACK_EFFECT = 95;
 
 /*
 OnAttack events (bit positions)
@@ -204,8 +207,9 @@ const int ATTACK_SUMMON_TREE = 23;
 const int ATTACK_TEAMWORK = 24;
 const int ATTACK_NICKONHAWK = 25;
 const int ATTACK_SPLASH = 26;
+const int ATTACK_POSSESSED = 27;
 
-const int ATTACK_EVENT_COUNT = 27; // we're running out of space
+const int ATTACK_EVENT_COUNT = 28; // we're running out of space
 
 /*
 OnDeath events (bit positions)
@@ -231,8 +235,10 @@ const int DEATH_LASERS = 18;
 const int DEATH_TOYS = 19;
 const int DEATH_BOOST_HAND = 20;
 const int DEATH_SUMMON_FROM_HAND = 21;
+const int DEATH_SUMMON_COPY = 22;
+const int DEATH_SUMMON_JESTER = 23;
 
-const int DEATH_EVENT_COUNT = 22;
+const int DEATH_EVENT_COUNT = 24;
 
 
 /*
@@ -540,6 +546,7 @@ string getCardClassIcon(int card = 0) {
 			return("icons\god power eclipse icon 64");
 		}
 	}
+	return("");
 }
 
 string colorizeStat(int name = 0, string s = "Attack", string d = "ATK") {
@@ -718,7 +725,8 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
-		trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
+		//trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
+		trChatSend(0, mGetString(name, "ability"));
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
@@ -1012,7 +1020,7 @@ active
 	CardSetup("Cinematic Block",		0, "Indestructable",		0, 999, 0, 0, Keyword(WARD) + Keyword(REGENERATE) + Keyword(STEALTH) + Keyword(IMMUNE), true);
 	
 	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true);
-	CardEvents("Theris", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
+	CardEvents("Theris", 0, Keyword(DEATH_SUMMON_COPY), "Death: Summon a copy of the last unit your opponent summoned.");
 	
 	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL) + Keyword(STEALTH), true);
 	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
@@ -1024,10 +1032,12 @@ active
 	CardSetup("Crossbowman",			2, "Security Sniper",		1, 3, 2, 3, Keyword(AIRDROP) + Keyword(LIGHTNING), true);
 	
 	CardSetup("Female",					2, "Princess Arsch",		1, 2, 2, 1, Keyword(WARD), true);
-	CardEvents("Female", 0, Keyword(DEATH_DAMAGE_ENEMY), "Play: Give your Commander +2 health. Death: Deal 2 damage to the enemy Commander.");
+	CardEvents("Female", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
 	
 	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
+
+	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.");
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");
@@ -1043,6 +1053,7 @@ highFrequency
 	Proto                  Cost    Name       Attack|Health|Speed|Range    Keywords
 	*/
 	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
+	SpellSetup("Bullet Time",			2, SPELL_BULLET_TIME,		"Gain an extra turn.", SPELL_TYPE_OTHER, 0, true);
 	/*
 	ADVENTURER
 	*/
@@ -1247,7 +1258,7 @@ highFrequency
 	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy unit. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
 	SpellSetup("Assembly Line",			3, SPELL_ASSEMBLY_LINE,		"Shuffle a copy of your hand into your deck. Draw a card.", SPELL_TYPE_OTHER);
 	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
-	SpellSetup("Borrowed Time",			20, SPELL_BORROWED_TIME,	"Gain an extra turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
+	SpellSetup("Bullet Storm",			5, SPELL_BULLET_STORM,		"Your Commander attacks all enemies within range.", SPELL_TYPE_OTHER);
 	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_05");
@@ -1275,8 +1286,8 @@ highFrequency
 	SpellSetup("Soul Siphon",			2, SPELL_SOUL_SIPHON,		"Kill an allied unit to draw 2 cards.", SPELL_TYPE_OTHER);
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
-	CardSetup("Prodromos",				3, "Pillager",				3, 1, 3, 1); // Death: Draw a card.
-	CardSetup("Tartarian Gate spawn",	3, "Demon",					2, 2, 2, 1, Keyword(CHARGE)); // Play: Kill an allied unit and grant me its attack and health.
+	CardSetup("Prodromos",				3, "Possessed Rider",		0, 4, 3, 1); // Attack: Your Commander attacks my target.
+	CardSetup("Tartarian Gate spawn",	4, "Demon",					0, 4, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
@@ -1289,20 +1300,20 @@ highFrequency
 	// 135-139
 	CardSetup("Spider Egg",				3, "Festering Egg",			0, 3, 0, 0, Keyword(DECAY)); // Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.
 	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A unit attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE));
+	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE)); // Play: Your opponent draws a card.
 	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied unit and an enemy.", SPELL_TYPE_OTHER);
-	SpellSetup("Death Approaches",		4, SPELL_DEATH_APPROACHES,	"Summon a 4|3 Shadow Elemental with Ambush on a tile next to the enemy Commander.", SPELL_TYPE_OTHER);
+	SpellSetup("Last Laugh",			3, SPELL_LAST_LAUGH,		"Give an allied unit, 'Death: Summon an Infernal Jester on my tile.'" , SPELL_TYPE_OTHER);
 	// 140-144
 	SpellSetup("Doom",					3, SPELL_DOOM,				"Deal 2 damage to a unit. If it has Decay, add a Doom to your hand.", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Corpse Party",			3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Undeath",				4, SPELL_UNDEATH,			"Give all allied units, 'Death: Summon a Zombie on my tile.'", SPELL_TYPE_OTHER);
+	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
+	SpellSetup("Gift From Beyond",		4, SPELL_UNDEATH,			"Give ALL units, 'Death: Draw a card.' Does not stack.", SPELL_TYPE_OTHER);
 	// 145-149 (LEGENDARY at 149)
-	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 2, 2, 2); // Attack: If my target is a unit, give it Decay.
+	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied unit and an enemy unit swap spaces.", SPELL_TYPE_OTHER);
-	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Attack: If my target is a unit, give it Decay.
+	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Play: Copy the Attack effect of a unit.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_06");
@@ -1451,10 +1462,10 @@ highFrequency
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
 	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
 	CardEvents("Axeman", 0, Keyword(DEATH_GET_ATTACK),					"Play and Death: Give your Commander +1 attack this turn.");
-	CardEvents("Anubite", 0, 0,											"Play: Deal 3 damage to your Commander.");
+	CardEvents("Anubite", 0, 0,											"Play: Your opponent draws a card.");
 	CardEvents("Satyr", Keyword(ATTACK_GET_ZOMBIE), 0, 					"Attack: Create a Zombie.");
-	CardEvents("Prodromos", 0, Keyword(DEATH_DRAW_CARD),				"Death: Draw a card.");
-	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Kill an allied unit and grant me its attack and health.");
+	CardEvents("Prodromos", Keyword(ATTACK_POSSESSED), 0,				"Attack: Your Commander attacks my target.");
+	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
 	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
@@ -1465,7 +1476,7 @@ highFrequency
 	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
 	CardEvents("Spider Egg", 0, Keyword(DEATH_SUMMON_BEETLE),			"Death: Summon a 5|5 Man-Eating Beetle with Pathfinder.");
 	CardEvents("Bogsveigir", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a unit, give it Decay.");
-	CardEvents("Manticore", Keyword(ATTACK_POISON), 0,					"Attack: If my target is a unit, give it Decay.");
+	CardEvents("Manticore", 0, 0,										"Play: Copy the Attack Effect of a unit.");
 	CardEvents("Walking Woods Marsh", Keyword(ATTACK_SUMMON_TREE), 0,	"Attack: If my target dies, summon a Zombie Tree on their tile.");
 	
 	CardEvents("Hero Greek Odysseus", Keyword(ATTACK_NICKONHAWK), 0, 	"Attack: Spend all your mana and summon a unit from your deck with equal cost.");
