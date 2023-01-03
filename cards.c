@@ -1078,7 +1078,7 @@ highFrequency
 	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied units +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
-	CardSetup("Hero Greek Hippolyta", 	7, "Queen of Elves",	3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
+	CardSetup("Hero Greek Hippolyta", 	7, "Deadeye",			3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
 	CardSetup("Lancer Hero",			4, "Dragon Knight",		3, 6, 3, 1, Keyword(FURIOUS) + Keyword(ARMORED)); // Play: I take 4 damage.
 	CardSetup("Avenger", 				6, "Doubleblade", 		5, 5, 2, 1, Keyword(AIRDROP));
@@ -1251,7 +1251,7 @@ highFrequency
 	// 110-114
 	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a unit 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH)); // After I move, I gain +1 attack.
+	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy unit to your opponent's hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Time Pocket",			6, SPELL_TIME_POCKET,		"Stun all units within 1 space of the target tile.", SPELL_TYPE_OFFENSIVE);
 	// 115-119 (LEGENDARY at 119)
@@ -1287,7 +1287,7 @@ highFrequency
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
 	CardSetup("Prodromos",				3, "Possessed Rider",		0, 4, 3, 1); // Attack: Your Commander attacks my target.
-	CardSetup("Tartarian Gate spawn",	4, "Demon",					0, 4, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
+	CardSetup("Tartarian Gate spawn",	4, "Demon",					1, 5, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
