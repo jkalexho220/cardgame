@@ -195,7 +195,7 @@ const int ATTACK_GET_MANAFLOW = 11;
 const int ATTACK_GET_ZOMBIE = 12;
 const int ATTACK_SUMMON_ZOMBIE = 13;
 const int ATTACK_POISON = 14;
-const int ATTACK_GET_MINION = 15;
+const int ATTACK_MILL = 15;
 const int ATTACK_BOOST_HAND = 16;
 const int ATTACK_ANIMATE_TOWER = 17;
 const int ATTACK_OVERKILL_HEALS = 18;
@@ -1458,7 +1458,7 @@ highFrequency
 	CardEvents("Hero Greek Atalanta", 0, 0,								"After I move, I gain +1 attack.");
 	CardEvents("Pharaoh", 0, 0, 										"Play: Summon an exact copy of an allied unit and give it Decay.");
 	
-	CardEvents("Hoplite", Keyword(ATTACK_GET_MINION), 0,				"I can attack allies. Whenever I kill a unit, add a copy of it to your hand.");
+	CardEvents("Hoplite", Keyword(ATTACK_MILL), 0,						"Attack: Both players draw a card.");
 	CardEvents("Hero Greek Perseus", 0, 0, 								"Whenever an ally dies, gain 1 Mana this turn.");
 	CardEvents("Spearman", 0, Keyword(DEATH_SUMMON_ZOMBIE),				"Death: Summon a Zombie on my tile.");
 	CardEvents("Axeman", 0, Keyword(DEATH_GET_ATTACK),					"Play and Death: Give your Commander +1 attack this turn.");

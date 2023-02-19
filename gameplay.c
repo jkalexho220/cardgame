@@ -105,7 +105,7 @@ bool attackUnitAtCursor(int p = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(target, "keywords"))) {
 		return(false);
 	}
-	if ((mGetVar(target, "player") == 3 - p) || (mGetVar(a, "proto") == kbGetProtoUnitID("Hoplite"))) {
+	if (mGetVar(target, "player") == 3 - p) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");

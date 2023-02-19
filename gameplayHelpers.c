@@ -185,8 +185,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 		yDatabaseNext("allUnits");
 		if (trQuestVarGet("allUnits") == name) {
 			continue;
-		} else if ((mGetVarByQV("allUnits", "player") == p) ||
-			mGetVar(name, "proto") == kbGetProtoUnitID("Hoplite")) {
+		} else if (mGetVarByQV("allUnits", "player") == p) {
 			if (trDistanceToVectorSquared("allUnits", "pos") < dist) {
 				if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
 					if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
