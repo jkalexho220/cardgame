@@ -28,10 +28,6 @@ bool OnDeath(int event = -1, int unit = 0){
 	bool checkAgain = false;
 	switch(event)
 	{
-		case DEATH_DRAW_CARD:
-		{
-			trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
-		}
 		case DEATH_OPPONENT_DRAW_CARD:
 		{
 			trQuestVarSet("p"+(3-p)+"drawCards", 1 + trQuestVarGet("p"+(3-p)+"drawCards"));
@@ -122,10 +118,6 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_SUMMON_COPY:
 		{
 			deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(1*trQuestVarGet("p"+(3-p)+"lastProto")));
-		}
-		case DEATH_SUMMON_JESTER:
-		{
-			deathSummonQueue(1*mGetVar(unit, "tile"), p, "Theris");
 		}
 		case DEATH_SUMMON_BEETLE:
 		{

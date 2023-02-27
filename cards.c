@@ -214,7 +214,7 @@ const int ATTACK_EVENT_COUNT = 28; // we're running out of space
 /*
 OnDeath events (bit positions)
 */
-const int DEATH_DRAW_CARD = 1;
+const int DEATH_SUMMON_COPY = 1;
 const int DEATH_OPPONENT_DRAW_CARD = 2;
 const int DEATH_BOOM_SMALL = 3;
 const int DEATH_EGG = 4;
@@ -235,10 +235,8 @@ const int DEATH_LASERS = 18;
 const int DEATH_TOYS = 19;
 const int DEATH_BOOST_HAND = 20;
 const int DEATH_SUMMON_FROM_HAND = 21;
-const int DEATH_SUMMON_COPY = 22;
-const int DEATH_SUMMON_JESTER = 23;
 
-const int DEATH_EVENT_COUNT = 24;
+const int DEATH_EVENT_COUNT = 22;
 
 
 /*
