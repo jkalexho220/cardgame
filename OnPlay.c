@@ -448,7 +448,7 @@ void OnPlay(int unit = 0) {
 				ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
 				MusicHigh();
 			}
-			damageUnit(unit, 10);
+			trQuestVarSet("p"+p+"manaTax", 5 + trQuestVarGet("p"+p+"manaTax"));
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");

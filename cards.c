@@ -112,7 +112,7 @@ const int SPELL_TELETIDE = 38;
 const int SPELL_WRATH_OF_SEA = 39;
 const int SPELL_RUNE_OF_WATER = 40;
 const int SPELL_CLEANSING_WATERS = 41;
-const int SPELL_DROWN = 42;
+const int SPELL_CALL_OF_THE_DEEP = 42;
 
 const int SPELL_LAMPADES_CONVERT = 43;
 const int SPELL_MEDUSA_STUN = 44;
@@ -121,12 +121,12 @@ const int SPELL_MEDUSA_STUN = 44;
 const int SPELL_WORLD_SPLITTER = 45;
 const int SPELL_SOUL_SIPHON = 46;
 const int SPELL_BLOOD_PRICE = 47;
-const int SPELL_LAST_LAUGH = 48;
+const int SPELL_POISON_MIST = 48;
 const int SPELL_DOOM = 49;
 const int SPELL_SHADOWSTEP = 50;
 const int SPELL_FINAL_FRENZY = 51;
 const int SPELL_CORPSE_PARTY = 52;
-const int SPELL_UNDEATH = 53;
+const int SPELL_DROWN = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
@@ -1169,8 +1169,8 @@ highFrequency
 	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
 	
 	// 60-64
-	CardSetup("Hypaspist",				1, "Undercity Soldier",		1, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
-	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health this turn.
+	CardSetup("Hypaspist",				1, "Undercity Soldier",		2, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
+	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health.
 	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied unit and your Commander.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive unit.
 	CardSetup("Wadjet",					3, "Venom Pet",				1, 1, 1, 2, Keyword(DEADLY));
@@ -1200,8 +1200,8 @@ highFrequency
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
-	SpellSetup("Cleansing Waters",		1, SPELL_CLEANSING_WATERS,	"Choose a tile. Give it and adjacent tiles Ward.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Drown",					7, SPELL_DROWN,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Serpent Skin",			2, SPELL_CLEANSING_WATERS,	"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Call of the Deep",		3, SPELL_CALL_OF_THE_DEEP,	"Summon the most expensive unit from your deck that costs {Manaflow} or less.", SPELL_TYPE_OTHER);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
 	
@@ -1243,7 +1243,7 @@ highFrequency
 	CardSetup("Ape of Set",				2, "Robot Monkey",			1, 1, 2, 1, Keyword(MAGNETIC)); // Death: I attack all adjacent units.
 	CardSetup("Tower Mirror",			10, "Extinction Cannon",	8, 8, 0, 3, Keyword(LIGHTNING));
 	// 105-109
-	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two Lightning Rods to your hand.", SPELL_TYPE_OTHER);
+	SpellSetup("Electric Grid",			2, SPELL_ELECTRIC_GRID,		"Add two 0|3 Lightning Rods with Airdrop and Conductor to your hand.", SPELL_TYPE_OTHER);
 	SpellSetup("Zap Gun",				3, SPELL_ZAP_GUN,			"Give an allied unit Lightning.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Fire Siphon",			3, "Directional Cannon",	2, 5, 0, 0); // Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.
 	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a unit with all of its adjacent allied units, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
@@ -1293,8 +1293,8 @@ highFrequency
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
 	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent units.
-	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2, Keyword(DECAY)); // At the start of your turn, draw a card and give it Fleeting.
-	CardSetup("Argus",					5, "Mindflayer",			3, 4, 1, 1); // At the end of your turn, deal 1 damage to all units with Decay.
+	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2); // Whenever your opponent draws a card, restore 1 health to your Commander.
+	CardSetup("Argus",					4, "Mindflayer",			4, 4, 2, 1); // At the end of your turn, deal 1 damage to all units with Decay.
 	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied unit and give it Decay.
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
 	// 135-139
@@ -1302,13 +1302,13 @@ highFrequency
 	SpellSetup("World Splitter",		6, SPELL_WORLD_SPLITTER,	"A unit attacks everything in a line. If your Commander is Zenophobia, this can be cast on him.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Anubite",				1, "Demonling",				3, 2, 2, 1, Keyword(CHARGE)); // Play: Your opponent draws a card.
 	SpellSetup("Blood Price",			1, SPELL_BLOOD_PRICE,		"Deal 2 damage to an allied unit and an enemy.", SPELL_TYPE_OTHER);
-	SpellSetup("Last Laugh",			3, SPELL_LAST_LAUGH,		"Give an allied unit, 'Death: Summon an Infernal Jester on my tile.'" , SPELL_TYPE_OTHER);
+	SpellSetup("Poison Mist",			4, SPELL_POISON_MIST,		"Inflict Decay on all units within 1 space of the target tile." , SPELL_TYPE_OFFENSIVE);
 	// 140-144
 	SpellSetup("Doom",					3, SPELL_DOOM,				"Deal 2 damage to a unit. If it has Decay, add a Doom to your hand.", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Gift From Beyond",		4, SPELL_UNDEATH,			"Give ALL units, 'Death: Draw a card.' Does not stack.", SPELL_TYPE_OTHER);
+	SpellSetup("Devour",				8, SPELL_DROWN,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	// 145-149 (LEGENDARY at 149)
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
@@ -1354,7 +1354,7 @@ highFrequency
 	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a unit for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all units in your hand.", SPELL_TYPE_OTHER);
 	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy unit to a tile next to me.
-	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: I take 10 damage. Attack: Summon a unit from your deck.
+	CardSetup("Hero Greek Argo",		10, "The Hawk",				10, 10, 2, 2, Keyword(ETHEREAL) + Keyword(ARMORED) + Keyword(CHARGE));	 // Play: Pay 5 mana next turn.
 	// 165-169
 	CardSetup("Flying Purple Hippo",	3, "Servant of Love",		2, 1, 2, 1, Keyword(FLYING) + Keyword(HEALER)); // Death: Acquire the LOVE Key. (If you have all three, shuffle the Calling into your deck)
 	CardSetup("Lazer Bear", 			5, "Servant of Lasers",		2, 4, 2, 2, Keyword(FURIOUS)); // Death: Acquire the LASER Key. (If you have all three, shuffle the Calling into your deck)
@@ -1470,7 +1470,7 @@ highFrequency
 	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
 	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent units.");
-	CardEvents("Theocrat", 0, 0,										"At the start of your turn, draw a card and give it Fleeting.");
+	CardEvents("Theocrat", 0, 0,										"Whenever your opponent draws a card, restore 1 health to your Commander.");
 	CardEvents("Argus", 0, 0,											"At the end of your turn, deal 1 damage to all units with Decay.");
 	CardEvents("Guardian", 0, Keyword(DEATH_DARKNESS_RETURNS),			"Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deck.");
 	CardEvents("Hero Greek Achilles", 0, 0, 							"Play: Stun the enemy Commander and give them Decay.");
@@ -1485,7 +1485,7 @@ highFrequency
 	CardEvents("Siege Ship Greek", 0, 0, 								"Play: Pay 2 mana next turn.");
 	CardEvents("Fire Ship Atlantean", 0, 0, 							"Play: Pay 3 mana next turn.");
 	CardEvents("Siege Ship Atlantean", 0, 0, 							"Play: Pay 4 mana next turn.");
-	CardEvents("Hero Greek Argo", 0, 0, 								"Play: I take 10 damage. ");
+	CardEvents("Hero Greek Argo", 0, 0, 								"Play: Pay 5 mana next turn. ");
 	CardEvents("Hero Greek Heracles", 0, 0, 							"Your cards have Echo.");
 	CardEvents("Villager Atlantean Hero", 0, 0, 						"Play: Reduce an enemy unit's attack by 2.");
 	CardEvents("Catapult", Keyword(ATTACK_SPLASH), 0,					"Attack: Also damage enemies adjacent to my target.");
