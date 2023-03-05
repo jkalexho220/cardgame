@@ -1199,7 +1199,7 @@ highFrequency
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
 	SpellSetup("Serpent Skin",			2, SPELL_CLEANSING_WATERS,	"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
-	SpellSetup("Call of the Deep",		3, SPELL_CALL_OF_THE_DEEP,	"Summon the most expensive unit from your deck that costs {Manaflow} or less.", SPELL_TYPE_OTHER);
+	SpellSetup("Call of the Deep",		2, SPELL_CALL_OF_THE_DEEP,	"Summon the most expensive unit from your deck that costs {Manaflow} or less.", SPELL_TYPE_OTHER);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
 	
