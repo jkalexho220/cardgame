@@ -185,8 +185,7 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 		yDatabaseNext("allUnits");
 		if (trQuestVarGet("allUnits") == name) {
 			continue;
-		} else if ((mGetVarByQV("allUnits", "player") == p) ||
-			mGetVar(name, "proto") == kbGetProtoUnitID("Hoplite")) {
+		} else if (mGetVarByQV("allUnits", "player") == p) {
 			if (trDistanceToVectorSquared("allUnits", "pos") < dist) {
 				if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
 					if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
@@ -472,15 +471,29 @@ void pushUnit(int name = 0, string dir = "") {
 	trMutateSelected(kbGetProtoUnitID("Relic"));
 	trImmediateUnitGarrison(""+container);
 	trMutateSelected(1*mGetVar(name, "proto"));
+
+	// find the moveDir in case the push direction is not perfectly on one of the six directions
+	int neighbor = 0;
+	vector moveDir = trVectorQuestVarGet(dir);
+	vector dest = kbGetBlockPosition(""+name) + moveDir * 6.0;
+	float closestDistance = 100;
+	float currentDistance = 0;
+	for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {
+		neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);
+		currentDistance = distanceBetweenVectors(dest, kbGetBlockPosition(""+neighbor));
+		if (currentDistance < closestDistance) {
+			closestDistance = currentDistance;
+			moveDir = getUnitVector(kbGetBlockPosition(""+name), kbGetBlockPosition(""+neighbor));
+		}
+	}
 	
 	
 	/*
 	Find destination
 	*/
 	trVectorQuestVarSet("start", kbGetBlockPosition(""+name));
-	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name) + (trVectorQuestVarGet(dir) * 6.0));
+	trVectorQuestVarSet("pos", kbGetBlockPosition(""+name) + (moveDir * 6.0));
 	bool found = true;
-	int neighbor = 0;
 	int target = 0;
 	while(found) {
 		found = false;
@@ -494,9 +507,7 @@ void pushUnit(int name = 0, string dir = "") {
 						target = zGetVarByIndex("tiles", "occupant", neighbor);
 					} else {
 						tile = neighbor;
-						trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (trVectorQuestVarGet(dir) * 6.0));
-						trQuestVarSet("posx", trQuestVarGet("currentx") + 6.0*trQuestVarGet(dir+"x"));
-						trQuestVarSet("posz", trQuestVarGet("currentz") + 6.0*trQuestVarGet(dir+"z"));
+						trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (moveDir * 6.0));
 						found = true;
 						break;
 					}
@@ -512,7 +523,7 @@ void pushUnit(int name = 0, string dir = "") {
 	yAddUpdateVar("pushes", "timeout", trTimeMS() + 70 * trDistanceBetweenVectors("start", "pos"));
 	trUnitSelectClear();
 	trUnitSelect(""+tile);
-	trSetUnitOrientation(trVectorQuestVarGet(dir), xsVectorSet(0,1,0), true);
+	trSetUnitOrientation(moveDir, xsVectorSet(0,1,0), true);
 	trUnitSelectClear();
 	trUnitSelect(""+container);
 	trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));

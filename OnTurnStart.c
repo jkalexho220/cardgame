@@ -17,11 +17,13 @@ bool OnTurnStart(int unit = 0) {
 			trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
 			return (true);
 		}
+		/*
 		case kbGetProtoUnitID("Theocrat"):
 		{
 			drawCard(p, true);
 			return (true);
 		}
+		*/
 		case kbGetProtoUnitID("Bireme"):
 		{
 			trQuestVarSet("p"+p+"manaTax", trQuestVarGet("p"+p+"manaTax") - 1);

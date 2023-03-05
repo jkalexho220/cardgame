@@ -208,14 +208,10 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
 			}
 		}
-		case ATTACK_GET_MINION:
+		case ATTACK_MILL:
 		{
-			if (mGetVar(target, "health") <= 0) {
-				if (yGetDatabaseCount("p"+p+"hand") < 10) {
-					addCardToHand(p, 1*mGetVar(target, "proto"));
-					updateHandPlayable(p);
-				}
-			}
+			trQuestVarSet("p1drawCards", 1 + trQuestVarGet("p1drawCards"));
+			trQuestVarSet("p2drawCards", 1 + trQuestVarGet("p2drawCards"));
 		}
 		case ATTACK_BOOST_HAND:
 		{
@@ -275,6 +271,10 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 			}
 			deployAtTile(0, "Dust Large", 1*mGetVar(target, "tile"));
+		}
+		case ATTACK_POSSESSED:
+		{
+			startAttack(1*trQuestVarGet("p"+p+"commander"), target);
 		}
 		case ATTACK_SING:
 		{

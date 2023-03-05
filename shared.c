@@ -739,33 +739,29 @@ Bit functions
 n - number, p - position
 */
 bool GetBit(int n=0, int p=0){
-	for(i=0;<30){
-		if(i==p){
-			return (iModulo(2,n)==1);
-		}
-		n=n/2;
+	if (p > 30) {
+		p = 30;
+	} else if (p < 0) {
+		p = 0;
 	}
-	return (false);
+	int pow = xsPow(2, p); // floats become innacurate at very big numbers
+	return (iModulo(2,n / pow) == 1);
 }
 
 int SetBit(int n=0, int p=0){
-	int r = 0;
-	for(i=0;<30){
-		if(iModulo(2,n)==1||i==p){
-			r=r+xsPow(2,i);
-		}
-		n=n/2;
+	int r = n;
+	int pow = xsPow(2, p); // floats become innacurate at very big numbers
+	if (GetBit(n, p) == false) {
+		r = r + pow;
 	}
 	return (r);
 }
 
 int ClearBit(int n=0, int p=0){
-	int r = 0;
-	for(i=0;<30){
-		if(iModulo(2,n)==1&&i!=p){
-			r=r+xsPow(2,i);
-		}
-		n=n/2;
+	int r = n;
+	int pow = xsPow(2, p); // floats become innacurate at very big numbers
+	if (GetBit(n, p)) {
+		r = r - pow;
 	}
 	return (r);
 }

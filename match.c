@@ -27,6 +27,8 @@ inactive
 		} else {
 			trQuestVarSet("p"+p+"maxHandSize", 10);
 		}
+
+		trQuestVarSet("p"+p+"lastProto", kbGetProtoUnitID("Minion"));
 	}
 	// Ravens
 	trQuestVarSet("p1block", 869);

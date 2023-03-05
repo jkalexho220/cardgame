@@ -105,7 +105,7 @@ bool attackUnitAtCursor(int p = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(target, "keywords"))) {
 		return(false);
 	}
-	if ((mGetVar(target, "player") == 3 - p) || (mGetVar(a, "proto") == kbGetProtoUnitID("Hoplite"))) {
+	if (mGetVar(target, "player") == 3 - p) {
 		trQuestVarSet("targetUnit", target);
 		trVectorSetUnitPos("d1pos", "activeUnit");
 		trVectorSetUnitPos("d2pos", "targetUnit");
@@ -695,6 +695,8 @@ inactive
 					yAddToDatabase("allUnits", "summonUnit");
 					
 					teleportToTile(unit, tile);
+
+					trQuestVarSet("p"+p+"lastProto", kbGetUnitBaseTypeID(unit));
 					
 					int cost = mGetVar(unit, "cost");
 					cost = xsMax(0, cost - trQuestVarGet("p"+p+"unitDiscount"));

@@ -129,6 +129,12 @@ void OnPlay(int unit = 0) {
 			done = false;
 			chooseSpell(SPELL_FOOD);
 		}
+		case kbGetProtoUnitID("Manticore"):
+		{
+			done = false;
+			trQuestVarSet("spellCaster", unit);
+			chooseSpell(SPELL_COPY_ATTACK_EFFECT);
+		}
 		case kbGetProtoUnitID("Avenger"):
 		{
 			trUnitSelectClear();
@@ -287,9 +293,14 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Tartarian Gate spawn"):
 		{
+			/*
 			done = false;
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_DEMON_EAT);
+			*/
+			trSoundPlayFN("wild.wav","1",-1,"","");
+			drawCard(3 - p);
+			mSetVar(unit, "attack", mGetVar(unit, "attack") + yGetDatabaseCount("p"+(3-p)+"hand"));
 		}
 		case kbGetProtoUnitID("Axeman"):
 		{
@@ -330,8 +341,7 @@ void OnPlay(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Anubite"):
 		{
-			deployAtTile(0, "Tartarian Gate flame", 1*mGetVarByQV("p"+p+"commander", "tile"));
-			damageUnit(1*trQuestVarGet("p"+p+"commander"), 3);
+			trQuestVarSet("p"+(3-p)+"drawCards", 1 + trQuestVarGet("p"+(3-p)+"drawCards"));
 		}
 		case kbGetProtoUnitID("Hero Greek Bellerophon"):
 		{
@@ -358,14 +368,9 @@ void OnPlay(int unit = 0) {
 			trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
 			chooseSpell(SPELL_CHOOSE_DIRECTION);
 		}
-		case kbGetProtoUnitID("Theris"):
-		{
-			drawCard(p);
-		}
 		case kbGetProtoUnitID("Female"):
 		{
-			mSetVarByQV("p"+p+"commander", "health", 2 + mGetVarByQV("p"+p+"commander", "health"));
-			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
+			drawCard(p);
 		}
 		case kbGetProtoUnitID("Flying Purple Hippo"):
 		{
@@ -443,7 +448,7 @@ void OnPlay(int unit = 0) {
 				ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
 				MusicHigh();
 			}
-			damageUnit(unit, 10);
+			trQuestVarSet("p"+p+"manaTax", 5 + trQuestVarGet("p"+p+"manaTax"));
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("drop" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");

@@ -28,13 +28,9 @@ bool OnDeath(int event = -1, int unit = 0){
 	bool checkAgain = false;
 	switch(event)
 	{
-		case DEATH_DRAW_CARD:
-		{
-			drawCard(p);
-		}
 		case DEATH_OPPONENT_DRAW_CARD:
 		{
-			drawCard(3-p);
+			trQuestVarSet("p"+(3-p)+"drawCards", 1 + trQuestVarGet("p"+(3-p)+"drawCards"));
 		}
 		case DEATH_EGG:
 		{
@@ -55,7 +51,7 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_GET_SCRAP:
 		{
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 				addCardToHand(p, 0, SPELL_SCRAP_METAL);
 			}
 		}
@@ -118,6 +114,10 @@ bool OnDeath(int event = -1, int unit = 0){
 			if (success) {
 				deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(proto));
 			}
+		}
+		case DEATH_SUMMON_COPY:
+		{
+			deathSummonQueue(1*mGetVar(unit, "tile"), p, kbGetProtoUnitName(1*trQuestVarGet("p"+(3-p)+"lastProto")));
 		}
 		case DEATH_SUMMON_BEETLE:
 		{
