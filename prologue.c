@@ -53,7 +53,8 @@ inactive
 		{
 		case 0:
 			{
-				trLetterBox(true);
+				trUIFadeToColor(0,0,0,0,0,false);
+				//trLetterBox(true);
 				trQuestVarSet("cinTime", trTime() + 6);
 				trOverlayText("The story began on an ordinary day...", 5.0);
 			}
@@ -70,7 +71,7 @@ inactive
 				trQuestVarSet("cinTime", trTime() + 6);
 				ambientColor(0,0,0);
 				sunColor(0,0,0);
-				trLetterBox(true);
+				//trLetterBox(true);
 				trSoundPlayFN("cinematics\35_out\music.mp3");
 				trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003),
 					vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
@@ -94,7 +95,7 @@ inactive
 			}
 		case 3:
 			{
-				trQuestVarSet("cinTime", trTime() + 4);
+				trQuestVarSet("cinTime", trTime() + 3);
 				trSoundPlayFN("lightningstrike4.wav", "5", -1, "","");
 				trSoundPlayFN("vortexstart.wav", "3", -1, "","");
 				trCameraCut(vector(16.595451,124.640816,14.744846), vector(0.000398,-1.000000,-0.000003),
@@ -141,7 +142,7 @@ inactive
 		case 4:
 			{
 				trUIFadeToColor(0,0,0, 1000, 0, true);
-				trQuestVarSet("cinTime", trTime() + 2);
+				trQuestVarSet("cinTime", trTime() + 3);
 			}
 		case 5:
 			{
@@ -154,7 +155,8 @@ inactive
 				// cleanup
 				int next = trGetNextUnitScenarioNameNumber();
 				for(i=trQuestVarGet("idsStart");<next){
-					trUnitSelectClear();trUnitSelect(""+i);
+					trUnitSelectClear();
+					trUnitSelect(""+i, true);
 					trUnitDestroy();
 				}
 				xsDisableSelf();
@@ -163,6 +165,8 @@ inactive
 				trSetLighting("default", 0);
 				trQuestVarSet("missionSelection", -1);
 				trQuestVarSet("missionClass", -1);
+				trFadeOutAllSounds(5.0);
+				trUIFadeToColor(0,0,0,0,0,false);
 			}
 		}
 		trQuestVarSet("cinStep", 1 + trQuestVarGet("cinStep"));
@@ -400,20 +404,12 @@ inactive
 			trUIFadeToColor(0,0,0,1000,6000,true);
 		}
 	}
-*/
+
 	rule CinPrologue12
 	highFrequency
 	inactive
 	{
 		if ((trTime()-cActivationTime) >= 7){
-			/*
-			trPaintTerrain(0, 0, 60, 60, 5, 4, false);
-			int next = trGetNextUnitScenarioNameNumber();
-			for(i=trQuestVarGet("idsStart");<next){
-				trUnitSelectClear();trUnitSelect(""+i);
-				trUnitDestroy();
-			}
-			*/
 			xsDisableRule("CinPrologue12");
 			trQuestVarSet("missionSelection", -1);
 			trQuestVarSet("missionClass", -1);
@@ -427,7 +423,7 @@ inactive
 			trDelayedRuleActivation("ClassUnlockMessage_0");
 		}
 	}
-	
+
 	rule CinPrologue14
 	highFrequency
 	inactive
@@ -437,7 +433,7 @@ inactive
 			xsEnableRule("MissionBegin");
 		}
 	}
-	
+*/
 	rule ClassUnlockMessage_0
 	highFrequency
 	inactive

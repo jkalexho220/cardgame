@@ -1183,7 +1183,7 @@ inactive
 		trPlayerKillAllGodPowers(1);
 		trTechGodPower(1, "animal magnetism", 1);
 		trTechGodPower(1, "create gold", 1);
-		trUIFadeToColor(0,0,0,1000,1000,false);
+		//trUIFadeToColor(0,0,0,1000,1000,false);
 		trSetFogAndBlackmap(true, true);
 		trOverlayTextColour(255, 255, 0);
 		if(collectionMission == ""){
