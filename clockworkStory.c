@@ -7,13 +7,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of clockwork landscape.");
-		CinematicAdd("HeavenGames\rogers", "Next up is Yeebaagooon...");
-		CinematicAdd("HeavenGames\roxas", "Did you just say Yeebaagooon? What business do you have with that villain?");
-		CinematicAdd("HeavenGames\rogers", "Villain? The Yeebaagooon I know isn't a villain.");
-		CinematicAdd("HeavenGames\roxas", "Oh, you must be working for him then. Die!");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m1_", 1, 6);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
@@ -28,15 +22,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\roxas", "Dammit! How could this be?");
-		CinematicAdd("HeavenGames\rogers", "I'm not going to kill you. Just explain this villain business.");
-		CinematicAdd("HeavenGames\roxas", "What? Aren't you here to assassinate me?");
-		CinematicAdd("HeavenGames\rogers", "No! I just need Yeebaagooon's help with something.");
-		CinematicAdd("HeavenGames\roxas", "Does that involve Yeebaagooon leaving to join you?");
-		CinematicAdd("HeavenGames\rogers", "Uh, probably.");
-		CinematicAdd("HeavenGames\roxas", "Excellent! I will help you reach Yeebaagooon.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m1_", 7, 10);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -50,13 +36,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\roxas", "This land was once a lush green valley. But then Yeebaagooon came and estabilshed the Evil Profit Company.");
-		CinematicAdd("HeavenGames\roxas", "Now, it is a wasteland filled with factories that build his robot army.");
-		CinematicAdd("HeavenGames\roxas", "But strangely, some of us have gained sentience and have formed a resistance. This is one of our bases.");
-		CinematicAdd("HeavenGames\robot", "Commander Roxas! We have trouble! The Profit Patrol are attacking!");
-		CinematicAdd("HeavenGames\roxas", "What? To battle stations!");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m2_", 1, 4);
 		teleportToTile(1*trQuestVarGet("p1commander"), 132);
 		teleportToTile(1*trQuestVarGet("p2commander"), 152);
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -139,12 +119,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\roxas", "You have proven your strength and honesty. I will lead you to Yeebaagooon.");
-		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of the tower entrance.");
-		CinematicAdd("HeavenGames\roxas", "This is the incinerator of the Evil Profit Company.");
-		CinematicAdd("HeavenGames\roxas", "No one guards this place. We can sneak in if we're careful.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m3_", 1, 5);
 		teleportToTile(1*trQuestVarGet("p2commander"), 233);
 	}
 }
@@ -156,9 +131,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("icons\infantry g hoplite icon 64", "Insert panel introducing throwaway villain");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m4_", 1, 5);
 		mSetVarByQV("p2commander", "health", 20);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(128, 2, kbGetProtoUnitID("Tower Mirror"));
@@ -173,12 +146,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\underling", "Boss! The tower has been infiltrated by a robot and a swordsman!");
-		CinematicAdd("HeavenGames\yeebaagooon", "Hm, that swordsman looks familiar. What was his name again? Royce? Ronald?");
-		CinematicAdd("HeavenGames\underling", "Are they your guests sir?");
-		CinematicAdd("HeavenGames\yeebaagooon", "No. But let's send them an invitation anyway.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m4_", 6, 10);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -191,13 +159,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("icons\infantry g hoplite icon 64", "insert image of yeebaagooon screen");
-		CinematicAdd("HeavenGames\yeebaagooon", "Welcome, Ronald! And you, robot man, whatever your name is.");
-		CinematicAdd("HeavenGames\rogers", "It's Rogers, actually.");
-		CinematicAdd("HeavenGames\roxas", "You bastard! Show yourself instead of hiding behind that screen!");
-		CinematicAdd("HeavenGames\yeebaagooon", "How rude. I'm inviting you to a match of Minigames Z. Enjoy!");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m5_", 1, 6);
 		damageUnit(1*trQuestVarGet("p1commander"), 18);
 		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p2commander", "tile"), 0);
 		teleportToTile(1*trQuestVarGet("p2commander"), 219);
@@ -398,9 +360,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\yeebaagooon", "Well done! You can take the elevator straight to the presidential suite.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m5_", 7, 16);
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
 	}
@@ -413,16 +373,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\yeebaagooon", "Welcome, Royce!");
-		CinematicAdd("HeavenGames\roxas", "Yeebaagooon! At last, I will topple your rein-");
-		CinematicAdd("icons\infantry g hoplite icon 64", "Insert image of yeeb zapping roxas");
-		CinematicAdd("HeavenGames\yeebaagooon", "Dispose of him.");
-		CinematicAdd("HeavenGames\underling", "Yessir");
-		CinematicAdd("HeavenGames\rogers", "What? Wait! Don't kill him! He's a playable character!");
-		CinematicAdd("HeavenGames\yeebaagooon", "Foolish. Not even playable characters are safe from me.");
-		CinematicAdd("HeavenGames\yeebaagooon", "If you want me to spare him, then prove yourself.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m6_", 1, 10);
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "attack", 1);
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -440,14 +391,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\yeebaagooon", "Congratulations. The annoying robot lives another day.");
-		CinematicAdd("HeavenGames\rogers", "Alright. Will you hear me out now? I need your help to save the world.");
-		CinematicAdd("HeavenGames\yeebaagooon", "Saving the world? From what?");
-		CinematicAdd("HeavenGames\rogers", "Insert thing we are trying to stop here");
-		CinematicAdd("HeavenGames\yeebaagooon", "Well this won't do. Can't have some upstart trying to destroy the world before I do.");
-		CinematicAdd("HeavenGames\yeebaagooon", "I shall assist you in this endeavor. Rejoice.");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c4m6_", 11, 14);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();

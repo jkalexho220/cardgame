@@ -43,9 +43,13 @@ void SetupMission(int class = 0, int mission = 0){
 			trQuestVarSet("customTerrainEmptyNot", T_FOREST_PALM);
 			AddToCustomBoard(150, TILE_IMPASSABLE, "Crate", 3);
 			AddToCustomBoard(151, TILE_IMPASSABLE, "Crate", 3);
+			/*
 			AddToCustomBoard(136, TILE_IMPASSABLE, "Crate", 3);
 			AddToCustomBoard(137, TILE_IMPASSABLE, "Crate", 3);
 			AddToCustomBoard(129, TILE_IMPASSABLE, "Crate", 3);
+			*/
+
+			trQuestVarSet("tutorialBotUnit", summonAtTile(128, 2, kbGetProtoUnitID("Automaton SPC")));
 			
 			AddToCustomBoard(223, TILE_EMPTY, "Wood Pile 1", 1, 105, 2);
 			AddToCustomBoard(225, TILE_EMPTY, "Wood Pile 2", 1, 165, 2);
@@ -1184,7 +1188,7 @@ inactive
 		trOverlayTextColour(255, 255, 0);
 		if(collectionMission == ""){
 			trOverlayText("Tutorial", 4.7, 500, 200, 1000);
-			xsEnableRule("StoryTutorial0");
+			xsEnableRule("StoryTutorial");
 			/* Starter Deck */
 			for(i = 0;<180){
 				setCardCountDeck(i, 0);
@@ -1211,7 +1215,7 @@ inactive
 			if(trQuestVarGet("missionClass") == 0 && trQuestVarGet("missionSelection") == 3){
 				xsEnableRule("StoryClass0Mission3_");
 			}
-			xsEnableRule("SelectCommander");
+			xsEnableRule("SelectCommander"); // disable campaign hero healing
 		}
 		/* Add Cards to Deck */
 		yClearDatabase("p1deck");
@@ -1225,7 +1229,7 @@ inactive
 		SetupMission(trQuestVarGet("missionClass"), trQuestVarGet("missionSelection"));
 		trQuestVarSet("missionComplete", 0);
 		xsEnableRule("initializeBoard");
-		xsDisableRule("MissionBegin");
+		xsDisableSelf();
 	}
 }
 
@@ -1774,28 +1778,17 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("newCommander") > 0){
-		trQuestVarSet("timermstimer", trTimeMS() + 2);
-		trQuestVarSet("newCommanderHeading", trQuestVarGet("newCommanderHeading") + 2);
-		if(trQuestVarGet("newCommanderHeading") > 360){
-			trQuestVarSet("newCommanderHeading", 1);
-		}
+		float diff = trTimeMS() - trQuestVarGet("timermstimer");
+		trQuestVarSet("newCommanderHeading", fModulo(360.0, trQuestVarGet("newCommanderHeading") + diff * 0.15));
+		trQuestVarSet("timermstimer", trTimeMS());
 		trUnitSelectClear();
 		trUnitSelect(""+1*trQuestVarGet("newCommander"), true);
 		trUnitSetHeading(trQuestVarGet("newCommanderHeading"));
-		xsEnableRule("NewCommanderRotate_");
+	} else {
+		xsDisableSelf();
 	}
-	xsDisableRule("NewCommanderRotate");
 }
 
-rule NewCommanderRotate_
-highFrequency
-inactive
-{
-	if(trTimeMS() > trQuestVarGet("timermstimer")){
-		xsDisableRule("NewCommanderRotate_");
-		xsEnableRule("NewCommanderRotate");
-	}
-}
 
 rule SelectCommander
 highFrequency
@@ -1803,33 +1796,13 @@ inactive
 {
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
-	if(trUnitIsSelected()){
-		trUnitSetHP(mGetVarByQV("p2commander", "health"));
-	}
+	xsSetContextPlayer(2);
+	float health = kbUnitGetCurrentHitpoints(1*trQuestVarGet("p2commander"));
+	xsSetContextPlayer(0);
+	trDamageUnit(health - mGetVarByQV("p2commander", "health"));
 }
 
-
-rule Story_Cinematic_Play
-highFrequency
-inactive
-{
-	trQuestVarSet("cinematicStep", 1 + trQuestVarGet("cinematicStep"));
-	int x = trQuestVarGet("cinematicStep");
-	trShowImageDialog(trStringQuestVarGet("cinematicImage"+x), trStringQuestVarGet("cinematicText"+x));
-	xsDisableSelf();
-	trDelayedRuleActivation("Story_Cinematic_Next");
-}
-
-rule Story_Cinematic_Next
-highFrequency
-inactive
-{
-	if (trQuestVarGet("cinematicStep") < trQuestVarGet("cinematicLength")) {
-		trDelayedRuleActivation("Story_Cinematic_Play");
-	}
-	xsDisableSelf();
-}
-
+/*
 rule StoryTutorial0
 highFrequency
 inactive
@@ -1902,7 +1875,7 @@ inactive
 		xsDisableRule("StoryTutorial5");
 	}
 }
-
+*/
 rule StoryClass0Mission1
 highFrequency
 inactive

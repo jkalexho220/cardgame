@@ -512,7 +512,7 @@ int GetSpellAnimation(int class = 0, int type = 0){
 			}
 		}
 	}
-	ThrowError("GetSpellAnimation");
+	ThrowError("GetSpellAnimation " + class + " type: " + type);
 	return(0);
 }
 
@@ -1035,7 +1035,7 @@ active
 	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
 
-	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.");
+	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER);
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");

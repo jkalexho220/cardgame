@@ -1,32 +1,4 @@
-/*
-These are functions are called to play the storyline
-CinematicReset();
-CinematicAdd("icons\infantry g hoplite icon 64", "pen island");
-CinematicStart();
-*/
 
-void CinematicReset() {
-	trQuestVarSet("cinematicStep", 0);
-	trQuestVarSet("cinematicLength", 0);
-}
-
-/*
-i = icon
-s = string text
-*/
-void CinematicAdd(string i = "", string s = "") {
-	trQuestVarSet("cinematicLength", 1 + trQuestVarGet("cinematicLength"));
-	trStringQuestVarSet("cinematicImage"+1*trQuestVarGet("cinematicLength"), i);
-	trStringQuestVarSet("cinematicText"+1*trQuestVarGet("cinematicLength"), s);
-}
-
-/*
-m = music filename
-*/
-void CinematicStart(string m = "") {
-	trMusicPlay(m, "1", 0);
-	xsEnableRule("Story_Cinematic_Play");
-}
 
 string ClassName(int class = 0) {
 	string cn = "Not a class";
@@ -657,15 +629,14 @@ inactive
 		xsEnableRule("CollectionSpace");
 		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
-			CinematicReset();
-			CinematicAdd("icons\improvement architects icon 64", "This is your Collection and Deck. Right Click a Card to move it between the two.");
-			CinematicAdd("icons\improvement architects icon 64", "Your Deck must have a Commander and 40 Cards from one or two Classes.");
-			CinematicAdd("icons\improvement architects icon 64", "The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
-			CinematicAdd("icons\building outpost icon 64", "The Story Missions are Outposts. They reward packs containing Class Cards.");
-			CinematicAdd("icons\building outpost icon 64", "After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
-			CinematicAdd("icons\building outpost icon 64", "After completing a Class Story you will unlock the second Commander for that Class.");
-			CinematicAdd("icons\improvement rheias gift icons 64", "Complete your first Class Story to unlock the other Classes.");
-			CinematicStart();
+			DialogAdd("This is your Collection and Deck. Right Click a Card to move it between the two.");
+			DialogAdd("Your Deck must have a Commander and 40 Cards from one or two Classes.");
+			DialogAdd("The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
+			DialogAdd("The Story Missions are Outposts. They reward packs containing Class Cards.");
+			DialogAdd("After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
+			DialogAdd("After completing a Class Story you will unlock the second Commander for that Class.");
+			DialogAdd("Complete your first Class Story to unlock the other Classes.");
+			DialogStart();
 		}
 	} else {
 		trLetterBox(true);
