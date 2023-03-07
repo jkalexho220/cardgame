@@ -53,8 +53,7 @@ inactive
 		{
 		case 0:
 			{
-				trUIFadeToColor(0,0,0,0,0,false);
-				//trLetterBox(true);
+				trLetterBox(true);
 				trQuestVarSet("cinTime", trTime() + 6);
 				trOverlayText("The story began on an ordinary day...", 5.0);
 			}
@@ -71,7 +70,7 @@ inactive
 				trQuestVarSet("cinTime", trTime() + 6);
 				ambientColor(0,0,0);
 				sunColor(0,0,0);
-				//trLetterBox(true);
+				trLetterBox(true);
 				trSoundPlayFN("cinematics\35_out\music.mp3");
 				trCameraCut(vector(15.341919,89.480629,24.112017), vector(0.000398,-1.000000,-0.000003),
 					vector(0.999984,0.000398,-0.005602), vector(-0.005602,0.000000,-0.999984));
@@ -148,7 +147,12 @@ inactive
 			{
 				trOverlayText("~ H E A V E N   G A M E S ~", 4.7, 516, 200, 1000);
 				trSoundPlayFN("xsentinelbirth.wav", "3", -1, "","");
-				trQuestVarSet("cinTime", trTime() + 5);
+				trQuestVarSet("cinTime", trTime() + 3);
+			}
+		case 6:
+			{
+				trFadeOutAllSounds(3.0);
+				trQuestVarSet("cinTime", trTime() + 3);
 			}
 		default:
 			{
@@ -165,8 +169,6 @@ inactive
 				trSetLighting("default", 0);
 				trQuestVarSet("missionSelection", -1);
 				trQuestVarSet("missionClass", -1);
-				trFadeOutAllSounds(5.0);
-				trUIFadeToColor(0,0,0,0,0,false);
 			}
 		}
 		trQuestVarSet("cinStep", 1 + trQuestVarGet("cinStep"));

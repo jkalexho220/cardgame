@@ -51,6 +51,7 @@ highFrequency
 {
 	dDialogs = xInitDatabase("dialogs");
 	xDialogMessage = xInitAddString(dDialogs, "message");
+	xsDisableSelf();
 }
 
 rule Dialog_Play
