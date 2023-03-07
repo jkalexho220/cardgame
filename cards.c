@@ -1035,7 +1035,7 @@ active
 	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
 
-	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.");
+	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");
