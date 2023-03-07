@@ -803,7 +803,7 @@ inactive
 	}
 }
 
-void CollectionStartGame(int eventId = -1) {
+void CollectionStartMission(int eventId = -1) {
 	trPlayerKillAllGodPowers(1);
 	trCounterAbort("tooltipEnter");
 	//xsDisableRule("CollectionEnter");

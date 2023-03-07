@@ -43,13 +43,14 @@ void SetupMission(int class = 0, int mission = 0){
 			trQuestVarSet("customTerrainEmptyNot", T_FOREST_PALM);
 			AddToCustomBoard(150, TILE_IMPASSABLE, "Crate", 3);
 			AddToCustomBoard(151, TILE_IMPASSABLE, "Crate", 3);
-			/*
-			AddToCustomBoard(136, TILE_IMPASSABLE, "Crate", 3);
-			AddToCustomBoard(137, TILE_IMPASSABLE, "Crate", 3);
-			AddToCustomBoard(129, TILE_IMPASSABLE, "Crate", 3);
-			*/
+			
+			AddToCustomBoard(153, TILE_IMPASSABLE, "Crate", 3);
+			AddToCustomBoard(163, TILE_IMPASSABLE, "Crate", 3);
+			AddToCustomBoard(155, TILE_IMPASSABLE, "Crate", 3);
+			AddToCustomBoard(161, TILE_IMPASSABLE, "Crate", 3);
+			
 
-			trQuestVarSet("tutorialBotUnit", summonAtTile(128, 2, kbGetProtoUnitID("Automaton SPC")));
+			trQuestVarSet("tutorialBotUnit", summonAtTile(132, 2, kbGetProtoUnitID("Automaton SPC")));
 			
 			AddToCustomBoard(223, TILE_EMPTY, "Wood Pile 1", 1, 105, 2);
 			AddToCustomBoard(225, TILE_EMPTY, "Wood Pile 2", 1, 165, 2);
@@ -65,7 +66,11 @@ void SetupMission(int class = 0, int mission = 0){
 			InitBot(BOT_PERSONALITY_TRAINING);
 			trQuestVarSet("p2commanderType", kbGetProtoUnitID("Automaton"));
 			for(x=0;<40){
-				addCardToDeck(2, "Swordsman");
+				addCardToDeck(2, "Automaton SPC");
+			}
+
+			for(i=10; >0) {
+				addCardToDeck(1, "Toxotes");
 			}
 		}
 		case CLASS_ADVENTURER:
@@ -1190,6 +1195,7 @@ inactive
 			trOverlayText("Tutorial", 4.7, 500, 200, 1000);
 			xsEnableRule("StoryTutorial");
 			/* Starter Deck */
+			/*
 			for(i = 0;<180){
 				setCardCountDeck(i, 0);
 				//setCardCountCollection(i, 0);
@@ -1198,9 +1204,13 @@ inactive
 				setCardCountDeck(i, 3);
 				setCardCountDeck(i + 30, 3);
 			}
+			
 			setCardCountDeck(6, 2);
-			//setCardCountCollection(6, 3);
 			setCardCountDeck(36, 2);
+			*/
+
+			//setCardCountCollection(6, 3);
+			
 			//setCardCountCollection(36, 3);
 			setClassProgress(CLASS_ADVENTURER, 1);
 			setClassProgress(CLASS_ARCANE, 1);

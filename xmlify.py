@@ -18,7 +18,7 @@ NAME = ' Card Game'
 files = ['memory.c', 'modulo.c', 'shared.c', 'commands.c', 'events.c', 'cards.c', 'board.c', 'cinematic.c', 
 		'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataCollectionFunctions.c', 
 		'dataDeckFunctions.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 
-		'OnPlay.c', 'OnTurnStart.c', 'gameplay.c', 'bot.c', 'match.c', 'tutorial.c', 'story.c', 'clockworkStory.c', 'nagaStory.c']
+		'OnPlay.c', 'OnTurnStart.c', 'bot.c', 'tutorial.c', 'gameplay.c', 'match.c', 'story.c', 'clockworkStory.c', 'nagaStory.c']
 
 #########################################
 ####### CODE BELOW (DO NOT TOUCH) #######

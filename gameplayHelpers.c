@@ -567,6 +567,7 @@ void magnetize(int target = 0, int unit = 0) {
 	if (HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) && mGetVar(target, "action") == ACTION_SLEEPING) {
 		mSetVar(target, "action", ACTION_READY);
 	}
+	//ChatLog(0, "Magnetize! " + mGetVar(target, "health"));
 }
 
 void updateRoxasHealth(int p = 0) {
