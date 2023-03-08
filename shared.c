@@ -53,7 +53,6 @@ string trStringQuestVarGet(string name="") {
 
 
 void trUnitSelectByQV(string s = "", bool reverse = true) {
-	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet(""+s), reverse);
 }
 

@@ -536,6 +536,7 @@ string collectionMission = "";
 
 rule initializeBoard
 inactive
+highFrequency
 {
 	/*
 	Tile index increases outwards from the center.
@@ -622,7 +623,7 @@ inactive
 	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") + 6);
 	
-	xsDisableRule("initializeBoard");
+	xsDisableSelf();
 	xsEnableRule("match_00_start");
 	
 	if (trCurrentPlayer() == 1) {

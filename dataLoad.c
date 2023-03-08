@@ -281,7 +281,11 @@ inactive
 			trForbidProtounit(2, "Swordsman Hero");
 			// ChatLog(1, "Mode:Singleplayer");
 			// Cards will probably be unlocked in order, so I'm assuming the player has not played before if the first value is zero
-			if(trGetScenarioUserData(0) < 0){
+			int sum = 0;
+			for(i=0; < 16) {
+				sum = sum + trGetScenarioUserData(i);
+			}
+			if(sum <= 0){
 				xsEnableRule("CinPrologue00");
 			} else {
 				xsEnableRule("Collection");

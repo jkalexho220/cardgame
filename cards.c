@@ -512,7 +512,7 @@ int GetSpellAnimation(int class = 0, int type = 0){
 			}
 		}
 	}
-	ThrowError("GetSpellAnimation");
+	ThrowError("GetSpellAnimation " + class + " type: " + type);
 	return(0);
 }
 
@@ -943,7 +943,7 @@ active
 	zBankInit("p2unitBank", 64, 64);
 	zBankInit("allUnitsBank", 1, 127);
 	
-	CardSetup("Automaton",		0, "Training Dummy", 		0, 1, 0, 0, 0, true);
+	CardSetup("Automaton",				0, "Training Dummy", 		0, 10, 0, 0, Keyword(BEACON), true);
 	CardEvents("Automaton", 0, 0, 		"Hit me hard daddy!");
 	
 	CardSetup("General Melagius",		0, "General Store", 			2, 20, 2, 1, Keyword(BEACON), true);
@@ -1095,6 +1095,7 @@ highFrequency
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied unit next to your Commander and restore 5 health to it.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Nemean Lion",			8, "Guild Master",		6, 6, 2, 1); // Play: Stun all enemy units that cost {Manaflow} or less.
+	
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_02");
 }

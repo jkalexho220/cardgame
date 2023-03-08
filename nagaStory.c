@@ -6,12 +6,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m1_01", "");
-		CinematicAdd("HeavenGames\c2m1_02", "");
-		CinematicAdd("HeavenGames\c2m1_03", "");
-		CinematicAdd("HeavenGames\c2m1_04", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m1_", 1, 4);
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(FURIOUS));
@@ -30,15 +25,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		trFadeOutAllSounds(0.0);
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m1_05", "");
-		CinematicAdd("HeavenGames\c2m1_06", "");
-		CinematicAdd("HeavenGames\c2m1_07", "");
-		CinematicAdd("HeavenGames\c2m1_08", "");
-		CinematicAdd("HeavenGames\c2m1_09", "");
-		CinematicAdd("HeavenGames\c2m1_10", "");
-		CinematicAdd("HeavenGames\c2m1_11", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m1_", 5, 11);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -51,11 +38,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m2_01", "");
-		CinematicAdd("HeavenGames\c2m2_02", "");
-		CinematicAdd("HeavenGames\c2m2_03", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m2_", 1, 3);
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 3);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(LIGHTNING));
@@ -85,9 +68,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m2_04", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m2_", 4, 4);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -100,10 +81,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m3_01", "");
-		CinematicAdd("HeavenGames\c2m3_02", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m3_", 1, 2);
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
@@ -134,9 +112,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m3_03", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m3_", 3, 3);
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -149,12 +125,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m4_01", "");
-		CinematicAdd("HeavenGames\c2m4_02", "");
-		CinematicAdd("HeavenGames\c2m4_03", "");
-		CinematicAdd("HeavenGames\c2m4_04", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m4_", 1, 4);
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 1);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(REGENERATE));
@@ -186,13 +157,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m5_01", "");
-		CinematicAdd("HeavenGames\c2m5_02", "");
-		CinematicAdd("HeavenGames\c2m5_03", "");
-		CinematicAdd("HeavenGames\c2m5_04", "");
-		CinematicAdd("HeavenGames\c2m5_05", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m5_", 1, 5);
 		mSetVarByQV("p2commander", "health", 40);
 		mSetVarByQV("p2commander", "attack", 2);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(ETHEREAL));
@@ -225,30 +190,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m6_01", "");
-		CinematicAdd("HeavenGames\c2m6_02", "");
-		CinematicAdd("HeavenGames\c2m6_03", "");
-		CinematicAdd("HeavenGames\c2m6_04", "");
-		CinematicAdd("HeavenGames\c2m6_05", "");
-		CinematicAdd("HeavenGames\c2m6_06", "");
-		CinematicAdd("HeavenGames\c2m6_07", "");
-		CinematicAdd("HeavenGames\c2m6_08", "");
-		CinematicAdd("HeavenGames\c2m6_09", "");
-		CinematicAdd("HeavenGames\c2m6_10", "");
-		CinematicAdd("HeavenGames\c2m6_11", "");
-		CinematicAdd("HeavenGames\c2m6_12", "");
-		CinematicAdd("HeavenGames\c2m6_13", "");
-		CinematicAdd("HeavenGames\c2m6_14", "");
-		CinematicAdd("HeavenGames\c2m6_15", "");
-		CinematicAdd("HeavenGames\c2m6_16", "");
-		CinematicAdd("HeavenGames\c2m6_17", "");
-		CinematicAdd("HeavenGames\c2m6_18", "");
-		CinematicAdd("HeavenGames\c2m6_19", "");
-		CinematicAdd("HeavenGames\c2m6_20", "");
-		CinematicAdd("HeavenGames\c2m6_21", "");
-		CinematicAdd("HeavenGames\c2m6_22", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m6", 1, 22);
 		trQuestVarSet("companion", summonAtTile(283, 1, kbGetProtoUnitID("Archer Atlantean Hero")));
 		teleportToTile(1*trQuestVarGet("p1commander"), 281);
 		teleportToTile(1*trQuestVarGet("p2commander"), 255);
@@ -319,13 +261,7 @@ highFrequency
 inactive
 {
 	if ((trTime()-cActivationTime) > 2) {
-		CinematicReset();
-		CinematicAdd("HeavenGames\c2m6_23", "");
-		CinematicAdd("HeavenGames\c2m6_24", "");
-		CinematicAdd("HeavenGames\c2m6_25", "");
-		CinematicAdd("HeavenGames\c2m6_26", "");
-		CinematicAdd("HeavenGames\c2m6_27", "");
-		CinematicStart();
+		CinematicPlay("HeavenGames\c3m6_", 23, 27);
 		xsDisableSelf();
 	}
 }
