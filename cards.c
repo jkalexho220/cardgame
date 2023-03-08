@@ -976,7 +976,7 @@ active
 	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy units. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy units Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They are Fleeting and cost 0.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They have Airdrop and cost 0.", SPELL_TYPE_OTHER, 0, true);
 	
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
 	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
@@ -996,6 +996,8 @@ active
 	CardSetup("Pirate Ship",			10, "Stuck Pirate Ship",			0, 40, 0, 0, 0, true);
 	CardEvents("Pirate Ship", 0, 0, 						"Turn Start: Secretly choose an enemy tile, next turn deal 8 Damage there.");
 	
+	CardSetup("Flying Medic",			3, "Playful Fae",			2, 2, 1, 2, Keyword(BEACON) + Keyword(HEALER) + Keyword(FLYING), true);
+
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
 	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged units.");

@@ -3074,7 +3074,7 @@ inactive
 			} else if(trQuestVarGet("temp") == 2){
 				addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
 			} else if(trQuestVarGet("temp") == 3){
-				addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
+				addCardToHand(p, kbGetProtoUnitID("Peltast"), 0, true);
 			} else {
 				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
 			}

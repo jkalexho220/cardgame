@@ -147,7 +147,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Swordsman");
 						addCardToDeck(2, "Lancer Hero");
 						addCardToDeck(2, "Trident Soldier Hero");
-						addCardToDeck(2, "Toxotes");
+						addCardToDeck(2, "Raiding Cavalry");
 						addCardToDeck(2, "Villager Atlantean");
 						addCardToDeck(2, "", SPELL_BACKSTAB);
 					}
@@ -231,34 +231,84 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					trQuestVarSet("customTerrainEmpty", 8);
 					trQuestVarSet("customTerrainEmptyNot", 90);
-					/* Middle */
-					AddToCustomBoard(128, TILE_OCCUPIED, "Gaia Pool", 1, 0, 1);
-					for(x=129;<135){
-						AddToCustomBoard(x, TILE_OCCUPIED, "Parrot", 1, 0, 2);
-					}
+					trQuestVarSet("customTerrainEmptySpecial", T_GRASS_50);
+					
+					AddToCustomBoard(187, TILE_OCCUPIED, "Tamarisk Tree", 1, 0, 1);
+					AddToCustomBoard(172, TILE_OCCUPIED, "Tamarisk Tree", 1, 0, 1);
+					
 					/* Border */
-					for(x=255;<297){
-						if(x != 282){
-							trQuestVarSetFromRand("temp", 0, 360, true);
-							AddToCustomBoard(x, TILE_OCCUPIED, "Gaia Forest Tree", 1, trQuestVarGet("temp"), 2);
+					for(x=256;< 297){
+						AddToCustomBoard(x, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					}
+					AddToCustomBoard(238, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(205, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(178, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(157, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(142, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+
+					AddToCustomBoard(182, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(161, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(214, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(133, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(154, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(150, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(190, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(226, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(199, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(154, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+
+					AddToCustomBoard(227, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(195, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(169, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(149, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+					AddToCustomBoard(135, TILE_IMPASSABLE, "Gaia Forest Tree", 3);
+
+					// blowing leaves
+					AddToCustomBoard(158, TILE_EMPTY, "Blowing Leaves", 1, 270);
+					AddToCustomBoard(164, TILE_EMPTY, "Blowing Leaves", 1, 270);
+					AddToCustomBoard(194, TILE_EMPTY, "Blowing Leaves", 1, 270);
+					AddToCustomBoard(174, TILE_EMPTY, "Blowing Leaves", 1, 270);
+
+					for(i=220; <= 254) {
+						if (i > 243 || i < 241) {
+							AddToCustomBoard(i, TILE_IMPASSABLE, "Gaia Forest Tree", 2);
 						}
 					}
+
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
+					trQuestVarSet("p2class2", CLASS_EVIL);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+					deployAtTile(0, "Garrison Flag Sky Passage", 219);
 					for(x=0;<5){
 						addCardToDeck(2, "Wolf");
 						addCardToDeck(2, "Ornlu");
-						addCardToDeck(2, "Apep");
-						addCardToDeck(2, "Bear");
 						addCardToDeck(2, "Hetairoi");
+						addCardToDeck(2, "Peltast");
 						addCardToDeck(2, "Hero Greek Theseus");
+						addCardToDeck(2, "Dryad");
 					}
 					for(x=0;<4){
-						addCardToDeck(2, "Hero Greek Hippolyta");
 						addCardToDeck(2, "Hero Chinese Immortal");
 					}
 					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
 					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
+
+					summonAtTile(143, 2, kbGetProtoUnitID("Audrey Water"));
+					summonAtTile(131, 2, kbGetProtoUnitID("Audrey Water"));
+					summonAtTile(136, 2, kbGetProtoUnitID("Audrey Water"));
+					summonAtTile(186, 2, kbGetProtoUnitID("Flying Medic"));
+					summonAtTile(199, 2, kbGetProtoUnitID("Flying Medic"));
+
+					summonAtTile(171, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(215, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(250, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(232, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(226, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(169, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(140, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(175, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(152, 2, kbGetProtoUnitID("Peltast"));
+					summonAtTile(165, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 				}
 				case 5:
 				{

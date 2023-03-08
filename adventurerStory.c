@@ -23,7 +23,7 @@ inactive
 		xsEnableRule("StoryClass0Mission2_end");
 
 		if (trQuestVarGet("missionHardmode") == 1) {
-			
+			summonAtTile(135, 2, kbGetProtoUnitID("Trident Soldier Hero"));
 		}
 	}
 }
@@ -65,9 +65,32 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m4_", 1, 8);
-		//trShowImageDialog("icons\Scenario Kemsyt Icon 64", "Ah perfect, something to plunder! We got stuck in this swamp and we were getting bored!");
-		trSoundPlayFN("kemsytattack1.wav","1",-1,"","");
+		int tile = mGetVarByQV("p2commander", "tile");
+		zSetVarByIndex("tiles", "occupant", tile, 0);
+		teleportToTile(1*trQuestVarGet("p2commander"), 255);
+
+		if (trQuestVarGet("missionHardmode") == 1) {
+			for(x=6; >0) {
+				addCardToDeck(2, "", SPELL_SPIDER_LAIR);
+			}
+			summonAtTile(214, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
+			summonAtTile(196, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
+		} else {
+			summonAtTile(241, 1, kbGetProtoUnitID("Hero Greek Theseus"));
+			summonAtTile(243, 1, kbGetProtoUnitID("Hero Greek Hippolyta"));
+		}
+		xsEnableRule("StoryClass0Mission4_instructions");
 		xsEnableRule("StoryClass0Mission4_end");
+	}
+}
+
+rule StoryClass0Mission4_instructions
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p1mana") > 0) {
+		uiMessageBox("Get to the spotlight to escape!");
+		xsDisableSelf();
 	}
 }
 
