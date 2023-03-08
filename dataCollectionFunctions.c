@@ -21,6 +21,7 @@ void loadCollection() {
 		data = trGetScenarioUserData(c, collectionFilename);
 		if (data == -1) {
 			data = 0;
+			trSetCurrentScenarioUserData(c + 6, 0);
 		}
 		for(x=0; <15) {
 			card = x + 30 * c;
@@ -31,6 +32,7 @@ void loadCollection() {
 		data = trGetScenarioUserData(c + 6, collectionFilename);
 		if (data == -1) {
 			data = 0;
+			trSetCurrentScenarioUserData(c + 6, 0);
 		}
 		for(x=15; <30) {
 			card = x + 30 * c;
