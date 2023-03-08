@@ -738,13 +738,13 @@ Bit functions
 n - number, p - position
 */
 bool GetBit(int n=0, int p=0){
-	for(i=0;<30){
-		if(i==p){
-			return (iModulo(2,n)==1);
-		}
-		n=n/2;
+	if (p > 30) {
+		p = 30;
+	} else if (p < 0) {
+		p = 0;
 	}
-	return (false);
+	int pow = xsPow(2, p); // floats become innacurate at very big numbers
+	return (iModulo(2,n / pow) == 1);
 }
 
 int SetBit(int n=0, int p=0){
