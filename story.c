@@ -122,13 +122,88 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<40){
 						addCardToDeck(2, "", SPELL_INTIMIDATE);
 					}
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
 				}
 				case 2:
 				{
 					/* Arena */
+					trSetLighting("dusk",0.0);
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false);
+					trQuestVarSet("dimension", 4);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_CITY_TILE);
+					AddToCustomBoard(141, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(140, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+
+					AddToCustomBoard(138, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+
+					AddToCustomBoard(146, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(137, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Maceman Hero"));
+					for(x=0; <6) {
+						addCardToDeck(2, "Swordsman");
+						addCardToDeck(2, "Lancer Hero");
+						addCardToDeck(2, "Trident Soldier Hero");
+						addCardToDeck(2, "Toxotes");
+						addCardToDeck(2, "Villager Atlantean");
+						addCardToDeck(2, "", SPELL_BACKSTAB);
+					}
+					for(x=0; < 2) {
+						addCardToDeck(2, "Avenger");
+						addCardToDeck(2, "", SPELL_PARTY_UP);
+					}
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
+				}
+				case 3:
+				{
+					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
 					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_GRASS_50);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_PINE);
+					trQuestVarSet("customTerrainEmptySpecial", T_GREEK_ROAD);
+					
+					for(i=194; <= 205) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+					
+					for(i=170; <= 177) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+
+					for(i=152; <= 155) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+
+					for(i=211; <= 218) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+
+					for(i=183; <= 188) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+
+					for(i=161; <= 164) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Pine", 3);
+					}
+
+					for(i=128; <= 137) {
+						AddToCustomBoard(i, TILE_EMPTY, "Cinematic Block");
+					}
+					for(i=0; < 3) {
+						AddToCustomBoard(i + 141, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 157, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 179, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 157, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 207, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 147, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 165, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 189, TILE_EMPTY, "Cinematic Block");
+					}
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("General Melagius"));
 					for(x=0;<6){
@@ -148,29 +223,44 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_VICTORY);
 					}
 				}
-				case 3:
+				case 4:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
+					trPaintTerrain(0, 0, 60, 60, 0, 11, false);
+					trQuestVarSet("dimension", 7);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", 8);
+					trQuestVarSet("customTerrainEmptyNot", 90);
+					/* Middle */
+					AddToCustomBoard(128, TILE_OCCUPIED, "Gaia Pool", 1, 0, 1);
+					for(x=129;<135){
+						AddToCustomBoard(x, TILE_OCCUPIED, "Parrot", 1, 0, 2);
+					}
+					/* Border */
+					for(x=255;<297){
+						if(x != 282){
+							trQuestVarSetFromRand("temp", 0, 360, true);
+							AddToCustomBoard(x, TILE_OCCUPIED, "Gaia Forest Tree", 1, trQuestVarGet("temp"), 2);
+						}
+					}
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
-					for(x=0;<6){
+					for(x=0;<5){
 						addCardToDeck(2, "Wolf");
+						addCardToDeck(2, "Ornlu");
 						addCardToDeck(2, "Apep");
 						addCardToDeck(2, "Bear");
 						addCardToDeck(2, "Hetairoi");
 						addCardToDeck(2, "Hero Greek Theseus");
 					}
 					for(x=0;<4){
-						addCardToDeck(2, "", SPELL_SING);
-						addCardToDeck(2, "", SPELL_GUARDIAN_OF_SEA);
+						addCardToDeck(2, "Hero Greek Hippolyta");
+						addCardToDeck(2, "Hero Chinese Immortal");
 					}
-					addCardToDeck(2, "Hero Chinese Immortal");
-					addCardToDeck(2, "Hero Greek Hippolyta");
+					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
+					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
 				}
-				case 4:
+				case 5:
 				{
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 0, 59, false);
@@ -291,7 +381,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_PISTOL_SHOT);
 					}
 				}
-				case 5:
+				case 6:
 				{
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 0, 8, false);
@@ -310,43 +400,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_NATURE_ANGRY);
 					}
 				}
-				case 6:
-				{
-					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 11, false);
-					trQuestVarSet("dimension", 7);
-					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
-					trQuestVarSet("customTerrainEmpty", 8);
-					trQuestVarSet("customTerrainEmptyNot", 90);
-					/* Middle */
-					AddToCustomBoard(128, TILE_OCCUPIED, "Gaia Pool", 1, 0, 1);
-					for(x=129;<135){
-						AddToCustomBoard(x, TILE_OCCUPIED, "Parrot", 1, 0, 2);
-					}
-					/* Border */
-					for(x=255;<297){
-						if(x != 282){
-							trQuestVarSetFromRand("temp", 0, 360, true);
-							AddToCustomBoard(x, TILE_OCCUPIED, "Gaia Forest Tree", 1, trQuestVarGet("temp"), 2);
-						}
-					}
-					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Qilin"));
-					for(x=0;<5){
-						addCardToDeck(2, "Wolf");
-						addCardToDeck(2, "Ornlu");
-						addCardToDeck(2, "Apep");
-						addCardToDeck(2, "Bear");
-						addCardToDeck(2, "Hetairoi");
-						addCardToDeck(2, "Hero Greek Theseus");
-					}
-					for(x=0;<4){
-						addCardToDeck(2, "Hero Greek Hippolyta");
-						addCardToDeck(2, "Hero Chinese Immortal");
-					}
-					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
-					addCardToDeck(2, "", SPELL_ELVEN_APOCALYPSE);
-				}
+				
 			}
 		}
 		case CLASS_ARCANE:
@@ -1222,9 +1276,6 @@ inactive
 		} else {
 			trOverlayText(collectionMission, 4.7, 500, 200, 1000);
 			xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
-			if(trQuestVarGet("missionClass") == 0 && trQuestVarGet("missionSelection") == 3){
-				xsEnableRule("StoryClass0Mission3_");
-			}
 			xsEnableRule("SelectCommander"); // disable campaign hero healing
 		}
 		/* Add Cards to Deck */
@@ -1886,121 +1937,7 @@ inactive
 	}
 }
 */
-rule StoryClass0Mission1
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission1");
-		trShowImageDialog("icons\World Berry Bush icon 64", "Not long after starting your journey, a large figure comes running to greet you.");
-		trSoundPlayFN("gaiatreesprout1.wav","1",-1,"","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(192, 2, kbGetProtoUnitID("Wolf"));
-			summonAtTile(193, 2, kbGetProtoUnitID("Wolf"));
-		}
-	}
-}
 
-rule StoryClass0Mission2
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission2");
-		trShowImageDialog("icons\scenario x general icons 64", "Hello civilian! We will take your money to fund the army. Standard procedure.");
-		trSoundPlayFN("xpack\xdialog\en\xgen005.mp3", "2", -1, "","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			for (x=6; >0) {
-				addCardToDeck(2, "Hero Greek Ajax");
-			}
-			summonAtTile(168, 2, kbGetProtoUnitID("Swordsman"));
-			summonAtTile(169, 2, kbGetProtoUnitID("Swordsman"));
-		}
-	}
-}
-
-rule StoryClass0Mission3
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission3");
-		trShowImageDialog("icons\Special C Qilin Icon", "I am the Protector of this forest. How dare you walk into my domain?");
-		trSoundPlayFN("qilin_select1.wav","1",-1,"","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(168, 2, kbGetProtoUnitID("Hetairoi"));
-			summonAtTile(169, 2, kbGetProtoUnitID("Hetairoi"));
-		}
-	}
-}
-
-rule StoryClass0Mission3_
-highFrequency
-inactive
-{
-	trUnitSelectClear();
-	trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
-	if (trUnitPercentDamaged() >= 50){
-		if(PlayerDefeated(1) == false){
-			xsDisableRule("StoryClass0Mission3_");
-			if(kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("p2commander"))) == kbGetProtoUnitID("Qilin")){
-				trShowImageDialog("icons\Special C Qilin Icon", "Oh right, I uhhh... left the stove on! Please excuse me!");
-				trSoundPlayFN("qilin_select2.wav","1",-1,"","");
-				trUnitSelectClear();
-				trUnitSelect(""+1*trQuestVarGet("p2commander"), true);
-				trUnitChangeProtoUnit("Victory Marker");
-				trDamageUnitPercent(100);
-				mSetVarByQV("p2commander", "health", 0);
-				removeDeadUnits();
-			}
-		}
-	}
-}
-
-rule StoryClass0Mission4
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission4");
-		trShowImageDialog("icons\Scenario Kemsyt Icon 64", "Ah perfect, something to plunder! We got stuck in this swamp and we were getting bored!");
-		trSoundPlayFN("kemsytattack1.wav","1",-1,"","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(192, 2, kbGetProtoUnitID("Bondi"));
-			summonAtTile(193, 2, kbGetProtoUnitID("Bondi"));
-		}
-	}
-}
-
-rule StoryClass0Mission5
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission5");
-		trShowImageDialog("icons\god power audrey icons 64", "*plant noises*");
-		trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Bear"));
-		}
-	}
-}
-
-rule StoryClass0Mission6
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryClass0Mission6");
-		trShowImageDialog("icons\Special C Qilin Icon", "The stove incident has been resolved. This time let's fight for real!");
-		trSoundPlayFN("qilin_select2.wav","1",-1,"","");
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(192, 2, kbGetProtoUnitID("Hetairoi"));
-			summonAtTile(193, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
-		}
-	}
-}
 
 rule StoryClass1Mission1
 highFrequency

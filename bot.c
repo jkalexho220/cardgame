@@ -326,7 +326,11 @@ inactive
 					the score of a tile is the attack of the active unit * the number of targets it can reach on the tile
 					also prioritize tiles closer to enemy commander
 					*/
-					currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
+					if (HasKeyword(HEALER, mGetVarByQV("botActiveUnit", "keywords"))) {
+						currentScore = trCountUnitsInArea(""+1*trQuestVarGet("reachable"),2,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
+					} else {
+						currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
+					}
 					currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
 					if (currentScore >= bestTileScore) {
 						/*
@@ -359,7 +363,9 @@ inactive
 				trVectorSetUnitPos("pos", "botActiveUnit");
 				for (x=yGetDatabaseCount("targets"); >0) {
 					yDatabaseNext("targets");
-					if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
+					if (HasKeyword(HEALER, 1*mGetVarByQV("botActiveUnit", "keywords"))) {
+						currentScore = mGetVarByQV("targets", "maxHealth") - mGetVarByQV("targets", "health");
+					} else if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
 						continue;
 					}
 					if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){

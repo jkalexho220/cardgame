@@ -767,6 +767,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
 		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
 		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
+		mSetVar(next, "maxHealth", trQuestVarGet("card_" + proto + "_Health"));
 		mSetVar(next, "speed", trQuestVarGet("card_" + proto + "_Speed"));
 		mSetVar(next, "range", trQuestVarGet("card_" + proto + "_Range"));
 		mSetVar(next, "cost", trQuestVarGet("card_" + proto + "_Cost"));

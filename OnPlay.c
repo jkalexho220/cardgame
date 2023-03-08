@@ -180,6 +180,7 @@ void OnPlay(int unit = 0) {
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						mSetVarByQV("allUnits", "health", 1 + mGetVarByQV("allUnits", "health"));
+						mSetVarByQV("allUnits", "maxhealth", 1 + mGetVarByQV("allUnits", "maxhealth"));
 						trUnitSelectClear();
 						trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 						spyEffect("Einheriar Boost SFX");
@@ -252,10 +253,12 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Myrmidon"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + trQuestVarGet("p"+p+"manaflow"));
 		}
 		case kbGetProtoUnitID("Behemoth"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
 			scaleUnit(unit);
@@ -468,6 +471,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Hero Ragnorok"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + yGetDatabaseCount("p"+p+"hand"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + yGetDatabaseCount("p"+p+"hand"));
 		}
 		case kbGetProtoUnitID("Promethean Small"):
 		{
