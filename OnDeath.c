@@ -355,15 +355,18 @@ void removeDeadUnits() {
 
 
 
-void returnToHand(int unit = 0) {
+int returnToHand(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
+	int returned = -1;
 	zSetVarByIndex("tiles", "occupant", 1*mGetVar(unit, "tile"), 0);
 	if (HasKeyword(GUARD, 1*mGetVar(unit, "keywords"))) {
 		tileGuard(1*mGetVar(unit, "tile"), false);
 	}
-	deployAtTile(0, "Vortex Start linked", 1*mGetVar(unit, "tile"));
-	if (yGetDatabaseCount("p"+p+"hand") < 10) {
+	trUnitSelectClear();
+	trUnitSelect("" + deployAtTile(0, "Deconstruct Unit", 1*mGetVar(unit, "tile")), true);
+	trUnitOverrideAnimation(18, 0, true, false, -1, 0);
+	if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 		ChatLog(p, trStringQuestVarGet("card_" + proto + "_Name") + " returned to hand.");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			if (yDatabaseNext("allUnits") == unit) {
@@ -376,7 +379,7 @@ void returnToHand(int unit = 0) {
 		trUnitSelect(""+unit);
 		trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 		mSetVar(unit, "played", 0);
-		addCardToHand(p, proto, 0, false);
+		returned = addCardToHand(p, proto, 0, false);
 		updateAuras();
 		updateHandPlayable();
 	} else {
@@ -386,6 +389,7 @@ void returnToHand(int unit = 0) {
 		damageUnit(unit, 999);
 		removeDeadUnits();
 	}
+	return(returned);
 }
 
 rule chain_reaction_death

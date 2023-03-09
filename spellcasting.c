@@ -1065,6 +1065,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddAdjacentTile("spellTarget", "p"+(3-p)+"commander");
 			castInstructions("Choose a tile. Right click to cancel.");
 		}
+		case SPELL_DEATH_DOOR:
+		{
+			castAddUnit("spellTarget", 3 - p, false);
+			castInstructions("Choose an enemy unit. Right click to cancel.");
+		}
 		case SPELL_POISON_MIST:
 		{
 			castAddTile("spellTarget", true);
@@ -2224,6 +2229,12 @@ inactive
 				trSoundPlayFN("shadeofhadesbirth.wav","1",-1,"","");
 				target = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Shade of Hades"));
 				mSetVar(target, "action", ACTION_SLEEPING);
+			}
+			case SPELL_DEATH_DOOR:
+			{
+				trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+				target = returnToHand(1*trQuestVarGet("spellTarget"));
+				mSetVar(target, "keywords", SetBit(mGetVar(target, "keywords"), FLEETING));
 			}
 			case SPELL_POISON_MIST:
 			{
