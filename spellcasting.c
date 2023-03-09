@@ -2563,19 +2563,24 @@ inactive
 			case SPELL_NICKS_PORTAL:
 			{
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
-				yClearDatabase("nickTiles");
-				for (z=zGetBankCount("tiles"); >0) {
-					zBankNext("tiles");
-					if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
-						if (zGetVar("tiles", "ward") == 0) {
-							yAddToDatabase("nickTiles", "tiles");
+				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NICK) {
+					trQuestVarCopy("nickTiles", "spellTarget");
+				} else {
+					yClearDatabase("nickTiles");
+					for (z=zGetBankCount("tiles"); >0) {
+						zBankNext("tiles");
+						if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
+							if (zGetVar("tiles", "ward") == 0) {
+								yAddToDatabase("nickTiles", "tiles");
+							}
 						}
 					}
+					trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
+					for(x=trQuestVarGet("nickRandom"); >0) {
+						yDatabaseNext("nickTiles");
+					}
 				}
-				trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
-				for(x=trQuestVarGet("nickRandom"); >0) {
-					yDatabaseNext("nickTiles");
-				}
+				
 				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("nickTiles"));
 				bool go = true;
 				while(go){
@@ -3067,18 +3072,20 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
+		int next = 0;
 		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
 			trQuestVarSetFromRand("temp", 1, 4, true);
 			if(trQuestVarGet("temp") == 1){
-				addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
 			} else if(trQuestVarGet("temp") == 2){
-				addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
 			} else if(trQuestVarGet("temp") == 3){
-				addCardToHand(p, kbGetProtoUnitID("Peltast"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Peltast"), 0, true);
 			} else {
-				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
 			}
-			mSetVarByQV("next", "cost", 0);
+			mSetVar(next, "cost", 0);
+			mSetVar(next, "keywords", SetBit(mGetVar(next, "keywords"), AIRDROP));
 		}
 		xsDisableRule("spell_elven_apocalypse_activate");
 	}

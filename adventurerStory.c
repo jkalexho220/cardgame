@@ -23,6 +23,7 @@ inactive
 		xsEnableRule("StoryClass0Mission2_end");
 
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
 			summonAtTile(135, 2, kbGetProtoUnitID("Trident Soldier Hero"));
 		}
 	}
@@ -49,6 +50,7 @@ inactive
 		CinematicPlay("HeavenGames\c1m3_", 1, 3);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
 			for (x=6; >0) {
 				addCardToDeck(2, "Hero Greek Ajax");
 			}
@@ -75,6 +77,7 @@ inactive
 			}
 			summonAtTile(214, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 			summonAtTile(196, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
+			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
 		} else {
 			summonAtTile(241, 1, kbGetProtoUnitID("Hero Greek Theseus"));
 			summonAtTile(243, 1, kbGetProtoUnitID("Hero Greek Hippolyta"));
@@ -139,6 +142,13 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
+		if (trQuestVarGet("missionHardmode") == 1) {
+			generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_DOMINANCE);
+			generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_DOMINANCE);
+			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
+			summonAtTile(166, 2, kbGetProtoUnitID("Ornlu"));
+			summonAtTile(167, 2, kbGetProtoUnitID("Ornlu"));
+		}
 		CinematicPlay("HeavenGames\c1m6_", 1, 3);
 		xsEnableRule("StoryClass0Mission6_end");
 	}

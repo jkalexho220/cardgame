@@ -300,6 +300,9 @@ inactive
 			loadDeck(0);
 			
 			trSetCurrentScenarioUserData(COMMANDS, 0);
+			for(i=12; < 16) {
+				trSetCurrentScenarioUserData(i, 0);
+			}
 		}
 		xsDisableSelf();
 	}

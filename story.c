@@ -418,6 +418,7 @@ void SetupMission(int class = 0, int mission = 0){
 					
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Shaba Ka"));
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
 					for(x=0;<6){
 						addCardToDeck(2, "Bondi");
 						addCardToDeck(2, "Khopesh");
@@ -434,21 +435,31 @@ void SetupMission(int class = 0, int mission = 0){
 				case 6:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 8, false);
-					trQuestVarSet("dimension", 8);
+					trPaintTerrain(0, 0, 60, 60, 0, 0, false);
+					trQuestVarSet("dimension", 6);
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
+					trSetLighting("dusk", 0.0);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Audrey"));
-					for(x=0;<10){
-						addCardToDeck(2, "Audrey Water");
-					}
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Jason"));
 					for(x=0;<3){
-						addCardToDeck(2, "Wolf");
+						addCardToDeck(2, "Griffon");
 						addCardToDeck(2, "Apep");
 						addCardToDeck(2, "Bear");
-						addCardToDeck(2, "", SPELL_POISON_CLOUD);
-						addCardToDeck(2, "", SPELL_NATURE_ANGRY);
+						addCardToDeck(2, "Golden Lion");
+						addCardToDeck(2, "", SPELL_BACKSTAB);
+						addCardToDeck(2, "", SPELL_LIBRA);
 					}
+					for(x=0; < 6) {
+						addCardToDeck(2, "Villager Atlantean");
+						addCardToDeck(2, "Ornlu");
+						addCardToDeck(2, "Lancer");
+						addCardToDeck(2, "Promethean Small");
+						addCardToDeck(2, "", SPELL_PISCES);
+					}
+
+					summonAtTile(192, 2, kbGetProtoUnitID("Regent"));
+					summonAtTile(193, 2, kbGetProtoUnitID("Regent"));
+					trQuestVarSet("p2class2", CLASS_SPACE);
 				}
 				
 			}
@@ -1550,7 +1561,18 @@ inactive
 					playerLegendaries = playerLegendaries + getCardCountCollection(29 + 30 * i);
 				}
 				xsEnableRule("NewCards0");
-				xsEnableRule("CollectionClick");
+				// populate the array with unlocked classes
+				int unlocked = zNewArray(mInt, 6);
+				int unlockedCount = 0;
+				for(i=0; <6) {
+					if (getClassProgress(i) > 0) {
+						aiPlanSetUserVariableInt(ARRAYS, unlocked, unlockedCount, i);
+						unlockedCount = unlockedCount + 1;
+					}
+				}
+
+				unlockedCount = unlockedCount - 1;
+
 				for(i=0;<trQuestVarGet("newCardsCount")){
 					int reward = 0;
 					int legendary = 0;
@@ -1574,12 +1596,8 @@ inactive
 						int class = trQuestVarGet("missionClass");
 						
 						if(trQuestVarGet("missionHardmode") > 0){
-							if(getClassProgress(CLASS_SPACE) > 0){
-								trQuestVarSetFromRand("temp", 0, 5, true);
-							} else {
-								trQuestVarSetFromRand("temp", 0, 4, true);
-							}
-							class = trQuestVarGet("temp");
+							trQuestVarSetFromRand("temp", 0, unlockedCount, true);
+							class = aiPlanGetUserVariableInt(ARRAYS, unlocked, 1*trQuestVarGet("temp"));
 						}
 						
 						reward = 1*trQuestVarGet("reward") + 30 * class;
@@ -1605,8 +1623,6 @@ inactive
 					yAddUpdateVar("allUnits", "legendary", legendary);
 					yAddUpdateVar("allUnits", "proto", CardToProto(reward));
 					yAddUpdateVar("allUnits", "spell", CardToSpell(reward));
-					trModifyProtounit(kbGetProtoUnitName(CardToProto(reward)), 1, 1, 9999999999999999999.0);
-					trModifyProtounit(kbGetProtoUnitName(CardToProto(reward)), 1, 1, -9999999999999999999.0);
 				}
 			}
 			saveDeckAndProgress();

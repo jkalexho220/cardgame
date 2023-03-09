@@ -60,6 +60,8 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_DEATH_APPROACHES = 804;
+const int SPELL_DEATH_DOOR = 803;
 const int SPELL_DOMINANCE = 802;
 const int SPELL_TAVERN_BRAWL = 801;
 const int SPELL_SPIDER_LAIR = 800;
@@ -130,8 +132,7 @@ const int SPELL_DROWN = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
-const int SPELL_DEATH_APPROACHES = 56;
-const int SPELL_DUPLICATE_FRIEND = 57;
+const int SPELL_DUPLICATE_FRIEND = 56;
 
 // Clockwork
 const int SPELL_CHOOSE_DIRECTION = 58;
@@ -991,12 +992,12 @@ active
 	CardEvents("Hero Chinese Immortal", 0, 0, 				"I have +1 Range during opponent's turn.");
 	CardSetup("Griffon",				4, "Soaring Griffy",		3, 6, 2, 1, Keyword(AIRDROP) + Keyword(CHARGE), true);
 	CardSetup("Apep",					4, "Lurking Crocky",		4, 3, 2, 1, Keyword(AMBUSH) + Keyword(STEALTH), true);
-	CardSetup("Bear",					6, "Hungry Bear",			7, 7, 2, 1, 0, true);
+	CardSetup("Bear",					6, "Hungry Bear",			6, 7, 2, 1, 0, true);
 	CardEvents("Bear", Keyword(ATTACK_OVERKILL_HEALS), 0, 	"Whenever I kill an enemy I gain +2 Health.");
 	CardSetup("Pirate Ship",			10, "Stuck Pirate Ship",			0, 40, 0, 0, 0, true);
 	CardEvents("Pirate Ship", 0, 0, 						"Turn Start: Secretly choose an enemy tile, next turn deal 8 Damage there.");
 	
-	CardSetup("Flying Medic",			3, "Playful Fae",			2, 2, 1, 2, Keyword(BEACON) + Keyword(HEALER) + Keyword(FLYING), true);
+	CardSetup("Flying Medic",			3, "Playful Fae",			3, 3, 1, 2, Keyword(BEACON) + Keyword(HEALER) + Keyword(FLYING), true);
 
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
@@ -1039,6 +1040,7 @@ active
 	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
 
 	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Death's Door",			3, SPELL_DEATH_DOOR, 		"Return an enemy unit to your opponent's hand and give it Fleeting.", SPELL_TYPE_OFFENSIVE, 0, true);
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");
@@ -1350,7 +1352,7 @@ highFrequency
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
-	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random unit on a random tile.", SPELL_TYPE_OTHER);	
+	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random unit on a random tile. If your Commander is Nickonhawk, choose the tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
 	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied unit Armored and Ward.", SPELL_TYPE_OTHER);
 	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a unit for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);

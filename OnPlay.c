@@ -2,6 +2,7 @@ void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
 	int type = 0;
+	int card = 0;
 	bool done = true;
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
@@ -17,10 +18,10 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
-	if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {
-		generateCard(p, proto, 0, true);
-		if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){
-			mSetVarByQV("next", "echo", 1);
+	if (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords"))) {
+		card = generateCard(p, proto, 0, true);
+		if (card > 0) {
+			mSetVar(card, "keywords", ClearBit(mGetVar(card, "keywords"), REPEATABLE));
 		}
 	}
 	switch(proto)
