@@ -2,6 +2,7 @@ void OnPlay(int unit = 0) {
 	int p = mGetVar(unit, "player");
 	int proto = mGetVar(unit, "proto");
 	int type = 0;
+	int card = 0;
 	bool done = true;
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
@@ -17,10 +18,10 @@ void OnPlay(int unit = 0) {
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
 		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
 	}
-	if (1*mGetVar(unit, "echo") <= 0 && (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords")) || trCountUnitsInArea("128",p,"Hero Greek Heracles",45) > 0)) {
-		generateCard(p, proto, 0, true);
-		if(HasKeyword(FLEETING, 1*mGetVarByQV("next", "keywords"))){
-			mSetVarByQV("next", "echo", 1);
+	if (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords"))) {
+		card = generateCard(p, proto, 0, true);
+		if (card > 0) {
+			mSetVar(card, "keywords", ClearBit(mGetVar(card, "keywords"), REPEATABLE));
 		}
 	}
 	switch(proto)
@@ -180,6 +181,7 @@ void OnPlay(int unit = 0) {
 						deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 						mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 						mSetVarByQV("allUnits", "health", 1 + mGetVarByQV("allUnits", "health"));
+						mSetVarByQV("allUnits", "maxhealth", 1 + mGetVarByQV("allUnits", "maxhealth"));
 						trUnitSelectClear();
 						trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 						spyEffect("Einheriar Boost SFX");
@@ -252,10 +254,12 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Myrmidon"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + trQuestVarGet("p"+p+"manaflow"));
 		}
 		case kbGetProtoUnitID("Behemoth"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
 			scaleUnit(unit);
@@ -468,6 +472,7 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Hero Ragnorok"):
 		{
 			mSetVar(unit, "health", mGetVar(unit, "health") + yGetDatabaseCount("p"+p+"hand"));
+			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + yGetDatabaseCount("p"+p+"hand"));
 		}
 		case kbGetProtoUnitID("Promethean Small"):
 		{

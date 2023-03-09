@@ -47,6 +47,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trUnitSelect(""+attacker);
 			if(mGetVar(attacker, "health") > 0 && mGetVar(target, "health") <= 0){
 				mSetVar(attacker, "health", mGetVar(attacker, "health") + 2);
+				mSetVar(attacker, "maxHealth", mGetVar(attacker, "maxHealth") + 2);
 				deployAtTile(0, "Regeneration SFX", 1*mGetVar(attacker, "tile"));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("meatgather1.wav","1",-1,"","");

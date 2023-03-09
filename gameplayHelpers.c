@@ -200,14 +200,10 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 }
 
 void healUnit(int index = 0, float heal = 0) {
-	xsSetContextPlayer(1*mGetVar(index, "player"));
-	float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index));
 	trUnitSelectClear();
 	trUnitSelect(""+index);
 	trDamageUnit(0 - heal);
-	float diff = kbUnitGetCurrentHitpoints(kbGetBlockID(""+index)) - health;
-	xsSetContextPlayer(0);
-	mSetVar(index, "health", 1*mGetVar(index, "health") + diff);
+	mSetVar(index, "health", xsMin(mGetVar(index, "maxHealth"), 1*mGetVar(index, "health") + heal));
 	/*
 	if(heal>=1 && trQuestVarGet("p"+1*trQuestVarGet("activePlayer")+"commanderType")==COMMANDER_GOD) {	
 		yClearDatabase("toyTiles");
@@ -544,6 +540,7 @@ void magnetize(int target = 0, int unit = 0) {
 	zSetVarByIndex("tiles", "occupant", 1*mGetVar(unit, "tile"), 0);
 	tileGuard(1*mGetVar(unit, "tile"), false);
 	mSetVar(target, "health", mGetVar(target, "health") + mGetVar(unit, "health"));
+	mSetVar(target, "maxHealth", mGetVar(target, "maxHealth") + mGetVar(unit, "maxHealth"));
 	mSetVar(target, "attack", mGetVar(target, "attack") + mGetVar(unit, "attack"));
 	trQuestVarSet("keywords1", mGetVar(target, "keywords"));
 	trQuestVarSet("keywords2", mGetVar(unit, "keywords"));

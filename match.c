@@ -191,10 +191,7 @@ inactive
 					trUnitSelectClear();
 					trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
 					trDamageUnitPercent(-100);
-					xsSetContextPlayer(p);
-					float health = kbUnitGetCurrentHitpoints(kbGetBlockID(""+1*trQuestVarGet("allUnits"), true));
-					xsSetContextPlayer(0);
-					mSetVarByQV("allUnits", "health", xsMax(mGetVarByQV("allUnits", "health"), health));
+					mSetVarByQV("allUnits", "health", mGetVarByQV("allUnits", "maxHealth"));
 				}
 				// Start of turn effects
 				yAddToDatabase("turnStart", "allUnits");

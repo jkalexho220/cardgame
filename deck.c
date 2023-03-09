@@ -99,7 +99,7 @@ void addCardToDeckByIndex(int p = 0, int card = 0) {
 /*
 This function should only be called if there is room in the hand!
 */
-void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+int addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
 	trQuestVarSet("next", CardInstantiate(p, proto, spell));
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
@@ -152,6 +152,8 @@ void addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = fals
 		trSetSelectedScale(0.75, scale, 0.75);
 		trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
 	}
+
+	return(1*trQuestVarGet("next"));
 }
 
 void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false) {
@@ -211,7 +213,8 @@ void drawCard(int p = 0, bool fleeting = false) {
 	}
 }
 
-void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+int generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+	int card = -1;
 	if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 		if (trCurrentPlayer() == p) {
 			trSoundPlayFN("ui\scroll.wav","1",-1,"","");
@@ -221,7 +224,7 @@ void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false
 		} else {
 			ChatLog(p, "Created " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		}
-		addCardToHand(p, proto, spell, fleeting);
+		card = addCardToHand(p, proto, spell, fleeting);
 		updateHandPlayable(p);
 		updateMana();
 	} else {
@@ -234,6 +237,7 @@ void generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false
 			ChatLog(p, "Hand full! Burned created " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		}
 	}
+	return(card);
 }
 
 rule initializeHand

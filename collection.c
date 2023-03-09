@@ -305,27 +305,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Shrubbery Lane");
+					return ("The Adventure Begins");
 				}
 				case 2:
 				{
-					return ("Standard Procedure");
+					return ("First Contact");
 				}
 				case 3:
 				{
-					return ("Carbon-Free Antivirus");
+					return ("Fools' Errand");
 				}
 				case 4:
 				{
-					return ("Swampy Hideout");
+					return ("Prove Yourself");
 				}
 				case 5:
 				{
-					return ("Forest Heart");
+					return ("Swampy Business");
 				}
 				case 6:
 				{
-					return ("The Real Fight");
+					return ("The Imposter");
 				}
 			}
 		}
@@ -480,7 +480,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			}
 		}
 	}
-	ThrowError("GetMissionTitle");
+	return("N/A");
 }
 
 void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
@@ -775,22 +775,27 @@ inactive
 		trUnitSelectClear();
 		trUnitSelectByQV("class"+class+"mission"+i);
 		if(trUnitIsSelected()){
-			if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
-				int cards = 2 + i;
-				if(getClassProgress(class) == i){
-					trQuestVarSet("missionHardmode", 0);
-					collectionMission = GetMissionTitle(class,i);
-					collectionReward = "(Reward: " + cards + " Class Cards)";
-				} else {
-					trQuestVarSet("missionHardmode", 1);
-					collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-					collectionReward = "(Reward: " + cards + " Random Cards)";
+			if (ValidateCollection()) {
+				if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
+					int cards = 2 + i;
+					if(getClassProgress(class) == i){
+						trQuestVarSet("missionHardmode", 0);
+						collectionMission = GetMissionTitle(class,i);
+						collectionReward = "(Reward: " + cards + " Class Cards)";
+					} else {
+						trQuestVarSet("missionHardmode", 1);
+						collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+						collectionReward = "(Reward: " + cards + " Random Cards)";
+					}
+					trQuestVarSet("missionSelection", i);
+					trQuestVarSet("missionClass", class);
+					//xsEnableRule("CollectionEnter");
+					trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
+					CollectionGodPowers();
 				}
-				trQuestVarSet("missionSelection", i);
-				trQuestVarSet("missionClass", class);
-				//xsEnableRule("CollectionEnter");
-				trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
-				CollectionGodPowers();
+			} else {
+				trSoundPlayFN("cantdothat.wav");
+				uiMessageBox("Your deck is invalid. You cannot start a mission until your deck is valid.");
 			}
 		} else if ((trQuestVarGet("missionSelection") == i) && (trQuestVarGet("missionClass") == class)) { 
 			// if deselect
@@ -804,6 +809,7 @@ inactive
 }
 
 void CollectionStartMission(int eventId = -1) {
+	xsSetContextPlayer(0);
 	trPlayerKillAllGodPowers(1);
 	trCounterAbort("tooltipEnter");
 	//xsDisableRule("CollectionEnter");

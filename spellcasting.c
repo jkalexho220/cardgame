@@ -1065,6 +1065,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddAdjacentTile("spellTarget", "p"+(3-p)+"commander");
 			castInstructions("Choose a tile. Right click to cancel.");
 		}
+		case SPELL_DEATH_DOOR:
+		{
+			castAddUnit("spellTarget", 3 - p, false);
+			castInstructions("Choose an enemy unit. Right click to cancel.");
+		}
 		case SPELL_POISON_MIST:
 		{
 			castAddTile("spellTarget", true);
@@ -1386,6 +1391,7 @@ inactive
 					if (1*mGetVarByQV("allUnits", "player") == p) {
 						if (1*mGetVarByQV("allUnits", "spell") != SPELL_COMMANDER) {
 							mSetVarByQV("allUnits", "health", mGetVarByQV("allUnits", "health") + 3);
+							mSetVarByQV("allUnits", "maxhealth", mGetVarByQV("allUnits", "maxhealth") + 3);
 							deployAtTile(0, "Fireball Launch Damage Effect", 1*mGetVarByQV("allUnits", "tile"));
 						}
 					}
@@ -1543,6 +1549,7 @@ inactive
 				target = 1*trQuestVarGet("spellTarget");
 				mSetVar(target, "attack", 1 + mGetVar(target, "attack"));
 				mSetVar(target, "health", 1 + mGetVar(target, "health"));
+				mSetVar(target, "maxhealth", 1 + mGetVar(target, "maxhealth"));
 				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
 				trSoundPlayFN("colossuseat.wav","1",-1,"","");
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
@@ -1597,6 +1604,7 @@ inactive
 				trSoundPlayFN("battlecry2.wav","1",-1,"","");
 				mSetVarByQV("cheerTarget", "attack", 1 + mGetVarByQV("cheerTarget", "attack"));
 				mSetVarByQV("cheerTarget", "health", 1 + mGetVarByQV("cheerTarget", "health"));
+				mSetVarByQV("cheerTarget", "maxhealth", 1 + mGetVarByQV("cheerTarget", "maxhealth"));
 				xsEnableRule("cheer_activate"); // this trigger is placed in OnPlay lol
 			}
 			case SPELL_DEFENDER:
@@ -1605,6 +1613,7 @@ inactive
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				target = 1*trQuestVarGet("spellTarget");
 				mSetVar(target, "health", 2 + mGetVar(target, "health"));
+				mSetVar(target, "maxhealth", 2 + mGetVar(target, "maxhealth"));
 				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), GUARD));
 				deployAtTile(0, "Hero Birth", 1*mGetVar(target, "tile"));
 				refreshGuardAll();
@@ -2019,6 +2028,7 @@ inactive
 			{
 				trSoundPlayFN("tartarianspawnbirth1.wav","1",-1,"","");
 				mSetVarByQV("spellCaster", "health", mGetVarByQV("spellCaster", "health") + mGetVarByQV("spellTarget", "health"));
+				mSetVarByQV("spellCaster", "maxhealth", mGetVarByQV("spellCaster", "maxhealth") + mGetVarByQV("spellTarget", "health"));
 				mSetVarByQV("spellCaster", "attack", mGetVarByQV("spellCaster", "attack") + mGetVarByQV("spellTarget", "attack"));
 				mSetVarByQV("spellCaster", "scale", 1 + 0.25*mGetVarByQV("spellCaster", "health"));
 				scaleUnit(1*trQuestVarGet("spellCaster"));
@@ -2053,6 +2063,7 @@ inactive
 				mSetVar(activeUnit, "cost", mGetVar(target, "cost"));
 				mSetVar(activeUnit, "attack", mGetVar(target, "attack"));
 				mSetVar(activeUnit, "health", mGetVar(target, "health"));
+				mSetVar(activeUnit, "maxhealth", mGetVar(target, "maxhealth"));
 				mSetVar(activeUnit, "speed", mGetVar(target, "speed"));
 				mSetVar(activeUnit, "range", mGetVar(target, "range"));
 				mSetVar(activeUnit, "laserDirx", mGetVar(target, "laserDirx"));
@@ -2218,6 +2229,12 @@ inactive
 				trSoundPlayFN("shadeofhadesbirth.wav","1",-1,"","");
 				target = summonAtTile(1*trQuestVarGet("spellTarget"),p,kbGetProtoUnitID("Shade of Hades"));
 				mSetVar(target, "action", ACTION_SLEEPING);
+			}
+			case SPELL_DEATH_DOOR:
+			{
+				trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
+				target = returnToHand(1*trQuestVarGet("spellTarget"));
+				mSetVar(target, "keywords", SetBit(mGetVar(target, "keywords"), FLEETING));
 			}
 			case SPELL_POISON_MIST:
 			{
@@ -2393,6 +2410,7 @@ inactive
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
 				mSetVarByQV("spellTarget", "keywords", SetBit(1*mGetVarByQV("spellTarget", "keywords"), MAGNETIC));
 				mSetVarByQV("spellTarget", "health", 2 + mGetVarByQV("spellTarget", "health"));
+				mSetVarByQV("spellTarget", "maxhealth", 2 + mGetVarByQV("spellTarget", "maxhealth"));
 				mSetVarByQV("spellTarget", "attack", 2 + mGetVarByQV("spellTarget", "attack"));
 			}
 			case SPELL_PROFITEERING:
@@ -2556,19 +2574,24 @@ inactive
 			case SPELL_NICKS_PORTAL:
 			{
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
-				yClearDatabase("nickTiles");
-				for (z=zGetBankCount("tiles"); >0) {
-					zBankNext("tiles");
-					if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
-						if (zGetVar("tiles", "ward") == 0) {
-							yAddToDatabase("nickTiles", "tiles");
+				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NICK) {
+					trQuestVarCopy("nickTiles", "spellTarget");
+				} else {
+					yClearDatabase("nickTiles");
+					for (z=zGetBankCount("tiles"); >0) {
+						zBankNext("tiles");
+						if (zGetVar("tiles", "terrain") == 0 && zGetVar("tiles", "occupant") == 0) {
+							if (zGetVar("tiles", "ward") == 0) {
+								yAddToDatabase("nickTiles", "tiles");
+							}
 						}
 					}
+					trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
+					for(x=trQuestVarGet("nickRandom"); >0) {
+						yDatabaseNext("nickTiles");
+					}
 				}
-				trQuestVarSetFromRand("nickRandom", 1, yGetDatabaseCount("nickTiles"), true);
-				for(x=trQuestVarGet("nickRandom"); >0) {
-					yDatabaseNext("nickTiles");
-				}
+				
 				deployAtTile(0, "Olympus Temple SFX", 1*trQuestVarGet("nickTiles"));
 				bool go = true;
 				while(go){
@@ -2750,6 +2773,7 @@ inactive
 					yDatabaseNext("p"+p+"hand");
 					mSetVarByQV("p"+p+"hand", "attack", 1 + mGetVarByQV("p"+p+"hand", "attack"));
 					mSetVarByQV("p"+p+"hand", "health", 1 + mGetVarByQV("p"+p+"hand", "health"));
+					mSetVarByQV("p"+p+"hand", "maxhealth", 1 + mGetVarByQV("p"+p+"hand", "maxhealth"));
 				}
 			}
 			case SPELL_THE_CALLING:
@@ -2771,6 +2795,7 @@ inactive
 				activeUnit = summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Promethean Small"));
 				mSetVar(activeUnit, "action", ACTION_SLEEPING);
 				mSetVar(activeUnit, "health", mGetVarByQV("spellCaster", "health"));
+				mSetVar(activeUnit, "maxhealth", mGetVarByQV("spellCaster", "maxhealth"));
 				mSetVar(activeUnit, "attack", mGetVarByQV("spellCaster", "attack"));
 				mSetVar(activeUnit, "keywords", mGetVarByQV("spellCaster", "keywords"));
 			}
@@ -3033,6 +3058,7 @@ inactive
 				}
 				mSetVar(activeUnit, "attack", mGetVarByQV("spellTarget", "attack"));
 				mSetVar(activeUnit, "health", mGetVarByQV("spellTarget", "health"));
+				mSetVar(activeUnit, "maxhealth", mGetVarByQV("spellTarget", "maxhealth"));
 				mSetVar(activeUnit, "speed", mGetVarByQV("spellTarget", "speed"));
 				mSetVar(activeUnit, "range", mGetVarByQV("spellTarget", "range"));
 				mSetVar(activeUnit, "keywords", mGetVarByQV("spellTarget", "keywords"));
@@ -3057,18 +3083,20 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
+		int next = 0;
 		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
 			trQuestVarSetFromRand("temp", 1, 4, true);
 			if(trQuestVarGet("temp") == 1){
-				addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hetairoi"), 0, true);
 			} else if(trQuestVarGet("temp") == 2){
-				addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Theseus"), 0, true);
 			} else if(trQuestVarGet("temp") == 3){
-				addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Peltast"), 0, true);
 			} else {
-				addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Chinese Immortal"), 0, true);
 			}
-			mSetVarByQV("next", "cost", 0);
+			mSetVar(next, "cost", 0);
+			mSetVar(next, "keywords", SetBit(mGetVar(next, "keywords"), AIRDROP));
 		}
 		xsDisableRule("spell_elven_apocalypse_activate");
 	}
