@@ -70,7 +70,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				}
 				if(trQuestVarGet("chats_GeneralStore_0") == 0){
 					trQuestVarSet("chats_GeneralStore_0", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>General Store</color>: To battle!");
+					CharacterLog(2, "General Store", "To battle!");
 				}
 			}
 		}
@@ -84,7 +84,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				trQuestVarSet("p"+p+"spellDamageNonOracle", trQuestVarGet("p"+p+"spellDamageNonOracle") + 1);
 				if(trQuestVarGet("chats_FireMage_0") == 0){
 					trQuestVarSet("chats_FireMage_0", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Fire Mage</color>: You are only making me stronger!");
+					CharacterLog(2, "Fire Mage", "You are only making me stronger!");
 					trSoundPlayFN("pha2.wav","1",-1,"","");
 				}
 			}
@@ -126,6 +126,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				mSetVar(target, "cost", 1);
 				mSetVar(target, "attack", 1);
 				mSetVar(target, "health", 1);
+				mSetVar(target, "maxhealth", 1);
 				mSetVar(target, "speed", 2);
 				mSetVar(target, "range", 1);
 				mSetVar(target, "keywords", 0);
@@ -319,7 +320,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 							trFadeOutAllSounds(0.0);
 							trQuestVarSet("chats_Argo_0", 1);
 							trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");
-							ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
+							CharacterLog(p, "Hawk's Captain", "Do I always have to watch your back?");
 							MusicHigh();
 						}
 					} else {

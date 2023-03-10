@@ -64,7 +64,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+siphon);
 				trSetUnitOrientation(xsVectorSet(-0.707107,0,0.707107), xsVectorSet(0,1,0), true);
-				ChatLog(1, "<color=1.0,0,0>Opponent:</color> Deploy the Laser Cannon!");
+				ChatLog(1, "<color=1.0,0,0>Opponent:<color=1,1,1> Deploy the Laser Cannon!");
 			}
 		}
 		trQuestVarSetFromRand("rand", 1, 1*trQuestVarGet("storyMissionBotMana"), true);

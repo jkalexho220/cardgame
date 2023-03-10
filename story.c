@@ -21,6 +21,109 @@ int SummonLaser(int tile = 0, int target = 0) {
 	return(siphon);
 }
 
+void SetupWalls3(string wall = "", string connector = "", float wallScale = 1, float connectorScale = 1) {
+	AddToCustomBoard(135, TILE_OCCUPIED, connector, 1, 45, connectorScale);
+	AddToCustomBoard(136, TILE_OCCUPIED, wall, 1, 75, wallScale);
+	AddToCustomBoard(138, TILE_OCCUPIED, connector, 1, 105, connectorScale);
+	AddToCustomBoard(139, TILE_OCCUPIED, wall, 1, 135, wallScale);
+	AddToCustomBoard(140, TILE_OCCUPIED, connector, 1, 165, connectorScale);
+	AddToCustomBoard(141, TILE_OCCUPIED, wall, 1, 195, wallScale);
+	AddToCustomBoard(142, TILE_OCCUPIED, connector, 1, 225, connectorScale);
+	AddToCustomBoard(143, TILE_OCCUPIED, wall, 1, 255, wallScale);
+	AddToCustomBoard(144, TILE_OCCUPIED, connector, 1, 285, connectorScale);
+	AddToCustomBoard(145, TILE_OCCUPIED, wall, 1, 315, wallScale);
+	AddToCustomBoard(146, TILE_OCCUPIED, connector, 1, 345, connectorScale);
+	AddToCustomBoard(137, TILE_OCCUPIED, wall, 1, 15, wallScale);
+}
+
+void SetupWalls5(string wall = "", string connector = "", float wallScale = 1, float connectorScale = 1) {
+	AddToCustomBoard(165, TILE_OCCUPIED, connector, 1, 45, connectorScale);
+
+	AddToCustomBoard(166, TILE_OCCUPIED, wall, 1, 75, wallScale);
+	AddToCustomBoard(168, TILE_OCCUPIED, connector, 1, 75, connectorScale);
+	AddToCustomBoard(170, TILE_OCCUPIED, wall, 1, 75, wallScale);
+
+	AddToCustomBoard(172, TILE_OCCUPIED, connector, 1, 105, connectorScale);
+
+	AddToCustomBoard(173, TILE_OCCUPIED, wall, 1, 135, wallScale);
+	AddToCustomBoard(174, TILE_OCCUPIED, connector, 1, 135, connectorScale);
+	AddToCustomBoard(175, TILE_OCCUPIED, wall, 1, 135, wallScale);
+
+	AddToCustomBoard(176, TILE_OCCUPIED, connector, 1, 165, connectorScale);
+
+	AddToCustomBoard(177, TILE_OCCUPIED, wall, 1, 195, wallScale);
+	AddToCustomBoard(178, TILE_OCCUPIED, connector, 1, 195, connectorScale);
+	AddToCustomBoard(179, TILE_OCCUPIED, wall, 1, 195, wallScale);
+
+	AddToCustomBoard(180, TILE_OCCUPIED, connector, 1, 225, connectorScale);
+
+	AddToCustomBoard(181, TILE_OCCUPIED, wall, 1, 255, wallScale);
+	AddToCustomBoard(182, TILE_OCCUPIED, connector, 1, 255, connectorScale);
+	AddToCustomBoard(183, TILE_OCCUPIED, wall, 1, 255, wallScale);
+
+	AddToCustomBoard(184, TILE_OCCUPIED, connector, 1, 285, connectorScale);
+
+	AddToCustomBoard(185, TILE_OCCUPIED, wall, 1, 315, wallScale);
+	AddToCustomBoard(186, TILE_OCCUPIED, connector, 1, 315, connectorScale);
+	AddToCustomBoard(187, TILE_OCCUPIED, wall, 1, 315, wallScale);
+
+	AddToCustomBoard(188, TILE_OCCUPIED, connector, 1, 345, connectorScale);
+
+	AddToCustomBoard(171, TILE_OCCUPIED, wall, 1, 15, wallScale);
+	AddToCustomBoard(169, TILE_OCCUPIED, connector, 1, 15, connectorScale);
+	AddToCustomBoard(167, TILE_OCCUPIED, wall, 1, 15, wallScale);
+}
+
+void SetupWalls7(string wall = "", string connector = "", float wallScale = 1, float connectorScale = 1) {
+	AddToCustomBoard(219, TILE_OCCUPIED, connector, 1, 45, connectorScale);
+
+	AddToCustomBoard(220, TILE_OCCUPIED, wall, 1, 75, wallScale);
+	AddToCustomBoard(222, TILE_OCCUPIED, connector, 1, 75, connectorScale);
+	AddToCustomBoard(224, TILE_OCCUPIED, wall, 1, 75, wallScale);
+	AddToCustomBoard(226, TILE_OCCUPIED, connector, 1, 75, connectorScale);
+	AddToCustomBoard(228, TILE_OCCUPIED, wall, 1, 75, wallScale);
+
+	AddToCustomBoard(230, TILE_OCCUPIED, connector, 1, 105, connectorScale);
+
+	AddToCustomBoard(231, TILE_OCCUPIED, wall, 1, 135, wallScale);
+	AddToCustomBoard(232, TILE_OCCUPIED, connector, 1, 135, connectorScale);
+	AddToCustomBoard(233, TILE_OCCUPIED, wall, 1, 135, wallScale);
+	AddToCustomBoard(234, TILE_OCCUPIED, connector, 1, 135, connectorScale);
+	AddToCustomBoard(235, TILE_OCCUPIED, wall, 1, 135, wallScale);
+
+	AddToCustomBoard(236, TILE_OCCUPIED, connector, 1, 165, connectorScale);
+
+	AddToCustomBoard(237, TILE_OCCUPIED, wall, 1, 195, wallScale);
+	AddToCustomBoard(238, TILE_OCCUPIED, connector, 1, 195, connectorScale);
+	AddToCustomBoard(239, TILE_OCCUPIED, wall, 1, 195, wallScale);
+	AddToCustomBoard(240, TILE_OCCUPIED, connector, 1, 195, connectorScale);
+	AddToCustomBoard(241, TILE_OCCUPIED, wall, 1, 195, wallScale);
+
+	AddToCustomBoard(242, TILE_OCCUPIED, connector, 1, 225, connectorScale);
+
+	AddToCustomBoard(243, TILE_OCCUPIED, wall, 1, 255, wallScale);
+	AddToCustomBoard(244, TILE_OCCUPIED, connector, 1, 255, connectorScale);
+	AddToCustomBoard(245, TILE_OCCUPIED, wall, 1, 255, wallScale);
+	AddToCustomBoard(246, TILE_OCCUPIED, connector, 1, 255, connectorScale);
+	AddToCustomBoard(247, TILE_OCCUPIED, wall, 1, 255, wallScale);
+
+	AddToCustomBoard(248, TILE_OCCUPIED, connector, 1, 285, connectorScale);
+
+	AddToCustomBoard(249, TILE_OCCUPIED, wall, 1, 315, wallScale);
+	AddToCustomBoard(250, TILE_OCCUPIED, connector, 1, 315, connectorScale);
+	AddToCustomBoard(251, TILE_OCCUPIED, wall, 1, 315, wallScale);
+	AddToCustomBoard(252, TILE_OCCUPIED, connector, 1, 315, connectorScale);
+	AddToCustomBoard(253, TILE_OCCUPIED, wall, 1, 315, wallScale);
+
+	AddToCustomBoard(254, TILE_OCCUPIED, connector, 1, 345, connectorScale);
+
+	AddToCustomBoard(221, TILE_OCCUPIED, wall, 1, 15, wallScale);
+	AddToCustomBoard(223, TILE_OCCUPIED, connector, 1, 15, connectorScale);
+	AddToCustomBoard(225, TILE_OCCUPIED, wall, 1, 15, wallScale);
+	AddToCustomBoard(227, TILE_OCCUPIED, connector, 1, 15, connectorScale);
+	AddToCustomBoard(229, TILE_OCCUPIED, wall, 1, 15, wallScale);
+}
+
 void SetupMission(int class = 0, int mission = 0){
 	yClearDatabase("p2deck");
 	yClearDatabase("customBoard");
@@ -127,20 +230,24 @@ void SetupMission(int class = 0, int mission = 0){
 				case 2:
 				{
 					/* Arena */
+					trSetCivAndCulture(0, 6, 2); //norse
+					trTechSetStatus(0, 127, 4); // stone wall
 					trSetLighting("dusk",0.0);
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false);
 					trQuestVarSet("dimension", 4);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
 					trQuestVarSet("customTerrainEmptyNot", T_CITY_TILE);
-					AddToCustomBoard(141, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
-					AddToCustomBoard(140, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(141, TILE_OCCUPIED, "Wall Connector", 1, 105);
+					AddToCustomBoard(140, TILE_OCCUPIED, "Wall Connector", 1, 105);
 
-					AddToCustomBoard(138, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
-					AddToCustomBoard(152, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(138, TILE_OCCUPIED, "Wall Connector", 1, 105);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Wall Connector", 1, 105);
 
-					AddToCustomBoard(146, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
-					AddToCustomBoard(137, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(146, TILE_OCCUPIED, "Wall Connector", 1, 105);
+					AddToCustomBoard(137, TILE_OCCUPIED, "Wall Connector", 1, 105);
+
+					SetupWalls5("Wall Long", "Wall Connector");
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Maceman Hero"));
 					for(x=0; <6) {
@@ -466,6 +573,7 @@ void SetupMission(int class = 0, int mission = 0){
 		}
 		case CLASS_ARCANE:
 		{
+			trSetCivAndCulture(0, 10, 3);
 			switch(mission)
 			{
 				case 1:
@@ -500,33 +608,43 @@ void SetupMission(int class = 0, int mission = 0){
 				case 2:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("dimension", 7);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);
-					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Pharaoh Secondary"));
-					for(x=0;<5){
-						addCardToDeck(2, "Slinger");
-						addCardToDeck(2, "Monument");
-						addCardToDeck(2, "Oracle Scout");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_EXPLOSION);
-						addCardToDeck(2, "", SPELL_PYROBALL);
-					}
-					for(x=0;<2){
-						addCardToDeck(2, "Slinger");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_METEOR);
-						addCardToDeck(2, "", SPELL_ELECTROSURGE);
-						addCardToDeck(2, "", SPELL_APOCALYPSE);
-					}
-				}
-				case 3:
-				{
-					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("dimension", 8);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);
+					trPaintTerrain(0, 0, 60, 60, 0, T_ATLANTIS_TILE, false);
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE); // atlantis tile
+					trQuestVarSet("customTerrainEmptySpecial", T_OLYMPUS_TILE); // olympus tile
+
+					AddToCustomBoard(148, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+					AddToCustomBoard(150, TILE_OCCUPIED, "Atlantis Wall Long", 1, 75);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 105);
+					AddToCustomBoard(153, TILE_OCCUPIED, "Atlantis Wall Long", 1, 135);
+					AddToCustomBoard(154, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 135);
+
+					AddToCustomBoard(163, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 135);
+					AddToCustomBoard(162, TILE_OCCUPIED, "Atlantis Wall Long", 1, 135);
+					AddToCustomBoard(161, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 105);
+					AddToCustomBoard(160, TILE_OCCUPIED, "Atlantis Wall Long", 1, 75);
+					AddToCustomBoard(159, TILE_OCCUPIED, "Atlantis Wall Connector", 1, 75);
+
+					AddToCustomBoard(128, TILE_OCCUPIED, "Columns", 1, 195, 2);
+					AddToCustomBoard(141, TILE_OCCUPIED, "Columns", 1, 195, 2);
+					AddToCustomBoard(137, TILE_OCCUPIED, "Columns", 1, 195, 2);
+					AddToCustomBoard(178, TILE_OCCUPIED, "Columns", 1, 195, 2);
+					AddToCustomBoard(169, TILE_OCCUPIED, "Columns", 1, 195, 2);
+
+					AddToCustomBoard(213, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(218, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(203, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(198, TILE_OCCUPIED, "Columns", 1, 45, 2);
+
+					AddToCustomBoard(138, TILE_EMPTY, "Snow Drift Barracks", 1);
+					AddToCustomBoard(185, TILE_EMPTY, "Snow Drift Archery", 1);
+					AddToCustomBoard(201, TILE_EMPTY, "Snow Drift Stable", 1);
+					AddToCustomBoard(151, TILE_EMPTY, "Snow Drift Siege", 1);
+					AddToCustomBoard(158, TILE_EMPTY, "Snow Drift Tower", 1, 69);
+
+					SetupWalls7("Atlantis Wall Long", "Atlantis Wall Connector");
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("King Folstag"));
 					for(x=0;<6){
@@ -542,31 +660,126 @@ void SetupMission(int class = 0, int mission = 0){
 					addCardToDeck(2, "", SPELL_CLASS_TIME);
 					addCardToDeck(2, "", SPELL_ELECTROSURGE);
 				}
-				case 4:
+				case 3:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("dimension", 2);
+					trPaintTerrain(0, 0, 60, 60, 0, T_ATLANTIS_TILE, false);
+					InitBot(BOT_PERSONALITY_LIBRARY);
+					
+					trTechSetStatus(0, 413, 4); //oreichalkos wall
+					trQuestVarSet("dimension", 6);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
-					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Boar"));
-					for(x=0;<4){
-						addCardToDeck(2, "Maceman");
-						addCardToDeck(2, "Centaur");
-						addCardToDeck(2, "Griffon");
-						addCardToDeck(2, "Golem");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_BACKSTAB);
-						addCardToDeck(2, "", SPELL_FINAL_EXAM);
-						addCardToDeck(2, "", SPELL_PYROBALL);
-						addCardToDeck(2, "", SPELL_METEOR);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE);
+					trQuestVarSet("customTerrainEmptySpecial", T_ATLANTIS_TILE);
+
+					// bookshelves
+					AddToCustomBoard(180, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(179, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(178, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(182, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(159, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(142, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(184, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(161, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(144, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(138, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(172, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(135, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(148, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(168, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(169, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(167, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(165, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(169, TILE_OCCUPIED, "Wall Connector", 1, 195);
+					AddToCustomBoard(167, TILE_OCCUPIED, "Wall Long", 1, 195);
+					AddToCustomBoard(165, TILE_OCCUPIED, "Wall Connector", 1, 195);
+
+					AddToCustomBoard(164, TILE_OCCUPIED, "Wall Connector", 1, 75);
+					AddToCustomBoard(146, TILE_OCCUPIED, "Wall Long", 1, 75);
+					AddToCustomBoard(134, TILE_OCCUPIED, "Wall Connector", 1, 75);
+
+					AddToCustomBoard(131, TILE_OCCUPIED, "Wall Connector", 1, 75);
+					AddToCustomBoard(140, TILE_OCCUPIED, "Wall Long", 1, 75);
+					AddToCustomBoard(155, TILE_OCCUPIED, "Wall Connector", 1, 75);
+
+					/*
+					Serpent Skin
+					Bullet Time
+					Water Cannon
+					Zeno's Paradox
+					Time Pocket
+
+					*/
+
+					// pathway
+					for(i=0; <3) {
+						AddToCustomBoard(i + 130, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 139, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 154, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 176, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 203, TILE_EMPTY, "Cinematic Block", 1);
 					}
-					addCardToDeck(2, "Trident Soldier Hero");
-					addCardToDeck(2, "", SPELL_CLASS_TIME);
-					addCardToDeck(2, "", SPELL_ELECTROSURGE);
-					addCardToDeck(2, "", SPELL_APOCALYPSE);
+
+					for(i=0; <2) {
+						AddToCustomBoard(i + 133, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 145, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 163, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 187, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 217, TILE_EMPTY, "Cinematic Block", 1);
+					}
+
+					AddToCustomBoard(129, TILE_EMPTY, "Cinematic Block", 1);
+					AddToCustomBoard(137, TILE_EMPTY, "Cinematic Block", 1);
+					AddToCustomBoard(151, TILE_EMPTY, "Cinematic Block", 1);
+					AddToCustomBoard(171, TILE_EMPTY, "Cinematic Block", 1);
+					AddToCustomBoard(197, TILE_EMPTY, "Cinematic Block", 1);
+					AddToCustomBoard(128, TILE_EMPTY, "Cinematic Block", 1);
+
+					SetupWalls7("Atlantis Wall Long", "Atlantis Wall Connector");
+					trQuestVarSet("deadeye", summonAtTile(209, 1, kbGetProtoUnitID("Hero Greek Hippolyta")));
+					/* Opponent */
+					trQuestVarSet("libraryMoonblade", summonAtTile(186, 2, kbGetProtoUnitID("Hero Greek Theseus")));
+					trQuestVarSet("libraryNanodude", summonAtTile(163, 2, kbGetProtoUnitID("Oracle Hero")));
+					mSetVarByQV("libraryMoonblade", "keywords", Keyword(IMMUNE));
+					mSetVarByQV("libraryNanodude", "keywords", Keyword(IMMUNE));
+
+					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+					for(x=20; >0) {
+						addCardToDeck(2, "", SPELL_SPACE_VENT);
+					}
+					yClearDatabase("p1deck");
+					for(x=20; >0) {
+						addCardToDeck(1, "", SPELL_SING);
+						addCardToDeck(1, "", SPELL_SCRAP_METAL);
+					}
+					/*
+					for(x=0;<5){
+						addCardToDeck(2, "Slinger");
+						addCardToDeck(2, "Monument");
+						addCardToDeck(2, "Oracle Scout");
+						addCardToDeck(2, "", SPELL_SPARK);
+						addCardToDeck(2, "", SPELL_EXPLOSION);
+						addCardToDeck(2, "", SPELL_PYROBALL);
+					}
+					for(x=0;<2){
+						addCardToDeck(2, "Slinger");
+						addCardToDeck(2, "", SPELL_SPARK);
+						addCardToDeck(2, "", SPELL_METEOR);
+						addCardToDeck(2, "", SPELL_ELECTROSURGE);
+						addCardToDeck(2, "", SPELL_APOCALYPSE);
+					}
+					*/
 				}
-				case 5:
+				case 4:
 				{
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
@@ -590,6 +803,30 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_PYROBALL);
 					}
 					addCardToDeck(2, "Monument 5");
+				}
+				case 5:
+				{
+					/* Arena */
+					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+					trQuestVarSet("dimension", 2);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					/* Opponent */
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Boar"));
+					for(x=0;<4){
+						addCardToDeck(2, "Maceman");
+						addCardToDeck(2, "Centaur");
+						addCardToDeck(2, "Griffon");
+						addCardToDeck(2, "Golem");
+						addCardToDeck(2, "", SPELL_SPARK);
+						addCardToDeck(2, "", SPELL_BACKSTAB);
+						addCardToDeck(2, "", SPELL_FINAL_EXAM);
+						addCardToDeck(2, "", SPELL_PYROBALL);
+						addCardToDeck(2, "", SPELL_METEOR);
+					}
+					addCardToDeck(2, "Trident Soldier Hero");
+					addCardToDeck(2, "", SPELL_CLASS_TIME);
+					addCardToDeck(2, "", SPELL_ELECTROSURGE);
+					addCardToDeck(2, "", SPELL_APOCALYPSE);
 				}
 				case 6:
 				{
@@ -1928,81 +2165,6 @@ inactive
 	xsSetContextPlayer(0);
 	trDamageUnit(health - mGetVarByQV("p2commander", "health"));
 }
-
-/*
-rule StoryTutorial0
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableRule("StoryTutorial0");
-		trShowImageDialog("Zenophobia\SFA\Nick", "Zeno was supposed to make some pretty images for this tutorial but did he? Of course not!");
-		trSoundPlayFN("llamaselect1.wav","1",-1,"","");
-		xsEnableRule("StoryTutorial1");
-	}
-}
-
-rule StoryTutorial1
-highFrequency
-inactive
-{
-	if (trQuestVarGet("p1drawCards") + trQuestVarGet("p2drawCards") == 0) {
-		trShowImageDialog("Zenophobia\SFA\Nick", "Anyway, this is the mulligan. Highlighted cards will be kept and the rest shuffled back in deck.");
-		trSoundPlayFN("llamagrunt2.wav","1",-1,"","");
-		xsDisableRule("StoryTutorial1");
-		xsEnableRule("StoryTutorial2");
-	}
-}
-
-rule StoryTutorial2
-highFrequency
-inactive
-{
-	if (trQuestVarGet("p1done") + trQuestVarGet("p2done") == 2){
-		trShowImageDialog("Zenophobia\SFA\Nick", "Left Click to select.");
-		trSoundPlayFN("llamamove2.wav","1",-1,"","");
-		xsDisableRule("StoryTutorial2");
-		xsEnableRule("StoryTutorial3");
-		xsEnableRule("StoryTutorial4");
-		xsEnableRule("StoryTutorial5");
-	}
-}
-
-
-rule StoryTutorial3
-highFrequency
-inactive
-{
-	if (trQuestVarGet("gameplayPhase") == GAMEPLAY_WORK){
-		trShowImageDialog("Zenophobia\SFA\Nick", "You selected a unit on the battlefield. Right Click to move or attack.");
-		trSoundPlayFN("llamamove1.wav","1",-1,"","");
-		xsDisableRule("StoryTutorial3");
-	}
-}
-
-
-rule StoryTutorial4
-highFrequency
-inactive
-{
-	if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SUMMONING || trQuestVarGet("gameplayPhase") == GAMEPLAY_SPELL_UNIT || trQuestVarGet("gameplayPhase") == GAMEPLAY_SPELL_TILE){
-		trShowImageDialog("Zenophobia\SFA\Nick", "You selected a card from hand. Left Click again to play or Right Click to cancel.");
-		trSoundPlayFN("llamamove2.wav","1",-1,"","");
-		xsDisableRule("StoryTutorial4");
-	}
-}
-
-rule StoryTutorial5
-highFrequency
-inactive
-{
-	if (trCountUnitsInArea(""+1*trQuestVarGet("p2commander"),1,"Unit",27) > 0){
-		trShowImageDialog("Zenophobia\SFA\Nick", "Commanders have that light effect. Kill the enemy Commander while keeping yours alive to win.");
-		trSoundPlayFN("llamagrunt1.wav","1",-1,"","");
-		xsDisableRule("StoryTutorial5");
-	}
-}
-*/
 
 rule StoryClass5Mission1
 highFrequency

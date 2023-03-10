@@ -91,7 +91,7 @@ rule StoryClass0Mission4_instructions
 highFrequency
 inactive
 {
-	if (trQuestVarGet("p1mana") > 0) {
+	if (trQuestVarGet("p1mana") == 1) {
 		uiMessageBox("Get to the spotlight to escape!");
 		xsDisableSelf();
 	}

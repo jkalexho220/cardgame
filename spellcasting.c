@@ -1007,7 +1007,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
-		case SPELL_CLEANSING_WATERS:
+		case SPELL_SERPENT_SKIN:
 		{
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a unit. Right click to cancel.");
@@ -2011,7 +2011,7 @@ inactive
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 				tileGuard(1*mGetVarByQV("spellTarget", "tile"), false);
 			}
-			case SPELL_CLEANSING_WATERS:
+			case SPELL_SERPENT_SKIN:
 			{
 				trSoundPlayFN("icestereo.wav","1",-1,"","");
 				trSoundPlayFN("serpentbirth1.wav","1",-1,"","");
@@ -2575,7 +2575,7 @@ inactive
 			{
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
 				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NICK) {
-					trQuestVarCopy("nickTiles", "spellTarget");
+					trQuestVarSet("nickTiles", trQuestVarGet("spellTarget"));
 				} else {
 					yClearDatabase("nickTiles");
 					for (z=zGetBankCount("tiles"); >0) {
@@ -2889,7 +2889,7 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
-		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+		for(x=yGetDatabaseCount("p"+p+"hand"); < trQuestVarGet("p"+p+"maxHandSize")) {
 			addCardToHand(p, 0, SPELL_METEOR, true);
 			mSetVarByQV("next", "cost", 0);
 		}

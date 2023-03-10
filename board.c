@@ -24,6 +24,7 @@ const int T_NORSE_ROAD = 66;
 const int T_FOREST_SNOW = 88;
 
 const int T_CITY_TILE = 70;
+const int T_ATLANTIS_TILE = 71;
 
 const int T_FOREST_JUNGLE = 95;
 const int T_FOREST_MARSH = 94;
@@ -152,6 +153,21 @@ void highlightTile(int tile = 0, float duration = 0.1) {
 		trUnitSelectByID(zGetVarByIndex("tiles", "border"+x, tile));
 	}
 	trUnitHighlight(duration, false);
+}
+
+int getNearestNeighbor(int tile = 0, vector target = vector(0,0,0)) {
+	int closest = -1;
+	float closestDistance = 15000;
+	float currentDistance = 0;
+	trSoundPlayFN("","1",-1,"NeighborCount: " + zGetVarByIndex("tiles", "neighborCount", tile));
+	for(i=zGetVarByIndex("tiles", "neighborCount", tile) - 1; >= 0) {
+		currentDistance = distanceBetweenVectors(kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+i, tile)), target);
+		if (currentDistance <= closestDistance) {
+			closestDistance = currentDistance;
+			closest = zGetVarByIndex("tiles", "neighbor"+i, tile);
+		}
+	}
+	return(closest);
 }
 
 void paintTile(int tile = 0, int type = 0, int subType = 0) {
@@ -538,6 +554,7 @@ rule initializeBoard
 inactive
 highFrequency
 {
+	float angle = 0;
 	/*
 	Tile index increases outwards from the center.
 	To vary the size of the map, just vary the
@@ -593,10 +610,14 @@ highFrequency
 				trUnitConvert(0);
 			}
 		} else {
-			trQuestVarSet("customBoard", deployAtTile(0, kbGetProtoUnitName(1*yGetVar("customBoard", "proto")), 1*yGetVar("customBoard", "tile")));
+			trQuestVarSet("customBoard", deployAtTile(0, "Dwarf", 1*yGetVar("customBoard", "tile")));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
 			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
+			trUnitSetHeading(yGetVar("customBoard", "heading"));
+			angle = DegreesToRadians(yGetVar("customBoard", "heading"));
+			trSetUnitOrientation(xsVectorSet(xsSin(angle),0,xsCos(angle)),vector(0,1,0),true); // silly aom devs don't understand cos and sin
+			trUnitChangeProtoUnit(kbGetProtoUnitName(1*yGetVar("customBoard", "proto")));
 			trUnitChangeName(collectionMission);
 		}
 		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
