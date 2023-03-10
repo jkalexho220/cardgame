@@ -613,11 +613,13 @@ highFrequency
 			trQuestVarSet("customBoard", deployAtTile(0, "Dwarf", 1*yGetVar("customBoard", "tile")));
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
-			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
 			trUnitSetHeading(yGetVar("customBoard", "heading"));
 			angle = DegreesToRadians(yGetVar("customBoard", "heading"));
 			trSetUnitOrientation(xsVectorSet(xsSin(angle),0,xsCos(angle)),vector(0,1,0),true); // silly aom devs don't understand cos and sin
 			trUnitChangeProtoUnit(kbGetProtoUnitName(1*yGetVar("customBoard", "proto")));
+			trUnitSelectClear();
+			trUnitSelect(""+1*trQuestVarGet("customBoard"), true);
+			trSetSelectedScale(yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"), yGetVar("customBoard", "scale"));
 			trUnitChangeName(collectionMission);
 		}
 		if(yGetVar("customBoard", "terrain") > TILE_EMPTY){
@@ -642,7 +644,7 @@ highFrequency
 	
 	trModifyProtounit("Revealer", 0, 2, 9999999999999999999.0);
 	trModifyProtounit("Revealer", 0, 2, -9999999999999999999.0);
-	trModifyProtounit("Revealer", 0, 2, 6 * trQuestVarGet("dimension") + 6);
+	trModifyProtounit("Revealer", 0, 2, 6 * xsMax(3, trQuestVarGet("dimension")) + 6);
 	
 	xsDisableSelf();
 	xsEnableRule("match_00_start");

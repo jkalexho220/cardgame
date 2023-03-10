@@ -220,6 +220,7 @@ inactive
 {
 	if (trTimeMS() > trQuestVarGet("turnStartDelay")) {
 		int p = trQuestVarGet("activePlayer");
+		int tile = 0;
 		bool delay = false;
 		for(x=yGetDatabaseCount("turnStart"); >0) {
 			yDatabaseNext("turnStart");
@@ -227,6 +228,16 @@ inactive
 			if(OnTurnStart(1*trQuestVarGet("turnStart")) == true){
 				delay = true;
 				break;
+			}
+		}
+		// electroballs
+		for(x=yGetDatabaseCount("electroballs"); >0) {
+			yDatabaseNext("electroballs");
+			if (yGetVar("electroballs", "player") == p) {
+				tile = yGetVar("electroballs", "tile");
+				if (zGetVarByIndex("tiles", "occupant", tile) > 0) {
+					damageUnit(1*zGetVarByIndex("tiles", "occupant", tile), 1);
+				}
 			}
 		}
 		// Leo discount

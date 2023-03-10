@@ -60,6 +60,8 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_HORROR_MENAGERIE = 806;
+const int SPELL_ELECTROBALL = 805;
 const int SPELL_DEATH_APPROACHES = 804;
 const int SPELL_DEATH_DOOR = 803;
 const int SPELL_DOMINANCE = 802;
@@ -1041,6 +1043,9 @@ active
 
 	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Death's Door",			3, SPELL_DEATH_DOOR, 		"Return an enemy unit to your opponent's hand and give it Fleeting.", SPELL_TYPE_OFFENSIVE, 0, true);
+
+	SpellSetup("Electroball",			1, SPELL_ELECTROBALL,		"Create a lightning ball on a tile. It deals 1 damage at the start of your turn.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Horror Menagerie",		5, SPELL_HORROR_MENAGERIE,	"Reduce the cost of spells in your hand to 0.", SPELL_TYPE_OTHER, 0, true);
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");

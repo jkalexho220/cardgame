@@ -71,11 +71,8 @@ inactive
 
 		// sparkly books of magic
 		if (trQuestVarGet("missionHardmode") == 1) {
-			for(i=0; <20) {
-				addCardToDeck(2, "", SPELL_SING);
-			}
 			mSetVarByQV("libraryMoonblade", "speed", 3);
-			mSetVarByQV("libraryNanodude", "speed", 3);
+			// mSetVarByQV("libraryNanodude", "speed", 3); // this is a bit much
 			zSetVarByIndex("tiles", "occupant", mGetVarByQV("libraryMoonblade", "tile"), 0);
 			teleportToTile(1*trQuestVarGet("libraryMoonblade"), 200);
 		}
@@ -309,9 +306,40 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m4_", 1, 4);
+		xsEnableRule("StoryClass1Mission4_polymorph");
+		mSetVarByQV("p2commander", "health", 20);
+		mSetVarByQV("p2commander", "maxhealth", 20);
+		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(129, 2, kbGetProtoUnitID("Maceman"));
+			for(i=5; >0) {
+				generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_ELECTROBALL);
+			}
+			summonAtTile(192, 2, kbGetProtoUnitID("Monument"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Monument"));
 		}
+	}
+}
+
+rule StoryClass1Mission4_polymorph
+highFrequency
+inactive
+{
+	if (trQuestVarGet("activePlayer") == 2) {
+		xsDisableSelf();
+		trSoundPlayFN("pigpower.wav");
+		trMessageSetText("(0) Polymorph: Transform the opposing Commander into a 1|1 Boar with no abilities.");
+		ChatLog(0, "<color={Playercolor(2)}>Opponent</color> cast Polymorph!");
+		CharacterLog(2, "Spark Witch", "Oops! I've accidentally made you cute!");
+		trUnitSelectClear();
+		trUnitSelectByQV("p1commander");
+		trMutateSelected(kbGetProtoUnitID("Hero Boar 2"));
+		deployAtTile(0, "Curse SFX", mGetVarByQV("p1commander", "tile"));
+		mSetVarByQV("p1commander", "keywords", Keyword(BEACON));
+		mSetVarByQV("p1commander", "OnAttack", 0);
+		mSetVarByQV("p1commander", "attack", 1);
+		mSetVarByQV("p1commander", "health", 1);
+		mSetVarByQV("p1commander", "maxhealth", 1);
+		mSetVarByQV("p1commander", "proto", kbGetProtoUnitID("Hero Boar 2"));
 	}
 }
 
@@ -322,9 +350,16 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m5_", 1, 4);
+		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "maxhealth", 30);
+		mSetVarByQV("p2commander", "attack", 2);
+		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));
+		generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_HORROR_MENAGERIE);
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Golem"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Monument 4"));
+			for(i=3; >0) {
+				addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+				addCardToDeck(2, "", SPELL_AQUARIUS);
+			}
 		}
 	}
 }

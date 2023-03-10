@@ -125,6 +125,7 @@ void SetupWalls7(string wall = "", string connector = "", float wallScale = 1, f
 }
 
 void SetupMission(int class = 0, int mission = 0){
+	vector pos = vector(0,0,0);
 	yClearDatabase("p2deck");
 	yClearDatabase("customBoard");
 	trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
@@ -724,8 +725,8 @@ void SetupMission(int class = 0, int mission = 0){
 						AddToCustomBoard(i + 130, TILE_EMPTY, "Cinematic Block", 1);
 						AddToCustomBoard(i + 139, TILE_EMPTY, "Cinematic Block", 1);
 						AddToCustomBoard(i + 154, TILE_EMPTY, "Cinematic Block", 1);
-						AddToCustomBoard(i + 176, TILE_EMPTY, "Cinematic Block", 1);
-						AddToCustomBoard(i + 203, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 175, TILE_EMPTY, "Cinematic Block", 1);
+						AddToCustomBoard(i + 202, TILE_EMPTY, "Cinematic Block", 1);
 					}
 
 					for(i=0; <2) {
@@ -753,8 +754,8 @@ void SetupMission(int class = 0, int mission = 0){
 
 					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
-					for(x=20; >0) {
-						addCardToDeck(2, "", SPELL_SPACE_VENT);
+					for(x=40; >0) {
+						addCardToDeck(2, "", SPELL_SCRAP_METAL);
 					}
 					yClearDatabase("p1deck");
 					for(x=20; >0) {
@@ -782,51 +783,92 @@ void SetupMission(int class = 0, int mission = 0){
 				case 4:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("dimension", 8);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);
+					trPaintTerrain(0, 0, 60, 60, 0, T_ATLANTIS_TILE, false);
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE); // atlantis tile
+					trQuestVarSet("customTerrainEmptySpecial", T_ATLANTIS_TILE); // olympus tile
+
+					//Left Column Row
+					AddToCustomBoard(188, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(186, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(184, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					//Right Column Row
+					AddToCustomBoard(176, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(174, TILE_OCCUPIED, "Columns", 1, 45, 2);
+					AddToCustomBoard(172, TILE_OCCUPIED, "Columns", 1, 45, 2);
+
+					// path
+					for(i=128; <= 137) {
+						AddToCustomBoard(i, TILE_EMPTY, "Cinematic Block");
+					}
+					for(i=0; < 3) {
+						AddToCustomBoard(i + 141, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 157, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 179, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 157, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 207, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 147, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 165, TILE_EMPTY, "Cinematic Block");
+						AddToCustomBoard(i + 189, TILE_EMPTY, "Cinematic Block");
+					}
+
+					SetupWalls7("Atlantis Wall Long", "Atlantis Wall Connector");
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Setna"));
-					for(x=0;<3){
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Circe"));
+					trQuestVarSet("p2class2", CLASS_NAGA);
+					for(x=0; < 5){
+						addCardToDeck(2, "", SPELL_FLUSH);
+						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
+						addCardToDeck(2, "Man O War");
 						addCardToDeck(2, "Maceman");
-						addCardToDeck(2, "Slinger");
-						addCardToDeck(2, "Oracle Scout");
-						addCardToDeck(2, "Griffon");
-						addCardToDeck(2, "Golem");
+						addCardToDeck(2, "Hydra");
+						addCardToDeck(2, "Jormund Elver");
+						addCardToDeck(2, "", SPELL_ELECTROBALL);
+					}
+
+					for(x=0; <2) {
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
-						addCardToDeck(2, "Monument 4");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_CLASS_TIME);
-						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
-						addCardToDeck(2, "", SPELL_PYROBALL);
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "Apep");
 					}
-					addCardToDeck(2, "Monument 5");
 				}
 				case 5:
 				{
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false);
 					trQuestVarSet("dimension", 2);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE);
+
+					trTechSetStatus(0, 413, 4); //oreichalkos wall
+
+					SetupWalls3("Gate", "Wall Connector");
+
+					for(i=147; <= 164) {
+						trUnitSelect(""+deployAtTile(0, "Spy Eye", i));
+						trMutateSelected(kbGetProtoUnitID("Timeshift In"));
+						trUnitSetAnimationPath("0,1,1,0,0,0,0");
+					}
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Boar"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Chimera"));
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
 					for(x=0;<4){
-						addCardToDeck(2, "Maceman");
-						addCardToDeck(2, "Centaur");
+						addCardToDeck(2, "", SPELL_GROUND_STOMP);
 						addCardToDeck(2, "Griffon");
 						addCardToDeck(2, "Golem");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_BACKSTAB);
-						addCardToDeck(2, "", SPELL_FINAL_EXAM);
-						addCardToDeck(2, "", SPELL_PYROBALL);
-						addCardToDeck(2, "", SPELL_METEOR);
+						addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
 					}
-					addCardToDeck(2, "Trident Soldier Hero");
-					addCardToDeck(2, "", SPELL_CLASS_TIME);
-					addCardToDeck(2, "", SPELL_ELECTROSURGE);
-					addCardToDeck(2, "", SPELL_APOCALYPSE);
+					for(x=0; < 6) {
+						addCardToDeck(2, "", SPELL_INTIMIDATE);
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
+						addCardToDeck(2, "", SPELL_PYROBALL);
+					}
 				}
 				case 6:
 				{
