@@ -359,6 +359,8 @@ inactive
 			for(i=3; >0) {
 				addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 				addCardToDeck(2, "", SPELL_AQUARIUS);
+				addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
+				addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
 			}
 		}
 	}
@@ -371,10 +373,13 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m6_", 1, 6);
-		trPaintTerrain(0, 0, 60, 60, 0, 50, false);
+		summonAtTile(193, 2, kbGetProtoUnitID("Hero Greek Chiron"));
+		summonAtTile(192, 2, kbGetProtoUnitID("Hero Greek Chiron"));
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(192, 2, kbGetProtoUnitID("Fire Giant"));
-			summonAtTile(193, 2, kbGetProtoUnitID("Monument 5"));
+			for(i=5; >0) {
+				addCardToDeck(2, "", SPELL_DOMINANCE);
+				addCardToDeck(2, "Guardian");
+			}
 		}
 
 		xsEnableRule("StoryClass1Mission6_end");

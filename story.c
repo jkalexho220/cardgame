@@ -845,9 +845,9 @@ void SetupMission(int class = 0, int mission = 0){
 					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
 					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE);
 
-					trTechSetStatus(0, 413, 4); //oreichalkos wall
+					trTechSetStatus(0, 412, 4); // iron wall
 
-					SetupWalls3("Gate", "Wall Connector");
+					SetupWalls3("Gate", "Outpost");
 
 					for(i=147; <= 164) {
 						trUnitSelect(""+deployAtTile(0, "Spy Eye", i));
@@ -860,7 +860,7 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<4){
 						addCardToDeck(2, "", SPELL_GROUND_STOMP);
 						addCardToDeck(2, "Griffon");
-						addCardToDeck(2, "Golem");
+						addCardToDeck(2, "Oracle Scout");
 						addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
 					}
 					for(x=0; < 6) {
@@ -874,28 +874,52 @@ void SetupMission(int class = 0, int mission = 0){
 				{
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 0, 50, false);
-					trQuestVarSet("dimension", 7);
+					trQuestVarSet("dimension", 6);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);
+					trQuestVarSet("customTerrainEmptyNot", T_ATLANTIS_TILE);
+					trQuestVarSet("customTerrainEmptySpecial", 51);
+
+					trTechSetStatus(0, 412, 4); // iron wall
+					SetupWalls7("Gate", "Outpost");
 					/* Border */
 					for(x=255;<297){
 						AddToCustomBoard(x, TILE_OCCUPIED, "Mist", 1, 0, 1);
 					}
+					/* nottud's shit */
+					AddToCustomBoard(137, TILE_OCCUPIED, "Great Box", 1, 99, 1);
+					AddToCustomBoard(153, TILE_OCCUPIED, "Animal Attractor", 1, 51);
+					AddToCustomBoard(164, TILE_OCCUPIED, "Outpost", 1, 90);
+					AddToCustomBoard(161, TILE_OCCUPIED, "Outpost", 1, 90);
+					AddToCustomBoard(155, TILE_OCCUPIED, "Outpost", 1, 90);
+					AddToCustomBoard(152, TILE_OCCUPIED, "Outpost", 1, 90);
+
+					AddToCustomBoard(177, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(144, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(187, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(215, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(160, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(173, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(204, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(131, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(130, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
+					AddToCustomBoard(132, TILE_IMPASSABLE, "Broken Siege Weapons", 3);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Circe"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Minotaur"));
 					for(x=0;<3){
-						addCardToDeck(2, "Maceman");
-						addCardToDeck(2, "Slinger");
-						addCardToDeck(2, "Oracle Scout");
+						addCardToDeck(2, "Valkyrie");
+						addCardToDeck(2, "Centaur");
+						addCardToDeck(2, "Trident Soldier Hero");
 						addCardToDeck(2, "Griffon");
-						addCardToDeck(2, "Golem");
+						addCardToDeck(2, "Slinger");
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
 						addCardToDeck(2, "Monument 4");
-						addCardToDeck(2, "", SPELL_SPARK);
-						addCardToDeck(2, "", SPELL_CLASS_TIME);
+						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
 						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
 						addCardToDeck(2, "", SPELL_PYROBALL);
+						addCardToDeck(2, "", SPELL_DEATH_DOOR);
 					}
 					addCardToDeck(2, "Monument 5");
 				}
