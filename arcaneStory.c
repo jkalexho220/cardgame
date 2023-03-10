@@ -97,7 +97,8 @@ inactive
 {
 	if (trQuestVarGet("p1mana") == 1) {
 		xsDisableSelf();
-		DialogAdd("Get Rogers to the spotlight without being spotted by nanodude or the Moonblade!");
+		DialogAdd("Get Rogers to the spotlight without being spotted by Nanodude or the Moonblade!");
+		DialogAdd("Line of sight updates during your opponent's turn.");
 		DialogAdd("The bookshelves contain useful spells! Pick them up to help your escape!");
 		DialogStart();
 	}
@@ -118,6 +119,8 @@ bool LibraryCheckLOS(int from = 0, int to = 0) {
 			occupant = zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("next"));
 			if ((occupant == trQuestVarGet("deadeye")) || (occupant == trQuestVarGet("p1commander"))) {
 				return(true);
+			} else {
+				return(false);
 			}
 		}
 	}
@@ -137,6 +140,7 @@ rule StoryClass1Mission3_LOS
 inactive
 highFrequency
 {
+	vector pos = vector(0,0,0);
 	if (trQuestVarGet("libraryStep") != trQuestVarGet("activePlayer")) {
 		trQuestVarSet("libraryStep", trQuestVarGet("activePlayer"));
 		bool caught = false;
@@ -150,7 +154,7 @@ highFrequency
 				caught = true;
 			}
 		}
-		if (mGetVarByQV("libraryNanodude", "stunTime") <= 0) {
+		if ((mGetVarByQV("libraryNanodude", "stunTime") <= 0) && (caught == false)) {
 			if (LibraryCheckLOS(1*trQuestVarGet("libraryNanodude"), 1*trQuestVarGet("deadeye"))) {
 				CharacterLog(2, "Nanodude", "Ah, there you are! Come check out this tome!");
 				caught = true;
@@ -165,9 +169,11 @@ highFrequency
 				yDatabaseNext("losPath");
 				highlightTile(1*trQuestVarGet("losPath"), 9999);
 			}
+			trQuestVarSet("bossSpell", 1);
 			xsEnableRule("StoryClass1Mission3_death");
 			xsDisableRule("Bot1");
 			xsDisableRule("Bot_00_turn_start");
+			xsDisableRule("turn_01_resolve_turn_start");
 			xsDisableSelf();
 		}
 	}
@@ -197,10 +203,11 @@ highFrequency
 				}
 			case SPELL_TIME_POCKET:
 				{
-					if (mGetVarByQV("libraryNanodude", "stunTime") == 2) {
+					pos = kbGetBlockPosition(""+1*trQuestVarGet("spellTarget"));
+					if (distanceBetweenVectors(kbGetBlockPosition(""+1*trQuestVarGet("libraryNanodude")), pos) < 81.0) {
 						CharacterLog(2, "Nanodude", "To think I'd be caught in such an elementary trap! Curses!");
 					}
-					if (mGetVarByQV("libraryMoonblade", "stunTime") == 2) {
+					if (distanceBetweenVectors(kbGetBlockPosition(""+1*trQuestVarGet("libraryMoonblade")), pos) < 81.0) {
 						CharacterLog(2, "Moonblade", "Is it just me or is everyone else moving super fast?");
 					}
 				}
@@ -217,62 +224,65 @@ highFrequency
 	}
 
 	// check books
-	yDatabaseNext("magicBooks");
-	int tile = yGetVar("magicBooks", "tile");
-	int occupant = zGetVarByIndex("tiles", "occupant", tile);
-	int spell = SPELL_SERPENT_SKIN;
-	if (occupant > 0) {
-		trUnitSelectClear();
-		trUnitSelect(""+occupant);
-		if (trUnitIsOwnedBy(1)) {
-			trQuestVarSetFromRand("temp", 1, 6, true);
-			trQuestVarSetFromRand("rand", 1, 6, true);
-			if (trQuestVarGet("rand") < trQuestVarGet("temp")) {
-				trQuestVarSet("temp", trQuestVarGet("rand"));
-			}
-			switch(1*trQuestVarGet("temp"))
-			{
-			case 1:
-				{
-					spell = SPELL_SERPENT_SKIN;
-					CharacterLog(1, "Deadeye", "We could use this to freeze on of them. They won't see us.");
-				}
-			case 2:
-				{
-					spell = SPELL_BULLET_TIME;
-					CharacterLog(1, "Deadeye", "If we move fast enough, they can't see us.");
-				}
-			case 3:
-				{
-					spell = SPELL_WATER_CANNON;
-					CharacterLog(1, "Deadeye", "We could send them flying with this.");
-				}
-			case 4:
-				{
-					spell = SPELL_TIME_POCKET;
-					CharacterLog(1, "Deadeye", "Looks like we found something useful.");
-				}
-			case 5:
-				{
-					spell = SPELL_FORTIFY;
-					CharacterLog(1, "Deadeye", "Maybe this can be used to block them off?");
-				}
-			case 6:
-				{
-					spell = SPELL_ZENOS_PARADOX;
-					CharacterLog(1, "Deadeye", "What is this spell doing here?");
-				}
-			}
-			generateCard(1, kbGetProtoUnitID("Statue of Lightning"), spell);
+	if (yGetDatabaseCount("magicBooks") > 0) {
+		yDatabaseNext("magicBooks");
+		int tile = yGetVar("magicBooks", "tile");
+		int occupant = zGetVarByIndex("tiles", "occupant", tile);
+		int spell = SPELL_SERPENT_SKIN;
+		if (occupant > 0) {
 			trUnitSelectClear();
-			trUnitSelectByQV("magicBooks");
-			trUnitChangeProtoUnit("Deconstruct Unit");
-			trUnitSelectClear();
-			trUnitSelectByQV("magicBooks");
-			trUnitOverrideAnimation(18, 0, false, true, -1);
-			yRemoveFromDatabase("magicBooks");
+			trUnitSelect(""+occupant);
+			if (trUnitIsOwnedBy(1)) {
+				trQuestVarSetFromRand("temp", 1, 6, true);
+				trQuestVarSetFromRand("rand", 1, 6, true);
+				if (trQuestVarGet("rand") < trQuestVarGet("temp")) {
+					trQuestVarSet("temp", trQuestVarGet("rand"));
+				}
+				switch(1*trQuestVarGet("temp"))
+				{
+				case 1:
+					{
+						spell = SPELL_SERPENT_SKIN;
+						CharacterLog(1, "Deadeye", "We could use this to freeze on of them. They won't see us.");
+					}
+				case 2:
+					{
+						spell = SPELL_BULLET_TIME;
+						CharacterLog(1, "Deadeye", "If we move fast enough, they can't see us.");
+					}
+				case 3:
+					{
+						spell = SPELL_WATER_CANNON;
+						CharacterLog(1, "Deadeye", "We could send them flying with this.");
+					}
+				case 4:
+					{
+						spell = SPELL_TIME_POCKET;
+						CharacterLog(1, "Deadeye", "Looks like we found something useful.");
+					}
+				case 5:
+					{
+						spell = SPELL_FORTIFY;
+						CharacterLog(1, "Deadeye", "Maybe this can be used to block them off?");
+					}
+				case 6:
+					{
+						spell = SPELL_ZENOS_PARADOX;
+						CharacterLog(1, "Deadeye", "What is this spell doing here?");
+					}
+				}
+				generateCard(1, kbGetProtoUnitID("Statue of Lightning"), spell);
+				trUnitSelectClear();
+				trUnitSelectByQV("magicBooks");
+				trUnitChangeProtoUnit("Deconstruct Unit");
+				trUnitSelectClear();
+				trUnitSelectByQV("magicBooks");
+				trUnitOverrideAnimation(18, 0, false, true, -1);
+				yRemoveFromDatabase("magicBooks");
+			}
 		}
 	}
+	
 	if (trQuestVarGet("missionComplete") == 1) {
 		xsDisableSelf();
 	}
@@ -286,6 +296,7 @@ inactive
 		if (trQuestVarGet("p2defeated") == 0) {
 			trQuestVarSet("p1defeated", 1);
 			xsEnableRule("match_end");
+			trQuestVarSet("bossSpell", 0);
 		}
 		xsDisableSelf();
 	}

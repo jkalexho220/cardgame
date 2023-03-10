@@ -2823,11 +2823,20 @@ inactive
 		}
 		
 		if (done) {
-			castEnd();
+			trDelayedRuleActivation("spell_cast_end");
 		} else {
 			trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);
 		}
 	}
+}
+
+// delayed end so that other stuff can detect spell casts
+rule spell_cast_end
+inactive
+highFrequency
+{
+	xsDisableSelf();
+	castEnd();
 }
 
 rule spell_party_up_activate
