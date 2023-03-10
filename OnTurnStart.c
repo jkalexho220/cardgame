@@ -89,7 +89,7 @@ bool OnTurnStart(int unit = 0) {
 				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
 				if(trQuestVarGet("chats_Audrey_0") == 0){
 					trQuestVarSet("chats_Audrey_0", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Vora</color>: *plant noises*");
+					CharacterLog(p, "Vora", "*plant noises*");
 				}
 				return (true);
 			}
@@ -100,7 +100,7 @@ bool OnTurnStart(int unit = 0) {
 			trQuestVarSet("p2count", 0);
 			if(trQuestVarGet("chats_Kemsyt_0") == 0){
 				trQuestVarSet("chats_Kemsyt_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>Mister Pirate</color>: I like treasure!");
+				CharacterLog(p, "Mister Pirate", "I like treasure!");
 				trSoundPlayFN("kemsytattack2.wav","1",-1,"","");
 			}
 			for (x=yGetDatabaseCount("allUnits"); >0)  {
@@ -133,23 +133,23 @@ bool OnTurnStart(int unit = 0) {
 				if(occupant < 1){
 					if(trQuestVarGet("chats_PirateShip_1") == 0){
 						trQuestVarSet("chats_PirateShip_1", 1);
-						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Damn, we missed!");
+						CharacterLog(p, "Pirate Crew", "Damn, we missed!");
 					}
 				} else if(1*mGetVar(occupant, "tile") == p){
 					if(trQuestVarGet("chats_PirateShip_2") == 0){
 						trQuestVarSet("chats_PirateShip_2", 1);
-						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Oops! Sorry about that!");
+						CharacterLog(p, "Pirate Crew", "Oops! Sorry about that!");
 					}
 				} else {
 					if(trQuestVarGet("chats_PirateShip_3") == 0){
 						trQuestVarSet("chats_PirateShip_3", 1);
-						ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: We got them good!");
+						CharacterLog(p, "Pirate Crew", "We got them good!");
 					}
 				}
 			} else {
 				if(trQuestVarGet("chats_PirateShip_4") == 0){
 					trQuestVarSet("chats_PirateShip_4", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Pirate Crew</color>: Cannons be ready to fire!");
+					CharacterLog(p, "Pirate Crew", "Cannons be ready to fire!");
 				}
 			}
 			yClearDatabase("pirateShipTargets");
@@ -193,12 +193,12 @@ bool OnTurnStart(int unit = 0) {
 				trSoundPlayFN("farming" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 				if(trQuestVarGet("chats_Monument_1") == 0){
 					trQuestVarSet("chats_Monument_1", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Housekeeper</color>: Dirt detected. Cleaning.");
+					CharacterLog(p, "Floating Housekeeper", "Dirt detected. Cleaning.");
 				}
 			} else {
 				if(trQuestVarGet("chats_Monument_2") == 0){
 					trQuestVarSet("chats_Monument_2", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Housekeeper</color>: Nothing to clean.");
+					CharacterLog(p, "Floating Housekeeper", "Nothing to clean.");
 				}
 			}
 			return (true);
@@ -212,12 +212,12 @@ bool OnTurnStart(int unit = 0) {
 			if(1*mGetVarByQV("p"+p+"commander", "health") == h){
 				if(trQuestVarGet("chats_Monument2_1") == 0){
 					trQuestVarSet("chats_Monument2_1", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Exemplary outfit. Congratulations.");
+					CharacterLog(p, "Floating Butler", "Exemplary outfit. Congratulations.");
 				}
 			} else {
 				if(trQuestVarGet("chats_Monument2_2") == 0){
 					trQuestVarSet("chats_Monument2_2", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Butler</color>: Outfit issues detected. Addressing.");
+					CharacterLog(p, "Floating Butler", "Outfit issues detected. Addressing.");
 				}
 			}
 			return (true);
@@ -252,12 +252,12 @@ bool OnTurnStart(int unit = 0) {
 				yRemoveFromDatabase("p"+(3-p)+"hand");
 				if(trQuestVarGet("chats_Monument3_1") == 0){
 					trQuestVarSet("chats_Monument3_1", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Assisting guest with luggage.");
+					CharacterLog(p, "Floating Steward", "Assisting guest with luggage.");
 				}
 			} else {
 				if(trQuestVarGet("chats_Monument3_2") == 0){
 					trQuestVarSet("chats_Monument3_2", 1);
-					ChatLog(0, "<color={Playercolor("+p+")}>Floating Steward</color>: Guest is free of luggage.");
+					CharacterLog(p, "Floating Steward", "Guest is free of luggage.");
 				}
 			}
 			return (true);
@@ -276,7 +276,7 @@ bool OnTurnStart(int unit = 0) {
 			}
 			if(trQuestVarGet("chats_Monument4_1") == 0){
 				trQuestVarSet("chats_Monument4_1", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>Floating Twins</color>: Providing Arcane delicacies.");
+				CharacterLog(p, "Floating Twins", "Providing Arcane delicacies.");
 			}
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
 			trSoundPlayFN("gaiasparkle" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
@@ -338,7 +338,7 @@ bool OnTurnStart(int unit = 0) {
 			trSoundPlayFN("gaiasparkle" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 			if(trQuestVarGet("chats_Monument5_1") == 0){
 				trQuestVarSet("chats_Monument5_1", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>Floating Majordomo</color>: YES.");
+				CharacterLog(p, "Floating Majordomo", "RANDOM BULLSHIT GO!");
 			}
 			return (true);
 		}

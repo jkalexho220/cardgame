@@ -758,3 +758,18 @@ inactive
 		}
 	}
 }
+
+rule PlayerResign
+highFrequency
+active
+{
+	if (kbIsPlayerResigned(trCurrentPlayer())) {
+		xsDisableSelf();
+		// trChatHistoryClear();
+		map("mouse1down", "game", "uiSelectionButtonDown");
+		map("mouse2up", "game", "");
+		map("space", "game", "uiLookAtSelection");
+		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
+		//trModeEnter("Pregame");
+	}
+}

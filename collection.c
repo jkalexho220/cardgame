@@ -335,27 +335,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Tower Courtyard");
+					return ("At the School Gates");
 				}
 				case 2:
 				{
-					return ("Flammable Fire");
+					return ("The Tour");
 				}
 				case 3:
 				{
-					return ("Freezing Frost");
+					return ("The Library");
 				}
 				case 4:
 				{
-					return ("Elevator");
+					return ("Playtime");
 				}
 				case 5:
 				{
-					return ("Archmage");
+					return ("The Elevator");
 				}
 				case 6:
 				{
-					return ("On Top Of The Arcane Tower");
+					return ("Lab of the Mad Scientist");
 				}
 			}
 		}

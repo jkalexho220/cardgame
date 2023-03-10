@@ -926,6 +926,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Choose a tile. Right click to cancel.");
 		}
+		case SPELL_ELECTROBALL:
+		{
+			castAddTile("spellTarget", false);
+			castInstructions("Choose a tile. Right click to cancel.");
+		}
 		case SPELL_FINAL_EXAM:
 		{
 			castAddTile("spellTarget", true);
@@ -1007,7 +1012,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
-		case SPELL_CLEANSING_WATERS:
+		case SPELL_SERPENT_SKIN:
 		{
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a unit. Right click to cancel.");
@@ -1304,6 +1309,11 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a unit to copy the Attack effect of.");
+		}
+		case SPELL_HORROR_MENAGERIE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 	}
 	castStart();
@@ -1820,6 +1830,19 @@ inactive
 				yAddUpdateVar("meteors", "time", 2);
 				yAddUpdateVar("meteors", "tile", trQuestVarGet("spellTarget"));
 			}
+			case SPELL_ELECTROBALL:
+			{
+				trSoundPlayFN("lapadesconvert.wav");
+				trQuestVarSet("next", deployAtTile(0, "Spy Eye", 1*trQuestVarGet("spellTarget")));
+				trUnitSelectClear();
+				trUnitSelectByQV("next");
+				trMutateSelected(kbGetProtoUnitID("Arkantos God"));
+				trUnitOverrideAnimation(26, 0, true, false, -1);
+				trSetSelectedScale(0,0,0);
+				yAddToDatabase("electroballs", "next");
+				yAddUpdateVar("electroballs", "tile", trQuestVarGet("spellTarget"));
+				yAddUpdateVar("electroballs", "player", p);
+			}
 			case SPELL_FINAL_EXAM:
 			{
 				trSoundPlayFN("cinematics\15_in\gong.wav","1",-1,"","");
@@ -2011,7 +2034,7 @@ inactive
 				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
 				tileGuard(1*mGetVarByQV("spellTarget", "tile"), false);
 			}
-			case SPELL_CLEANSING_WATERS:
+			case SPELL_SERPENT_SKIN:
 			{
 				trSoundPlayFN("icestereo.wav","1",-1,"","");
 				trSoundPlayFN("serpentbirth1.wav","1",-1,"","");
@@ -2575,7 +2598,7 @@ inactive
 			{
 				trSoundPlayFN("vortexstart.wav","1",-1,"","");
 				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NICK) {
-					trQuestVarCopy("nickTiles", "spellTarget");
+					trQuestVarSet("nickTiles", trQuestVarGet("spellTarget"));
 				} else {
 					yClearDatabase("nickTiles");
 					for (z=zGetBankCount("tiles"); >0) {
@@ -2747,6 +2770,7 @@ inactive
 			}
 			case SPELL_ARIES:
 			{
+				trSoundPlayFN("cinematics\14_in\chimes.mp3");
 				trSoundPlayFN("tartarianopen2.wav","1",-1,"","");
 				trSoundPlayFN("petsuchosattack.wav","1",-1,"","");
 				damageUnit(1*trQuestVarGet("spellTarget"), yGetDatabaseCount("p"+p+"hand") + trQuestVarGet("p"+p+"spellDamage"));
@@ -2755,6 +2779,7 @@ inactive
 			}
 			case SPELL_AQUARIUS:
 			{
+				trSoundPlayFN("cinematics\14_in\chimes.mp3");
 				trSoundPlayFN("healingspringbirth.wav","1",-1,"","");
 				trSoundPlayFN("heal.wav","1",-1,"","");
 				healUnit(1*trQuestVarGet("p"+p+"commander"), yGetDatabaseCount("p"+p+"hand"));
@@ -2762,13 +2787,14 @@ inactive
 			}
 			case SPELL_LIBRA:
 			{
+				trSoundPlayFN("cinematics\14_in\chimes.mp3");
 				trQuestVarSet("p"+p+"drawCards", xsMax(0, 1 + yGetDatabaseCount("p"+(3-p)+"hand") - yGetDatabaseCount("p"+p+"hand")));
 				trSoundPlayFN("temple.wav","1",-1,"","");
 				trSoundPlayFN("sentinelbirth.wav","1",-1,"","");
 			}
 			case SPELL_PISCES:
 			{
-				trSoundPlayFN("cinematics\14_in\chimes.mp3","1",-1,"","");
+				trSoundPlayFN("cinematics\14_in\chimes.mp3");
 				for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
 					mSetVarByQV("p"+p+"hand", "attack", 1 + mGetVarByQV("p"+p+"hand", "attack"));
@@ -2807,6 +2833,29 @@ inactive
 					mSetStringByQV("spellCaster", "ability", mGetStringByQV("spellTarget", "ability"));
 				}
 			}
+			case SPELL_HORROR_MENAGERIE:
+			{
+				trSoundPlayFN("ageadvance.wav");
+				trSoundPlayFN("vortexstart.wav");
+				trSoundPlayFN("timeshift.wav");
+				deployAtTile(0, "Osiris Box Glow", mGetVarByQV("p"+p+"commander", "tile"));
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Ball of Fire", mGetVarByQV("p"+p+"commander", "tile")), true);
+				trMutateSelected(kbGetProtoUnitID("Implode Sphere Effect"));
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")), true);
+				trDamageUnitPercent(100);
+				trMutateSelected(kbGetProtoUnitID("Pyramid Osiris Xpack"));
+				trSetSelectedScale(100, 0, 0);
+				for(i=yGetDatabaseCount("p"+p+"hand"); >0) {
+					yDatabaseNext("p"+p+"hand");
+					if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+						mSetVarByQV("p"+p+"hand", "cost", 0);
+					}
+				}
+				done = false;
+				xsEnableRule("menagerie_end");
+			}
 			case SPELL_BULLET_STORM:
 			{
 				done = false;
@@ -2823,11 +2872,20 @@ inactive
 		}
 		
 		if (done) {
-			castEnd();
+			trDelayedRuleActivation("spell_cast_end");
 		} else {
 			trQuestVarSet("gameplayPhase", GAMEPLAY_ATTACKING);
 		}
 	}
+}
+
+// delayed end so that other stuff can detect spell casts
+rule spell_cast_end
+inactive
+highFrequency
+{
+	xsDisableSelf();
+	castEnd();
 }
 
 rule spell_party_up_activate
@@ -2889,7 +2947,7 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
-		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+		for(x=yGetDatabaseCount("p"+p+"hand"); < trQuestVarGet("p"+p+"maxHandSize")) {
 			addCardToHand(p, 0, SPELL_METEOR, true);
 			mSetVarByQV("next", "cost", 0);
 		}
@@ -3391,5 +3449,15 @@ highFrequency
 				}
 			}
 		}
+	}
+}
+
+rule menagerie_end
+inactive
+highFrequency
+{
+	if (trTime() > (cActivationTime + 4)) {
+		castEnd();
+		xsDisableSelf();
 	}
 }

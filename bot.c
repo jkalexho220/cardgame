@@ -7,6 +7,7 @@ const int BOT_PHASE_SPELL_PLAY = 5;
 
 const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks
 const int BOT_PERSONALITY_TRAINING = 1; // Training bot, passes turn
+const int BOT_PERSONALITY_LIBRARY = 2; // random wandering in the library
 
 void InitBot(int personality = 0){
 	trQuestVarSet("botPersonality", personality);
@@ -68,6 +69,9 @@ inactive
 				1. Select a card in hand
 				2. Select a ready unit
 				*/
+				if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_LIBRARY) {
+					trQuestVarSet("botManaOptions", -1);
+				}
 				trQuestVarSet("botChooseHand", 0);
 				trQuestVarSet("botChooseUnit", 0);
 				if (trQuestVarGet("botManaOptions") >= 0) {
@@ -326,33 +330,42 @@ inactive
 					the score of a tile is the attack of the active unit * the number of targets it can reach on the tile
 					also prioritize tiles closer to enemy commander
 					*/
-					if (HasKeyword(HEALER, mGetVarByQV("botActiveUnit", "keywords"))) {
-						currentScore = trCountUnitsInArea(""+1*trQuestVarGet("reachable"),2,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
-					} else {
-						currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
-					}
-					currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
-					if (currentScore >= bestTileScore) {
-						/*
-						prioritize tiles that can be attacked by the fewest number of enemies
-						this loops through so much lmao
-						*/
-						trVectorSetUnitPos("pos", "reachable");
-						for(y=yGetDatabaseCount("allUnits"); >0) {
-							yDatabaseNext("allUnits");
-							if (mGetVarByQV("allUnits", "player") == 1) {
-								if (trDistanceToVector("allUnits", "pos") < 1.0 + 6.0*mGetVarByQV("allUnits", "range")) {
-									currentScore = currentScore - mGetVarByQV("allUnits", "attack");
-								}
-							}
-						}
-						
-						/*
-						If it's still the best tile, update
-						*/
+					if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_LIBRARY) {
+						trQuestVarSetFromRand("rand", 1, 100);
+						currentScore = trQuestVarGet("rand");
 						if (currentScore >= bestTileScore) {
 							bestTileScore = currentScore;
 							bestTile = trQuestVarGet("reachable");
+						}
+					} else {
+						if (HasKeyword(HEALER, mGetVarByQV("botActiveUnit", "keywords"))) {
+							currentScore = trCountUnitsInArea(""+1*trQuestVarGet("reachable"),2,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
+						} else {
+							currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
+						}
+						currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
+						if (currentScore >= bestTileScore) {
+							/*
+							prioritize tiles that can be attacked by the fewest number of enemies
+							this loops through so much lmao
+							*/
+							trVectorSetUnitPos("pos", "reachable");
+							for(y=yGetDatabaseCount("allUnits"); >0) {
+								yDatabaseNext("allUnits");
+								if (mGetVarByQV("allUnits", "player") == 1) {
+									if (trDistanceToVector("allUnits", "pos") < 1.0 + 6.0*mGetVarByQV("allUnits", "range")) {
+										currentScore = currentScore - mGetVarByQV("allUnits", "attack");
+									}
+								}
+							}
+							
+							/*
+							If it's still the best tile, update
+							*/
+							if (currentScore >= bestTileScore) {
+								bestTileScore = currentScore;
+								bestTile = trQuestVarGet("reachable");
+							}
 						}
 					}
 				}
@@ -400,6 +413,10 @@ inactive
 						bestTargetScore = currentScore;
 						bestTarget = trQuestVarGet("targets");
 					}
+				}
+
+				if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_LIBRARY) {
+					bestTargetScore = -9999;
 				}
 				
 				trQuestVarSet("botClick", RIGHT_CLICK);

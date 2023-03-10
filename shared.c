@@ -56,6 +56,9 @@ void trUnitSelectByQV(string s = "", bool reverse = true) {
 	trUnitSelect(""+1*trQuestVarGet(""+s), reverse);
 }
 
+float DegreesToRadians(float degrees = 0) {
+	return(degrees * 0.017453);
+}
 
 /*
 Given a quest var that stores a unit name, store
@@ -362,6 +365,10 @@ void ChatLog(int p = 1, string message = ""){
 		trStringQuestVarSet("chat" + p + "Log" + modularCounterNext("chat" + p + "Log"), message);
 	}
 	ChatLogShow();
+}
+
+void CharacterLog(int p = 2, string character = "", string message = "") {
+	ChatLog(1, "<color={Playercolor("+p+")}>" + character + "<color=1,1,1>: " + message);
 }
 /*
 Initializes a database of units given a starting value and length.

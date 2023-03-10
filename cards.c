@@ -60,6 +60,8 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_HORROR_MENAGERIE = 806;
+const int SPELL_ELECTROBALL = 805;
 const int SPELL_DEATH_APPROACHES = 804;
 const int SPELL_DEATH_DOOR = 803;
 const int SPELL_DOMINANCE = 802;
@@ -113,7 +115,7 @@ const int SPELL_SEA_EMBRACE = 37;
 const int SPELL_TELETIDE = 38;
 const int SPELL_WRATH_OF_SEA = 39;
 const int SPELL_RUNE_OF_WATER = 40;
-const int SPELL_CLEANSING_WATERS = 41;
+const int SPELL_SERPENT_SKIN = 41;
 const int SPELL_CALL_OF_THE_DEEP = 42;
 
 const int SPELL_LAMPADES_CONVERT = 43;
@@ -959,7 +961,7 @@ active
 	
 	CardSetup("Pharaoh Secondary",		0, "Fire Mage", 			2, 20, 2, 2, Keyword(BEACON), true);
 	CardEvents("Pharaoh Secondary", Keyword(ATTACK_SPELL_DAMAGE), 0, 	"After I counterattack, I gain +1 Spell Damage.");
-	CardSetup("King Folstag",			0, "Frost Mage", 			3, 30, 2, 1, Keyword(BEACON) + Keyword(ARMORED), true);
+	CardSetup("King Folstag",			0, "Freeze McGee", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(ARMORED), true);
 	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
@@ -1000,15 +1002,15 @@ active
 	CardSetup("Flying Medic",			3, "Playful Fae",			3, 3, 1, 2, Keyword(BEACON) + Keyword(HEALER) + Keyword(FLYING), true);
 
 	CardSetup("Audrey Water",			2, "Vora Sapling",			2, 5, 0, 1, Keyword(AIRDROP) + Keyword(DEADLY), true);
-	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 5, 0, 0, true);
+	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 1, 0, 0, true);
 	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged units.");
-	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 5, 0, 0, true);
+	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 1, 0, 0, true);
 	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander.");
-	CardSetup("Monument 3",				6, "Floating Steward",		0, 15, 5, 0, 0, true);
+	CardSetup("Monument 3",				6, "Floating Steward",		0, 12, 1, 0, 0, true);
 	CardEvents("Monument 3", 0, 0, 		"Turn Start: Opponent discards a random card.");
-	CardSetup("Monument 4",				8, "Floating Twins",		0, 20, 5, 0, 0, true);
+	CardSetup("Monument 4",				8, "Floating Twins",		0, 15, 1, 0, 0, true);
 	CardEvents("Monument 4", 0, 0, 		"Turn Start: Summon a random Arcane unit and play a random Arcane spell.");
-	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 25, 5, 0, 0, true);
+	CardSetup("Monument 5",				10, "Floating Majordomo",	0, 20, 1, 0, 0, true);
 	CardEvents("Monument 5", 0, 0, 		"I have the effects of Floating Housekeeper, Butler, Steward and Twins.");
 	
 	SpellSetup("Chaos",					4, SPELL_TAVERN_BRAWL,		"Every unit attacks another one at random, regardless of distance.", SPELL_TYPE_OTHER, 0, true);
@@ -1041,6 +1043,9 @@ active
 
 	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Death's Door",			3, SPELL_DEATH_DOOR, 		"Return an enemy unit to your opponent's hand and give it Fleeting.", SPELL_TYPE_OFFENSIVE, 0, true);
+
+	SpellSetup("Electroball",			1, SPELL_ELECTROBALL,		"Create a lightning ball on a tile. It deals 1 damage at the start of your turn.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Horror Menagerie",		5, SPELL_HORROR_MENAGERIE,	"Reduce the cost of spells in your hand to 0.", SPELL_TYPE_OTHER, 0, true);
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");
@@ -1204,7 +1209,7 @@ highFrequency
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
-	SpellSetup("Serpent Skin",			2, SPELL_CLEANSING_WATERS,	"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Serpent Skin",			2, SPELL_SERPENT_SKIN,	"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Call of the Deep",		2, SPELL_CALL_OF_THE_DEEP,	"Summon the most expensive unit from your deck that costs {Manaflow} or less.", SPELL_TYPE_OTHER);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.

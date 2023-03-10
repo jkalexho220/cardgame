@@ -32,7 +32,7 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("beargrunt" + 1*trQuestVarGet("soundRandom") + ".wav","1",-1,"","");
 			if(trQuestVarGet("chats_Bear_0") == 0){
 				trQuestVarSet("chats_Bear_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Growl!!!");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "Growl!!!");
 			}
 		}
 		case kbGetProtoUnitID("Lancer Hero"):
@@ -59,7 +59,7 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("archeryrange.wav","1",-1,"","");
 			if(trQuestVarGet("chats_Immortal_0") == 0){
 				trQuestVarSet("chats_Immortal_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: *intense staring*");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "*intense staring*");
 			}
 		}
 		case kbGetProtoUnitID("Audrey Water"):
@@ -83,28 +83,28 @@ void OnPlay(int unit = 0) {
 		{
 			if(trQuestVarGet("chats_Monument_0") == 0){
 				trQuestVarSet("chats_Monument_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to clean.");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "Preparing to clean.");
 			}
 		}
 		case kbGetProtoUnitID("Monument 2"):
 		{
 			if(trQuestVarGet("chats_Monument2_0") == 0){
 				trQuestVarSet("chats_Monument2_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to help with outfit.");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "Preparing to help with outfit.");
 			}
 		}
 		case kbGetProtoUnitID("Monument 3"):
 		{
 			if(trQuestVarGet("chats_Monument3_0") == 0){
 				trQuestVarSet("chats_Monument3_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing to assist guest with luggage.");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "Preparing to assist guest with luggage.");
 			}
 		}
 		case kbGetProtoUnitID("Monument 4"):
 		{
 			if(trQuestVarGet("chats_Monument4_0") == 0){
 				trQuestVarSet("chats_Monument4_0", 1);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: Preparing Arcane buffet.");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "Prepare Arcane buffet.");
 			}
 		}
 		case kbGetProtoUnitID("Monument 5"):
@@ -112,7 +112,7 @@ void OnPlay(int unit = 0) {
 			if(trQuestVarGet("chats_Monument5_0") == 0){
 				trQuestVarSet("chats_Monument5_0", 1);
 				trCameraShake(3.0, 0.3);
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: PREPARING EVERYTHING.");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "RANDOM BULLSHIT GO!");
 			}
 		}
 		case kbGetProtoUnitID("Slinger"):
@@ -387,37 +387,37 @@ void OnPlay(int unit = 0) {
 				{
 					trSoundPlayFN("hippogrunt1.wav","1",-1,"","");
 					trSoundPlayFN("manticoreselect1.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: ANJKLDNSMDKHALDMNBNA!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: ANJKLDNSMDKHALDMNBNA!!!");
 				}
 				case 2:
 				{
 					trSoundPlayFN("hippogrunt2.wav","1",-1,"","");
 					trSoundPlayFN("manticoreselect2.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: OIUHDSNBAGNKDAKDAKDA!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: OIUHDSNBAGNKDAKDAKDA!!!");
 				}
 				case 3:
 				{
 					trSoundPlayFN("hyenagrunt1.wav","1",-1,"","");
 					trSoundPlayFN("manticoremove1.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: GDAGAKDGBAJKDGABJKDG!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: GDAGAKDGBAJKDGABJKDG!!!");
 				}
 				case 4:
 				{
 					trSoundPlayFN("hyenagrunt2.wav","1",-1,"","");
 					trSoundPlayFN("manticoremove2.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: IAHDUIADHANILDHADNDA!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: IAHDUIADHANILDHADNDA!!!");
 				}
 				case 5:
 				{
 					trSoundPlayFN("walrusgrunt1.wav","1",-1,"","");
 					trSoundPlayFN("manticoregrunt1.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: UYADGAKDGAKDGGDASKJF!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: UYADGAKDGAKDGGDASKJF!!!");
 				}
 				case 6:
 				{
 					trSoundPlayFN("walrusgrunt2.wav","1",-1,"","");
 					trSoundPlayFN("manticoregrunt2.wav","1",-1,"","");
-					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: TARIHDNADHADHDGNALAD!!!");
+					ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "<color=1,1,1>: TARIHDNADHADHDGNALAD!!!");
 				}
 			}
 			*/
@@ -449,7 +449,7 @@ void OnPlay(int unit = 0) {
 				trFadeOutAllSounds(0.0);
 				trQuestVarSet("chats_Argo_0", 1);
 				trSoundPlayFN("dialog\en\ajax097.mp3","1",-1,"","");
-				ChatLog(0, "<color={Playercolor("+p+")}>Hawk's Captain</color>: Do I always have to watch your back?");
+				CharacterLog(p, "Hawk's Captain", "Do I always have to watch your back?");
 				MusicHigh();
 			}
 			trQuestVarSet("p"+p+"manaTax", 5 + trQuestVarGet("p"+p+"manaTax"));
@@ -464,7 +464,7 @@ void OnPlay(int unit = 0) {
 				trFadeOutAllSounds(0.0);
 				trQuestVarSet("chats_Heracles_0", 1);
 				trSoundPlayFN("xpack\xdialog\en\xfol535.mp3","1",-1,"","");
-				ChatLog(0, "<color={Playercolor("+p+")}>" + trStringQuestVarGet("card_" + proto + "_name") + "</color>: My brothers have arrived!");
+				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "My brothers have arrived!");
 				MusicHigh();
 			}
 			trSoundPlayFN("lightningbirth.wav","1",-1,"","");

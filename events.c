@@ -14,6 +14,8 @@ const int EVENT_NEXT_DELETE = 9;
 
 const int EVENT_CHOOSE_LOAD_DELETE = 10;
 
+const int EVENT_MUSIC = 11;
+
 rule event_assignment
 highFrequency
 active
