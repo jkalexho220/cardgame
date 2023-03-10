@@ -1801,10 +1801,13 @@ inactive
 				xsDisableRule("StoryTutorial4");
 				xsDisableRule("StoryTutorial5");
 				trQuestVarSet("newCards", 0);
+				/*
 				trQuestVarSet("newCommanderType", kbGetProtoUnitID("Oracle Hero"));
 				xsEnableRule("NewCommander0");
 				CommanderUnlockLine(CLASS_ARCANE, true);
+
 				trDelayedRuleActivation("ClassUnlockMessage_1");
+				*/
 				trQuestVarSet("class1", CLASS_ADVENTURER);
 				trQuestVarSet("class2", CLASS_ARCANE);
 				for(i = 0;<6){
@@ -1821,29 +1824,16 @@ inactive
 				setClassProgress(CLASS_ARCANE, 1);
 			} else {
 				/* Progress Current Story */
-				int storiesFinished = 0;
-				if(getClassProgress(CLASS_ADVENTURER) > 6){
-					storiesFinished = storiesFinished + 1;
-				}
-				if(getClassProgress(CLASS_ARCANE) > 6){
-					storiesFinished = storiesFinished + 1;
-				}
-				if(getClassProgress(CLASS_NAGA) > 6){
-					storiesFinished = storiesFinished + 1;
-				}
-				if(getClassProgress(CLASS_CLOCKWORK) > 6){
-					storiesFinished = storiesFinished + 1;
-				}
-				if(getClassProgress(CLASS_EVIL) > 6){
-					storiesFinished = storiesFinished + 1;
-				}
 						
 				if(trQuestVarGet("missionHardmode") == 0){
 					setClassProgress(1*trQuestVarGet("missionClass"), getClassProgress(1*trQuestVarGet("missionClass")) + 1);
+					/*
 					if(getClassProgress(1*trQuestVarGet("missionClass")) > 6){
+						
 						trQuestVarSet("newCommanderType", CommanderToProtounit(1+(2*trQuestVarGet("missionClass"))));
 						xsEnableRule("NewCommander0");
 						CommanderUnlockLine(trQuestVarGet("missionClass"));
+
 						
 						storiesFinished = storiesFinished + 1;
 						if(getClassProgress(CLASS_NAGA) == 0){
@@ -1852,17 +1842,13 @@ inactive
 							trQuestVarSet("unlockMore", CLASS_SPACE);
 						}
 					}
+					*/
 				}
 				/* Reward Pack Cards */
 				trVectorQuestVarSet("packPos", xsVectorSet(105, 0, 1));
 				trQuestVarSet("newCardsCount", 2 + trQuestVarGet("missionSelection"));
 				trVectorQuestVarSet("packPos", xsVectorSet(trVectorQuestVarGetX("packPos")+(8-trQuestVarGet("newCardsCount")),0,trVectorQuestVarGetZ("packPos")+(8-trQuestVarGet("newCardsCount"))));
 				
-				int playerLegendaries = 0;
-				for(i=0;<6){
-					playerLegendaries = playerLegendaries + getCardCountCollection(14 + 30 * i);
-					playerLegendaries = playerLegendaries + getCardCountCollection(29 + 30 * i);
-				}
 				xsEnableRule("NewCards0");
 				// populate the array with unlocked classes
 				int unlocked = zNewArray(mInt, 6);
@@ -1885,15 +1871,17 @@ inactive
 						legendary = 0;
 						trQuestVarSetFromRand("reward", 7, 29, true);
 						/* Legendary Rarity */
-						if(((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)) && storiesFinished <= playerLegendaries){
-							trQuestVarSetFromRand("reward", 7, 29, true);
+						if((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)){
+							trQuestVarSetFromRand("rand", 1, 2);
+							if (trQuestVarGet("rand") == 1) {
+								trQuestVarSetFromRand("reward", 7, 29, true);
+							}
 						}
 						
 						int maxCopies = 3;
 						if((1*trQuestVarGet("reward") == 14) || (1*trQuestVarGet("reward") == 29)){
 							maxCopies = 1;
 							legendary = 1;
-							playerLegendaries = playerLegendaries + 1;
 						}
 						
 						int class = trQuestVarGet("missionClass");

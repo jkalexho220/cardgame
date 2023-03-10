@@ -9,6 +9,7 @@ inactive
 		CinematicPlay("HeavenGames\c2m1_", 1, 3);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			summonAtTile(168, 2, kbGetProtoUnitID("Prisoner"));
 			summonAtTile(169, 2, kbGetProtoUnitID("Monument"));
 		}
@@ -36,6 +37,7 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m2_", 1, 4);
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			summonAtTile(192, 2, kbGetProtoUnitID("Frost Giant"));
 			summonAtTile(193, 2, kbGetProtoUnitID("Frost Giant"));
 		}
@@ -311,7 +313,8 @@ inactive
 		mSetVarByQV("p2commander", "maxhealth", 20);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
 		if (trQuestVarGet("missionHardmode") == 1) {
-			for(i=5; >0) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
+			for(i=3; >0) {
 				generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_ELECTROBALL);
 			}
 			summonAtTile(192, 2, kbGetProtoUnitID("Monument"));
@@ -356,6 +359,7 @@ inactive
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));
 		generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_HORROR_MENAGERIE);
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(i=3; >0) {
 				addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 				addCardToDeck(2, "", SPELL_AQUARIUS);
@@ -373,13 +377,18 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m6_", 1, 6);
+		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "maxhealth", 30);
 		summonAtTile(193, 2, kbGetProtoUnitID("Hero Greek Chiron"));
 		summonAtTile(192, 2, kbGetProtoUnitID("Hero Greek Chiron"));
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(i=5; >0) {
 				addCardToDeck(2, "", SPELL_DOMINANCE);
 				addCardToDeck(2, "Guardian");
 			}
+			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
+			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
 		}
 
 		xsEnableRule("StoryClass1Mission6_end");
