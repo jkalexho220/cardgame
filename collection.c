@@ -425,7 +425,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("The Old Lands");
+					return ("Separated");
 				}
 				case 2:
 				{
@@ -433,19 +433,19 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				}
 				case 3:
 				{
-					return ("Nightfall");
+					return ("A Being From Beyond");
 				}
 				case 4:
 				{
-					return ("Crossing Over");
+					return ("Lights, Camera, and Zombies");
 				}
 				case 5:
 				{
-					return ("The Otherworld");
+					return ("The Ritual");
 				}
 				case 6:
 				{
-					return ("Zeno's Paradox");
+					return ("Nightfall");
 				}
 			}
 		}

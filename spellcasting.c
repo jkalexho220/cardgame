@@ -2879,8 +2879,6 @@ inactive
 						mSetVarByQV("p"+p+"hand", "cost", 0);
 					}
 				}
-				done = false;
-				xsEnableRule("menagerie_end");
 			}
 			case SPELL_BULLET_STORM:
 			{
@@ -3103,7 +3101,7 @@ rule spell_snipe_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) ||
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) ||
 		(trTime() > cActivationTime + 3)) {
 		int tile = mGetVarByQV("spelltarget", "tile");
 		deployAtTile(0, "Arkantos God Out", tile);
@@ -3528,15 +3526,6 @@ highFrequency
 	}
 }
 
-rule menagerie_end
-inactive
-highFrequency
-{
-	if (trTime() > (cActivationTime + 4)) {
-		castEnd();
-		xsDisableSelf();
-	}
-}
 
 rule bullet_storm_active
 inactive
@@ -3574,7 +3563,6 @@ highFrequency
 				trQuestVarSet("bulletStormTremor", 5);
 				trUnitSelect(""+deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")), true);
 				trUnitChangeProtoUnit("Tremor");
-				trSoundPlayFN("manticorespecialattack.wav");
 			}
 
 			trQuestVarSet("bulletStormHit", trQuestVarGet("bulletStormHit") - 1);
@@ -3596,7 +3584,7 @@ highFrequency
 			trSetSelectedScale(scale, scale, yGetVar("bulletStormLasers", "scale"));
 		}
 	}
-	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") + yGetDatabaseCount("bulletStormTargets") + yGetDatabaseCount("bulletStormLasers") - trQuestVarGet("lightningPop") == 0) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("bulletStormTargets") + yGetDatabaseCount("bulletStormLasers") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
 		trUnitSelectClear();
 		trUnitSelectByQV("bulletStormSphinx", true);
 		trUnitChangeProtoUnit("Dust Large");

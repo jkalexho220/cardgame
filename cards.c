@@ -643,7 +643,7 @@ void updateMana() {
 
 /*
 Given a card name in a given db array, print information
-of the selected unit.
+of the selected unit. IN-GAME
 */
 void displayCardKeywordsAndDescription(int name = 0) {
 	ChatLogShow();
@@ -731,6 +731,9 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		//trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
 		trChatSend(0, mGetString(name, "ability"));
+		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
+			trChatSend(0, "(Uncollectable)");
+		}
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
@@ -752,6 +755,9 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
+		if (CardToSpell(card) != mGetVar(name, "spell")) {
+			trChatSend(0, "(Uncollectable)");
+		}
 	}
 	
 	updateMana();

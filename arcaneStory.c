@@ -321,6 +321,7 @@ inactive
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			summonAtTile(192, 2, kbGetProtoUnitID("Monument"));
 			summonAtTile(193, 2, kbGetProtoUnitID("Monument"));
+			shuffleDeck(2);
 		}
 	}
 }
@@ -369,6 +370,7 @@ inactive
 				addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
 				addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
 			}
+			shuffleDeck(2);
 		}
 	}
 }
@@ -392,6 +394,7 @@ inactive
 			}
 			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
 			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
+			shuffleDeck(2);
 		}
 
 		xsEnableRule("StoryClass1Mission6_end");

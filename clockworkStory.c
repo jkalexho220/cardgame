@@ -13,6 +13,7 @@ inactive
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
+			shuffleDeck(2);
 		}
 		xsEnableRule("StoryClass3Mission1_end");
 	}
@@ -47,6 +48,7 @@ inactive
 				addCardToDeck(2, "", SPELL_METEOR);
 				addCardToDeck(2, "Crossbowman");
 			}
+			shuffleDeck(2);
 		}
 		xsEnableRule("StoryClass3Mission2_deploy");
 		xsEnableRule("StoryClass3Mission2_end");
@@ -417,10 +419,13 @@ inactive
 		mSetVarByQV("p2commander", "maxhealth", 30);
 		mSetVarByQV("p2commander", "attack", 1);
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(x=6; >0) {
 				addCardToDeck(2, "", SPELL_DOMINANCE);
 				addCardToDeck(2, "", SPELL_BANHAMMER);
+				addCardToDeck(2, "Swordsman Hero");
 			}
+			shuffleDeck(2);
 		}
 		xsEnableRule("StoryClass3Mission6_end");
 	}
