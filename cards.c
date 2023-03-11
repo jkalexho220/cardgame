@@ -1324,7 +1324,7 @@ highFrequency
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
 	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent units.
-	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2); // Whenever your opponent draws a card, restore 1 health to your Commander.
+	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 5, 2, 1); // Whenever your opponent draws a card, restore 1 health to your Commander.
 	CardSetup("Argus",					4, "Mindflayer",			4, 4, 2, 1); // At the end of your turn, deal 1 damage to all units with Decay.
 	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied unit and give it Decay.
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.

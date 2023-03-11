@@ -127,15 +127,40 @@ inactive
 		CinematicPlay("HeavenGames\c5m4_", 1, 3);
 		
 		xsEnableRule("StoryClass4Mission4_end");
+		zSetVarByIndex("tiles", "occupant", mGetVarByQV("p2commander", "tile"), 0);
+		teleportToTile(1*trQuestVarGet("p2commander"), 255);
+
+		xsEnableRule("StoryClass4Mission4_explain");
+		xsEnableRule("StoryClass4Mission4_win");
 
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(230, 2, kbGetProtoUnitID("Tartarian Gate"));
-			summonAtTile(254, 2, kbGetProtoUnitID("Tartarian Gate"));
-			for(x=20; >0) {
+			for(x=6; >0) {
+				addCardToDeck(2, "Tartarian Gate");
 				addCardToDeck(2, "Theris");
+				addCardToDeck(2, "Mummy");
 			}
 			shuffleDeck(2);
 		}
+	}
+}
+
+rule StoryClass4Mission4_explain
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p1mana") > 0) {
+		uiMessageBox("Destroy all the Mouths of Chaos to win!");
+		xsDisableSelf();
+	}
+}
+
+rule StoryClass4Mission4_win
+inactive
+highFrequency
+{
+	if (trCountUnitsInArea("128", 2, "Tartarian Gate", 45) == 0) {
+		mSetVarByQV("p2commander", "health", 0);
+		xsDisableSelf();
 	}
 }
 

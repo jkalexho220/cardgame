@@ -24,7 +24,7 @@ inactive
 	xsDisableRule("Bot_00_turn_start");
 	//This is a bandaid fix
 	xsEnableRule("BotTimer");
-	trQuestVarSet("botTimer", trTime() + 2 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
+	trQuestVarSet("botTimer", trTime() + 3 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
 	// ignore immobile buildings
 	for(i=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");

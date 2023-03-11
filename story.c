@@ -1502,41 +1502,49 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 4:
 				{
-					trQuestVarSet("dimension", 8);
+					trQuestVarSet("dimension", 6);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 2, 2, false);
+					trPaintTerrain(0, 0, 60, 60, 0, T_MARSH_A, false);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
-					trQuestVarSet("customTerrainEmpty", T_SAND_D);
-					trQuestVarSet("customTerrainEmptyNot", T_HADES_FOREST);
+					trQuestVarSet("customTerrainEmpty", T_MARSH_A);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_MARSH);
 					/* Walls */
-					AddToCustomBoard(285, TILE_OCCUPIED, "Bolder Rolling Small", 1);
-					AddToCustomBoard(244, TILE_OCCUPIED, "Bolder Rolling Small", 1);
-					AddToCustomBoard(209, TILE_OCCUPIED, "Bolder Rolling Small", 1);
-					for (x=180; >= 165) {
-						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
+					for(i=219; < 255) {
+						AddToCustomBoard(i, TILE_OCCUPIED, "Marsh Tree", 3);
 					}
-					for (x=188; >= 183) {
-						AddToCustomBoard(x, TILE_OCCUPIED, "Bolder Rolling Small", 1);
-					}
+
+					AddToCustomBoard(206, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(157, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(182, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(161, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(214, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(187, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(146, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(193, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(196, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(173, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(153, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(201, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(142, TILE_IMPASSABLE, "Marsh Tree", 3);
 					
-					summonAtTile(236, 2, kbGetProtoUnitID("Tartarian Gate"));
-					summonAtTile(219, 2, kbGetProtoUnitID("Tartarian Gate"));
-					summonAtTile(248, 2, kbGetProtoUnitID("Tartarian Gate"));
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Invisible Target"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Cinematic Block"));
+
+					summonAtTile(168, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(151, 2, kbGetProtoUnitID("Tartarian Gate"));
+					summonAtTile(128, 2, kbGetProtoUnitID("Tartarian Gate"));
 					
-					for(x=0;<6){
-						addCardToDeck(2, "Fire Giant");
+					for(x=0; < 6){
 						addCardToDeck(2, "Walking Woods Marsh");
 						addCardToDeck(2, "Dryad");
-						addCardToDeck(2, "Argus");
-						addCardToDeck(2, "Wadjet");
-						addCardToDeck(2, "Pharaoh");
+						addCardToDeck(2, "Mummy");
+						addCardToDeck(2, "Satyr");
+						addCardToDeck(2, "Theris");
+						addCardToDeck(2, "Shade of Hades");
 					}
-					for(x=0; <20) {
-						addCardToDeck(2, "Anubite");
+					for(x=0; < 20) {
 						addCardToDeck(2, "Minion");
 					}
-					trQuestVarSet("p2class1", CLASS_NAGA);
+					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
 				case 5:
 				{
