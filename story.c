@@ -1492,7 +1492,7 @@ void SetupMission(int class = 0, int mission = 0){
 					}
 					for(x=0;<3){
 						addCardToDeck(2, "", SPELL_DEVOUR);
-						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+						addCardToDeck(2, "Theocrat");
 						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
 						addCardToDeck(2, "Theris");
 						addCardToDeck(2, "Tartarian Gate");
@@ -1549,55 +1549,106 @@ void SetupMission(int class = 0, int mission = 0){
 				case 5:
 				{
 					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
-					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
+					trPaintTerrain(0, 0, 60, 60, 0, T_MARSH_A, false);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_MARSH_A);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_MARSH);
+
+					/* Walls */
+					for(i=219; < 255) {
+						AddToCustomBoard(i, TILE_OCCUPIED, "Marsh Tree", 3);
+					}
+
+					for(i=189; < 219) {
+						if (iModulo(3, i) == 0) {
+							AddToCustomBoard(i, TILE_IMPASSABLE, "Marsh Tree", 3);
+						}
+					}
+
+					for(i=165; < 189) {
+						if (iModulo(5, i) == 1) {
+							AddToCustomBoard(i, TILE_IMPASSABLE, "Marsh Tree", 3);
+						}
+					}
+
+					AddToCustomBoard(128, TILE_OCCUPIED, "Well of Urd", 1);
+
+					AddToCustomBoard(136, TILE_OCCUPIED, "House", 1, 55);
+					AddToCustomBoard(152, TILE_OCCUPIED, "House", 1, 77);
+					AddToCustomBoard(154, TILE_OCCUPIED, "House", 1, 99);
+
+					AddToCustomBoard(163, TILE_OCCUPIED, "House", 1, 123);
+					AddToCustomBoard(144, TILE_OCCUPIED, "House", 1, 234);
 					
-					summonAtTile(190, 2, kbGetProtoUnitID("Theris"));
-					summonAtTile(191, 2, kbGetProtoUnitID("Theris"));
+					summonAtTile(149, 2, kbGetProtoUnitID("Royal Guard"));
+					summonAtTile(148, 2, kbGetProtoUnitID("Royal Guard"));
 					
-					
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Setna"));
 					for(x=0;<6){
-						addCardToDeck(2, "Female");
-						addCardToDeck(2, "Archer Atlantean");
-						addCardToDeck(2, "Gemini");
-						addCardToDeck(2, "", SPELL_PISCES);
+						addCardToDeck(2, "Spearman");
+						addCardToDeck(2, "Royal Guard");
+						addCardToDeck(2, "Hero Greek Ajax");
 					}
 					
 					for(x=0;<3) {
-						addCardToDeck(2, "Theris");
-						addCardToDeck(2, "Bireme");
-						addCardToDeck(2, "Mummy");
-						addCardToDeck(2, "", SPELL_DOMINANCE);
-						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
-						addCardToDeck(2, "", SPELL_LIBRA);
-						addCardToDeck(2, "", SPELL_AQUARIUS);
+						addCardToDeck(2, "Einheriar");
+						addCardToDeck(2, "Bondi");
+						addCardToDeck(2, "Bogsveigir");
+						addCardToDeck(2, "Pharaoh");
+						addCardToDeck(2, "Mountain Giant");
 					}
-					addCardToDeck(2, "", SPELL_THE_CALLING);
-					addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
-					addCardToDeck(2, "Hero Greek Achilles");
-					trQuestVarSet("p2class2", CLASS_SPACE);
+
+					for(x=0; < 2) {
+						addCardToDeck(2, "", SPELL_PARTY_UP);
+						addCardToDeck(2, "Bear");
+						addCardToDeck(2, "", SPELL_BLOOD_PRICE);
+						addCardToDeck(2, "", SPELL_SPIDER_LAIR);
+						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
+					}
+					
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
 				}
 				case 6:
 				{
-					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
-					trQuestVarCopy("p2commanderType", "p1commanderType");
-					
-					summonAtTile(190, 2, kbGetProtoUnitID("Bireme"));
-					summonAtTile(191, 2, kbGetProtoUnitID("Bireme"));
-					
-					for(x=yGetDatabaseCount("p1deck"); >0) {
-						yDatabaseNext("p1deck");
-						yAddToDatabase("p2deck", "p1deck");
-						yAddUpdateVar("p2deck", "spell", yGetVar("p1deck", "spell"));
-						yAddUpdateVar("p2deck", "proto", yGetVar("p1deck", "proto"));
+					trQuestVarSet("dimension", 7);
+					trPaintTerrain(0, 0, 60, 60, 0, T_MARSH_A, false);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_MARSH_A);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_MARSH);
+
+					for(i=219; < 255) {
+						AddToCustomBoard(i, TILE_OCCUPIED, "Marsh Tree", 3);
 					}
-					for(x=0;<6) {
+					for(i=128; < 219) {
+						if (iModulo(5, i) == 1) {
+							AddToCustomBoard(i, TILE_OCCUPIED, "Marsh Tree", 3);
+						}
+					}
+
+					summonAtTile(167, 2, kbGetProtoUnitID("Shade of Hades"));
+					summonAtTile(166, 2, kbGetProtoUnitID("Shade of Hades"));
+					summonAtTile(128, 2, kbGetProtoUnitID("Tartarian Gate"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Achilles"));
+					
+					for(i=6; >0) {
+						addCardToDeck(2, "Bogsveigir");
+						addCardToDeck(2, "Argus");
+						addCardToDeck(2, "Dryad");
+					}
+					for(i=3; >0) {
 						addCardToDeck(2, "Theris");
-						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "Tartarian Gate");
+						addCardToDeck(2, "Satyr");
+						addCardToDeck(2, "", SPELL_CORPSE_PARTY);
+						addCardToDeck(2, "", SPELL_POISON_MIST);
+						addCardToDeck(2, "", SPELL_DOOM);
 					}
-					trQuestVarCopy("p2class1", "p1class1");
-					trQuestVarCopy("p2class2", "p1class2");
+					for(i=2; >0) {
+						addCardToDeck(2, "", SPELL_DEVOUR);
+						addCardToDeck(2, "", SPELL_POISON_CLOUD);
+					}
+
+					trQuestVarSet("p2class2", CLASS_EVIL);
 				}
 			}
 		}

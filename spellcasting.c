@@ -1832,9 +1832,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Frost Giant"));
@@ -2365,9 +2368,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_CORPSE_PARTY, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_CORPSE_PARTY, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("ancestorsbirth.wav","1",-1,"","");
 					for(x=3; >0) {
@@ -2409,9 +2415,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_RUNE_OF_DARKNESS, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_RUNE_OF_DARKNESS, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 					mSetVarByQV("spellTarget", "health", 0);

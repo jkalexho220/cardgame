@@ -289,6 +289,9 @@ void removeDeadUnits() {
 		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ANRAHEIR) {
 			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"deathCount"));
 			updateHandPlayable(p);
+		} else if (mGetVarByQV("p"+p+"commander", "proto") == kbGetProtoUnitID("Setna")) {
+			trQuestVarSet("p"+p+"drawCards", trQuestVarGet("p"+p+"drawCards") + trQuestVarGet("p"+p+"deathCount"));
+			trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + trQuestVarGet("p"+p+"deathCount") * 3);
 		}
 	}
 	

@@ -95,6 +95,7 @@ inactive
 			summonAtTile(195, 2, kbGetProtoUnitID("Tartarian Gate"));
 			for(i=6; >0) {
 				addCardToDeck(2, "Anubite");
+				addCardToDeck(2, "Theocrat");
 				addCardToDeck(2, "", SPELL_DEATH_DOOR);
 				addCardToDeck(2, "", SPELL_DEVOUR);
 			}
@@ -187,9 +188,12 @@ inactive
 		CinematicPlay("HeavenGames\c5m5_", 1, 3);
 		xsEnableRule("StoryClass4Mission5_end");
 		if (trQuestVarGet("missionHardmode") == 1) {
-			addCardToDeck(2, "", SPELL_DOMINANCE);
-			addCardToDeck(2, "", SPELL_DOMINANCE);
-			addCardToDeck(2, "", SPELL_DOMINANCE);
+			for(i=3; >0) {
+				addCardToDeck(2, "Apep");
+				addCardToDeck(2, "Bear");
+				addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
+				addCardToDeck(2, "", SPELL_FINAL_FRENZY);
+			}
 			shuffleDeck(2);
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 		}
@@ -216,18 +220,24 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c5m6_", 1, 9);
+		mSetVarByQV("p2commander", "maxhealth", 30);
 		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "attack", 3);
+		mSetVarByQV("p2commander", "keywords", SetBit(mGetVarByQV("p2commander", "keywords"), BEACON));
+		generateCard(2, kbGetProtoUnitID("Tartarian Gate"));
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(192, 2, kbGetProtoUnitID("Bireme"));
-			summonAtTile(193, 2, kbGetProtoUnitID("Bireme"));
-			for(x=0;<6) {
-				addCardToDeck(2, "Theris");
+			summonAtTile(192, 2, kbGetProtoUnitID("Tartarian Gate"));
+			summonAtTile(193, 2, kbGetProtoUnitID("Tartarian Gate"));
+			for(i=3; >0) {
+				addCardToDeck(2, "", SPELL_SPIDER_LAIR);
 				addCardToDeck(2, "", SPELL_DOMINANCE);
+				addCardToDeck(2, "", SPELL_AQUARIUS);
 			}
 			shuffleDeck(2);
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 		}
 		xsEnableRule("StoryClass4Mission6_end");
+		xsEnableRule("StoryClass4Mission6_Decay");
 	}
 }
 

@@ -979,7 +979,8 @@ active
 	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
-	CardSetup("Setna",					0, "Archmage", 				2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);
+	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
