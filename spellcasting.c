@@ -1302,8 +1302,14 @@ void chooseSpell(int spell = 0, int card = -1) {
 		}
 		case SPELL_BULLET_STORM:
 		{
-			castAddTarget("spellTarget", "p"+p+"commander");
-			castInstructions("Choose a target to cast. Right click to cancel.");
+			// if the bot is casting, we make sure it only casts when enemies are in range.
+			if ((p == 2) && (Multiplayer == false)) {
+				castAddTarget("spellTarget", "p"+p+"commander");
+				castInstructions("Get in there and fight, maggot!");
+			} else {
+				castAddTile("spellTarget", true);
+				castInstructions("Click on a tile to cast. Right click to cancel.");
+			}
 		}
 		case SPELL_COPY_ATTACK_EFFECT:
 		{
@@ -1314,6 +1320,23 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_RIDE_THE_LIGHTNING:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_RECHARGE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_BLITZ:
+		{
+			castAddUnit("spellTarget", 3 - p, true);
+			castInstructions("Choose a unit. Right click to cancel.");
+			castAddAdjacentTile("spellTile", "spellTarget");
+			castInstructions("Choose a tile to teleport. Right click to cancel.");
 		}
 	}
 	castStart();
@@ -1338,6 +1361,9 @@ inactive
 		int proto = 0;
 		float dist = 0;
 		int neighbor = 0;
+		vector start = vector(0,0,0);
+		vector step = vector(0,0,0);
+		vector end = vector(0,0,0);
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
 		switch(spell)
@@ -2861,6 +2887,56 @@ inactive
 				done = false;
 				trSoundPlayFN("manticorespecialattack.wav", "1", -1, "", "");
 				xsEnableRule("bullet_storm_active");
+				findTargets(1*trQuestVarGet("p"+p+"commander"), "bulletStormTargets");
+				trQuestVarSet("bulletStormSphinx", deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")));
+				trUnitSelectClear();
+				trUnitSelectByQV("bulletStormSphinx");
+				trMutateSelected(kbGetProtoUnitID("Sphinx"));
+				trUnitOverrideAnimation(39, 0, true, false, -1);
+				trSetSelectedScale(0,0,0);
+				trQuestVarSet("bulletStormSmoke", deployAtTile(0, "Heka Shockwave SFX", mGetVarByQV("p"+p+"commander", "tile")));
+				trVectorQuestVarSet("bulletStormDir", vector(1,0,0));
+				trQuestVarSet("bulletStormNext", trTimeMS());
+				trQuestVarSet("bulletStormHit", 20);
+				trQuestVarSet("bulletStormTremor", 0);
+			}
+			case SPELL_RIDE_THE_LIGHTNING:
+			{
+				trSoundPlayFN("lightningbirth.wav");
+				trQuestVarSet("rideTheLightningBonus", 1 + trQuestVarGet("rideTheLightningBonus"));
+				mSetVarByQV("p"+p+"commander", "speed", mGetVarByQV("p"+p+"commander", "speed") + 1);
+				mSetVarByQV("p"+p+"commander", "keywords", SetBit(mGetVarByQV("p"+p+"commander", "keywords"), ETHEREAL));
+				trQuestVarSet("rideTheLightningPlayer", p);
+				xsEnableRule("ride_the_lightning_bonus");
+			}
+			case SPELL_RECHARGE:
+			{
+				trSoundPlayFN("suckup2.wav");
+				done = false;
+				trUnitSelectClear();
+				trUnitSelect(""+deployAtTile(0, "Deconstruct Unit", mGetVarByQV("p"+p+"commander", "tile")), true);
+				trUnitOverrideAnimation(18, 0, false, true, -1);
+				trQuestVarSet("p"+p+"mana", trQuestVarGet("p"+p+"mana") + mGetVarByQV("p"+p+"commander", "attack"));
+				trQuestVarSet("p"+p+"drawCards", 2 + trQuestVarGet("p"+p+"drawCards"));
+			}
+			case SPELL_BLITZ:
+			{
+				stunUnit(1*trQuestVarGet("spellTarget"));
+				start = kbGetBlockPosition(""+1*trQuestVarGet("p"+p+"commander"));
+				end = kbGetBlockPosition(""+1*trQuestVarGet("spellTile"));
+				dist = distanceBetweenVectors(start, end, false);
+				step = getUnitVector(start, end, 2.0);
+				for(i = dist / 2; >0) {
+					start = start + step;
+					trArmyDispatch("0,0", "Dwarf", 1, 61, 0, 61, 0, true);
+					trArmySelect("0,0");
+					trUnitTeleport(xsVectorGetX(start), 0, xsVectorGetZ(start));
+					trUnitChangeProtoUnit("Lightning sparks");
+				}
+				trQuestVarSetFromRand("rand", 1, 5, true);
+				trSoundPlayFN("ui\lightning"+1*trQuestVarGet("rand")+".wav");
+				zSetVarByIndex("tiles", "occupant", mGetVarByQV("p"+p+"commander", "tile"), 0);
+				teleportToTile(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("spellTile"));
 			}
 		}
 		
@@ -3458,6 +3534,88 @@ highFrequency
 {
 	if (trTime() > (cActivationTime + 4)) {
 		castEnd();
+		xsDisableSelf();
+	}
+}
+
+rule bullet_storm_active
+inactive
+highFrequency
+{
+	int p = trQuestVarGet("activePlayer");
+	if (trTimeMS() > trQuestVarGet("bulletStormNext")) {
+		trQuestVarSet("bulletStormNext", trQuestVarGet("bulletStormNext") + 100);
+		trVectorQuestVarSet("bulletStormDir", rotationMatrix(trVectorQuestVarGet("bulletStormDir"), -0.740544, -0.672008));
+		trUnitSelectClear();
+		trUnitSelectByQV("bulletStormSmoke", true);
+		trSetUnitOrientation(trVectorQuestVarGet("bulletStormDir"), vector(0,1,0), true);
+
+		// attacks
+		if (yGetDatabaseCount("bulletStormTargets") > 0) {
+			// animation
+			trQuestVarSet("next", deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")));
+			trUnitSelectClear();
+			trUnitSelectByQV("next", true);
+			trSetUnitOrientation(trVectorQuestVarGet("bulletStormDir"), vector(0,1,0), true);
+			trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
+			trUnitHighlight(5.0, false);
+			trQuestVarSetFromRand("rand", 0.8, 1.2, false);
+			yAddToDatabase("bulletStormLasers", "next");
+			yAddUpdateVar("bulletStormLasers", "scale", (3.6 + 7.2 * mGetVarByQV("p"+p+"commander", "range")) * trQuestVarGet("rand"));
+			yAddUpdateVar("bulletStormLasers", "timeout", trTimeMS() + 1000);
+			trSoundPlayFN("titanfall.wav");
+
+			trUnitSelectClear();
+			trUnitSelectByQV("p"+p+"commander");
+			trSetUnitOrientation(trVectorQuestVarGet("bulletStormDir"), vector(0,1,0), true);
+
+			trQuestVarSet("bulletStormTremor", trQuestVarGet("bulletStormTremor") - 1);
+			if (trQuestVarGet("bulletStormTremor") <= 0) {
+				trQuestVarSet("bulletStormTremor", 5);
+				trUnitSelect(""+deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")), true);
+				trUnitChangeProtoUnit("Tremor");
+				trSoundPlayFN("manticorespecialattack.wav");
+			}
+
+			trQuestVarSet("bulletStormHit", trQuestVarGet("bulletStormHit") - 1);
+			if (trQuestVarGet("bulletStormHit") <= 0) {
+				trQuestVarSet("bulletStormHit", 3);
+				deployAtTile(0, "Tremor", mGetVarByQV("p"+p+"commander", "tile"));
+				startAttack(1*trQuestVarGet("p"+p+"commander"), yDatabaseNext("bulletStormTargets"), false, false);
+				yRemoveFromDatabase("bulletStormTargets");
+			}
+		}
+	}
+	if (yGetDatabaseCount("bulletStormLasers") > 0) {
+		yDatabaseNext("bulletStormLasers", true);
+		if (trTimeMS() > yGetVar("bulletStormLasers", "timeout")) {
+			trUnitDestroy();
+			yRemoveFromDatabase("bulletStormLasers");
+		} else {
+			float scale = 0.004 * (yGetVar("bulletStormLasers", "timeout") - trTimeMS());
+			trSetSelectedScale(scale, scale, yGetVar("bulletStormLasers", "scale"));
+		}
+	}
+	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") + yGetDatabaseCount("bulletStormTargets") + yGetDatabaseCount("bulletStormLasers") - trQuestVarGet("lightningPop") == 0) {
+		trUnitSelectClear();
+		trUnitSelectByQV("bulletStormSphinx", true);
+		trUnitChangeProtoUnit("Dust Large");
+		trUnitSelectClear();
+		trUnitSelectByQV("bulletStormSmoke", true);
+		trUnitChangeProtoUnit("Dust Large");
+		castEnd();
+		xsDisableSelf();
+	}
+}
+
+rule ride_the_lightning_bonus
+inactive
+highFrequency
+{
+	if (trQuestVarGet("activePlayer") != trQuestVarGet("rideTheLightningPlayer")) {
+		int p = trQuestVarGet("rideTheLightningPlayer");
+		mSetVarByQV("p"+p+"commander", "speed", mGetVarByQV("p"+p+"commander", "speed") - trQuestVarGet("rideTheLightningBonus"));
+		mSetVarByQV("p"+p+"commander", "keywords", ClearBit(mGetVarByQV("p"+p+"commander", "keywords"), ETHEREAL));
 		xsDisableSelf();
 	}
 }

@@ -60,6 +60,9 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_RECHARGE = 809;
+const int SPELL_BLITZ = 808;
+const int SPELL_RIDE_THE_LIGHTNING = 807;
 const int SPELL_HORROR_MENAGERIE = 806;
 const int SPELL_ELECTROBALL = 805;
 const int SPELL_DEATH_APPROACHES = 804;
@@ -974,9 +977,7 @@ active
 	SpellSetup("Shields Treasure", 		6, SPELL_SHIELDS_TREASURE, 	"Give your units +3 Health.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Pistol Shot", 			1, SPELL_PISTOL_SHOT, 		"Kill a unit. Put Reload on top of your deck.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Reload", 				5, SPELL_RELOAD, 			"Draw a card.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a unit on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
-	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 			"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy units. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
+	
 	SpellSetup("Poison Cloud", 			5, SPELL_POISON_CLOUD, 		"Give all enemy units Decay. Deal 5 Damage to those that already have Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Nature Has Had Enough", 10, SPELL_NATURE_ANGRY, 	"Heal allies and give enemies Decay.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They have Airdrop and cost 0.", SPELL_TYPE_OTHER, 0, true);
@@ -1038,14 +1039,8 @@ active
 	CardSetup("Female",					2, "Princess Arsch",		1, 2, 2, 1, Keyword(WARD), true);
 	CardEvents("Female", 0, Keyword(DEATH_REDUCE_COST), "Play: Draw a card. Death: Reduce the cost of cards in your hand by 1.");
 	
-	CardSetup("Eitri",					3, "Mad Scientist",			2, 1, 2, 1, Keyword(BEACON), true);
-	CardEvents("Eitri", 0, 0, "Turn Start: Fill your hand with Scrap Metal.");
-
-	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
-	SpellSetup("Death's Door",			3, SPELL_DEATH_DOOR, 		"Return an enemy unit to your opponent's hand and give it Fleeting.", SPELL_TYPE_OFFENSIVE, 0, true);
-
-	SpellSetup("Electroball",			1, SPELL_ELECTROBALL,		"Create a lightning ball on a tile. It deals 1 damage at the start of your turn.", SPELL_TYPE_OFFENSIVE, 0, true);
-	SpellSetup("Horror Menagerie",		5, SPELL_HORROR_MENAGERIE,	"Reduce the cost of spells in your hand to 0.", SPELL_TYPE_OTHER, 0, true);
+	CardSetup("Eitri",					3, "Mad Scientist",			3, 4, 2, 1, Keyword(BEACON), true);
+	CardEvents("Eitri", 0, 0, "Turn Start: Add a Scrap Metal to your hand and draw a card.");
 
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_01");
@@ -1084,7 +1079,7 @@ highFrequency
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
 	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
-	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 3, 2, 1); // Play: Grant adjacent allied units +1|+1
+	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 4, 2, 1); // Play: Grant adjacent allied units +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Deadeye",			3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
 	// 15 - 19
@@ -1100,7 +1095,7 @@ highFrequency
 	SpellSetup("Defender's Glory", 		3, SPELL_DEFENDER, 		"Grant an allied unit +2 health and Guard.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Song of Victory", 		3, SPELL_VICTORY, 		"Grant all allied units +1 attack and Ambush this turn.", SPELL_TYPE_OTHER);
 	// 25 - 29 (LEGENDARY at 29)
-	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"A unit attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Whirlwind", 			6, SPELL_WHIRLWIND, 	"An allied unit attacks all adjacent enemies.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Ornlu",					4, "Pack Leader",		4, 3, 3, 1, Keyword(ETHEREAL)); // Attack: Give +1 attack to units in your hand.
 	CardSetup("Hetairoi",				3, "Elven Guide",		2, 3, 3, 1); // Play: Create an Explorer's Map.
 	SpellSetup("First-Aid", 			1, SPELL_FIRST_AID, 	"Teleport an allied unit next to your Commander and restore 5 health to it.", SPELL_TYPE_DEFENSIVE);
@@ -1117,6 +1112,12 @@ highFrequency
 	/*
 	ARCANE
 	*/
+	// Storyline spells
+	SpellSetup("Mirror Reflection",		3, SPELL_MIRROR_REFLECTION,	"Duplicate a unit on the symmetrical opposite tile.", SPELL_TYPE_DEFENSIVE, 0, true);
+	SpellSetup("Blazeball", 			4, SPELL_PYROBALL, 			"Deal 6 Damage. Can only target Commanders if you have bonus Spell Damage.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Frost Breath", 			3, SPELL_FROST_BREATH, 		"Stun all enemy units. Deal 3 Damage to those already Stunned.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Electroball",			1, SPELL_ELECTROBALL,		"Create a lightning ball on a tile. It deals 1 damage at the start of your turn.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Horror Menagerie",		5, SPELL_HORROR_MENAGERIE,	"Reduce the cost of spells in your hand to 0.", SPELL_TYPE_OTHER, 0, true);
 	// Created cards
 	CardSetup("Oracle Hero",			0, "Nanodude", 			1, 20, 2, 2, Keyword(BEACON), true);
 	CardSetup("Minotaur",				0, "nottud", 			2, 20, 2, 1, Keyword(BEACON), true);
@@ -1129,14 +1130,14 @@ highFrequency
 	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"Deal 1 damage to enemies within 1 space of the target location.", SPELL_TYPE_OFFENSIVE);
-	CardSetup("Javelin Cavalry Hero",	3, "Magic Messenger",	2, 2, 3, 2); // After you cast a spell, grant me another action.
+	CardSetup("Javelin Cavalry Hero",	4, "Magic Messenger",	2, 3, 3, 2); // After you cast a spell, grant me another action.
 	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
-	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 2, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
-	CardSetup("Priest",					4, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1); // After ANY player casts a spell, grant me +1 attack.
+	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
+	CardSetup("Priest",					3, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 4, 2, 1); // After ANY player casts a spell, grant me +1 attack.
 	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
@@ -1209,7 +1210,7 @@ highFrequency
 	SpellSetup("Wrath of the Sea",		12, SPELL_WRATH_OF_SEA,		"Double your Commander's attack this turn.", SPELL_TYPE_OTHER, Keyword(OVERFLOW));
 	// 85-89 (LEGENDARY at 89)
 	CardSetup("Leviathan",				9, "Ship Eater",			8, 8, 2, 1, Keyword(GUARD));
-	SpellSetup("Serpent Skin",			2, SPELL_SERPENT_SKIN,	"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Serpent Skin",			2, SPELL_SERPENT_SKIN,		"Give a unit Regenerate and Stun it.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Call of the Deep",		2, SPELL_CALL_OF_THE_DEEP,	"Summon the most expensive unit from your deck that costs {Manaflow} or less.", SPELL_TYPE_OTHER);
 	CardSetup("Scylla",					7, "Hungry Serpent",		4, 8, 2, 1, Keyword(FURIOUS));
 	CardSetup("Hero Greek Polyphemus",	6, "Undercity Champion",	4, 5, 1, 1); // Your Commander has Furious.
@@ -1225,6 +1226,10 @@ highFrequency
 	/*
 	CLOCKWORK
 	*/
+	// Storyline Spells
+	SpellSetup("Ride The Lightning",	1, SPELL_RIDE_THE_LIGHTNING,"Give your Commander Pathfinder and +1 Speed this turn.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Recharge",				3, SPELL_RECHARGE,			"Gain mana equal to your Commander's Attack. Draw two cards.", SPELL_TYPE_DEFENSIVE, 0, true);
+	SpellSetup("Blitz",					2, SPELL_BLITZ,				"Stun an enemy and teleport your Commander next to them.", SPELL_TYPE_OFFENSIVE, 0, true);
 	// Created cards
 	CardSetup("Arkantos God",			0, "Roxas", 				2, 1, 2, 1, Keyword(BEACON), true);
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 			0, 20, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
@@ -1280,6 +1285,9 @@ highFrequency
 	/*
 	OTHERWORLD
 	*/
+	// Storyline spells
+	SpellSetup("Death Approaches",		3, SPELL_DEATH_APPROACHES,	"Summon a Shadow Elemental on a tile next to the enemy Commander.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Death's Door",			3, SPELL_DEATH_DOOR, 		"Return an enemy unit to your opponent's hand and give it Fleeting.", SPELL_TYPE_OFFENSIVE, 0, true);
 	// Created cards
 	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);

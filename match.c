@@ -441,7 +441,7 @@ inactive
 	if (Multiplayer) {
 		// multiplayer stuff
 		map("mouse1down", "game", "uiSelectionButtonDown");
-		map("mouse2up", "game", "");
+		map("mouse2up", "game", "uiWorkAtPointer");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 	} else {

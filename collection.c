@@ -407,7 +407,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				}
 				case 4:
 				{
-					return ("A Dastardly Trap");
+					return ("Ride The Lightning");
 				}
 				case 5:
 				{
@@ -415,7 +415,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				}
 				case 6:
 				{
-					return ("The Final Boss?");
+					return ("The Supervillain");
 				}
 			}
 		}
@@ -492,13 +492,14 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	if(progress > 0){
 		doClass = true;
 	}
-	
+	/*
 	for(i = (30 * class) + 7;<30 * (class + 1)){
 		if(getCardCountCollection(i) > 0 || getCardCountDeck(i) > 0){
 			doClass = true;
 			break;
 		}
 	}
+	*/
 	
 	if(doClass){
 		//ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
@@ -659,6 +660,30 @@ inactive
 	SetupClass(CLASS_CLOCKWORK, 0, 71); // CityTileAtlantis
 	SetupClass(CLASS_EVIL, 0, 84); // Hadesbuildable1
 	SetupClass(CLASS_SPACE, 0, 52); // OlympusC
+
+	/*
+	If the player has completed the story for all current classes,
+	they can choose a new one.
+	*/
+	bool newClass = true;
+	int totalProgress = 0;
+	for(i=CLASS_ADVENTURER; < CLASS_SPACE) {
+		totalProgress = totalProgress + getClassProgress(i);
+		if (getClassProgress(i) < 7 && getClassProgress(i) > 0) {
+			newClass = false;
+			break;
+		}
+	}
+
+	if (newClass) {
+		if (totalProgress == 35) {
+			if (getClassProgress(CLASS_SPACE) == 0) {
+				trDelayedRuleActivation(""); // unlock space
+			}
+		} else {
+			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
+		}
+	}
 	
 	xsDisableRule("Collection");
 }
@@ -858,7 +883,7 @@ inactive
 		// trChatHistoryClear();
 		saveDeckAndProgress();
 		map("mouse1down", "game", "uiSelectionButtonDown");
-		map("mouse2up", "game", "");
+		map("mouse2up", "game", "uiWorkAtPointer");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 		trModeEnter("Pregame");
@@ -982,5 +1007,83 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 5){
 		exit(false);
+	}
+}
+
+void ChooseThisClass(int eventID = -1) {
+	xsSetContextPlayer(0);
+	setClassProgress(1*trQuestVarGet("nextClass"), 1);
+	saveDeckAndProgress();
+	trDelayedRuleActivation("ChooseNewClass_02");
+}
+
+void ChooseNextClass(int eventID = -1) {
+	xsSetContextPlayer(0);
+	bool found = false;
+	while(found == false) {
+		trQuestVarSet("nextClass", iModulo(5, 1*trQuestVarGet("nextClass") + 1));
+		if (getClassProgress(1*trQuestVarGet("nextClass")) == 0) {
+			found = true;
+			break;
+		}
+	}
+	trDelayedRuleActivation("ChooseNewClass_01");
+}
+
+rule ChooseNewClass_00
+highFrequency
+inactive
+{
+	if (trTime() > cActivationTime) {
+		uiMessageBox("You are ready to unlock your next class!");
+		trQuestVarSet("nextClass", 0);
+		trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
+		trEventSetHandler(EVENT_NEXT_CLASS, "ChooseNextClass");
+		trEventFire(EVENT_NEXT_CLASS);
+		xsDisableSelf();
+	}
+}
+
+rule ChooseNewClass_01
+highFrequency
+inactive
+{
+	if (trIsGadgetVisible("ingame-messagedialog") == false) {
+		int class = trQuestVarGet("nextClass");
+		trShowChoiceDialog(ClassName(class), "Unlock", EVENT_CHOOSE_CLASS, "Or...", EVENT_NEXT_CLASS);
+		xsDisableSelf();
+	}
+}
+
+rule ChooseNewClass_02
+highFrequency
+inactive
+{
+	trDelayedRuleActivation("ChooseNewClass_03");
+	xsDisableSelf();
+	// TODO: Make this flashy
+	trShowImageDialog("", "New class unlocked!");
+	trSoundPlayFN("ageadvance.wav");
+}
+
+rule ChooseNewClass_03
+highFrequency
+inactive
+{
+	if (trTime() > cActivationTime) {
+		trShowImageDialog("", "New Commander unlocked!");
+		trSoundPlayFN("ui\thunder"+1*trQuestVarGet("nextClass")+".wav");
+		trSoundPlayFN("herocreation.wav");
+		xsDisableSelf();
+		xsEnableRule("ChooseNewClass_04");
+	}
+}
+
+rule ChooseNewClass_04
+highFrequency
+inactive
+{
+	if (trIsGadgetVisible("ShowImageBox") == false) {
+		saveCollection();
 	}
 }

@@ -16,6 +16,9 @@ const int EVENT_CHOOSE_LOAD_DELETE = 10;
 
 const int EVENT_MUSIC = 11;
 
+const int EVENT_CHOOSE_CLASS = 12;
+const int EVENT_NEXT_CLASS = 13;
+
 rule event_assignment
 highFrequency
 active

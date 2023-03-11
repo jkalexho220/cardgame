@@ -143,6 +143,8 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		if (trQuestVarGet("missionHardmode") == 1) {
+			generateCard(2, kbGetProtoUnitID("Villager Atlantean"));
+			generateCard(2, kbGetProtoUnitID("Villager Atlantean"));
 			generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_DOMINANCE);
 			generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_DOMINANCE);
 			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);

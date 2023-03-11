@@ -9,6 +9,7 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m1_", 1, 6);
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
 			addCardToDeck(2, "", SPELL_DOMINANCE);
@@ -37,9 +38,11 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m2_", 1, 4);
+		zSetVarByIndex("tiles", "occupant", mGetVarByQV("p2commander", "tile"), 0);
 		teleportToTile(1*trQuestVarGet("p1commander"), 132);
 		teleportToTile(1*trQuestVarGet("p2commander"), 152);
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(x=0; <6) {
 				addCardToDeck(2, "", SPELL_METEOR);
 				addCardToDeck(2, "Crossbowman");
@@ -63,7 +66,7 @@ inactive
 				mSetVar(siphon, "laserDirz", -70710);
 				trUnitSelectClear();
 				trUnitSelect(""+siphon);
-				trSetUnitOrientation(xsVectorSet(-0.707107,0,0.707107), xsVectorSet(0,1,0), true);
+				trSetUnitOrientation(xsVectorSet(-0.707107,0,-0.707107), xsVectorSet(0,1,0), true);
 				ChatLog(1, "<color=1.0,0,0>Opponent:<color=1,1,1> Deploy the Laser Cannon!");
 			}
 		}
@@ -97,6 +100,7 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2mana") >= 10) {
+		mSetVarByQV("p2commander", "health", 0);
 		damageUnit(1*trQuestVarGet("p2commander"), 999);
 		removeDeadUnits();
 		xsDisableSelf();
@@ -120,7 +124,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m3_", 1, 5);
-		teleportToTile(1*trQuestVarGet("p2commander"), 233);
+		//teleportToTile(1*trQuestVarGet("p2commander"), 233);
 	}
 }
 
@@ -132,11 +136,33 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m4_", 1, 5);
-		mSetVarByQV("p2commander", "health", 20);
+		mSetVarByQV("p2commander", "health", 15);
+		mSetVarByQV("p2commander", "maxhealth", 15);
+		mSetVarByQV("p2commander", "keywords", SetBit(mGetVarByQV("p2commander", "keywords"), BEACON));
 		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(128, 2, kbGetProtoUnitID("Tower Mirror"));
+			mSetVarByQV("p2commander", "health", 20);
+			mSetVarByQV("p2commander", "maxhealth", 20);
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+		} else {
+			generateCard(1, 0, SPELL_FORTIFY);
+			generateCard(1, 0, SPELL_SCRAP_METAL);
+			generateCard(1, 0, SPELL_SCRAP_METAL);
+			xsEnableRule("StoryClass3Mission4_talk");
 		}
 		xsEnableRule("StoryClass3Mission4_end");
+	}
+}
+
+rule StoryClass3Mission4_talk
+highFrequency
+inactive
+{
+	if (trQuestVarGet("activePlayer") == 1) {
+		CharacterLog(1, "Roxas", "Quick! Cast Fortify to barricade the hallways!");
+		xsDisableSelf();
 	}
 }
 
@@ -167,6 +193,18 @@ inactive
 		xsEnableRule("StoryClass3Mission5_end");
 		xsEnableRule("StoryClass3Mission5_story");
 		trQuestVarSet("storyMissionBotMana", 0);
+		xsEnableRule("StoryClass3Mission5_fast_start");
+	}
+}
+
+// skip mulligan
+rule StoryClass3Mission5_fast_start
+highFrequency
+inactive
+{
+	if (trQuestVarGet("p2done") == 1) {
+		trQuestVarSet("p1done", 1);
+		xsDisableSelf();
 	}
 }
 
@@ -175,10 +213,10 @@ highFrequency
 inactive
 {
 	trQuestVarSet("p1drawCards", 0);
-	if ((trQuestVarGet("maxmana") > trQuestVarGet("storyMissionBotMana")) &&
+	if ((trQuestVarGet("p1mana") > trQuestVarGet("storyMissionBotMana")) &&
 		(yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("pushes") == 0) &&
 		(trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
-		trQuestVarCopy("storyMissionBotMana", "maxmana");
+		trQuestVarCopy("storyMissionBotMana", "p1mana");
 		for(x=yGetDatabaseCount("allUnits"); >0) {
 			yDatabaseNext("allUnits");
 			if (mGetVarByQV("allUnits", "spell") == SPELL_NONE) {
@@ -347,6 +385,7 @@ inactive
 		xsDisableRule("StoryClass3Mission5_1");
 		xsDisableRule("StoryClass3Mission5_2");
 	} else if (trQuestVarGet("maxMana") == 10) {
+		mSetVarByQV("p2commander", "health", 0);
 		damageUnit(1*trQuestVarGet("p2commander"), 9999);
 		xsDisableSelf();
 		xsDisableRule("StoryClass3Mission5_1");
@@ -375,6 +414,7 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m6_", 1, 10);
 		mSetVarByQV("p2commander", "health", 30);
+		mSetVarByQV("p2commander", "maxhealth", 30);
 		mSetVarByQV("p2commander", "attack", 1);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			for(x=6; >0) {

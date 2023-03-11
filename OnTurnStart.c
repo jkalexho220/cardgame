@@ -30,9 +30,8 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Eitri"):
 		{
-			for(x=yGetDatabaseCount("p"+p+"hand"); <9) {
-				addCardToHand(p, 0, SPELL_SCRAP_METAL, false);
-			}
+			generateCard(p, 0, SPELL_SCRAP_METAL);
+			trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{

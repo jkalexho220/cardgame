@@ -15,6 +15,7 @@ highFrequency
 				trQuestVarSet("cinTime", trTime() + 2);
 				tutorialStep = 1;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 1:
 		{
@@ -23,6 +24,7 @@ highFrequency
 				uiMessageBox("Welcome to HeavenGames! This tutorial will walk you through the basics.");
 				tutorialStep = 2;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 2:
 		{
@@ -30,6 +32,7 @@ highFrequency
 				trQuestVarSet("cinTime", trTime());
 				tutorialStep = 3;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 3:
 		{
@@ -38,6 +41,7 @@ highFrequency
 				uiLookAtUnit(1*trQuestVarGet("p1commander"));
 				tutorialStep = 4;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 4:
 		{
@@ -45,6 +49,7 @@ highFrequency
 				trQuestVarSet("cinTime", trTime());
 				tutorialStep = 5;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 5:
 		{
@@ -55,6 +60,7 @@ highFrequency
 				trUnitHighlight(10.0, true);
 				tutorialStep = 6;
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 6:
 		{
@@ -71,6 +77,7 @@ highFrequency
 				trUnitSelectByQV("p1commander");
 				trUnitHighlight(100.0, true);
 			}
+			trQuestVarSet("p1click", 0);
 		}
 	case 7:
 		{
@@ -198,23 +205,30 @@ highFrequency
 	case 16:
 		{
 			if (trQuestVarGet("gameplayPhase") == GAMEPLAY_SUMMONING) {
-				DialogAdd("The Sharpshooter costs 2 mana to play. You can see its cost next to its name in parenthesis (2).");
-				DialogAdd("Press SPACE again to move the camera back to your Commander.");
-				DialogStart();
+				trQuestVarSet("cinTime", trTime());
 				tutorialStep = 17;
 			}
 		}
 	case 17:
+		{
+			if (trTime() > trQuestVarGet("cinTime")) {
+				DialogAdd("The Sharpshooter costs 2 mana to play. You can see its cost next to its name in parenthesis (2).");
+				DialogAdd("Press SPACE again to move the camera back to your Commander.");
+				DialogStart();
+				tutorialStep = 18;
+			}
+		}
+	case 18:
 		{
 			trQuestVarSet("p1click", 0);
 			if (trQuestVarGet("pressSpace") == 1) {
 				DialogAdd("The highlighted tiles show the available locations where you can summon units.");
 				DialogAdd("Left click on a highlighted tile to summon the unit.");
 				DialogStart();
-				tutorialStep = 18;
+				tutorialStep = 19;
 			}
 		}
-	case 18:
+	case 19:
 		{
 			if (trQuestVarGet("p1mana") == 0) {
 				DialogAdd("Good! Notice that the unit you just summoned cannot move or attack this turn.");
@@ -222,7 +236,7 @@ highFrequency
 				DialogAdd("Now, utilize what you have learned to defeat the Training Dummy!");
 				DialogStart();
 				InitBot(BOT_PERSONALITY_DEFAULT);
-				tutorialStep = 19;
+				tutorialStep = 20;
 			}
 		}
 	default:

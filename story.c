@@ -21,6 +21,11 @@ int SummonLaser(int tile = 0, int target = 0) {
 	return(siphon);
 }
 
+void SummonLightningRod(int tile = 0) {
+	// make them immune
+	mSetVar(summonAtTile(tile, 2, kbGetProtoUnitID("Outpost")), "keywords", Keyword(CONDUCTOR) + Keyword(IMMUNE) + Keyword(STEALTH));
+}
+
 void SetupWalls3(string wall = "", string connector = "", float wallScale = 1, float connectorScale = 1) {
 	AddToCustomBoard(135, TILE_OCCUPIED, connector, 1, 45, connectorScale);
 	AddToCustomBoard(136, TILE_OCCUPIED, wall, 1, 75, wallScale);
@@ -231,6 +236,7 @@ void SetupMission(int class = 0, int mission = 0){
 				case 2:
 				{
 					/* Arena */
+					InitBot(BOT_PERSONALITY_SUMMON_FIRST);
 					trSetCivAndCulture(0, 6, 2); //norse
 					trTechSetStatus(0, 127, 4); // stone wall
 					trSetLighting("dusk",0.0);
@@ -651,10 +657,14 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0;<6){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Monument");
+						addCardToDeck(2, "Javelin Cavalry Hero");
+						addCardToDeck(2, "", SPELL_FROST_BREATH);
+					}
+					for(x=0; < 3) {
+						addCardToDeck(2, "", SPELL_RUNE_OF_ICE);
+						addCardToDeck(2, "Trident Soldier Hero");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
-						addCardToDeck(2, "", SPELL_RUNE_OF_ICE);
-						addCardToDeck(2, "", SPELL_FROST_BREATH);
 					}
 					addCardToDeck(2, "Griffon");
 					addCardToDeck(2, "Trident Soldier Hero");
@@ -821,10 +831,9 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0; < 5){
 						addCardToDeck(2, "", SPELL_FLUSH);
 						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
-						addCardToDeck(2, "Man O War");
+						addCardToDeck(2, "Wadjet");
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Hydra");
-						addCardToDeck(2, "Jormund Elver");
 						addCardToDeck(2, "", SPELL_ELECTROBALL);
 					}
 
@@ -832,8 +841,8 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
-						addCardToDeck(2, "", SPELL_DOMINANCE);
 						addCardToDeck(2, "Apep");
+						addCardToDeck(2, "Man O War");
 					}
 				}
 				case 5:
@@ -920,6 +929,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
 						addCardToDeck(2, "", SPELL_PYROBALL);
 						addCardToDeck(2, "", SPELL_DEATH_DOOR);
+						addCardToDeck(2, "", SPELL_FINAL_EXAM);
 					}
 					addCardToDeck(2, "Monument 5");
 				}
@@ -1132,6 +1142,7 @@ void SetupMission(int class = 0, int mission = 0){
 					zSetVarByIndex("tiles", "occupant", 219, 0);
 					trQuestVarSet("objectiveObelisk", summonAtTile(128, 1, kbGetProtoUnitID("Outpost")));
 					mSetVarByQV("objectiveObelisk", "health", 10);
+					mSetVarByQV("objectiveObelisk", "maxhealth", 10);
 					mSetVarByQV("objectiveObelisk", "spell", SPELL_COMMANDER);
 					for(x=0; <6) {
 						addCardToDeck(2, "Crossbowman");
@@ -1199,31 +1210,60 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 4:
 				{
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); 
 					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_TOWER);
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Eitri"));
-					for(x=0;<6){
-						addCardToDeck(2, "Helepolis");
-						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
-						addCardToDeck(2, "", SPELL_CLASS_TIME);
-					}
-					for(x=0; <3) {
-						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);
-						addCardToDeck(2, "", SPELL_DOMINANCE);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);
+					trQuestVarSet("customTerrainEmptyNot", 50);
+
+					trTechSetStatus(0, 132, 4); // citadel wall
+					SetupWalls7("Wall Long", "Wall Connector");
+
+					AddToCustomBoard(173, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(174, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(175, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(185, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(186, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(187, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(144, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(160, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(182, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(146, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(151, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(169, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(140, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(156, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(178, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(138, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(150, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(168, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+					AddToCustomBoard(129, TILE_OCCUPIED, "Wall Connector", 1, 135);
+					AddToCustomBoard(128, TILE_OCCUPIED, "Wall Long", 1, 135);
+					AddToCustomBoard(132, TILE_OCCUPIED, "Wall Connector", 1, 135);
+
+
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Atalanta"));
+					trQuestVarSet("p2class2", CLASS_ADVENTURER);
+					for(x=0; < 5){
+						addCardToDeck(2, "", SPELL_RIDE_THE_LIGHTNING);
+						addCardToDeck(2, "", SPELL_RECHARGE);
+						addCardToDeck(2, "", SPELL_BLITZ);
+						addCardToDeck(2, "", SPELL_SING);
 						addCardToDeck(2, "Javelin Cavalry");
-						addCardToDeck(2, "Chieroballista");
-						addCardToDeck(2, "Tower Mirror");
-						addCardToDeck(2, "", SPELL_WARNING_SHOT);
-						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
+						addCardToDeck(2, "Crossbowman");
 					}
-					
-					SummonLaser(218, 217);
-					SummonLaser(195, 171);
-					SummonLaser(191, 167);
-					SummonLaser(190, 166);
-					SummonLaser(194, 170);
-					SummonLaser(198, 199);
-					trQuestVarSet("p2class2", CLASS_ARCANE);
+					for(x=0; < 3) {
+						addCardToDeck(2, "", SPELL_SONG_OF_REST);
+						addCardToDeck(2, "", SPELL_GUARDIAN_OF_SEA);
+						addCardToDeck(2, "Chieroballista");
+					}
+					addCardToDeck(2, "", SPELL_BANHAMMER);
 				}
 				case 5:
 				{
@@ -1242,24 +1282,51 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 6:
 				{
+					InitBot(BOT_PERSONALITY_SUMMON_FIRST);
+
+					trPaintTerrain(0, 0, 60, 60, 5, 4, false); 
 					trQuestVarSet("dimension", 6);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_HEAVEN);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);
+					trQuestVarSet("customTerrainEmptyNot", 50);
+
+					trTechSetStatus(0, 132, 4); // citadel wall
+					SetupWalls7("Wall Long", "Wall Connector");
+
+					// electric grid of horrors
+					SummonLightningRod(128);
+
+					SummonLightningRod(135);
+					SummonLightningRod(138);
+					SummonLightningRod(140);
+					SummonLightningRod(142);
+					SummonLightningRod(144);
+					SummonLightningRod(146);
+
+					SummonLightningRod(168);
+					SummonLightningRod(169);
+					for(i=172; <= 188) {
+						if (iModulo(2, i) == 0) {
+							SummonLightningRod(i);
+						}
+					}
+
 					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);
-					for(x=0;<6) {
-						addCardToDeck(2, "", SPELL_DOMINANCE);
+					for(x=0; < 7) {
 						addCardToDeck(2, "Eitri");
-						addCardToDeck(2, "", SPELL_CLASS_TIME);
 					}
 					for(x=0;<3) {
+						addCardToDeck(2, "", SPELL_SONG_OF_REST);
 						addCardToDeck(2, "", SPELL_WARNING_SHOT);
+						addCardToDeck(2, "", SPELL_DOMINANCE);
+						addCardToDeck(2, "", SPELL_BULLET_STORM);
 						addCardToDeck(2, "Javelin Cavalry");
 						addCardToDeck(2, "", SPELL_BANHAMMER);
+						addCardToDeck(2, "", SPELL_CLASS_TIME);
 						addCardToDeck(2, "Crossbowman");
-						addCardToDeck(2, "Hero Norse");
 						addCardToDeck(2, "Chieroballista");
-						addCardToDeck(2, "Portable Ram");
 						addCardToDeck(2, "Prisoner");
-						addCardToDeck(2, "Priest");
+						addCardToDeck(2, "", SPELL_SNIPE);
 					}
 					
 					summonAtTile(190, 2, kbGetProtoUnitID("Hero Greek Atalanta"));
@@ -1795,11 +1862,6 @@ inactive
 		if(trQuestVarGet("newCards") == 1){
 			trQuestVarSet("missionComplete", 1);
 			if(trQuestVarGet("missionSelection") < 0){
-				xsDisableRule("StoryTutorial1");
-				xsDisableRule("StoryTutorial2");
-				xsDisableRule("StoryTutorial3");
-				xsDisableRule("StoryTutorial4");
-				xsDisableRule("StoryTutorial5");
 				trQuestVarSet("newCards", 0);
 				/*
 				trQuestVarSet("newCommanderType", kbGetProtoUnitID("Oracle Hero"));
@@ -1813,15 +1875,15 @@ inactive
 				for(i = 0;<6){
 					setCardCountDeck(i, 3);
 					setCardCountDeck(i + 30, 3);
-					//setCardCountCollection(i, 0);
-					//setCardCountCollection(i + 30, 0);
 				}
 				setCardCountDeck(6, 2);
-				//setCardCountCollection(6, 3);
 				setCardCountDeck(36, 2);
-				//setCardCountCollection(36, 3);
 				setClassProgress(CLASS_ADVENTURER, 1);
 				setClassProgress(CLASS_ARCANE, 1);
+
+				trQuestVarSet("cinStep", 0);
+				trQuestVarSet("newCommanderType", 1);
+				xsEnableRule("CinPrologue_end");
 			} else {
 				/* Progress Current Story */
 						
@@ -1843,6 +1905,10 @@ inactive
 						}
 					}
 					*/
+					if (getClassProgress(1*trQuestVarGet("missionClass")) == 7) {
+						trDelayedRuleActivation("UnlockCommander");
+						trQuestVarSet("newCommanderType", 1);
+					}
 				}
 				/* Reward Pack Cards */
 				trVectorQuestVarSet("packPos", xsVectorSet(105, 0, 1));
@@ -1936,21 +2002,32 @@ inactive
 			xsEnableRule("MissionBegin");
 		} else {
 			/* restart */
-			if(true){
-				saveDeckAndProgress();
-				saveCollection();
-				/*
-				subModeEnter("Simulation", "Editor");
-				uiMessageBox("moo","restartCurrentGame()");
-				uiCycleCurrentActivate();
-				subModeLeave("Simulation", "Editor");
-				modeEnter("pregame");
-				modeEnter("Simulation");
-				*/
-			} else {
-				xsEnableRule("Collection");
-			}
+			saveDeckAndProgress();
+			saveCollection();
+			/*
+			subModeEnter("Simulation", "Editor");
+			uiMessageBox("moo","restartCurrentGame()");
+			uiCycleCurrentActivate();
+			subModeLeave("Simulation", "Editor");
+			modeEnter("pregame");
+			modeEnter("Simulation");
+			*/
 		}
+	}
+}
+
+rule UnlockCommander
+highFrequency
+inactive
+{
+	// wait until cinematic is done
+	if ((trQuestVarGet("cinematicStep") == trQuestVarGet("cinematicEnd")) && (trTime() > cActivationTime)) {
+		trQuestVarSet("newCommanderType", 0);
+		// TODO: make this flashy
+		trShowImageDialog("", "New Commander unlocked!");
+		trSoundPlayFN("ui\thunder"+1*trQuestVarGet("missionClass")+".wav");
+		trSoundPlayFN("herocreation.wav");
+		xsDisableSelf();
 	}
 }
 
@@ -2085,7 +2162,7 @@ inactive
 	}
 }
 
-
+/*
 rule NewCommander0
 highFrequency
 inactive
@@ -2138,16 +2215,11 @@ inactive
 		xsEnableRule("NewCommander3");
 	}
 }
-
+*/
 void UnlockClass(int class = 0){
 	CommanderUnlockLine(class, true);
 	trDelayedRuleActivation("ClassUnlockMessage_" + class);
 	setClassProgress(class, 1);
-	/*
-	for (x=0; < 7) {
-		setCardCountCollection(x + 30 * class, 3);
-	}
-	*/
 	saveDeckAndProgress();
 }
 
