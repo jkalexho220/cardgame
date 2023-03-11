@@ -191,7 +191,6 @@ void drawCard(int p = 0, bool fleeting = false) {
 			int acolytes = trCountUnitsInArea("128",(3-p),"Theocrat",45);
 			if (acolytes > 0) {
 				healUnit(1*trQuestVarGet("p"+(3-p)+"commander"), acolytes);
-				trSoundPlayFN("recreation.wav","1",-1,"","");
 				deployAtTile(0, "Regeneration SFX", mGetVarByQV("p"+(3-p)+"commander", "tile"));
 			}
 		} else {

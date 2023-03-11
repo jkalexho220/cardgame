@@ -66,7 +66,7 @@ bool ValidateClass(int class = 0){
 		}
 	}
 	
-	if(hasCardsInDeck){
+	if(hasCardsInDeck || (trQuestVarGet("commanderClass") == class)){
 		trQuestVarSet("classesInDeck", trQuestVarGet("classesInDeck") + 1);
 		if(getClassProgress(class) < 1){
 			ChatLog(1, "ERROR! Cards in locked class: " + class);
@@ -819,6 +819,7 @@ inactive
 					CollectionGodPowers();
 				}
 			} else {
+				uiClearSelection();
 				trSoundPlayFN("cantdothat.wav");
 				uiMessageBox("Your deck is invalid. You cannot start a mission until your deck is valid.");
 			}

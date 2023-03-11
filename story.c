@@ -955,7 +955,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Hydra");
 						addCardToDeck(2, "", SPELL_TELETIDE);
 						addCardToDeck(2, "", SPELL_WRATH_OF_SEA);
-						addCardToDeck(2, "", SPELL_DROWN);
+						addCardToDeck(2, "", SPELL_DEVOUR);
 					}
 					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
@@ -988,7 +988,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Leviathan");
 						addCardToDeck(2, "Hydra");
 						addCardToDeck(2, "Sea Turtle");
-						addCardToDeck(2, "", SPELL_DROWN);
+						addCardToDeck(2, "", SPELL_DEVOUR);
 					}
 					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
@@ -1337,14 +1337,54 @@ void SetupMission(int class = 0, int mission = 0){
 		}
 		case CLASS_EVIL:
 		{
+			trSetLighting("eclipse", 0);
+			trSetCivAndCulture(0, 8, 2);
 			switch(mission)
 			{
 				case 1:
 				{
 					/* Arena */
+					trPaintTerrain(0, 0, 59, 59, 0, T_MARSH_A, false);
 					trQuestVarSet("dimension", 5);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_MARSH_A);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_MARSH);
+
+					// border
+					for(i=189; < 219) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Marsh Tree", 3);
+					}
+
+					AddToCustomBoard(151, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(136, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(150, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(168, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(133, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(151, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(161, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(185, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(141, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(155, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(157, TILE_IMPASSABLE, "Marsh Tree", 3);
 					/* Opponent */
+					trQuestVarSet("p1commanderType", kbGetProtoUnitID("Hero Greek Theseus"));
+					yClearDatabase("p1deck");
+					for(x=0; < 6) {
+						addCardToDeck(1, "Wolf");
+						addCardToDeck(1, "", SPELL_MOONBEAM);
+						addCardToDeck(1, "", SPELL_CRESCENT_STRIKE);
+						addCardToDeck(1, "", SPELL_PROTECTION);
+					}
+					for(x=0; < 3) {
+						addCardToDeck(1, "Ornlu");
+						addCardToDeck(1, "Peltast");
+						addCardToDeck(1, "Hetairoi");
+						addCardToDeck(1, "", SPELL_SING);
+						addCardToDeck(1, "", SPELL_GUARDIAN_OF_SEA);
+					}
+
+					addCardToDeck(1, "Jarl");
+
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Tartarian Gate"));
 					for(x=0;<8){
 						addCardToDeck(2, "Walking Woods Marsh");
@@ -1388,26 +1428,76 @@ void SetupMission(int class = 0, int mission = 0){
 				case 3:
 				{
 					/* Arena */
-					trQuestVarSet("dimension", 7);
-					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_MARSH);
+					trPaintTerrain(0, 0, 59, 59, 0, T_MARSH_A, false);
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("customTerrainEmpty", T_MARSH_A);
+					trQuestVarSet("customTerrainEmptyNot", T_FOREST_MARSH);
+					trQuestVarSet("customTerrainEmptySpecial", 29); // PlainDirt75
+
+					for(i=219; < 255) {
+						AddToCustomBoard(i, TILE_IMPASSABLE, "Marsh Tree", 3);
+					}
+
+					AddToCustomBoard(157, TILE_OCCUPIED, "Bolder Wall", 1, 15, 0.7);
+					AddToCustomBoard(156, TILE_OCCUPIED, "Bolder Wall", 1, 45, 0.7);
+					AddToCustomBoard(177, TILE_OCCUPIED, "Bolder Wall", 1, 75, 0.7);
+					AddToCustomBoard(178, TILE_EMPTY, "Cinematic Block");
+					summonAtTile(178, 1, kbGetProtoUnitID("Onager"));
+
+					AddToCustomBoard(183, TILE_OCCUPIED, "Bolder Wall", 1, 15, 0.7);
+					AddToCustomBoard(160, TILE_OCCUPIED, "Bolder Wall", 1, 45, 0.7);
+					AddToCustomBoard(159, TILE_OCCUPIED, "Bolder Wall", 1, 75, 0.7);
+					AddToCustomBoard(182, TILE_EMPTY, "Cinematic Block");
+					summonAtTile(182, 1, kbGetProtoUnitID("Onager"));
+
+					AddToCustomBoard(168, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(128, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(171, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(137, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(189, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(218, TILE_IMPASSABLE, "Marsh Tree", 3);
+
+					AddToCustomBoard(153, TILE_IMPASSABLE, "Marsh Tree", 3);
+					AddToCustomBoard(200, TILE_IMPASSABLE, "Marsh Tree", 3);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Achilles"));
+					trQuestVarSet("p1commanderType", kbGetProtoUnitID("Hero Greek Hippolyta"));
+					yClearDatabase("p1deck");
+					for(x=0; < 6) {
+						addCardToDeck(1, "Archer Atlantean");
+						addCardToDeck(1, "Hypaspist");
+					}
+					for(x=0; < 3) {
+						addCardToDeck(1, "", SPELL_BULLET_STORM);
+						addCardToDeck(1, "", SPELL_BULLET_TIME);
+						addCardToDeck(1, "Wadjet");
+						addCardToDeck(1, "Hippikon");
+						addCardToDeck(1, "Petrobolos");
+						addCardToDeck(1, "Onager");
+						addCardToDeck(1, "Ballista");
+						addCardToDeck(1, "", SPELL_SONG_OF_REST);
+						addCardToDeck(1, "", SPELL_WARNING_SHOT);
+					}
+					addCardToDeck(1, "", SPELL_WATER_CANNON);
+
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hoplite"));
+					summonAtTile(190, 2, kbGetProtoUnitID("Theocrat"));
+					summonAtTile(191, 2, kbGetProtoUnitID("Theocrat"));
+					for(x=0; < 12) {
+						addCardToDeck(2, "Anubite");
+					}
 					for(x=0;<6){
-						addCardToDeck(2, "Bogsveigir");
-						addCardToDeck(2, "Dryad");
-						addCardToDeck(2, "Manticore");
+						addCardToDeck(2, "Tartarian Gate Spawn");
+						addCardToDeck(2, "", SPELL_DEATH_DOOR);
 					}
 					for(x=0;<3){
-						addCardToDeck(2, "", SPELL_DOOM);
-						addCardToDeck(2, "", SPELL_METEOR);
-						addCardToDeck(2, "Argus");
-						addCardToDeck(2, "", SPELL_EXPLOSION);
-						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
-						addCardToDeck(2, "Mummy");
-						addCardToDeck(2, "Walking Woods Marsh");
+						addCardToDeck(2, "", SPELL_DEVOUR);
+						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
 						addCardToDeck(2, "Theris");
 						addCardToDeck(2, "Tartarian Gate");
 					}
+					addCardToDeck(2, "Guardian");
 					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 				case 4:

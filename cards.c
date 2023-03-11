@@ -60,6 +60,9 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_PROTECTION = 812;
+const int SPELL_CRESCENT_STRIKE = 811;
+const int SPELL_MOONBEAM = 810;
 const int SPELL_RECHARGE = 809;
 const int SPELL_BLITZ = 808;
 const int SPELL_RIDE_THE_LIGHTNING = 807;
@@ -133,7 +136,7 @@ const int SPELL_DOOM = 49;
 const int SPELL_SHADOWSTEP = 50;
 const int SPELL_FINAL_FRENZY = 51;
 const int SPELL_CORPSE_PARTY = 52;
-const int SPELL_DROWN = 53;
+const int SPELL_DEVOUR = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
@@ -947,6 +950,8 @@ active
 		trModifyProtounit("Minion", p, 8, -99); // unit lifespan
 	}
 
+	trModifyProtounit("Dwarf", 0, 55, 4);
+
 	trModifyProtounit("Phoenix Egg", 0, 0, -999); // kill gaia phoenix eggs
 	
 	/*
@@ -1063,6 +1068,9 @@ highFrequency
 	*/
 	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	SpellSetup("Bullet Time",			2, SPELL_BULLET_TIME,		"Gain an extra turn.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Moonbeam",				2, SPELL_MOONBEAM,			"Remove all keywords from a unit.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Crescent Strike",		1, SPELL_CRESCENT_STRIKE, 	"Until the start of your next turn, your Commander's attacks will stun.", SPELL_TYPE_DEFENSIVE, 0, true);
+	SpellSetup("Protection",			5, SPELL_PROTECTION,		"Give all allies Immune until your next turn.", SPELL_TYPE_OTHER, 0, true);
 	/*
 	ADVENTURER
 	*/
@@ -1185,7 +1193,7 @@ highFrequency
 	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
 	
 	// 60-64
-	CardSetup("Hypaspist",				1, "Undercity Soldier",		2, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
+	CardSetup("Hypaspist",				1, "Undercity Soldier",		2, 1, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health.
 	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied unit and your Commander.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive unit.
@@ -1331,7 +1339,7 @@ highFrequency
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Devour",				8, SPELL_DROWN,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Devour",				8, SPELL_DEVOUR,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	// 145-149 (LEGENDARY at 149)
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);

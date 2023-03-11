@@ -264,7 +264,27 @@ inactive
 				xsEnableRule("Bot_00_turn_start");
 			}
 			
-			
+			// crescent strike off
+			if (trQuestVarGet("p"+p+"crescentStrike") == 1) {
+				trQuestVarSet("p"+p+"crescentStrike", 0);
+				trUnitSelectClear();
+				trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
+				trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
+				mSetVarByQV("p"+p+"commander", "OnAttack", ClearBit(mGetVarByQV("p"+p+"commander", "OnAttack"), ATTACK_STUN_TARGET));
+			}
+
+			// protection off
+			if (trQuestVarGet("p"+p+"Protection") == 1) {
+				trQuestVarSet("p"+p+"protection", 0);
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == p) {
+						if (HasKeyword(IMMUNE, 1*trQuestVarGet("card_"+mGetVarByQV("allUnits", "proto")+"_keywords")) == false) {
+							mSetVarByQV("allUnits", "keywords", ClearBit(mGetVarByQV("allUnits", "keywords"), IMMUNE));
+						}
+					}
+				}
+			}
 			
 			trQuestVarSet("p"+p+"mana", xsMax(0, trQuestVarGet("maxMana") - trQuestVarGet("p"+p+"manaTax")));
 			trQuestVarSet("p"+p+"manaTax", 0);

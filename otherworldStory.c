@@ -8,6 +8,13 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c5m1_", 1, 8);
+		mSetVarByQV("p1commander", "attack", 2);
+		mSetVarByQV("p1commander", "health", 12);
+		mSetVarByQV("p1commander", "maxhealth", 12);
+		mSetVarByQV("p1commander", "keywords", mGetVarByQV("p1commander", "keywords") + Keyword(BEACON));
+
+		mSetVarByQV("p2commander", "health", 12);
+		mSetVarByQV("p2commander", "maxhealth", 12);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
@@ -77,9 +84,20 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c5m3_", 1, 8);
 		
-		trSetLighting("dusk", 0.1);
+		mSetVarByQV("p1commander", "keywords", SetBit(mGetVarByQV("p1commander", "keywords"), BEACON));
+		mSetVarByQV("p1commander", "attack", 1);
+		mSetVarByQV("p1commander", "health", 12);
+		mSetVarByQV("p1commander", "maxhealth", 12);
 		xsEnableRule("StoryClass4Mission3_end");
 		if (trQuestVarGet("missionHardmode") == 1) {
+			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
+			summonAtTile(194, 2, kbGetProtoUnitID("Tartarian Gate"));
+			summonAtTile(195, 2, kbGetProtoUnitID("Tartarian Gate"));
+			for(i=6; >0) {
+				addCardToDeck(2, "Anubite");
+				addCardToDeck(2, "", SPELL_DEATH_DOOR);
+				addCardToDeck(2, "", SPELL_DEVOUR);
+			}
 			shuffleDeck(2);
 		}
 	}
@@ -107,7 +125,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c5m4_", 1, 3);
-		trSetLighting("night", 0.1);
+		
 		xsEnableRule("StoryClass4Mission4_end");
 
 		if (trQuestVarGet("missionHardmode") == 1) {

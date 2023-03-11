@@ -569,7 +569,7 @@ void ySetStringAtIndex(string db = "", string var = "", string val = "", int ind
 		xSetString(1*trQuestVarGet("database"+db),1*trQuestVarGet("database"+db+var),val,index);
 	} else {
 		yDatabaseCreateIfNull(db, index);
-		trQuestVarSet("database"+db+var, xInitAddFloat(1*trQuestVarGet("database"+db),var));
+		trQuestVarSet("database"+db+var, xInitAddString(1*trQuestVarGet("database"+db),var));
 		xSetString(1*trQuestVarGet("database"+db),1*trQuestVarGet("database"+db+var),val,index);
 	}
 }
@@ -583,7 +583,7 @@ void ySetVectorAtIndex(string db = "", string var = "", vector val = vector(0,0,
 		xSetVector(1*trQuestVarGet("database"+db),1*trQuestVarGet("database"+db+var),val,index);
 	} else {
 		yDatabaseCreateIfNull(db, index);
-		trQuestVarSet("database"+db+var, xInitAddFloat(1*trQuestVarGet("database"+db),var));
+		trQuestVarSet("database"+db+var, xInitAddVector(1*trQuestVarGet("database"+db),var));
 		xSetVector(1*trQuestVarGet("database"+db),1*trQuestVarGet("database"+db+var),val,index);
 	}
 }
