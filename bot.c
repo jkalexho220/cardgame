@@ -8,6 +8,7 @@ const int BOT_PHASE_SPELL_PLAY = 5;
 const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks
 const int BOT_PERSONALITY_TRAINING = 1; // Training bot, passes turn
 const int BOT_PERSONALITY_LIBRARY = 2; // random wandering in the library
+const int BOT_PERSONALITY_SUMMON_FIRST = 3;
 
 void InitBot(int personality = 0){
 	trQuestVarSet("botPersonality", personality);
@@ -24,6 +25,15 @@ inactive
 	//This is a bandaid fix
 	xsEnableRule("BotTimer");
 	trQuestVarSet("botTimer", trTime() + 2 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
+	// ignore immobile buildings
+	for(i=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits");
+		if (mGetVarByQV("allUnits", "player") == 2) {
+			if (mGetVarByQV("allUnits", "range") + mGetVarByQV("allUnits", "speed") == 0) {
+				mSetVarByQV("allUnits", "action", ACTION_DONE);
+			}
+		}
+	}
 }
 
 rule BotTimer
@@ -49,6 +59,9 @@ rule Bot1
 highFrequency
 inactive
 {
+	if (trQuestVarGet("castDone") == CASTING_DONE) {
+		trQuestVarSet("botTimeNext", trTimeMS() + 1500);
+	}
 	if (trTimeMS() > trQuestVarGet("botTimeNext")) {
 		if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
 			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
@@ -76,6 +89,9 @@ inactive
 				trQuestVarSet("botChooseUnit", 0);
 				if (trQuestVarGet("botManaOptions") >= 0) {
 					trQuestVarSetFromRand("botChooseHand", 1, 3, true);
+					if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_SUMMON_FIRST) {
+						trQuestVarSet("botChooseHand", 3);
+					}
 				}
 				if (trQuestVarGet("botMoveOptions") >= 0) {
 					trQuestVarSetFromRand("botChooseUnit", 1, 3, true);

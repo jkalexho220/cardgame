@@ -436,68 +436,120 @@ inactive
 		}
 	}
 */
-	rule ClassUnlockMessage_0
-	highFrequency
-	inactive
+
+rule CinPrologue_end
+inactive
+highFrequency
+{
+	switch(1*trQuestVarGet("cinStep"))
 	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\building specialist icons 64", "Class Unlocked: Adventurer");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+	case 0:
+		{
+			trShowImageDialog("", "New class unlocked!");
+			trSoundPlayFN("ageadvance.wav");
+		}
+	case 1:
+		{
+			trShowImageDialog("", "New Commander unlocked!");
+			trSoundPlayFN("ui\thunder1.wav");
+			trSoundPlayFN("herocreation.wav");
+		}
+	case 2:
+		{
+			trShowImageDialog("", "New class unlocked!");
+			trSoundPlayFN("ageadvance.wav");
+		}
+	case 3:
+		{
+			trShowImageDialog("", "New Commander unlocked!");
+			trSoundPlayFN("ui\thunder1.wav");
+			trSoundPlayFN("herocreation.wav");
+		}
+	default:
+		{
+			trQuestVarSet("newCommanderType", 0);
 		}
 	}
-	
-	rule ClassUnlockMessage_1
-	highFrequency
-	inactive
-	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\improvement focus icons 64", "Class Unlocked: Arcane");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+	trQuestVarSet("cinStep", 1 + trQuestVarGet("cinStep"));
+	xsDisableSelf();
+	trDelayedRuleActivation("CinPrologue_end2");
+}
+
+rule CinPrologue_end2
+inactive
+highFrequency
+{
+	if (trIsGadgetVisible("ShowImageBox") == false) {
+		if (trQuestVarGet("newCommanderType") > 0) {
+			trDelayedRuleActivation("CinPrologue_end");
 		}
+		xsDisableSelf();
 	}
-	
-	rule ClassUnlockMessage_2
-	highFrequency
-	inactive
-	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\improvement poseidons secret icons 64", "Class Unlocked: Naga");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
-		}
+}
+
+
+rule ClassUnlockMessage_0
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\building specialist icons 64", "Class Unlocked: Adventurer");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 	}
-	
-	rule ClassUnlockMessage_3
-	highFrequency
-	inactive
-	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\improvement engineers icon 64", "Class Unlocked: Clockwork");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
-		}
+}
+
+rule ClassUnlockMessage_1
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement focus icons 64", "Class Unlocked: Arcane");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 	}
-	
-	rule ClassUnlockMessage_4
-	highFrequency
-	inactive
-	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\god power ancestors icon 64", "Class Unlocked: Otherworld");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
-		}
+}
+
+rule ClassUnlockMessage_2
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement poseidons secret icons 64", "Class Unlocked: Naga");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 	}
-	
-	rule ClassUnlockMessage_5
-	highFrequency
-	inactive
-	{
-		if ((trTime()-cActivationTime) > 0){
-			xsDisableSelf();
-			trShowImageDialog("icons\god power eclipse icon 64", "Class Unlocked: Space");
-			trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
-		}
+}
+
+rule ClassUnlockMessage_3
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\improvement engineers icon 64", "Class Unlocked: Clockwork");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
 	}
+}
+
+rule ClassUnlockMessage_4
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power ancestors icon 64", "Class Unlocked: Otherworld");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+	}
+}
+
+rule ClassUnlockMessage_5
+highFrequency
+inactive
+{
+	if ((trTime()-cActivationTime) > 0){
+		xsDisableSelf();
+		trShowImageDialog("icons\god power eclipse icon 64", "Class Unlocked: Space");
+		trSoundPlayFN("olympustemplesfx.wav","1",-1,"","");
+	}
+}

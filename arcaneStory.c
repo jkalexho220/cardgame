@@ -187,7 +187,7 @@ highFrequency
 					if (trQuestVarGet("spellTarget") == trQuestVarGet("libraryMoonblade")) {
 						CharacterLog(2, "Moonblade", "Oh god! What's happening to me?");
 					} else if (trQuestVarGet("spellTarget") == trQuestVarGet("libraryNanodude")) {
-						CharacterLog(2, "Nanodude", "Hissssss");
+						CharacterLog(2, "Nanodude", "Hissssss~");
 					} else if (trQuestVarGet("spellTarget") == trQuestVarGet("deadeye")) {
 						CharacterLog(1, "Deadeye", "Why are you using that on me?!");
 					}
@@ -242,7 +242,7 @@ highFrequency
 				case 1:
 					{
 						spell = SPELL_SERPENT_SKIN;
-						CharacterLog(1, "Deadeye", "We could use this to freeze on of them. They won't see us.");
+						CharacterLog(1, "Deadeye", "We could use this to freeze one of them. They won't see us.");
 					}
 				case 2:
 					{
@@ -317,6 +317,8 @@ inactive
 			for(i=3; >0) {
 				generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_ELECTROBALL);
 			}
+			addCardToDeck(2, "", SPELL_DOMINANCE);
+			addCardToDeck(2, "", SPELL_DOMINANCE);
 			summonAtTile(192, 2, kbGetProtoUnitID("Monument"));
 			summonAtTile(193, 2, kbGetProtoUnitID("Monument"));
 		}
@@ -343,6 +345,7 @@ inactive
 		mSetVarByQV("p1commander", "health", 1);
 		mSetVarByQV("p1commander", "maxhealth", 1);
 		mSetVarByQV("p1commander", "proto", kbGetProtoUnitID("Hero Boar 2"));
+		mSetStringByQV("p1commander", "ability", "");
 	}
 }
 

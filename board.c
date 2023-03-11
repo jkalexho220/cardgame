@@ -159,7 +159,6 @@ int getNearestNeighbor(int tile = 0, vector target = vector(0,0,0)) {
 	int closest = -1;
 	float closestDistance = 15000;
 	float currentDistance = 0;
-	trSoundPlayFN("","1",-1,"NeighborCount: " + zGetVarByIndex("tiles", "neighborCount", tile));
 	for(i=zGetVarByIndex("tiles", "neighborCount", tile) - 1; >= 0) {
 		currentDistance = distanceBetweenVectors(kbGetBlockPosition(""+1*zGetVarByIndex("tiles", "neighbor"+i, tile)), target);
 		if (currentDistance <= closestDistance) {

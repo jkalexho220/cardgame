@@ -234,8 +234,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 			trUnitSelect(""+1*trQuestVarGet("next"), true);
 			trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
 			trVectorSetUnitPos("end", "next");
-			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker));
-			trQuestVarSet("starty", 8);
+			trVectorQuestVarSet("start", kbGetBlockPosition(""+attacker) + vector(0.0, 8.0, 0.0));
 			trVectorQuestVarSet("dir1", trGetUnitVector3d("start", "end"));
 			trVectorQuestVarSet("dir2", rotationMatrix(trGetUnitVector("start", "end"), 0.0, 1.0));
 			
