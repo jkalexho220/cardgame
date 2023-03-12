@@ -179,7 +179,10 @@ void drawCard(int p = 0, bool fleeting = false) {
 		int proto = yDatabaseNext("p"+p+"deck");
 		if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 			if (trCurrentPlayer() == p) {
-				trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+				// don't make noises during cinematic
+				if (trQuestVarGet("cinematicStep") == trQuestVarGet("cinematicEnd")) {
+					trSoundPlayFN("ui\scroll.wav","1",-1,"","");
+				}
 			}
 			if (yGetVar("p"+p+"deck", "spell") == 0) {
 				ChatLog(p, "Drew " + trStringQuestVarGet("card_" + proto + "_Name"));

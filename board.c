@@ -663,4 +663,5 @@ highFrequency
 			aiPlanSetUserVariableVector(terrainTiles, x, y, xsVectorSet(trGetTerrainType(x,y),trGetTerrainSubType(x,y),0));
 		}
 	}
+	trFadeOutAllSounds(0.1);
 }

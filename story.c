@@ -2005,7 +2005,7 @@ rule MissionEnd1
 highFrequency
 inactive
 {
-	if ((trTime()-cActivationTime) >= 3){
+	if ((trTime()-cActivationTime) > 5){ // wait for sound to complete before starting the cinematic
 		trSetLighting("default", 0.1);
 		CleanBoard();
 		if(trQuestVarGet("newCards") == 1){
