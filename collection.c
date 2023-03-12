@@ -66,7 +66,7 @@ bool ValidateClass(int class = 0){
 		}
 	}
 	
-	if(hasCardsInDeck){
+	if(hasCardsInDeck || (trQuestVarGet("commanderClass") == class)){
 		trQuestVarSet("classesInDeck", trQuestVarGet("classesInDeck") + 1);
 		if(getClassProgress(class) < 1){
 			ChatLog(1, "ERROR! Cards in locked class: " + class);
@@ -425,7 +425,7 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("The Old Lands");
+					return ("Separated");
 				}
 				case 2:
 				{
@@ -433,19 +433,19 @@ string GetMissionTitle(int class = 0, int mission = 0){
 				}
 				case 3:
 				{
-					return ("Nightfall");
+					return ("A Being From Beyond");
 				}
 				case 4:
 				{
-					return ("Crossing Over");
+					return ("Lights, Camera, and Zombies");
 				}
 				case 5:
 				{
-					return ("The Otherworld");
+					return ("The Ritual");
 				}
 				case 6:
 				{
-					return ("Zeno's Paradox");
+					return ("Nightfall");
 				}
 			}
 		}
@@ -819,6 +819,7 @@ inactive
 					CollectionGodPowers();
 				}
 			} else {
+				uiClearSelection();
 				trSoundPlayFN("cantdothat.wav");
 				uiMessageBox("Your deck is invalid. You cannot start a mission until your deck is valid.");
 			}

@@ -60,6 +60,9 @@ const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
 
+const int SPELL_PROTECTION = 812;
+const int SPELL_CRESCENT_STRIKE = 811;
+const int SPELL_MOONBEAM = 810;
 const int SPELL_RECHARGE = 809;
 const int SPELL_BLITZ = 808;
 const int SPELL_RIDE_THE_LIGHTNING = 807;
@@ -133,7 +136,7 @@ const int SPELL_DOOM = 49;
 const int SPELL_SHADOWSTEP = 50;
 const int SPELL_FINAL_FRENZY = 51;
 const int SPELL_CORPSE_PARTY = 52;
-const int SPELL_DROWN = 53;
+const int SPELL_DEVOUR = 53;
 const int SPELL_RUNE_OF_DARKNESS = 54;
 const int SPELL_ZENOS_PARADOX = 55;
 
@@ -643,7 +646,7 @@ void updateMana() {
 
 /*
 Given a card name in a given db array, print information
-of the selected unit.
+of the selected unit. IN-GAME
 */
 void displayCardKeywordsAndDescription(int name = 0) {
 	ChatLogShow();
@@ -731,6 +734,9 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		//trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
 		trChatSend(0, mGetString(name, "ability"));
+		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
+			trChatSend(0, "(Uncollectable)");
+		}
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
@@ -752,6 +758,9 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
+		if (CardToSpell(card) != mGetVar(name, "spell")) {
+			trChatSend(0, "(Uncollectable)");
+		}
 	}
 	
 	updateMana();
@@ -941,6 +950,8 @@ active
 		trModifyProtounit("Minion", p, 8, -99); // unit lifespan
 	}
 
+	trModifyProtounit("Dwarf", 0, 55, 4);
+
 	trModifyProtounit("Phoenix Egg", 0, 0, -999); // kill gaia phoenix eggs
 	
 	/*
@@ -968,7 +979,8 @@ active
 	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
-	CardSetup("Setna",					0, "Archmage", 				2, 20, 2, 2, Keyword(BEACON), true);
+	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);
+	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
@@ -1057,6 +1069,9 @@ highFrequency
 	*/
 	CardSetup("Statue of Lightning",	0, "Spell",				0, 1, 0, 0, 0, true);
 	SpellSetup("Bullet Time",			2, SPELL_BULLET_TIME,		"Gain an extra turn.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("Moonbeam",				2, SPELL_MOONBEAM,			"Remove all keywords from a unit.", SPELL_TYPE_OFFENSIVE, 0, true);
+	SpellSetup("Crescent Strike",		1, SPELL_CRESCENT_STRIKE, 	"Until the start of your next turn, your Commander's attacks will stun.", SPELL_TYPE_DEFENSIVE, 0, true);
+	SpellSetup("Protection",			5, SPELL_PROTECTION,		"Give all allies Immune until your next turn.", SPELL_TYPE_OTHER, 0, true);
 	/*
 	ADVENTURER
 	*/
@@ -1179,7 +1194,7 @@ highFrequency
 	CardSetup("Servant",				6, "Tide Elemental",	2, 6, 2, 1, Keyword(ETHEREAL), true); // Attack: Push my target away from me.
 	
 	// 60-64
-	CardSetup("Hypaspist",				1, "Undercity Soldier",		2, 2, 2, 1); // Play: Grant your Commander +1 attack this turn.
+	CardSetup("Hypaspist",				1, "Undercity Soldier",		2, 1, 2, 1); // Play: Grant your Commander +1 attack this turn.
 	CardSetup("Myrmidon",				2, "Undercity Elite",		3, 1, 2, 1); // Play: I gain {Manaflow} health.
 	SpellSetup("Sea's Embrace",			1, SPELL_SEA_EMBRACE,		"Restore 3 health to an allied unit and your Commander.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Hippocampus",			3, "Fish Bait",				0, 2, 2, 0, Keyword(BEACON)); // Play: Draw your most expensive unit.
@@ -1310,7 +1325,7 @@ highFrequency
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
 	// 130-134 (LEGENDARY at 134)
 	CardSetup("Dryad",					3, "Plaguewalker",			2, 5, 2, 1); // Death: Give Decay to all adjacent units.
-	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 4, 2, 2); // Whenever your opponent draws a card, restore 1 health to your Commander.
+	CardSetup("Theocrat",				3, "Mad Acolyte",			1, 5, 2, 1); // Whenever your opponent draws a card, restore 1 health to your Commander.
 	CardSetup("Argus",					4, "Mindflayer",			4, 4, 2, 1); // At the end of your turn, deal 1 damage to all units with Decay.
 	CardSetup("Pharaoh",				6, "Alchemist",				2, 3, 2, 2, Keyword(HEALER)); // Play: Summon an exact copy of an allied unit and give it Decay.
 	CardSetup("Guardian",				4, "The Darkness",			7, 7, 2, 1); // Play: Your opponent draws 2 cards. Death: Shuffle a copy of me into your deeck.
@@ -1325,7 +1340,7 @@ highFrequency
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Devour",				8, SPELL_DROWN,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Devour",				8, SPELL_DEVOUR,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	// 145-149 (LEGENDARY at 149)
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
 	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);

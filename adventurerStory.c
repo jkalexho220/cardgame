@@ -56,6 +56,7 @@ inactive
 			}
 			summonAtTile(168, 2, kbGetProtoUnitID("Swordsman"));
 			summonAtTile(169, 2, kbGetProtoUnitID("Swordsman"));
+			shuffleDeck(2);
 		}
 	}
 }
@@ -75,6 +76,7 @@ inactive
 			for(x=6; >0) {
 				addCardToDeck(2, "", SPELL_SPIDER_LAIR);
 			}
+			shuffleDeck(2);
 			summonAtTile(214, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 			summonAtTile(196, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);

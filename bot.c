@@ -24,7 +24,7 @@ inactive
 	xsDisableRule("Bot_00_turn_start");
 	//This is a bandaid fix
 	xsEnableRule("BotTimer");
-	trQuestVarSet("botTimer", trTime() + 2 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
+	trQuestVarSet("botTimer", trTime() + 3 * trQuestVarGet("maxMana") + 5 * trCountUnitsInArea("128",2,"Unit",45));
 	// ignore immobile buildings
 	for(i=yGetDatabaseCount("allUnits"); >0) {
 		yDatabaseNext("allUnits");
@@ -88,13 +88,13 @@ inactive
 				trQuestVarSet("botChooseHand", 0);
 				trQuestVarSet("botChooseUnit", 0);
 				if (trQuestVarGet("botManaOptions") >= 0) {
-					trQuestVarSetFromRand("botChooseHand", 1, 3, true);
+					trQuestVarSetFromRand("botChooseHand", 1, 5, true);
 					if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_SUMMON_FIRST) {
-						trQuestVarSet("botChooseHand", 3);
+						trQuestVarSet("botChooseHand", 5);
 					}
 				}
 				if (trQuestVarGet("botMoveOptions") >= 0) {
-					trQuestVarSetFromRand("botChooseUnit", 1, 3, true);
+					trQuestVarSetFromRand("botChooseUnit", 1, 5, true);
 				}
 				// If no more options left
 				if (trQuestVarGet("botChooseHand") + trQuestVarGet("botChooseUnit") == 0) {

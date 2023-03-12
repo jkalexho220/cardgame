@@ -644,7 +644,7 @@ inactive
 					*/
 					for(z=yGetDatabaseCount("p"+p+"hand"); >0) {
 						yDatabaseNext("p"+p+"hand");
-						if (trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 2) {
+						if (trDistanceToVectorSquared("p"+p+"hand", "p"+p+"clickPos") < 4) {
 							spellcastClearHighlights(x);
 							castReset();
 							trQuestVarSet("castDone", CASTING_CANCEL);
@@ -1017,7 +1017,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a unit. Right click to cancel.");
 		}
-		case SPELL_DROWN:
+		case SPELL_DEVOUR:
 		{
 			castAddUnit("spellTarget", 0, false);
 			castInstructions("Choose a unit. Right click to cancel.");
@@ -1337,6 +1337,21 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castInstructions("Choose a unit. Right click to cancel.");
 			castAddAdjacentTile("spellTile", "spellTarget");
 			castInstructions("Choose a tile to teleport. Right click to cancel.");
+		}
+		case SPELL_MOONBEAM:
+		{
+			castAddUnit("spellTarget", 0, false);
+			castInstructions("Choose a unit. Right click to cancel.");
+		}
+		case SPELL_CRESCENT_STRIKE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_PROTECTION:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
 	}
 	castStart();
@@ -1817,9 +1832,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_FIRE_AND_ICE, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 					activeUnit = summonAtTile(1*trQuestVarGet("spellTargetIce"), p, kbGetProtoUnitID("Frost Giant"));
@@ -2042,23 +2060,23 @@ inactive
 				trQuestVarSet("p"+p+"yeebbonus", 2*mGetVarByQV("p"+p+"commander", "attack"));
 				mSetVarByQV("p"+p+"commander", "attack", 2*mGetVarByQV("p"+p+"commander", "attack"));
 			}
-			case SPELL_DROWN:
+			case SPELL_DEVOUR:
 			{
-				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
-				deployAtTile(0, "Meteor Impact Water", 1*mGetVarByQV("spellTarget", "tile"));
-				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
-				shuffleDeck(p);
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
-				for(x=yGetDatabaseCount("allUnits"); >0) {
-					if (yDatabaseNext("allUnits") == trQuestVarGet("spellTarget")) {
-						yRemoveFromDatabase("allUnits");
-						break;
-					}
-				}
+				trSoundPlayFN("wonderdeath.wav");
+				trSoundPlayFN("cinematics\32_out\kronosbehinddorrlong.mp3","1",-1,"","");
+				trSoundPlayFN("xpack\xcinematics\8_in\guardianawaken.mp3","1",-1,"","");
+
+				trQuestVarSet("keeperGrabStep", 0);
+				trQuestVarSet("keeperGrabTime", 0);
+				trQuestVarSet("keeperGrabRadius", 0);
+				trVectorQuestVarSet("keeperPos", kbGetBlockPosition(""+1*trQuestVarGet("spellTarget")));
+				trQuestVarSet("keeperTartarianGate", deployAtTile(0, "Tartarian Gate", mGetVarByQV("spellTarget", "tile")));
 				trUnitSelectClear();
-				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
-				trMutateSelected(kbGetProtoUnitID("Victory Marker"));
-				tileGuard(1*mGetVarByQV("spellTarget", "tile"), false);
+				trUnitSelectByQV("keeperTartarianGate");
+				trSetSelectedScale(0,0,0);
+				trUnitOverrideAnimation(6, 0, true, false, -1);
+				xsEnableRule("devour_animation");
+				done = false;
 			}
 			case SPELL_SERPENT_SKIN:
 			{
@@ -2281,9 +2299,19 @@ inactive
 			}
 			case SPELL_DEATH_DOOR:
 			{
-				trSoundPlayFN("tartariangateselect.wav","1",-1,"","");
-				target = returnToHand(1*trQuestVarGet("spellTarget"));
-				mSetVar(target, "keywords", SetBit(mGetVar(target, "keywords"), FLEETING));
+				trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3");
+				done = false;
+				xsEnableRule("death_door_animation");
+				trQuestVarSet("deathDoorUnit1", trGetNextUnitScenarioNameNumber());
+				trArmyDispatch("0,0","Dwarf",1,119,0,1,0,true);
+				trQuestVarSet("deathDoorUnit2", trGetNextUnitScenarioNameNumber());
+				trArmyDispatch("0,0","Dwarf",1,119,0,1,0,true);
+				
+				trQuestVarSet("deathDoorTime", trTimeMS() + 3000);
+				trQuestVarSet("deathDoorNext", trTimeMS());
+				trQuestVarSet("deathDoorAngle", 0);
+				trQuestVarSet("deathDoorLast", trTimeMS());
+				trVectorQuestVarSet("deathDoorPos", kbGetBlockPosition(""+1*trQuestVarGet("spellTarget")));
 			}
 			case SPELL_POISON_MIST:
 			{
@@ -2340,9 +2368,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_CORPSE_PARTY, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_CORPSE_PARTY, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("ancestorsbirth.wav","1",-1,"","");
 					for(x=3; >0) {
@@ -2384,9 +2415,12 @@ inactive
 					if (trCurrentPlayer() == p) {
 						trSoundPlayFN("cantdothat.wav","1",-1,"","");
 					}
-					done = false;
-					chooseSpell(SPELL_RUNE_OF_DARKNESS, 1*trQuestVarGet("selectedCard"));
-					trQuestVarSet("selectedCard", 0); // setting to zero to disable the message for the other player
+					if ((Multiplayer == false) && (p == 2)) {
+						trQuestVarSet("selectedCard", -1);
+					} else {
+						done = false;
+						chooseSpell(SPELL_RUNE_OF_DARKNESS, 1*trQuestVarGet("selectedCard"));
+					}
 				} else {
 					trSoundPlayFN("mythcreate.wav","1",-1,"","");
 					mSetVarByQV("spellTarget", "health", 0);
@@ -2879,8 +2913,6 @@ inactive
 						mSetVarByQV("p"+p+"hand", "cost", 0);
 					}
 				}
-				done = false;
-				xsEnableRule("menagerie_end");
 			}
 			case SPELL_BULLET_STORM:
 			{
@@ -2937,6 +2969,40 @@ inactive
 				trSoundPlayFN("ui\lightning"+1*trQuestVarGet("rand")+".wav");
 				zSetVarByIndex("tiles", "occupant", mGetVarByQV("p"+p+"commander", "tile"), 0);
 				teleportToTile(1*trQuestVarGet("p"+p+"commander"), 1*trQuestVarGet("spellTile"));
+			}
+			case SPELL_MOONBEAM:
+			{
+				trUnitSelect(""+deployAtTile(0, "Osiris Birth", mGetVarByQV("spellTarget", "tile")));
+				trSetSelectedScale(0,0,0);
+				trSoundPlayFN("eclipsebirth.wav");
+				mSetVarByQV("spellTarget", "keywords", 0);
+			}
+			case SPELL_CRESCENT_STRIKE:
+			{
+				trQuestVarSet("p"+p+"crescentStrike", 1);
+				trSoundPlayFN("olympustemplesfx.wav");
+				if (trQuestVarGet("p"+p+"crescentStrikeSFX") == 0) {
+					xsEnableRule("crescent_spy_effect");
+					trUnitSelectClear();
+					trUnitSelectByQV("p"+p+"commander");
+					trQuestVarSet("crescentSpy", spyEffect("Outpost"));
+				} else {
+					trUnitSelectClear();
+					trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
+					trMutateSelected(kbGetProtoUnitID("Outpost"));
+				}
+				mSetVarByQV("p"+p+"commander", "OnAttack", SetBit(mGetVarByQV("p"+p+"commander", "OnAttack"), ATTACK_STUN_TARGET));
+			}
+			case SPELL_PROTECTION:
+			{
+				trQuestVarSet("p"+p+"protection", 1);
+				trSoundPlayFN("bronzebirth.wav");
+				for(x=yGetDatabaseCount("allUnits"); >0) {
+					yDatabaseNext("allUnits");
+					if (mGetVarByQV("allUnits", "player") == p) {
+						mSetVarByQV("allUnits", "keywords", SetBit(mGetVarByQV("allUnits", "keywords"), IMMUNE));
+					}
+				}
 			}
 		}
 		
@@ -3103,7 +3169,7 @@ rule spell_snipe_complete
 highFrequency
 inactive
 {
-	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") - trQuestVarGet("lightningPop") == 0) ||
+	if (((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) ||
 		(trTime() > cActivationTime + 3)) {
 		int tile = mGetVarByQV("spelltarget", "tile");
 		deployAtTile(0, "Arkantos God Out", tile);
@@ -3528,15 +3594,6 @@ highFrequency
 	}
 }
 
-rule menagerie_end
-inactive
-highFrequency
-{
-	if (trTime() > (cActivationTime + 4)) {
-		castEnd();
-		xsDisableSelf();
-	}
-}
 
 rule bullet_storm_active
 inactive
@@ -3574,7 +3631,6 @@ highFrequency
 				trQuestVarSet("bulletStormTremor", 5);
 				trUnitSelect(""+deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")), true);
 				trUnitChangeProtoUnit("Tremor");
-				trSoundPlayFN("manticorespecialattack.wav");
 			}
 
 			trQuestVarSet("bulletStormHit", trQuestVarGet("bulletStormHit") - 1);
@@ -3596,7 +3652,7 @@ highFrequency
 			trSetSelectedScale(scale, scale, yGetVar("bulletStormLasers", "scale"));
 		}
 	}
-	if (yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + trQuestVarGet("lightningActivate") + yGetDatabaseCount("bulletStormTargets") + yGetDatabaseCount("bulletStormLasers") - trQuestVarGet("lightningPop") == 0) {
+	if ((yGetDatabaseCount("ambushAttacks") + yGetDatabaseCount("attacks") + yGetDatabaseCount("bulletStormTargets") + yGetDatabaseCount("bulletStormLasers") == 0) && (trQuestVarGet("lightningActivate") == trQuestVarGet("lightningPop"))) {
 		trUnitSelectClear();
 		trUnitSelectByQV("bulletStormSphinx", true);
 		trUnitChangeProtoUnit("Dust Large");
@@ -3617,5 +3673,210 @@ highFrequency
 		mSetVarByQV("p"+p+"commander", "speed", mGetVarByQV("p"+p+"commander", "speed") - trQuestVarGet("rideTheLightningBonus"));
 		mSetVarByQV("p"+p+"commander", "keywords", ClearBit(mGetVarByQV("p"+p+"commander", "keywords"), ETHEREAL));
 		xsDisableSelf();
+	}
+}
+
+rule crescent_spy_effect
+inactive
+highFrequency
+{
+	if (trQuestVarGet("spyFind") == trQuestVarGet("spyFound")) {
+		int p = trQuestVarGet("activePlayer");
+		trQuestVarSet("p"+p+"crescentStrikeSFX", trQuestVarGet("spyEye"+1*trQuestVarGet("crescentSpy")));
+		trUnitSelectClear();
+		trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
+		trSetSelectedScale(0,0,0);
+	}
+}
+
+void spawnFinger(vector center = vector(0,0,0), vector offset = vector(0,0,0), vector dest = vector(0,0,0), float scale = 0) {
+	vector pos = center + offset;
+	vector dir = xsVectorNormalize(rotationMatrix(dest - offset, 0, -1.0));
+	trQuestVarSet("next", trGetNextUnitScenarioNameNumber());
+	yAddToDatabase("fingers", "next");
+	trArmyDispatch("0,0","Dwarf",1,xsVectorGetX(pos),0,xsVectorGetZ(pos),0,true);
+	trArmySelect("0,0");
+	trMutateSelected(kbGetProtoUnitID("Taproot Small"));
+	trSetSelectedScale(0.0 - scale, scale, 0.0 - scale);
+	trUnitSetAnimationPath("0,0,0,0,0,0,0");
+	trSetUnitOrientation(dir, vector(0,-1,0), true);
+	yAddUpdateVector("fingers", "dir", dir);
+}
+
+rule devour_animation
+inactive
+highFrequency
+{
+	int x = 0;
+	int z = 0;
+	int primary = 0;
+	int secondary = 0;
+	int dist = 0;
+	int p = trQuestVarGet("activePlayer");
+	vector data = vector(0,0,0);
+	vector pos = vector(0,0,0);
+	vector center = vector(0,0,0);
+	vector test = vector(0,0,0);
+	switch(1*trQuestVarGet("keeperGrabStep"))
+	{
+		case 0:
+		{
+			if (trTimeMS() > trQuestVarGet("keeperGrabTime")) {
+				trQuestVarSet("keeperGrabTime", trQuestVarGet("keeperGrabTime") + 200);
+				trQuestVarSet("keeperGrabRadius", 1 + trQuestVarGet("keeperGrabRadius"));
+				pos = vectorToGrid(trVectorQuestVarGet("keeperPos"));
+				dist = xsPow(trQuestVarGet("keeperGrabRadius"), 2);
+				for(a=0-trQuestVarGet("keeperGrabRadius"); <= trQuestVarGet("keeperGrabRadius")) {
+					for(b=0-trQuestVarGet("keeperGrabRadius"); <= trQuestVarGet("keeperGrabRadius")) {
+						test = pos + xsVectorSet(a, 0, b);
+						if (distanceBetweenVectors(pos, test) <= dist) {
+							x = xsVectorGetX(test);
+							z = xsVectorGetZ(test);
+							primary = trGetTerrainType(x, z);
+							secondary = trGetTerrainSubType(x, z);
+							if ((primary != 5) || (secondary != 4)) {
+								trPaintTerrain(x, z, x, z, 5, 4, false);
+							}
+						}
+					}
+				}
+				if (trQuestVarGet("keeperGrabRadius") >= 8) {
+					trQuestVarSet("keeperGrabStep", 1);
+				}
+			}
+		}
+		case 1:
+		{
+			center = trVectorQuestVarGet("keeperPos");
+			test = vector(-10, 0, -10);
+			trQuestVarSet("keeperGrabStep", 2);
+			// thumb
+			spawnFinger(center, vector(-6, 0, 2), vector(-1,0,-1), 3.5);
+			// other fingers
+			spawnFinger(center, vector(0, 0, 4), test, 4.5);
+			spawnFinger(center, vector(2, 0, 2), test, 5.5);
+			spawnFinger(center, vector(4, 0, 0), test, 4.5);
+			spawnFinger(center, vector(4, 0, -2), test, 3.5);
+
+			trSoundPlayFN("cinematics\31_in\swipenew.mp3","1",-1,"","");
+			trQuestVarSet("keeperGrabStep", 2);
+			trQuestVarSet("keeperAngle", 3.141592);
+			trQuestVarSet("keeperGrabTime", trTimeMS());
+
+			trCameraShake(3.0, 0.3);
+		}
+		case 2:
+		{
+			float diff = trTimeMS() - trQuestVarGet("keeperGrabTime");
+			trQuestVarSet("keeperAngle", 3.141592 - 0.001 * diff);
+			float mCos = xsCos(trQuestVarGet("keeperAngle"));
+			float mSin = xsSin(trQuestVarGet("keeperAngle"));
+			for(i=5; >0) {
+				yDatabaseNext("fingers", true);
+				pos = xsVectorSetY(rotationMatrix(yGetVector("fingers", "dir"), 0.0, -1.0) * mSin, mCos);
+				trSetUnitOrientation(yGetVector("fingers", "dir"), pos, true);
+			}
+			if (trQuestVarGet("keeperAngle") < 0) {
+				trQuestVarSet("keeperGrabStep", 3);
+				trSoundPlayFN("xpack\xcinematics\7_in\krioschange.mp3","1",-1,"","");
+				trUnitSelectClear();
+				trUnitSelectByQV("keeperTartarianGate");
+				trUnitChangeProtoUnit("Tartarian Gate birth");
+				trUnitSelectClear();
+				trUnitSelectByQV("keeperTartarianGate");
+				trSetSelectedScale(0,0,0);
+				trCameraShake(3.0, 0.5);
+				trQuestVarSet("keeperGrabTime", trTimeMS() + 1000);
+				
+			}
+		}
+		case 3:
+		{
+			if (trTimeMS() > trQuestVarGet("keeperGrabTime")) {
+				trQuestVarSet("keeperGrabTime", trTimeMS() + 200);
+				trQuestVarSet("keeperGrabRadius", trQuestVarGet("keeperGrabRadius") - 1);
+				dist = xsPow(trQuestVarGet("keeperGrabRadius"), 2);
+				center = vectorToGrid(trVectorQuestVarGet("keeperPos"));
+				for(x=0; < 60) {
+					for(y=0; < 60) {
+						if (dist < distanceBetweenVectors(center, xsVectorSet(x, 0, y))) {
+							data = aiPlanGetUserVariableVector(terrainTiles, x, y);
+							primary = xsVectorGetX(data);
+							secondary = xsVectorGetY(data);
+							trPaintTerrain(x, y, x, y, primary, secondary, false); // paint back
+						}
+					}
+				}
+				if (trQuestVarGet("keeperGrabRadius") == 0) {
+					xsDisableSelf();
+					trSoundPlayFN("spybirth.wav","1",-1,"","");
+					trCameraShake(3.0, 1.0);
+					for(i=yGetDatabaseCount("fingers"); >0) {
+						yDatabaseNext("fingers", true);
+						trUnitChangeProtoUnit("Hero Death");
+					}
+					trUnitSelectClear();
+					trUnitSelectByQV("keeperTartarianGate");
+					trUnitDestroy();
+					
+
+					// devour
+					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
+					shuffleDeck(p);
+					zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
+					for(x=yGetDatabaseCount("allUnits"); >0) {
+						if (yDatabaseNext("allUnits") == trQuestVarGet("spellTarget")) {
+							yRemoveFromDatabase("allUnits");
+							break;
+						}
+					}
+					trUnitSelectClear();
+					trUnitSelect(""+1*trQuestVarGet("spellTarget"));
+					trMutateSelected(kbGetProtoUnitID("Victory Marker"));
+					tileGuard(1*mGetVarByQV("spellTarget", "tile"), false);
+
+					castEnd();
+				}
+			}
+		}
+	}
+}
+
+rule death_door_animation
+inactive
+highFrequency
+{
+
+	if (trTimeMS() > trQuestVarGet("deathDoorTime")) {
+		trSoundPlayFN("tartariangateselect.wav");
+		int target = returnToHand(1*trQuestVarGet("spellTarget"));
+		mSetVar(target, "keywords", SetBit(mGetVar(target, "keywords"), FLEETING));
+		xsDisableSelf();
+		castEnd();
+	} else {
+		float height = 0.008 * (trQuestVarGet("deathDoorTime") - trTimeMS());
+		float dist = 0.003 * (trQuestVarGet("deathDoorTime") - trTimeMS());
+		float diff = 0.001 * (trTimeMS() - trQuestVarGet("deathDoorLast"));
+		trQuestVarSet("deathDoorLast", trTimeMS());
+		trQuestVarSet("deathDoorAngle", fModulo(6.283185, trQuestVarGet("deathDoorAngle") + diff * 3.141592));
+		trUnitSelectClear();
+		trUnitSelectByQV("deathDoorUnit1");
+		trUnitTeleport(dist * xsCos(trQuestVarGet("deathDoorAngle")) + trVectorQuestVarGetX("deathDoorPos"), 
+			height + trVectorQuestVarGetY("deathDoorPos"),
+			dist * xsSin(trQuestVarGet("deathDoorAngle")) + trVectorQuestVarGetZ("deathDoorPos"));
+		trUnitSelectClear();
+		trUnitSelectByQV("deathDoorUnit2");
+		trUnitTeleport(0.0 - dist * xsCos(trQuestVarGet("deathDoorAngle")) + trVectorQuestVarGetX("deathDoorPos"), 
+			height + trVectorQuestVarGetY("deathDoorPos"),
+			0.0 - dist * xsSin(trQuestVarGet("deathDoorAngle")) + trVectorQuestVarGetZ("deathDoorPos"));
+		if (trTimeMS() > trQuestVarGet("deathDoorNext")) {
+			trUnitSelectClear();
+			trUnitSelectByQV("deathDoorUnit1");
+			trUnitChangeProtoUnit("Kronny Birth SFX");
+			trUnitSelectClear();
+			trUnitSelectByQV("deathDoorUnit2");
+			trUnitChangeProtoUnit("Kronny Birth SFX");
+			trQuestVarSet("deathDoorNext", trTimeMS() + 500);
+		}
 	}
 }

@@ -110,7 +110,10 @@ int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	teleportToTile(1*trQuestVarGet("next"), tile);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"));
-	trUnitOverrideAnimation(-1,0,false,true,-1);
+	trUnitOverrideAnimation(18,0,false,true,-1);
+	if (kbUnitGetAnimationActionType(1*trQuestVarGet("next")) == -1) {
+		trUnitOverrideAnimation(-1, 0, false, true, -1);
+	}
 	yAddToDatabase("allUnits", "next");
 	return(1*trQuestVarGet("next"));
 }
@@ -559,7 +562,7 @@ void magnetize(int target = 0, int unit = 0) {
 		current = current / 2;
 	}
 	mSetVar(target, "keywords", keywords);
-	mSetVar(target, "scale", mGetVar(target, "scale") + 0.25 * mGetVar(unit, "health"));
+	mSetVar(target, "scale", mGetVar(target, "scale") + 0.5 * mGetVar(unit, "health"));
 	scaleUnit(target);
 	if (HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) && mGetVar(target, "action") == ACTION_SLEEPING) {
 		mSetVar(target, "action", ACTION_READY);
@@ -591,7 +594,7 @@ void updateAuras() {
 		}
 		if (trCountUnitsInArea("128",p,"Hero Greek Polyphemus", 45) > 0) {
 			mSetVarByQV("p"+p+"commander", "keywords", SetBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
-		} else {
+		} else if (HasKeyword(FURIOUS, 1*trQuestVarGet("card_"+mGetVarByQV("p"+p+"commander", "proto")+"_keywords")) == false) {
 			mSetVarByQV("p"+p+"commander", "keywords", ClearBit(1*mGetVarByQV("p"+p+"commander", "keywords"), FURIOUS));
 		}
 		
