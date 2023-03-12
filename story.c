@@ -1813,6 +1813,16 @@ void CleanBoard(){
 	yClearDatabase("allUnits");
 }
 
+rule Overlay_Mission_name
+inactive
+highFrequency
+{
+	if (trTime() > cActivationTime + 1) {
+		trOverlayText(collectionMission, 4.7, 500, 200, 1000);
+		xsDisableSelf();
+	}
+}
+
 rule MissionBegin
 highFrequency
 inactive
@@ -1854,7 +1864,7 @@ inactive
 			setClassProgress(CLASS_SPACE, 0);
 			setDeckCommander(0);
 		} else {
-			trOverlayText(collectionMission, 4.7, 500, 200, 1000);
+			trDelayedRuleActivation("Overlay_Mission_name");
 			xsEnableRule("StoryClass" + 1*trQuestVarGet("missionClass") + "Mission" + 1*trQuestVarGet("missionSelection"));
 			xsEnableRule("SelectCommander"); // disable campaign hero healing
 		}
