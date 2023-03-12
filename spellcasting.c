@@ -1038,7 +1038,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", p, false);
 			castInstructions("Choose an allied unit to duplicate.");
-			castAddAdjacentTile("spellTile", "spellTarget");
+			castAddAdjacentTile("spellTile", "spellCaster");
 			castInstructions("Choose a tile to summon the duplicate.");
 		}
 		case SPELL_WORLD_SPLITTER:
@@ -3799,7 +3799,7 @@ highFrequency
 				center = vectorToGrid(trVectorQuestVarGet("keeperPos"));
 				for(x=0; < 60) {
 					for(y=0; < 60) {
-						if (dist < distanceBetweenVectors(center, xsVectorSet(x, 0, y))) {
+						if (dist <= distanceBetweenVectors(center, xsVectorSet(x, 0, y))) {
 							data = aiPlanGetUserVariableVector(terrainTiles, x, y);
 							primary = xsVectorGetX(data);
 							secondary = xsVectorGetY(data);

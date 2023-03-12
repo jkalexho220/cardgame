@@ -76,6 +76,7 @@ bool OnDeath(int event = -1, int unit = 0){
 		case DEATH_DARKNESS_RETURNS:
 		{
 			addCardToDeck(p, "Guardian");
+			shuffleDeck(p);
 			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
 			deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(unit, "tile"));
 		}

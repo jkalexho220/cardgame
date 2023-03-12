@@ -190,7 +190,7 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
-		CinematicPlay("HeavenGames\c3m6", 1, 22);
+		CinematicPlay("HeavenGames\c3m6_", 1, 22);
 		trQuestVarSet("companion", summonAtTile(283, 1, kbGetProtoUnitID("Archer Atlantean Hero")));
 		teleportToTile(1*trQuestVarGet("p1commander"), 281);
 		teleportToTile(1*trQuestVarGet("p2commander"), 255);
