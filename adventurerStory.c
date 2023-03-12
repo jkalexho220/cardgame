@@ -24,7 +24,7 @@ inactive
 
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
-			summonAtTile(135, 2, kbGetProtoUnitID("Trident Soldier Hero"));
+			summonAtTile(147, 2, kbGetProtoUnitID("Trident Soldier Hero"));
 		}
 	}
 }
