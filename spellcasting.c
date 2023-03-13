@@ -2518,7 +2518,7 @@ inactive
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
-				spyEffect("UI Range Indicator Norse SFX");
+				spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
 				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), ARMORED));
 			}
 			case SPELL_REWIND:
@@ -2981,14 +2981,13 @@ inactive
 			{
 				trQuestVarSet("p"+p+"crescentStrike", 1);
 				trSoundPlayFN("olympustemplesfx.wav");
-				if (trQuestVarGet("p"+p+"crescentStrikeSFX") == 0) {
-					xsEnableRule("crescent_spy_effect");
+				if (trQuestVarGet("p"+p+"crescentSpy") == 0) {
 					trUnitSelectClear();
 					trUnitSelectByQV("p"+p+"commander");
-					trQuestVarSet("crescentSpy", spyEffect("Outpost"));
+					spyEffect("Outpost", "p"+p+"crescentSpy");
 				} else {
 					trUnitSelectClear();
-					trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
+					trUnitSelectByQV("p"+p+"crescentSpy", true);
 					trMutateSelected(kbGetProtoUnitID("Outpost"));
 				}
 				mSetVarByQV("p"+p+"commander", "OnAttack", SetBit(mGetVarByQV("p"+p+"commander", "OnAttack"), ATTACK_STUN_TARGET));
@@ -3608,7 +3607,7 @@ highFrequency
 		trSetUnitOrientation(trVectorQuestVarGet("bulletStormDir"), vector(0,1,0), true);
 
 		// attacks
-		if (yGetDatabaseCount("bulletStormTargets") > 0) {
+		if (yGetDatabaseCount("bulletStormTargets") > 0 && (trQuestVarGet("lightningPop") == trQuestVarGet("lightningActivate"))) {
 			// animation
 			trQuestVarSet("next", deployAtTile(0, "Dwarf", mGetVarByQV("p"+p+"commander", "tile")));
 			trUnitSelectClear();
@@ -3673,19 +3672,6 @@ highFrequency
 		mSetVarByQV("p"+p+"commander", "speed", mGetVarByQV("p"+p+"commander", "speed") - trQuestVarGet("rideTheLightningBonus"));
 		mSetVarByQV("p"+p+"commander", "keywords", ClearBit(mGetVarByQV("p"+p+"commander", "keywords"), ETHEREAL));
 		xsDisableSelf();
-	}
-}
-
-rule crescent_spy_effect
-inactive
-highFrequency
-{
-	if (trQuestVarGet("spyFind") == trQuestVarGet("spyFound")) {
-		int p = trQuestVarGet("activePlayer");
-		trQuestVarSet("p"+p+"crescentStrikeSFX", trQuestVarGet("spyEye"+1*trQuestVarGet("crescentSpy")));
-		trUnitSelectClear();
-		trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
-		trSetSelectedScale(0,0,0);
 	}
 }
 

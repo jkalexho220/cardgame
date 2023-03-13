@@ -273,8 +273,9 @@ const int CONDUCTOR = 18;
 const int STEALTH = 19;
 const int REPEATABLE = 20;
 const int IMMUNE = 21;
+const int DODGE = 22;
 
-const int NUM_KEYWORDS = 22;
+const int NUM_KEYWORDS = 23;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -301,6 +302,7 @@ string GetKeywordName(int bitPosition=0){
 		case STEALTH: return("Stealth");
 		case REPEATABLE: return("Echo");
 		case IMMUNE: return("Immune");
+		case DODGE: return("Dodge");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -330,7 +332,7 @@ string GetKeywordDescription(int bitPosition=0){
 		case STEALTH: return("I cannot be targeted until I take damage.");
 		case REPEATABLE: return("This card may be played an additional time.");
 		case IMMUNE: return("Cannot take damage.");
-
+		case DODGE: return("Cannot be targeted by enemies more than 1 space away.");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
@@ -791,7 +793,6 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
 		mSetVar(next, "tile", 0);
 		mSetVar(next, "stunTime", 0);
-		mSetVar(next, "stunSFX", 0);
 		mSetVar(next, "victory", 0);
 		mSetVar(next, "victoryAmbush", 0);
 		mSetVar(next, "scale", 1);
@@ -1093,7 +1094,7 @@ highFrequency
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
+	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(DODGE));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 4, 2, 1); // Play: Grant adjacent allied units +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Deadeye",			3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
@@ -1152,7 +1153,7 @@ highFrequency
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
 	CardSetup("Priest",					3, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 4, 2, 1); // After ANY player casts a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1, Keyword(DODGE)); // After ANY player casts a spell, grant me +1 attack.
 	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
@@ -1168,7 +1169,7 @@ highFrequency
 	// 50-54
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
-	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
+	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1, Keyword(WARD)); // Play: Restore 3 health to an ally.
 	CardSetup("Centaur",				3, "Book Courier",		2, 3, 3, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	CardSetup("Hero Greek Chiron",		5, "Librarian",			3, 4, 3, 2); // At the start of your turn, both players draw a card.
 	// 55-59 (LEGENDARY at 59)
@@ -1262,7 +1263,7 @@ highFrequency
 	// 95-99
 	CardSetup("Hero Norse",				3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
 	CardSetup("Automaton SPC",			2, "Gearwalker",			2, 2, 2, 1, Keyword(MAGNETIC));
-	CardSetup("Onager",					4, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
+	CardSetup("Onager",					5, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
 	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your units cost 1 less.
 	CardSetup("Ballista",				4, "Mechanized Bow",		3, 1, 1, 3, Keyword(MAGNETIC));
 	// 100-104 (LEGENDARY at 104)
@@ -1319,7 +1320,7 @@ highFrequency
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
 	CardSetup("Prodromos",				3, "Possessed Rider",		0, 4, 3, 1); // Attack: Your Commander attacks my target.
-	CardSetup("Tartarian Gate spawn",	4, "Demon",					1, 5, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
+	CardSetup("Tartarian Gate spawn",	4, "Demon",					0, 5, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
@@ -1376,7 +1377,7 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a unit. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(DODGE)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.

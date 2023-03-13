@@ -6,18 +6,6 @@ void OnPlay(int unit = 0) {
 	bool done = true;
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
-	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("UI Range Indicator Norse SFX");
-	}
-	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Poison SFX");
-	}
-	if (HasKeyword(DEADLY, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Chaos effect");
-	}
-	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
-		trQuestVarSet("stealthSFX" + unit, spyEffect("Sky Passage"));
-	}
 	if (HasKeyword(REPEATABLE, 1*mGetVar(unit, "keywords"))) {
 		card = generateCard(p, proto, 0, true);
 		if (card > 0) {
@@ -38,7 +26,6 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Lancer Hero"):
 		{
 			damageUnit(unit, 4);
-			spyEffect("Phoenix From Egg");
 			trSoundPlayFN("firegiantdie.wav","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Bondi"):

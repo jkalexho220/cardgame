@@ -49,7 +49,6 @@ void refreshGuardAll() {
 	}
 }
 
-
 /*
 Removes the currently selected unit in a search from
 the database. This is where we put all the special variables
@@ -105,8 +104,35 @@ void teleportToTile(int name = 0, int tile = 0) {
 	zSetVarByIndex("tiles", "occupant", tile, name);
 }
 
+void OnCreate(int unit = 0) {
+	int p = mGetVar(unit, "player");
+	int proto = mGetVar(unit, "proto");
+	trUnitSelectClear();
+	trUnitSelect(""+unit);
+	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Poison SFX");
+	}
+	if (HasKeyword(DODGE, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Well of Urd");
+	}
+	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Sky Passage", "stealthSFX" + unit);
+	}
+	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
+		spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
+	}
+	switch(proto)
+	{
+	case kbGetProtoUnitID("Lancer Hero"):
+		{
+			spyEffect("Phoenix From Egg", "unused", vector(1,1,1));
+		}
+	}
+}
+
 int summonAtTile(int tile = 0, int p = 0, int proto = 0) {
 	trQuestVarSet("next", CardInstantiate(p, proto, SPELL_NONE));
+	OnCreate(1*trQuestVarGet("next"));
 	teleportToTile(1*trQuestVarGet("next"), tile);
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"));
@@ -125,15 +151,9 @@ Returns -1 if none found.
 radius is the squared value to be compared to
 */
 int findNearestUnit(string qv = "", float radius = 1) {
-	int id = 0;
 	for (x=yGetDatabaseCount("allUnits"); >0) {
-		id = yDatabaseNext("allUnits", true);
-		if (id == -1) {
-			removeUnit();
-		} else {
-			if (trDistanceToVectorSquared("allUnits", qv) < radius) {
-				return(1*trQuestVarGet("allUnits"));
-			}
+		if (trDistanceToVectorSquared("allUnits", qv) < radius) {
+			return(1*trQuestVarGet("allUnits"));
 		}
 	}
 	return(-1);
@@ -190,11 +210,16 @@ void findTargets(int name = 0, string db = "", bool healer = false) {
 			continue;
 		} else if (mGetVarByQV("allUnits", "player") == p) {
 			if (trDistanceToVectorSquared("allUnits", "pos") < dist) {
-				if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
-					if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
-						yAddToDatabase(db, "allUnits");
-					} else if (mGetVar(name, "range") > 1) {
-						yAddToDatabase(db, "allUnits");
+				// Dodge: If the target has dodge and we are > 9 meters away, we can't hit it
+				if ((HasKeyword(DODGE, 1*mGetVarByQV("allUnits", "keywords")) == false) || (trDistanceToVectorSquared("allUnits", "pos") < 81.0)) {
+					// if the target has stealth, we can't hit it
+					if (HasKeyword(STEALTH, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+						// if the target is flying and we aren't ranged, we can't hit it
+						if (HasKeyword(FLYING, 1*mGetVarByQV("allUnits", "keywords")) == false) {
+							yAddToDatabase(db, "allUnits");
+						} else if (mGetVar(name, "range") > 1) {
+							yAddToDatabase(db, "allUnits");
+						}
 					}
 				}
 			}
@@ -232,6 +257,11 @@ void damageUnit(int index = 0, float dmg = 0) {
 	}
 	if (HasKeyword(ARMORED, 1*mGetVar(index, "keywords"))) {
 		dmg = xsMax(0, dmg - 1);
+		trUnitSelectClear();
+		trUnitSelect(""+index);
+		trUnitHighlight(0.3, false);
+		trQuestVarSetFromRand("sound", 1, 3, true);
+		trSoundPlayFN("piercemetal"+1*trQuestVarGet("sound")+".wav");
 	}
 	if (1*mGetVar(index, "proto") == kbGetProtoUnitID("Golem") && iModulo(2,dmg) == 1) {
 		return;
@@ -239,7 +269,7 @@ void damageUnit(int index = 0, float dmg = 0) {
 	if(dmg > 0 && HasKeyword(STEALTH, 1*mGetVar(index, "keywords"))){
 		mSetVar(index, "keywords", mGetVar(index, "keywords") - Keyword(STEALTH));
 		trUnitSelectClear();
-		trUnitSelect(""+1*trQuestVarGet("spyEye"+1*trQuestVarGet("stealthSFX"+index)));
+		trUnitSelect(""+1*trQuestVarGet("stealthSFX"+index));
 		trUnitDestroy();
 	}
 	int p = mGetVar(index, "player");
@@ -386,47 +416,6 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 }
 
 
-
-bool spyReady() {
-	return(trQuestVarGet("spyFind") == trQuestVarGet("spyFound"));
-}
-
-
-/*
-Casts spy on the currently selected unit. The spy will transform into the specified protounit.
-Returns the index of the spy eye in case the user wants to reference it later. The name of the
-spy eye will be set in the quest var "spyEye"+x, where x is the integer returned by this function.
-*/
-int spyEffect(string proto = "") {
-	int x = modularCounterNext("spyFind");
-	trQuestVarSet("spyEye"+x+"proto", kbGetProtoUnitID(proto));
-	trTechInvokeGodPower(0, "spy", xsVectorSet(1,1,1), xsVectorSet(1,1,1));
-	return(x);
-}
-
-rule spy_find
-highFrequency
-active
-{
-	if (spyReady() == false) {
-		while (yFindLatest("spyEye", "Spy Eye", 0) >= 0) {
-			int x = modularCounterNext("spyFound");
-			trQuestVarCopy("spyEye"+x, "spyEye");
-			trMutateSelected(1*trQuestVarGet("spyEye"+x+"proto"));
-			trQuestVarSet("spyTimeout", 0);
-			if(trQuestVarGet("spyEye"+x+"proto") == kbGetProtoUnitID("Sky Passage")){
-				trSetSelectedScale(0, 0, 0);
-			}
-		}
-		trQuestVarSet("spyTimeout", trQuestVarGet("spyTimeout") + 1);
-		if (trQuestVarGet("spyTimeout") >= 5) {
-			trQuestVarSet("spyTimeout", 0);
-			trQuestVarCopy("counterspyFoundpointer", "counterspyFindpointer");
-			trQuestVarCopy("spyFound", "spyFind");
-		}
-	}
-}
-
 /*
 index = index of unit in the allUnits database.
 */
@@ -434,11 +423,10 @@ void stunUnit(int index = 0) {
 	if (mGetVar(index, "health") > 0) {
 		mSetVar(index, "stunTime", 2);
 		mSetVar(index, "action", ACTION_STUNNED);
-		if (mGetVar(index, "stunSFX") == 0) {
+		if (trQuestVarGet("stunSFX" + index) == 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+index);
-			mSetVar(index, "stunIndex", spyEffect("Shockwave stun effect"));
-			xsEnableRule("spy_assign_new");
+			spyEffect("Shockwave stun effect", "stunSFX"+index);
 		} else {
 			trUnitSelectClear();
 			trUnitSelect(""+1*mGetVar(index, "stunSFX"));
@@ -645,21 +633,6 @@ active
 			}
 			yRemoveFromDatabase("pushes");
 		}
-	}
-}
-
-rule spy_assign_new
-highFrequency
-inactive
-{
-	if (spyReady())	{
-		for(x=yGetDatabaseCount("allUnits"); >0) {
-			yDatabaseNext("allUnits");
-			if ((mGetVarByQV("allUnits", "stunSFX") == 0) && (mGetVarByQV("allUnits", "stunIndex") > 0)) {
-				mSetVarByQV("allUnits", "stunSFX", trQuestVarGet("spyEye"+1*mGetVarByQV("allUnits", "stunIndex")));
-			}
-		}
-		xsDisableRule("spy_assign_new");
 	}
 }
 

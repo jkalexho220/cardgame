@@ -179,7 +179,7 @@ inactive
 					if (mGetVarByQV("allUnits", "stunTime") == 0) {
 						mSetVarByQV("allUnits", "action", ACTION_READY);
 						trUnitSelectClear();
-						trUnitSelect(""+1*mGetVarByQV("allUnits", "stunSFX"), true);
+						trUnitSelect(""+1*trQuestVarGet("stunSFX"+1*trQuestVarGet("allUnits")), true);
 						trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
 					} else {
 						mSetVarByQV("allUnits", "action", ACTION_STUNNED);
@@ -268,7 +268,7 @@ inactive
 			if (trQuestVarGet("p"+p+"crescentStrike") == 1) {
 				trQuestVarSet("p"+p+"crescentStrike", 0);
 				trUnitSelectClear();
-				trUnitSelectByQV("p"+p+"crescentStrikeSFX", true);
+				trUnitSelectByQV("p"+p+"crescentSpy", true);
 				trMutateSelected(kbGetProtoUnitID("Cinematic Block"));
 				mSetVarByQV("p"+p+"commander", "OnAttack", ClearBit(mGetVarByQV("p"+p+"commander", "OnAttack"), ATTACK_STUN_TARGET));
 			}
