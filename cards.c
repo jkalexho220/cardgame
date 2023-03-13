@@ -1153,7 +1153,7 @@ highFrequency
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
 	CardSetup("Priest",					3, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1, Keyword(DODGE)); // After ANY player casts a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1, Keyword(WARD)); // After ANY player casts a spell, grant me +1 attack.
 	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
@@ -1169,7 +1169,7 @@ highFrequency
 	// 50-54
 	SpellSetup("Meteor",				4, SPELL_METEOR, 		"Mark a tile. At the start of your next turn, deal 6 damage to it and 2 to adjacent tiles.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Trident Soldier Hero",	5, "Throne Shield",		2, 7, 1, 1); // Your Commander has Guard. When they take damage, I take it instead.
-	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1, Keyword(WARD)); // Play: Restore 3 health to an ally.
+	CardSetup("Valkyrie",				3, "Battle Maiden",		3, 3, 3, 1); // Play: Restore 3 health to an ally.
 	CardSetup("Centaur",				3, "Book Courier",		2, 3, 3, 2); // Play: Draw a card. Death: Your opponent draws a card.
 	CardSetup("Hero Greek Chiron",		5, "Librarian",			3, 4, 3, 2); // At the start of your turn, both players draw a card.
 	// 55-59 (LEGENDARY at 59)
@@ -1308,7 +1308,7 @@ highFrequency
 	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Minion",					0, "Zombie",			1, 1, 1, 1, Keyword(CHARGE), true);
-	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(AMBUSH), true);
+	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(DODGE), true);
 	CardSetup("Scarab",					5, "Man-Eating Beetle",	5, 5, 1, 1, Keyword(ETHEREAL), true);
 	CardSetup("Walking Woods Marsh",	3, "Zombie Tree",		2, 4, 2, 1, 0, true);
 	
@@ -1341,10 +1341,10 @@ highFrequency
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Devour",				8, SPELL_DEVOUR,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Devour",				8, SPELL_DEVOUR,		 	"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	// 145-149 (LEGENDARY at 149)
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
-	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
+	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Dodge.", SPELL_TYPE_OTHER);
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied unit and an enemy unit swap spaces.", SPELL_TYPE_OTHER);
 	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Play: Copy the Attack effect of a unit.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
@@ -1500,7 +1500,7 @@ highFrequency
 	CardEvents("Prodromos", Keyword(ATTACK_POSSESSED), 0,				"Attack: Your Commander attacks my target.");
 	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
-	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
+	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Dodge on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
 	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent units.");
 	CardEvents("Theocrat", 0, 0,										"Whenever your opponent draws a card, restore 1 health to your Commander.");

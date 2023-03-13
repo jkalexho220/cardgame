@@ -60,7 +60,7 @@ active
 				trMutateSelected(xGetInt(dSpyRequests, xSpyRequestProto));
 				trSetSelectedScale(xsVectorGetX(scale),xsVectorGetY(scale),xsVectorGetZ(scale));
 				trUnitSetAnimationPath(xGetString(dSpyRequests, xSpyRequestAnimPath));
-				trUnitOverrideAnimation(xGetInt(dSpyRequests, xSpyRequestAnim),0,true,false,-1);
+				trUnitOverrideAnimation(xGetInt(dSpyRequests, xSpyRequestAnim),0,true,true,-1);
 				trQuestVarSet(xGetString(dSpyRequests, xSpyRequestDest), i);
 				xFreeDatabaseBlock(dSpyRequests);
 				spyreset = 0;

@@ -152,6 +152,7 @@ radius is the squared value to be compared to
 */
 int findNearestUnit(string qv = "", float radius = 1) {
 	for (x=yGetDatabaseCount("allUnits"); >0) {
+		yDatabaseNext("allUnits", true);
 		if (trDistanceToVectorSquared("allUnits", qv) < radius) {
 			return(1*trQuestVarGet("allUnits"));
 		}
