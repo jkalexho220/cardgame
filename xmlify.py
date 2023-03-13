@@ -16,9 +16,10 @@ import sys
 FILENAME = 'cardGameAll.xml'
 NAME = ' Card Game'
 files = ['memory.c', 'modulo.c', 'shared.c', 'commands.c', 'events.c', 'cards.c', 'board.c', 'cinematic.c', 
-		'prologue.c', 'clicking.c',  'gameplayHelpers.c', 'deck.c', 'dataCollectionFunctions.c', 
+		'prologue.c', 'clicking.c', 'spyEffect.c', 'gameplayHelpers.c', 'deck.c', 'dataCollectionFunctions.c', 
 		'dataDeckFunctions.c', 'dataLoad.c', 'collection.c', 'OnDeath.c', 'spellcasting.c', 'OnAttack.c', 
-		'OnPlay.c', 'OnTurnStart.c', 'bot.c', 'tutorial.c', 'gameplay.c', 'match.c', 'story.c', 'adventurerStory.c', 'arcaneStory.c', 'clockworkStory.c', 'nagaStory.c', 'otherworldStory.c']
+		'OnPlay.c', 'OnTurnStart.c', 'bot.c', 'tutorial.c', 'gameplay.c', 'match.c', 'story.c', 
+		'adventurerStory.c', 'arcaneStory.c', 'clockworkStory.c', 'nagaStory.c', 'otherworldStory.c']
 
 #########################################
 ####### CODE BELOW (DO NOT TOUCH) #######
