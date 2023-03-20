@@ -310,29 +310,29 @@ string GetKeywordName(int bitPosition=0){
 
 string GetKeywordDescription(int bitPosition=0){
 	switch(bitPosition){
-		case CHARGE: return ("Ready to act when summoned.");
-		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
 		case AIRDROP: return ("I don't have to be summoned next to Beacon.");
-		case FURIOUS: return ("Two attacks each turn.");
-		case LIGHTNING: return ("Attack will chain through connected enemies.");
-		case REGENERATE: return ("Restores to full health at the start of your turn.");
-		case DEADLY: return ("I kill any unit that I attack.");
-		case ETHEREAL: return ("Can pass through units and impassable terrain.");
-		case ARMORED: return ("I take 1 less damage from all sources.");
-		case WARD: return ("I cannot be targeted by spells.");
-		case BEACON: return ("Allies can be summoned next to me.");
 		case AMBUSH: return ("When initiating combat, I attack first.");
-		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
-		case HEALER: return("Can't attack or counter-attack. Instead, I can heal allies within range.");
-		case DECAY: return("I take 1 damage at the end of your turn.");
-		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
-		case OVERFLOW: return("Cost is reduced by your Manaflow.");
-		case MAGNETIC: return("When played next to another Magnetic unit, you can combine them, adding attack, health, and keywords.");
+		case ARMORED: return ("I take 1 less damage from all sources.");
+		case BEACON: return ("Allies can be summoned next to me.");
+		case CHARGE: return ("Ready to act when summoned.");
 		case CONDUCTOR: return("Allied Lightning effects can pass through me.");
-		case STEALTH: return("I cannot be targeted until I take damage.");
-		case REPEATABLE: return("This card may be played an additional time.");
-		case IMMUNE: return("Cannot take damage.");
+		case DEADLY: return ("I kill any unit that I attack.");
+		case DECAY: return("I take 1 damage at the end of your turn.");
 		case DODGE: return("Cannot be targeted by enemies more than 1 space away.");
+		case REPEATABLE: return("This card may be played an additional time.");
+		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
+		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
+		case FURIOUS: return ("Two attacks each turn.");
+		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
+		case HEALER: return("Can't attack or counter-attack. Instead, I can heal allies within range.");
+		case IMMUNE: return("Cannot take damage.");
+		case LIGHTNING: return ("Attack will chain through connected enemies.");
+		case MAGNETIC: return("When played next to another Magnetic unit, you can combine them, adding attack, health, and keywords.");
+		case OVERFLOW: return("Cost is reduced by your Manaflow.");
+		case ETHEREAL: return ("Can pass through units and impassable terrain.");
+		case REGENERATE: return ("Restores to full health at the start of your turn.");
+		case STEALTH: return("I cannot be targeted until I take damage.");
+		case WARD: return ("I cannot be targeted by spells.");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
@@ -1153,7 +1153,7 @@ highFrequency
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
 	CardSetup("Oracle Scout",			3, "Tower Researcher",	0, 3, 2, 0, Keyword(BEACON)); // Your spells deal +1 damage.
 	CardSetup("Priest",					3, "Magic Teacher",		1, 3, 2, 2, Keyword(HEALER)); // Your spells cost 1 less.
-	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 3, 2, 1, Keyword(WARD)); // After ANY player casts a spell, grant me +1 attack.
+	CardSetup("Swordsman Hero",			3, "Spellstealer",		1, 4, 2, 1); // After ANY player casts a spell, grant me +1 attack.
 	// 40-44 (LEGENDARY at 44)
 	SpellSetup("Book of Reflections",	5, SPELL_COPY_HOMEWORK, "Create three random cards from your opponent's classes.", SPELL_TYPE_OTHER);
 	SpellSetup("Rune of Flame",			5, SPELL_RUNE_OF_FLAME,	"Deal 6 damage to your Commander to summon a 4|6 Blaze Elemental with Furious.", SPELL_TYPE_OTHER);
@@ -1377,13 +1377,13 @@ highFrequency
 	SpellSetup("Libra",					3, SPELL_LIBRA,				"Draw cards until your hand size matches your opponent's", SPELL_TYPE_OTHER);
 	SpellSetup("Petty Laser", 			2, SPELL_PETTY_LASER, 		"Deal 2 Damage to a unit. Shuffle a Thick Laser in your deck.", SPELL_TYPE_OFFENSIVE);
 	// 155-159
-	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(DODGE)); 	// Play: Pay 2 mana next turn.
+	CardSetup("Transport Ship Norse",	2, "Nebula Corvette",		2, 3, 2, 2, Keyword(ETHEREAL) + Keyword(BEACON)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Siege Ship Greek",		4, "Shield Cruiser",		2, 6, 2, 2, Keyword(ETHEREAL) + Keyword(GUARD)); 	// Play: Pay 2 mana next turn.
 	CardSetup("Fire Ship Atlantean",	6, "Warded Frigate",		4, 7, 2, 2, Keyword(ETHEREAL) + Keyword(WARD)); 	// Play: Pay 3 mana next turn.
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
 	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random unit on a random tile. If your Commander is Nickonhawk, choose the tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
-	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied unit Armored and Ward.", SPELL_TYPE_OTHER);
+	SpellSetup("Cloaking Field",		2, SPELL_NANOMACHINES,		"Give an allied unit Dodge and Ward.", SPELL_TYPE_OTHER);
 	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a unit for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all units in your hand.", SPELL_TYPE_OTHER);
 	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy unit to a tile next to me.

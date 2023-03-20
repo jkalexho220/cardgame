@@ -608,6 +608,9 @@ inactive
 	trSetFogAndBlackmap(false, false);
 	unitTransform("Statue of Automaton Base","Victory Marker");
 	trPaintTerrain(0, 0, 60, 60, 5, 4, false); //Black
+	for(i=1; <= 28) {
+		trObjectiveSetID(i, i);
+	}
 	// trChatHistoryClear();
 	/*
 	// we used to need this for the collection reload but not anymore

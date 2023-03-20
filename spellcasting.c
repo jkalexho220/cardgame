@@ -12,6 +12,7 @@ const int CAST_TILE = 10;
 const int CAST_ADJACENT_TILE = 11;
 const int CAST_DIRECTION = 12;
 const int CAST_SUMMON_LOCATIONS = 13;
+const int CAST_ADJACENT_TILE_UNKNOWN = 14;
 
 const int CASTING_NOTHING = 0;
 const int CASTING_IN_PROGRESS = 1;
@@ -139,7 +140,19 @@ void castAddAdjacentTile(string qv = "", string src = "") {
 	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_TILE);
 	trStringQuestVarSet("cast"+x+"qv", qv);
 	trQuestVarSet("cast"+x+"unit", 1*trQuestVarGet(src));
+}
+
+/*
+qv = name of the quest var to store the selected tile
+src = name of quest var holding the unit at the center (not yet known)
+*/
+void castAddAdjacentTileUnknown(string qv = "", string src = "") {
+	trQuestVarSet("castPush", trQuestVarGet("castPush") + 1);
+	int x = trQuestVarGet("castPush");
 	
+	trQuestVarSet("cast"+x+"type", CAST_ADJACENT_TILE_UNKNOWN);
+	trStringQuestVarSet("cast"+x+"qv", qv);
+	trStringQuestVarSet("cast"+x+"from", src);
 }
 
 /*
@@ -420,6 +433,21 @@ inactive
 			case CAST_ADJACENT_TILE:
 			{
 				tile = mGetVarByQV("cast"+x+"unit", "tile");
+				findAvailableTiles(tile, 1, "castTiles", false);
+				for(z=yGetDatabaseCount("castTiles"); >0) {
+					yDatabaseNext("castTiles");
+					if (zGetVarByIndex("tiles", "ward", 1*trQuestVarGet("castTiles")) == 1) {
+						yRemoveFromDatabase("castTiles");
+					} else {
+						if (trCurrentPlayer() == p) {
+							highlightTile(1*trQuestVarGet("casttiles"), 999999);
+						}
+					}
+				}
+			}
+			case CAST_ADJACENT_TILE_UNKNOWN:
+			{
+				tile = mGetVarByQV(trStringQuestVarGet("cast"+x+"from"), "tile");
 				findAvailableTiles(tile, 1, "castTiles", false);
 				for(z=yGetDatabaseCount("castTiles"); >0) {
 					yDatabaseNext("castTiles");
@@ -1038,7 +1066,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", p, false);
 			castInstructions("Choose an allied unit to duplicate.");
-			castAddAdjacentTile("spellTile", "spellCaster");
+			castAddAdjacentTileUnknown("spellTile", "spellTarget");
 			castInstructions("Choose a tile to summon the duplicate.");
 		}
 		case SPELL_WORLD_SPLITTER:
@@ -1335,7 +1363,7 @@ void chooseSpell(int spell = 0, int card = -1) {
 		{
 			castAddUnit("spellTarget", 3 - p, true);
 			castInstructions("Choose a unit. Right click to cancel.");
-			castAddAdjacentTile("spellTile", "spellTarget");
+			castAddAdjacentTileUnknown("spellTile", "spellTarget");
 			castInstructions("Choose a tile to teleport. Right click to cancel.");
 		}
 		case SPELL_MOONBEAM:
@@ -2519,7 +2547,8 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
-				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), ARMORED));
+				spyEffect("Well of Urd");
+				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), DODGE));
 			}
 			case SPELL_REWIND:
 			{
