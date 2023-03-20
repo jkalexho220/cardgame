@@ -723,6 +723,7 @@ inactive
 					
 					zSetVarByIndex("tiles", "occupant", tile, unit);
 					// If the unit has an OnPlay effect
+					OnCreate(unit);
 					OnPlay(unit);
 					updateHandPlayable(p);
 					

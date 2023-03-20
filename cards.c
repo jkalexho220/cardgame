@@ -273,8 +273,9 @@ const int CONDUCTOR = 18;
 const int STEALTH = 19;
 const int REPEATABLE = 20;
 const int IMMUNE = 21;
+const int DODGE = 22;
 
-const int NUM_KEYWORDS = 22;
+const int NUM_KEYWORDS = 23;
 
 
 string GetKeywordName(int bitPosition=0){
@@ -301,6 +302,7 @@ string GetKeywordName(int bitPosition=0){
 		case STEALTH: return("Stealth");
 		case REPEATABLE: return("Echo");
 		case IMMUNE: return("Immune");
+		case DODGE: return("Dodge");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordName");
 	return ("");
@@ -308,29 +310,29 @@ string GetKeywordName(int bitPosition=0){
 
 string GetKeywordDescription(int bitPosition=0){
 	switch(bitPosition){
-		case CHARGE: return ("Ready to act when summoned.");
-		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
 		case AIRDROP: return ("I don't have to be summoned next to Beacon.");
-		case FURIOUS: return ("Two attacks each turn.");
-		case LIGHTNING: return ("Attack will chain through connected enemies.");
-		case REGENERATE: return ("Restores to full health at the start of your turn.");
-		case DEADLY: return ("I kill any unit that I attack.");
-		case ETHEREAL: return ("Can pass through units and impassable terrain.");
-		case ARMORED: return ("I take 1 less damage from all sources.");
-		case WARD: return ("I cannot be targeted by spells.");
-		case BEACON: return ("Allies can be summoned next to me.");
 		case AMBUSH: return ("When initiating combat, I attack first.");
-		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
-		case HEALER: return("Can't attack or counter-attack. Instead, I can heal allies within range.");
-		case DECAY: return("I take 1 damage at the end of your turn.");
-		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
-		case OVERFLOW: return("Cost is reduced by your Manaflow.");
-		case MAGNETIC: return("When played next to another Magnetic unit, you can combine them, adding attack, health, and keywords.");
+		case ARMORED: return ("I take 1 less damage from all sources.");
+		case BEACON: return ("Allies can be summoned next to me.");
+		case CHARGE: return ("Ready to act when summoned.");
 		case CONDUCTOR: return("Allied Lightning effects can pass through me.");
-		case STEALTH: return("I cannot be targeted until I take damage.");
+		case DEADLY: return ("I kill any unit that I attack.");
+		case DECAY: return("I take 1 damage at the end of your turn.");
+		case DODGE: return("Cannot be targeted by enemies more than 1 space away.");
 		case REPEATABLE: return("This card may be played an additional time.");
+		case FLEETING: return ("The card is discarded from hand at the end of the turn.");
+		case FLYING: return("Pathfinder. Other units can move through. Can only be attacked by ranged enemies.");
+		case FURIOUS: return ("Two attacks each turn.");
+		case GUARD: return ("If an adjacent ally is attacked, swap spaces with it before combat occurs.");
+		case HEALER: return("Can't attack or counter-attack. Instead, I can heal allies within range.");
 		case IMMUNE: return("Cannot take damage.");
-
+		case LIGHTNING: return ("Attack will chain through connected enemies.");
+		case MAGNETIC: return("When played next to another Magnetic unit, you can combine them, adding attack, health, and keywords.");
+		case OVERFLOW: return("Cost is reduced by your Manaflow.");
+		case ETHEREAL: return ("Can pass through units and impassable terrain.");
+		case REGENERATE: return ("Restores to full health at the start of your turn.");
+		case STEALTH: return("I cannot be targeted until I take damage.");
+		case WARD: return ("I cannot be targeted by spells.");
 	}
 	ThrowError("Invalid keyword id. Method: GetKeywordDescription");
 	return ("");
@@ -791,7 +793,6 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "onDeath", trQuestVarGet("card_" + proto + "_OnDeath"));
 		mSetVar(next, "tile", 0);
 		mSetVar(next, "stunTime", 0);
-		mSetVar(next, "stunSFX", 0);
 		mSetVar(next, "victory", 0);
 		mSetVar(next, "victoryAmbush", 0);
 		mSetVar(next, "scale", 1);
@@ -1093,7 +1094,7 @@ highFrequency
 	CardSetup("Raiding Cavalry",		3, "Reckless Rider", 	3, 2, 3, 1, Keyword(AMBUSH));
 	// 10 - 14 (LEGENDARY at 14)
 	CardSetup("Trident Soldier",		4, "Shieldbearer", 		2, 6, 1, 1, Keyword(GUARD));
-	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(ARMORED));
+	CardSetup("Jarl", 					4, "Nameless Wanderer",	1, 3, 3, 1, Keyword(DEADLY) + Keyword(DODGE));
 	CardSetup("Huskarl",			 	5, "Seasoned Veteran", 	3, 4, 2, 1); // Play: Grant adjacent allied units +1|+1
 	CardSetup("Hero Greek Theseus", 	4, "Elven Moonblade", 	4, 6, 2, 1); // Minions I kill don't trigger their Death effect.
 	CardSetup("Hero Greek Hippolyta", 	7, "Deadeye",			3, 5, 2, 2, Keyword(FURIOUS) + Keyword(CHARGE));
@@ -1262,7 +1263,7 @@ highFrequency
 	// 95-99
 	CardSetup("Hero Norse",				3, "Shock Trooper",			2, 4, 2, 1, Keyword(LIGHTNING));
 	CardSetup("Automaton SPC",			2, "Gearwalker",			2, 2, 2, 1, Keyword(MAGNETIC));
-	CardSetup("Onager",					4, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
+	CardSetup("Onager",					5, "Anything Launcher",		0, 3, 1, 3, Keyword(CHARGE)); // Attack: My adjacent allies attack with me.
 	CardSetup("Throwing Axeman",		4, "Engineer",				2, 3, 2, 2, Keyword(BEACON)); // Your units cost 1 less.
 	CardSetup("Ballista",				4, "Mechanized Bow",		3, 1, 1, 3, Keyword(MAGNETIC));
 	// 100-104 (LEGENDARY at 104)
@@ -1307,7 +1308,7 @@ highFrequency
 	CardSetup("Hoplite",				0, "Zenophobia", 		2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Hero Greek Perseus",		0, "Anraheir", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardSetup("Minion",					0, "Zombie",			1, 1, 1, 1, Keyword(CHARGE), true);
-	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(AMBUSH), true);
+	CardSetup("Shade of Hades",			4, "Shadow Elemental",	4, 3, 2, 1, Keyword(DODGE), true);
 	CardSetup("Scarab",					5, "Man-Eating Beetle",	5, 5, 1, 1, Keyword(ETHEREAL), true);
 	CardSetup("Walking Woods Marsh",	3, "Zombie Tree",		2, 4, 2, 1, 0, true);
 	
@@ -1319,7 +1320,7 @@ highFrequency
 	CardSetup("Satyr",					3, "Bone Collector",		1, 4, 2, 2); // Attack: Create a Zombie.
 	// 125-129
 	CardSetup("Prodromos",				3, "Possessed Rider",		0, 4, 3, 1); // Attack: Your Commander attacks my target.
-	CardSetup("Tartarian Gate spawn",	4, "Demon",					1, 5, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
+	CardSetup("Tartarian Gate spawn",	4, "Demon",					0, 5, 2, 1); // Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.
 	CardSetup("Mummy",					5, "Rot Lord",				3, 5, 2, 2); // Whenever I kill an enemy, summon a Zombie on their tile.
 	CardSetup("Royal Guard",			4, "Frenzied Worshipper",	2, 2, 2, 1); // Death: Summon a Shadow Elemental on my tile.
 	CardSetup("Einheriar",				4, "Dark Reaper",			2, 3, 1, 1); // Each time an ally dies, I gain +1 attack and health.
@@ -1340,10 +1341,10 @@ highFrequency
 	SpellSetup("Shadowstep",			1, SPELL_SHADOWSTEP,		"Your Commander swaps spaces with an allied unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Final Frenzy",			3, SPELL_FINAL_FRENZY,		"Give a unit Deadly and Decay.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Arise",					3, SPELL_CORPSE_PARTY,		"Summon three Zombies.", SPELL_TYPE_OTHER);
-	SpellSetup("Devour",				8, SPELL_DEVOUR,		 		"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Devour",				8, SPELL_DEVOUR,		 	"Shuffle a unit into your deck.", SPELL_TYPE_OFFENSIVE);
 	// 145-149 (LEGENDARY at 149)
 	CardSetup("Bogsveigir",				2, "Death Messenger",		1, 3, 2, 2); // Attack: If my target is a unit, give it Decay.
-	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Ambush.", SPELL_TYPE_OTHER);
+	SpellSetup("Rune of Darkness",		5, SPELL_RUNE_OF_DARKNESS,	"Kill an allied unit to summon two 4|3 Shadow Elementals with Dodge.", SPELL_TYPE_OTHER);
 	SpellSetup("Zeno's Paradox",		3, SPELL_ZENOS_PARADOX,		"An allied unit and an enemy unit swap spaces.", SPELL_TYPE_OTHER);
 	CardSetup("Manticore",				4, "Face Stealer",			1, 4, 2, 2, Keyword(FURIOUS)); // Play: Copy the Attack effect of a unit.
 	CardSetup("Hero Greek Achilles",	8, "Nightrider",			5, 5, 3, 1); // Play: Stun the enemy Commander and give them Decay.
@@ -1382,7 +1383,7 @@ highFrequency
 	CardSetup("Siege Ship Atlantean",	8, "Plasma Dreadnaught",	2, 15, 2, 2, Keyword(ETHEREAL) + Keyword(DEADLY)); 	// Play: Pay 4 mana next turn.
 	SpellSetup("Nickonhawk's Portal", 	3, SPELL_NICKS_PORTAL, 		"Summon a random unit on a random tile. If your Commander is Nickonhawk, choose the tile.", SPELL_TYPE_OTHER);	
 	// 160-164 (LEGENDARY at 164)
-	SpellSetup("Nanomachines",			2, SPELL_NANOMACHINES,		"Give an allied unit Armored and Ward.", SPELL_TYPE_OTHER);
+	SpellSetup("Cloaking Field",		2, SPELL_NANOMACHINES,		"Give an allied unit Dodge and Ward.", SPELL_TYPE_OTHER);
 	SpellSetup("Aries",					5, SPELL_ARIES,				"Deal 1 damage to a unit for each card in your hand (including this).", SPELL_TYPE_OFFENSIVE);
 	SpellSetup("Pisces",				2, SPELL_PISCES,			"Give +1 attack and health to all units in your hand.", SPELL_TYPE_OTHER);
 	CardSetup("Scorpion Man",			4, "Scorpio",				4, 3, 2, 1); // Play: If you hold more cards than your opponent, teleport an enemy unit to a tile next to me.
@@ -1499,7 +1500,7 @@ highFrequency
 	CardEvents("Prodromos", Keyword(ATTACK_POSSESSED), 0,				"Attack: Your Commander attacks my target.");
 	CardEvents("Tartarian Gate spawn", 0, 0,							"Play: Your opponent draws a card. Gain attack equal to your opponent's hand size.");
 	CardEvents("Mummy", Keyword(ATTACK_SUMMON_ZOMBIE), 0, 				"Attack: If my target dies, summon a Zombie on their tile.");
-	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Ambush on my tile.");
+	CardEvents("Royal Guard", 0, Keyword(DEATH_SUMMON_SHADOW),			"Death: Summon a 4|3 Shadow Elemental with Dodge on my tile.");
 	CardEvents("Einheriar", 0, 0,	 									"Each time an ally dies, I gain +1 attack and health.");
 	CardEvents("Dryad", 0, Keyword(DEATH_POISON_MIST),					"Death: Give Decay to all adjacent units.");
 	CardEvents("Theocrat", 0, 0,										"Whenever your opponent draws a card, restore 1 health to your Commander.");
