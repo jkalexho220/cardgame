@@ -1066,7 +1066,7 @@ inactive
 	trDelayedRuleActivation("ChooseNewClass_03");
 	xsDisableSelf();
 	// TODO: Make this flashy
-	trShowImageDialog("", "New class unlocked!");
+	trShowImageDialog("HeavenGames\class"+1*trQuestVarGet("nextClass")+"unlock0", "New class unlocked!");
 	trSoundPlayFN("ageadvance.wav");
 }
 
@@ -1075,7 +1075,7 @@ highFrequency
 inactive
 {
 	if (trTime() > cActivationTime) {
-		trShowImageDialog("", "New Commander unlocked!");
+		trShowImageDialog("HeavenGames\class"+1*trQuestVarGet("nextClass")+"unlock1", "New Commander unlocked!");
 		trSoundPlayFN("ui\thunder"+1*trQuestVarGet("nextClass")+".wav");
 		trSoundPlayFN("herocreation.wav");
 		xsDisableSelf();

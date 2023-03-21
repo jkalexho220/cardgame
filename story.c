@@ -2183,7 +2183,7 @@ inactive
 	if ((trQuestVarGet("cinematicStep") == trQuestVarGet("cinematicEnd")) && (trTime() > cActivationTime)) {
 		trQuestVarSet("newCommanderType", 0);
 		// TODO: make this flashy
-		trShowImageDialog("", "New Commander unlocked!");
+		trShowImageDialog("HeavenGames\class"+1*trQuestVarGet("missionClass")+"unlock2", "New Commander unlocked!");
 		trSoundPlayFN("ui\thunder"+1*trQuestVarGet("missionClass")+".wav");
 		trSoundPlayFN("herocreation.wav");
 		xsDisableSelf();
