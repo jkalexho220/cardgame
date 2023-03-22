@@ -681,10 +681,12 @@ inactive
 	if (newClass) {
 		if (totalProgress == 35) {
 			if (getClassProgress(CLASS_SPACE) == 0) {
-				trDelayedRuleActivation(""); // unlock space
+				// DISABLED FOR BETA
+				//trDelayedRuleActivation(""); // unlock space
 			}
 		} else {
-			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
+			// DISABLED FOR BETA
+			//trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
 		}
 	}
 	

@@ -608,8 +608,9 @@ void SetupMission(int class = 0, int mission = 0){
 					AddToCustomBoard(172, TILE_OCCUPIED, "Columns", 1, 45, 2);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Golem"));
-					for(x=0;<40){
+					for(x=0;<20){
 						addCardToDeck(2, "", SPELL_GROUND_STOMP);
+						addCardToDeck(2, "", SPELL_MAGIC_MISSILES);
 					}
 				}
 				case 2:
@@ -916,7 +917,7 @@ void SetupMission(int class = 0, int mission = 0){
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Minotaur"));
 					for(x=0;<3){
-						addCardToDeck(2, "Valkyrie");
+						addCardToDeck(2, "Oracle Scout");
 						addCardToDeck(2, "Centaur");
 						addCardToDeck(2, "Trident Soldier Hero");
 						addCardToDeck(2, "Griffon");
@@ -1147,7 +1148,7 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0; <6) {
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "", SPELL_WARNING_SHOT);
-						addCardToDeck(2, "", SPELL_DOUBLEBLAST);
+						addCardToDeck(2, "", SPELL_MAGIC_MISSILES);
 						addCardToDeck(2, "", SPELL_NANOMACHINES);
 					}
 				}
@@ -2194,7 +2195,7 @@ rule NewCards0
 highFrequency
 inactive
 {
-	if (trQuestVarGet("newCommanderType") == 0 && (trTime()-cActivationTime) > 2){
+	if (trQuestVarGet("newCommanderType") == 0 && (trTime()-cActivationTime) > 1){
 		trCounterAbort("counter");
 		trCounterAbort("mana");
 		trChatHistoryClear();

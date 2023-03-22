@@ -38,7 +38,7 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_GET_ARCANE:
 		{
-			trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+			trQuestVarSetFromRand("spellChosen", SPELL_EXPLOSION, SPELL_APOCALYPSE, true);
 			generateCard(p, 0, 1*trQuestVarGet("spellChosen"));
 		}
 		case DEATH_SUMMON_ZOMBIE:

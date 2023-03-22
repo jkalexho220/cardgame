@@ -143,7 +143,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		}
 		case ATTACK_GET_ARCANE:
 		{
-			trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+			trQuestVarSetFromRand("spellChosen", SPELL_EXPLOSION, SPELL_APOCALYPSE, true);
 			generateCard(p, 0, 1*trQuestVarGet("spellChosen"));
 		}
 		case ATTACK_YEET:

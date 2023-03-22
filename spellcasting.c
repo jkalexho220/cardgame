@@ -910,12 +910,14 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Choose a tile. Right click to cancel.");
 		}
-		case SPELL_DOUBLEBLAST:
+		case SPELL_MAGIC_MISSILES:
 		{
 			castAddUnit("spellTarget1", 3 - p, true);
 			castInstructions("Choose the first target. Right click to cancel.");
 			castAddUnit("spellTarget2", 3 - p, true);
 			castInstructions("Choose the second target. Right click to cancel.");
+			castAddUnit("spellTarget3", 3 - p, true);
+			castInstructions("Choose the third target. Right click to cancel.");
 		}
 		case SPELL_ELECTROSURGE:
 		{
@@ -1407,6 +1409,7 @@ inactive
 		vector start = vector(0,0,0);
 		vector step = vector(0,0,0);
 		vector end = vector(0,0,0);
+		vector dir = vector(0,0,0);
 		trSoundPlayFN("godpower.wav","1",-1,"","");
 		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));
 		switch(spell)
@@ -1813,18 +1816,30 @@ inactive
 					}
 				}
 			}
-			case SPELL_DOUBLEBLAST:
+			case SPELL_MAGIC_MISSILES:
 			{
-				trSoundPlayFN("fireball fall 2.wav","1",-1,"","");
-				damageUnit(1*trQuestVarGet("spellTarget1"), 1 + trQuestVarGet("p"+p+"spellDamage"));
-				damageUnit(1*trQuestVarGet("spellTarget2"), 1 + trQuestVarGet("p"+p+"spellDamage"));
-				trUnitSelectClear();
-				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget1", "tile")), true);
-				trDamageUnitPercent(100);
-				trUnitSelectClear();
-				trUnitSelect(""+deployAtTile(0, "Meteorite", 1*mGetVarByQV("spelltarget2", "tile")), true);
-				trDamageUnitPercent(100);
-				trQuestVarSet("p"+p+"drawCards", 1+trQuestVarGet("p"+p+"drawCards"));
+				trSoundPlayFN("suckup1.wav");
+				trSoundPlayFN("lapadesconvert.wav");
+				trVectorQuestVarSet("magicMissilesCenter", kbGetBlockPosition(""+1*trQuestVarGet("p"+p+"commander")));
+				trQuestVarSetFromRand("rand", 0, 3.141592, false);
+				dir = xsVectorSet(xsCos(trQuestVarGet("rand")),0,xsSin(trQuestVarGet("rand"))) * 10.0;
+				for(i=1; <= 3) {
+					trQuestVarSet("next", deployAtTile(0, "Cinematic Block", mGetVarByQV("p"+p+"commander", "tile")));
+					yAddToDatabase("magicMissiles", "next");
+					trUnitSelectClear();
+					trUnitSelectByQV("next", true);
+					trMutateSelected(kbGetProtoUnitID("Outpost"));
+					trSetSelectedScale(0,0,0);
+					yAddUpdateVar("magicMissiles", "target", trQuestVarGet("spellTarget"+i));
+					yAddUpdateVector("magicMissiles", "targetPos", kbGetBlockPosition(""+1*trQuestVarGet("spellTarget"+i)));
+					yAddUpdateVector("magicMissiles", "pos", trVectorQuestVarGet("magicMissilesCenter"));
+					yAddUpdateVector("magicMissiles", "dir", dir);
+					dir = rotationMatrix(dir, -0.5, 0.866025);
+				}
+				done = false;
+				xsEnableRule("magic_missiles_active");
+				trQuestVarSet("magicMissilesTime", trTimeMS());
+				trQuestVarSet("magicMissilesStartTime", trTimeMS());
 			}
 			case SPELL_ELECTROSURGE:
 			{
@@ -3893,5 +3908,45 @@ highFrequency
 			trUnitChangeProtoUnit("Kronny Birth SFX");
 			trQuestVarSet("deathDoorNext", trTimeMS() + 500);
 		}
+	}
+}
+
+rule magic_missiles_active
+inactive
+highFrequency
+{
+	float acceleration = 0.003 * (trTimeMS() - trQuestVarGet("magicMissilesStartTime"));
+	float timediff = 0.001 * (trTimeMS() - trQuestVarGet("magicMissilesTime"));
+	vector dir = vector(0,0,0);
+	vector pos = vector(0,0,0);
+	float dist = 0;
+	int p = trQuestVarGet("activePlayer");
+	trQuestVarSet("magicMissilesTime", trTimeMS());
+	if (yGetDatabaseCount("magicMissiles") > 0) {
+		for (i = yGetDatabaseCount("magicMissiles"); >0) {
+			yDatabaseNext("magicMissiles", true);
+			pos = yGetVector("magicMissiles", "pos");
+			dist = distanceBetweenVectors(pos, yGetVector("magicMissiles", "targetPos")); // distance squared
+			if (dist < xsSqrt(acceleration)) {
+				trUnitDestroy();
+				damageUnit(1*yGetVar("magicMissiles", "target"), 1 + trQuestVarGet("p" + p + "spellDamage"));
+				trQuestVarSetFromRand("sound", 1, 5, true);
+				trSoundPlayFN("ui\lightning"+1*trQuestVarGet("sound")+".wav");
+				trUnitSelect(""+deployAtTile(0, "Dwarf", mGetVar(1*yGetVar("magicMissiles", "target"), "tile")));
+				trDamageUnitPercent(100);
+				trUnitChangeProtoUnit("Meteorite");
+				yRemoveFromDatabase("magicMissiles");
+			} else {
+				dir = yGetVector("magicMissiles", "dir") / (1.0 + timediff) + getUnitVector(pos, yGetVector("magicMissiles", "targetPos"), 10.0 * timediff * acceleration);
+				ySetVector("magicMissiles", "dir", dir);
+				pos = pos + dir * timediff;
+				ySetVector("magicMissiles", "pos", pos);
+				dir = (pos - trVectorQuestVarGet("magicMissilesCenter")) * 3.33;
+				trSetSelectedUpVector(xsVectorGetX(dir), 0.2, xsVectorGetZ(dir));
+			}
+		}
+	} else {
+		castEnd();
+		xsDisableSelf();
 	}
 }

@@ -99,7 +99,7 @@ const int SPELL_EXPLOSION = 18;
 const int SPELL_RUNE_OF_FLAME = 19;
 const int SPELL_RUNE_OF_ICE = 20;
 const int SPELL_FIRE_AND_ICE = 21;
-const int SPELL_DOUBLEBLAST = 22;
+const int SPELL_MAGIC_MISSILES = 22;
 const int SPELL_ELECTROSURGE = 23;
 const int SPELL_CLASS_TIME = 24;
 const int SPELL_COPY_HOMEWORK = 25;
@@ -1143,11 +1143,11 @@ highFrequency
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"Deal 1 damage.",SPELL_TYPE_OFFENSIVE, 0, true);
 	CardSetup("Hero Boar 2",			1, "Boar",		 		1, 1, 2, 1, 0, true);
 	// 30-34
-	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
+	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"Deal 1 damage to enemies within 1 space of the target location.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Javelin Cavalry Hero",	4, "Magic Messenger",	2, 3, 3, 2); // After you cast a spell, grant me another action.
-	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Magic Missiles",		4, SPELL_MAGIC_MISSILES,"Deal 1 damage to three enemies.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);

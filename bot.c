@@ -393,38 +393,41 @@ inactive
 				for (x=yGetDatabaseCount("targets"); >0) {
 					yDatabaseNext("targets");
 					if (HasKeyword(HEALER, 1*mGetVarByQV("botActiveUnit", "keywords"))) {
-						currentScore = mGetVarByQV("targets", "maxHealth") - mGetVarByQV("targets", "health");
+						// prioritize healing low health things that cost a lot
+						currentScore = (mGetVarByQV("targets", "maxHealth") - mGetVarByQV("targets", "health")) * mGetVarByQV("targets", "cost");
 					} else if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
 						continue;
-					}
-					if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){
-						currentScore = mGetVarByQV("targets", "health");
 					} else {
-						currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
-						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
-							currentScore = currentScore - 1;
-						}
-						if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
-							currentScore = 0;
-						}
-					}
-					// If the target dies, then currentScore = 2 * (target's attack + cost)
-					if (currentScore >= 0) {
-						currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
-					}
-					// If the target can counterattack, we subtract its attack from currentScore
-					if (trDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
-						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
-							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
+						if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){
+							currentScore = mGetVarByQV("targets", "health");
 						} else {
-							if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
-								currentScore = currentScore - xsMax(mGetVarByQV("targets", "attack"), mGetVarByQV("botActiveUnit", "health"));
-								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
-									currentScore = currentScore + 1;
+							currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
+							if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
+								currentScore = currentScore - 1;
+							}
+							if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
+								currentScore = 0;
+							}
+						}
+						// If the target dies, then currentScore = 2 * (target's attack + cost)
+						if (currentScore >= 0) {
+							currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
+						}
+						// If the target can counterattack, we subtract its attack from currentScore
+						if (trDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
+							if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
+								currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
+							} else {
+								if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
+									currentScore = currentScore - xsMax(mGetVarByQV("targets", "attack"), mGetVarByQV("botActiveUnit", "health"));
+									if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
+										currentScore = currentScore + 1;
+									}
 								}
 							}
 						}
 					}
+
 					if (currentScore > bestTargetScore) {
 						bestTargetScore = currentScore;
 						bestTarget = trQuestVarGet("targets");

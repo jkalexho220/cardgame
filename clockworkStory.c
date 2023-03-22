@@ -333,7 +333,7 @@ inactive
 				mSetVar(summonAtTile(128, 1, kbGetProtoUnitID("Throwing Axeman")), "action", ACTION_READY);
 				
 				addCardToHand(1, 0, SPELL_EXPLOSION, true);
-				addCardToHand(1, 0, SPELL_DOUBLEBLAST, true);
+				addCardToHand(1, 0, SPELL_MAGIC_MISSILES, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);
 				addCardToHand(1, 0, SPELL_ZENOS_PARADOX, true);
