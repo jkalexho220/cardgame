@@ -731,14 +731,14 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		trChatSend(0, colorizeStat(name, "Attack", "ATK") + " | " + colorizeStat(name, "Health", "HP") + " | " + colorizeStat(name, "Speed", "SPD") + " | " + colorizeStat(name, "Range", "RNG"));
 		
+		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
+			trChatSend(0, "(Uncollectable)");
+		}
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		//trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
 		trChatSend(0, mGetString(name, "ability"));
-		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
-			trChatSend(0, "(Uncollectable)");
-		}
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
@@ -756,13 +756,13 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			}
 		}
 		
+		if (CardToSpell(card) != mGetVar(name, "spell")) {
+			trChatSend(0, "(Uncollectable)");
+		}
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
-		if (CardToSpell(card) != mGetVar(name, "spell")) {
-			trChatSend(0, "(Uncollectable)");
-		}
 	}
 	
 	updateMana();
@@ -1209,7 +1209,7 @@ highFrequency
 	// 70-74 (LEGENDARY at 74)
 	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
 	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
-	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"Push an enemy in any direction.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"Push a unit in any direction.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(GUARD) + Keyword(ARMORED));
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your units have Overflow.
 	// 75-79

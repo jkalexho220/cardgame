@@ -127,6 +127,43 @@ void OnCreate(int unit = 0) {
 		{
 			spyEffect("Phoenix From Egg", "unused", vector(1,1,1));
 		}
+	case kbGetProtoUnitID("Hero Greek Bellerophon"):
+		{
+			trSoundPlayFN("arkantosarrive.wav");
+		}
+	case kbGetProtoUnitID("Hero Greek Hippolyta"):
+		{
+			trSoundPlayFN("rainofarrows1.wav");
+		}
+	case kbGetProtoUnitID("Tower Mirror"):
+		{
+			trSoundPlayFN("wonder.wav","1",-1,"","");
+		}
+	case kbGetProtoUnitID("Guardian"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
+		}
+	case kbGetProtoUnitID("Hero Greek Achilles"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
+		}
+	case kbGetProtoUnitID("Circe"):
+		{
+			trSoundPlayFN("lapadesconvert.wav");
+			trSoundPlayFN("timeshift.wav");
+		}
+	case kbGetProtoUnitID("Heka Gigantes"):
+		{
+			trSoundPlayFN("shipdeathsplash.wav");
+			trSoundPlayFN("hekagigantesacknowledge1.wav");
+		}
+	case kbGetProtoUnitID("Hero Greek Polyphemus"):
+		{
+			trSoundPlayFN("herobirth2.wav");
+			trSoundPlayFN("fortress.wav");
+		}
 	}
 }
 

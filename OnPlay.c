@@ -302,13 +302,9 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Guardian"):
 		{
 			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Hero Greek Achilles"):
 		{
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"commander"));
 			spyEffect("Poison SFX");
@@ -346,10 +342,6 @@ void OnPlay(int unit = 0) {
 			trQuestVarSet("summonedUnit", unit);
 			chooseSpell(SPELL_SUMMON_ONE);
 			done = false;
-		}
-		case kbGetProtoUnitID("Tower Mirror"):
-		{
-			trSoundPlayFN("wonder.wav","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{
