@@ -684,6 +684,9 @@ inactive
 				// DISABLED FOR BETA
 				//trDelayedRuleActivation(""); // unlock space
 			}
+		} else if (totalProgress == 14) {
+			// BETA ONLY. Players will unlock one extra class of their choosing for the beta
+			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
 		} else {
 			// DISABLED FOR BETA
 			//trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
