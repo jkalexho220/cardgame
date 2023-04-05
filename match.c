@@ -12,8 +12,8 @@ inactive
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
 		mSetVarByQV("p"+p+"commander", "action", ACTION_DONE);
 		trUnitSelectClear();
-		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
-		spyEffect("Healing SFX");
+		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"));
+		spyEffect(1*trQuestVarGet("p"+p+"commander"), "Healing SFX");
 		
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
@@ -364,10 +364,15 @@ inactive
 				{
 					case kbGetProtoUnitID("Guild"):
 					{
-						if (yGetDatabaseCount("p"+p+"hand") < 10) {
+						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
 						}
-						damageUnit(1*trQuestVarGet("allUnits"), 2);
+					}
+					case kbGetProtoUnitID("Mining Camp"):
+					{
+						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
+							addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SCRAP_METAL);
+						}
 					}
 					case kbGetProtoUnitID("Argus"):
 					{

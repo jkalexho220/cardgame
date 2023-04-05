@@ -1327,7 +1327,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "Chieroballista");
 						addCardToDeck(2, "Prisoner");
-						addCardToDeck(2, "", SPELL_SNIPE);
+						addCardToDeck(2, "", SPELL_PROFITEERING);
 					}
 					
 					summonAtTile(190, 2, kbGetProtoUnitID("Hero Greek Atalanta"));

@@ -1251,7 +1251,8 @@ highFrequency
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 			0, 20, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 	SpellSetup("Scrap Metal",			0, SPELL_SCRAP_METAL,		"Gain 1 mana this turn.", SPELL_TYPE_OTHER, 0, true);
 	CardSetup("Outpost",				0, "Lightning Rod",			0, 3, 0, 0, Keyword(CONDUCTOR) + Keyword(AIRDROP), true);
-	CardSetup("Guild",					4, "Gear Factory",			0, 6, 0, 0, 0, true); // At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.
+	CardSetup("Guild",					4, "Gear Factory",			0, 4, 0, 0, Keyword(DECAY), true); // At the end of your turn, create a Gearwalker.
+	CardSetup("Mining Camp",			2, "Scrapyard",				0, 3, 0, 0, Keyword(DECAY), true); // At the end of your turn, create a Scrap MEtal.
 	CardSetup("Wall Connector",			0, "Iron Wall",				0, 3, 0, 0, Keyword(AIRDROP) + Keyword(FLEETING), true);
 	
 	// 90-94
@@ -1279,7 +1280,7 @@ highFrequency
 	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a unit with all of its adjacent allied units, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied unit +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
 	// 110-114
-	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a unit 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Scrapyard",				2, SPELL_PROFITEERING,		"Summon a 0|3 Scrapyard with Decay. It creates a Scrap Metal each turn.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy unit to your opponent's hand.", SPELL_TYPE_OTHER);
@@ -1287,7 +1288,7 @@ highFrequency
 	// 115-119 (LEGENDARY at 119)
 	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy unit. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
 	SpellSetup("Assembly Line",			3, SPELL_ASSEMBLY_LINE,		"Shuffle a copy of your hand into your deck. Draw a card.", SPELL_TYPE_OTHER);
-	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a 0|4 Gear Factory with Decay. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Bullet Storm",			5, SPELL_BULLET_STORM,		"Your Commander attacks all enemies within range.", SPELL_TYPE_OTHER);
 	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
 	xsDisableSelf();

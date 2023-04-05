@@ -110,22 +110,22 @@ void OnCreate(int unit = 0) {
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
 	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Poison SFX");
+		spyEffect(unit, "Poison SFX");
 	}
 	if (HasKeyword(DODGE, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Well of Urd");
+		spyEffect(unit, "Well of Urd");
 	}
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Sky Passage", "stealthSFX" + unit);
+		spyEffect(unit, "Sky Passage", "stealthSFX" + unit);
 	}
 	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
+		spyEffect(unit, "Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
 	}
 	switch(proto)
 	{
 	case kbGetProtoUnitID("Lancer Hero"):
 		{
-			spyEffect("Phoenix From Egg", "unused", vector(1,1,1));
+			spyEffect(unit, "Phoenix From Egg", "unused", vector(1,1,1));
 		}
 	case kbGetProtoUnitID("Hero Greek Bellerophon"):
 		{
@@ -464,7 +464,7 @@ void stunUnit(int index = 0) {
 		if (trQuestVarGet("stunSFX" + index) == 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+index);
-			spyEffect("Shockwave stun effect", "stunSFX"+index);
+			spyEffect(index, "Shockwave stun effect", "stunSFX"+index);
 		} else {
 			trUnitSelectClear();
 			trUnitSelect(""+1*mGetVar(index, "stunSFX"));

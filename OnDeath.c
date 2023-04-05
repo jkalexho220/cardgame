@@ -65,7 +65,7 @@ bool OnDeath(int event = -1, int unit = 0){
 						mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
 						trUnitSelectClear();
 						trUnitSelect(""+target);
-						spyEffect("Poison SFX");
+						spyEffect(target, "Poison SFX");
 					}
 				}
 			}

@@ -289,7 +289,7 @@ void castEnd() {
 				}
 			}
 			if (mGetVarByQV("allUnits", "proto") == kbGetProtoUnitID("Swordsman Hero")) {
-				spyEffect("Einheriar Boost SFX");
+				spyEffect(1*trQuestVarGet("allUnits"), "Einheriar Boost SFX");
 				mSetVarByQV("allUnits", "attack", 1 + mGetVarByQV("allUnits", "attack"));
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("allUnits", "tile"));
 			}
@@ -1187,8 +1187,8 @@ void chooseSpell(int spell = 0, int card = -1) {
 		}
 		case SPELL_PROFITEERING:
 		{
-			castAddUnit("spellTarget", 0, false);
-			castInstructions("Choose a unit. Right click to cancel.");
+			castAddSummonLocations("spellTarget");
+			castInstructions("Choose a tile. Right click to cancel.");
 		}
 		case SPELL_WARNING_SHOT:
 		{
@@ -1637,7 +1637,7 @@ inactive
 				trSoundPlayFN("researchcomplete.wav","1",-1,"","");
 				trUnitSelectClear();
 				trUnitSelect(""+target);
-				spyEffect("Einheriar Boost SFX");
+				spyEffect(target, "Einheriar Boost SFX");
 			}
 			case SPELL_BAD_FOOD:
 			{
@@ -2379,7 +2379,7 @@ inactive
 				damageUnit(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"));
 				deployAtTile(0, "Curse SFX", 1*mGetVarByQV("spellTarget", "tile"));
 				if (HasKeyword(DECAY, 1*mGetVarByQV("spellTarget", "keywords"))) {
-					if (yGetDatabaseCount("p"+p+"hand") < 10) {
+					if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 						addCardToHand(p, 0, SPELL_DOOM);
 					}
 				}
@@ -2401,8 +2401,8 @@ inactive
 				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), DECAY), DEADLY));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
-				spyEffect("Poison SFX");
-				spyEffect("Chaos effect");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Poison SFX");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Chaos effect");
 			}
 			case SPELL_CORPSE_PARTY:
 			{
@@ -2542,8 +2542,8 @@ inactive
 			case SPELL_PROFITEERING:
 			{
 				trSoundPlayFN("plentybirth.wav","1",-1,"","");
-				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
-				mSetVarByQV("spellTarget", "OnAttack", SetBit(1*mGetVarByQV("spellTarget", "OnAttack"), ATTACK_DRAW_CARD));
+				trSoundPlayFN("miningcamp.wav","1",-1,"");
+				summonAtTile(1*trQuestVarGet("spellTarget"), p, kbGetProtoUnitID("Mining Camp"));
 			}
 			case SPELL_WARNING_SHOT:
 			{
@@ -2561,8 +2561,8 @@ inactive
 				deployAtTile(0, "Hero Birth", 1*mGetVarByQV("spellTarget", "tile"));
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
-				spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
-				spyEffect("Well of Urd");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Well of Urd");
 				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), DODGE));
 			}
 			case SPELL_REWIND:
@@ -3028,7 +3028,7 @@ inactive
 				if (trQuestVarGet("p"+p+"crescentSpy") == 0) {
 					trUnitSelectClear();
 					trUnitSelectByQV("p"+p+"commander");
-					spyEffect("Outpost", "p"+p+"crescentSpy");
+					spyEffect(1*trQuestVarGet("p"+p+"commander"), "Outpost", "p"+p+"crescentSpy");
 				} else {
 					trUnitSelectClear();
 					trUnitSelectByQV("p"+p+"crescentSpy", true);
@@ -3115,7 +3115,7 @@ inactive
 	int card = 0;
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		for(x=3; >0) {
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 				trQuestVarSetFromRand("chooseClass", 1, 2, true);
 				trQuestVarSetFromRand("chooseCard", 0, 29, true);
 				card = 30*trQuestVarGet("p"+(3-p)+"class"+1*trQuestVarGet("chooseClass")) + trQuestVarGet("chooseCard");
@@ -3162,7 +3162,7 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		int proto = mGetVarByQV("spellTarget", "proto");
-		if (yGetDatabaseCount("p"+p+"hand") < 10) {
+		if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 			addCardToHand(p, proto);
 			updateHandPlayable(p);
 		}
@@ -3352,7 +3352,7 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		for(x=2; >0) {
-			if (yGetDatabaseCount("p"+p+"hand") < 10) {
+			if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 				addCardToHand(p, kbGetProtoUnitID("Outpost"));
 			}
 		}

@@ -205,7 +205,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
 				trUnitSelectClear();
 				trUnitSelect(""+target);
-				spyEffect("Poison SFX");
+				spyEffect(target, "Poison SFX");
 				trSoundPlayFN("lampadesblood.wav","1",-1,"","");
 				trSoundPlayFN("carnivorabirth.wav","1",-1,"","");
 			}
