@@ -976,7 +976,7 @@ active
 	
 	CardSetup("Pharaoh Secondary",		0, "Fire Mage", 			2, 20, 2, 2, Keyword(BEACON), true);
 	CardEvents("Pharaoh Secondary", Keyword(ATTACK_SPELL_DAMAGE), 0, 	"After I counterattack, I gain +1 Spell Damage.");
-	CardSetup("King Folstag",			0, "Freeze McGee", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(ARMORED), true);
+	CardSetup("King Folstag",			0, "Freeze McGee", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
@@ -996,11 +996,11 @@ active
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They have Airdrop and cost 0.", SPELL_TYPE_OTHER, 0, true);
 	
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
-	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
+	//SpellSetup("High Pressure",		2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
 	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random unit on a random tile.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
-	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
+	CardSetup("Bondi",					1, "Mercenary",				4, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
 	CardSetup("Golem",					6, "Arcane Golem",			7, 9, 2, 1, 0, true);
 	CardEvents("Golem", 0, 0, 								"Ignore odd damage.");
@@ -1439,7 +1439,7 @@ highFrequency
 	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
+	CardEvents("Minotaur", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to your opponent's hand.");
 	
 	CardEvents("Swordsman Hero", 0, 0, 									"After ANY player casts a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Create a Spark.");

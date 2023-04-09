@@ -467,6 +467,8 @@ inactive
 		// multiplayer stuff
 		map("mouse1down", "game", "uiSelectionButtonDown");
 		map("mouse2up", "game", "uiWorkAtPointer");
+		map("mouse2doubleup", "game", "uiWorkAtPointer");
+		map("delete", "game", "uiDeleteSelectedUnit");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 	} else {

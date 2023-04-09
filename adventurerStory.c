@@ -5,6 +5,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m1_", 1, 2);
+		mSetVarByQV("p2commander", "attack", 2);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(192, 2, kbGetProtoUnitID("Wolf"));
@@ -69,8 +70,7 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m4_", 1, 8);
 		int tile = mGetVarByQV("p2commander", "tile");
-		zSetVarByIndex("tiles", "occupant", tile, 0);
-		teleportToTile(1*trQuestVarGet("p2commander"), 255);
+		teleportToTile(1*trQuestVarGet("p2commander"), 255, true);
 
 		if (trQuestVarGet("missionHardmode") == 1) {
 			for(x=6; >0) {

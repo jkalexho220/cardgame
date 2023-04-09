@@ -69,7 +69,7 @@ void transferUnit(string to = "", string from = "") {
 }
 
 
-void teleportToTile(int name = 0, int tile = 0) {
+void teleportToTile(int name = 0, int tile = 0, bool vacateOldTile = false) {
 	int p = mGetVar(name, "player");
 	
 	if (HasKeyword(GUARD, 1*mGetVar(name, "keywords"))) {
@@ -78,7 +78,10 @@ void teleportToTile(int name = 0, int tile = 0) {
 		}
 		tileGuard(tile, true);
 	}
-	
+
+	if (vacateOldTile) {
+		zSetVarByIndex("tiles", "occupant", mGetVar(name, "tile"), 0);
+	}
 	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);

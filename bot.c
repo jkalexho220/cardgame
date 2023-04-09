@@ -9,6 +9,7 @@ const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks
 const int BOT_PERSONALITY_TRAINING = 1; // Training bot, passes turn
 const int BOT_PERSONALITY_LIBRARY = 2; // random wandering in the library
 const int BOT_PERSONALITY_SUMMON_FIRST = 3;
+const int BOT_PERSONALITY_ATTACK_SHARPSHOOTER = 4; // KILL
 
 void InitBot(int personality = 0){
 	trQuestVarSet("botPersonality", personality);
@@ -66,6 +67,14 @@ inactive
 		if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
 			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
 			xsDisableRule("Bot1");
+			xsDisableRule("BotTimer");
+			trQuestVarSet("gameplayPhase", -1);
+		}
+
+		// if the sharpshooter died, we end our turn.
+		if ((trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) && (trQuestVarGet("p1deathCount") == 1)) {
+			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
+			xsDisableSelf();
 			xsDisableRule("BotTimer");
 			trQuestVarSet("gameplayPhase", -1);
 		}
@@ -339,7 +348,11 @@ inactive
 				int bestTile = 0;
 				int bestTileScore = -1000;
 				int currentScore = 0;
-				trVectorSetUnitPos("commanderpos", "p1commander");
+				if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) {
+					trVectorSetUnitPos("commanderpos", "tutorialSharpshooter");
+				} else {
+					trVectorSetUnitPos("commanderpos", "p1commander");
+				}
 				for(x=yGetDatabaseCount("reachable"); >0) {
 					yDatabaseNext("reachable");
 					/*
@@ -359,7 +372,12 @@ inactive
 						} else {
 							currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
 						}
-						currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
+						// in the tutorial, the bot is fearless
+						if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) {
+							currentScore = currentScore - 9 * trDistanceToVector("reachable", "commanderpos");
+						} else {
+							currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
+						}
 						if (currentScore >= bestTileScore) {
 							/*
 							prioritize tiles that can be attacked by the fewest number of enemies

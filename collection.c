@@ -634,9 +634,11 @@ inactive
 		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
 			DialogAdd("This is your Collection and Deck. Right Click a Card to move it between the two.");
+			DialogAdd("Cards above the blue horizontal line are in your Deck, while cards below it are in your Collection.");
+			DialogAdd("Each column corresponds to a class. The first column has Adventurer cards and the second one has Arcane.");
 			DialogAdd("Your Deck must have a Commander and 40 Cards from one or two Classes.");
 			DialogAdd("The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
-			DialogAdd("The Story Missions are Outposts. They reward packs containing Class Cards.");
+			DialogAdd("The Story Missions are Obelisks. They reward packs containing Class Cards.");
 			DialogAdd("After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
 			DialogAdd("After completing a Class Story you will unlock the second Commander for that Class.");
 			DialogAdd("Complete your first Class Story to unlock the other Classes.");
@@ -893,6 +895,8 @@ inactive
 		saveDeckAndProgress();
 		map("mouse1down", "game", "uiSelectionButtonDown");
 		map("mouse2up", "game", "uiWorkAtPointer");
+		map("mouse2doubleup", "game", "uiWorkAtPointer");
+		map("delete", "game", "uiDeleteSelectedUnit");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 		trModeEnter("Pregame");

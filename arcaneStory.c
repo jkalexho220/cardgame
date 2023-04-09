@@ -7,6 +7,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m1_", 1, 3);
+		mSetVarByQV("p2commander", "attack", 2);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
@@ -68,15 +69,14 @@ inactive
 		xsEnableRule("StoryClass1Mission3_LOS");
 		xsEnableRule("StoryClass1Mission3_explain");
 
-		teleportToTile(1*trQuestVarGet("p2commander"), 254);
+		teleportToTile(1*trQuestVarGet("p2commander"), 254, true);
 		deployAtTile(0, "Garrison Flag Sky Passage", 218);
 
 		// sparkly books of magic
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("libraryMoonblade", "speed", 3);
 			// mSetVarByQV("libraryNanodude", "speed", 3); // this is a bit much
-			zSetVarByIndex("tiles", "occupant", mGetVarByQV("libraryMoonblade", "tile"), 0);
-			teleportToTile(1*trQuestVarGet("libraryMoonblade"), 200);
+			teleportToTile(1*trQuestVarGet("libraryMoonblade"), 200, true);
 		}
 		addMagicBook(158);
 		addMagicBook(143);
@@ -359,7 +359,6 @@ inactive
 		CinematicPlay("HeavenGames\c2m5_", 1, 4);
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
-		mSetVarByQV("p2commander", "attack", 2);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));
 		generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_HORROR_MENAGERIE);
 		if (trQuestVarGet("missionHardmode") == 1) {

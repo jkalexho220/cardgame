@@ -173,12 +173,12 @@ void SetupMission(int class = 0, int mission = 0){
 			AddToCustomBoard(254, TILE_EMPTY, "Wood Pile 3", 1, 105, 2);
 			/* Opponent */
 			InitBot(BOT_PERSONALITY_TRAINING);
-			trQuestVarSet("p2commanderType", kbGetProtoUnitID("Automaton"));
+			trQuestVarSet("p2commanderType", kbGetProtoUnitID("Cinematic Block"));
 			for(x=0;<40){
 				addCardToDeck(2, "Automaton SPC");
 			}
 
-			for(i=10; >0) {
+			for(i=40; >0) {
 				addCardToDeck(1, "Toxotes");
 			}
 		}
@@ -659,18 +659,17 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Maceman");
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Javelin Cavalry Hero");
-						addCardToDeck(2, "", SPELL_FROST_BREATH);
+						addCardToDeck(2, "", SPELL_RUNE_OF_ICE);
+						addCardToDeck(2, "", SPELL_SPARK);
 					}
 					for(x=0; < 3) {
-						addCardToDeck(2, "", SPELL_RUNE_OF_ICE);
-						addCardToDeck(2, "Trident Soldier Hero");
-						addCardToDeck(2, "Monument 2");
-						addCardToDeck(2, "Monument 3");
+						addCardToDeck(2, "Swordsman Hero");
+						addCardToDeck(2, "", SPELL_FINAL_EXAM);
 					}
-					addCardToDeck(2, "Griffon");
-					addCardToDeck(2, "Trident Soldier Hero");
-					addCardToDeck(2, "", SPELL_CLASS_TIME);
-					addCardToDeck(2, "", SPELL_ELECTROSURGE);
+					for(x=0; < 2) {
+						addCardToDeck(2, "Trident Soldier Hero");
+						addCardToDeck(2, "", SPELL_FROST_BREATH);
+					}
 				}
 				case 3:
 				{
@@ -838,11 +837,11 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_ELECTROBALL);
 					}
 
-					for(x=0; <2) {
+					for(x=0; < 2) {
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
-						addCardToDeck(2, "Apep");
+						addCardToDeck(2, "Scylla");
 						addCardToDeck(2, "Man O War");
 					}
 				}
