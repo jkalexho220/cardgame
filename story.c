@@ -422,7 +422,6 @@ void SetupMission(int class = 0, int mission = 0){
 					summonAtTile(140, 2, kbGetProtoUnitID("Peltast"));
 					summonAtTile(175, 2, kbGetProtoUnitID("Peltast"));
 					summonAtTile(152, 2, kbGetProtoUnitID("Peltast"));
-					summonAtTile(165, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 				}
 				case 5:
 				{
@@ -919,7 +918,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Oracle Scout");
 						addCardToDeck(2, "Centaur");
 						addCardToDeck(2, "Trident Soldier Hero");
-						addCardToDeck(2, "Griffon");
+						addCardToDeck(2, "Theocrat");
 						addCardToDeck(2, "Slinger");
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
@@ -2543,6 +2542,22 @@ inactive
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(222, 2, kbGetProtoUnitID("Minotaur"));
 			summonAtTile(223, 2, kbGetProtoUnitID("Hoplite"));
+		}
+	}
+}
+
+rule win_destination
+inactive
+highFrequency
+{
+	if (trQuestVarGet("activePlayer") == 1) {
+		trVectorQuestVarSet("pos", kbGetBlockPosition(""+1*trQuestVarGet("p2commander")));
+		if (trDistanceToVectorSquared("p1commander", "pos") < 64) {
+			mSetVarByQV("p2commander", "health", 0);
+			damageUnit(1*trQuestVarGet("p2commander"), 9999);
+			trSoundPlayFN("favordump.wav","1",-1,"","");
+			removeDeadUnits();
+			xsDisableSelf();
 		}
 	}
 }

@@ -34,6 +34,10 @@ inactive
 	trQuestVarSet("p1block", 869);
 	trQuestVarSet("p2block", 871);
 	trQuestVarSet("maxMana", 0);
+
+	if (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Invisible Target")) {
+		xsEnableRule("win_destination");
+	}
 	
 	xsDisableRule("match_00_start");
 	xsEnableRule("match_01_mulliganStart");

@@ -79,6 +79,7 @@ inactive
 			shuffleDeck(2);
 			summonAtTile(214, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 			summonAtTile(196, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
+			summonAtTile(165, 2, kbGetProtoUnitID("Hero Chinese Immortal"));
 			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
 		} else {
 			summonAtTile(241, 1, kbGetProtoUnitID("Hero Greek Theseus"));
