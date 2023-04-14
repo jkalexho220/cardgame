@@ -813,6 +813,8 @@ runImmediately
 	trModifyProtounit("Animal Attractor", 1, 55, 4);
 	trModifyProtounit("Animal Attractor", 2, 55, 4);
 	
+	zInitProtoUnitStat("Meteorite", 1, 1, 100);
+	zInitProtoUnitStat("Meteorite", 2, 1, 100);
 	zInitProtoUnitStat("Wadjet Spit", 1, 1, 30);
 	zInitProtoUnitStat("Wadjet Spit", 2, 1, 30);
 	zSetProtoUnitStat("Wadjet Spit", 1, 1, 20);

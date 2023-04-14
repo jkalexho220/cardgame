@@ -949,6 +949,8 @@ active
 		trForbidProtounit(p, "Temple");
 		trForbidProtounit(p, "Ulfsark");
 		trModifyProtounit("Minion", p, 8, -99); // unit lifespan
+
+		trModifyProtounit("Hero Greek Achilles", p, 5, 99); // carry capacity
 	}
 
 	trModifyProtounit("Dwarf", 0, 55, 4);
