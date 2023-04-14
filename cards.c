@@ -59,6 +59,8 @@ const int SPELL_MIRROR_REFLECTION = 987;
 const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
+const int SPELL_CORONA_APOCALYPSE = 983;
+const int SPELL_METAL_GEAR = 982;
 
 const int SPELL_PROTECTION = 812;
 const int SPELL_CRESCENT_STRIKE = 811;
@@ -781,7 +783,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	trUnitSelect(""+next, false);
 	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
-		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("card_" + proto + "_Cost") + ") " + trStringQuestVarGet("card_" + proto + "_Name"));
 		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
 		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
 		mSetVar(next, "maxHealth", trQuestVarGet("card_" + proto + "_Health"));
@@ -798,7 +800,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "scale", 1);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
-		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
 		mSetVar(next, "keywords", trQuestVarGet("spell_"+spell+"_keywords"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
@@ -982,6 +984,8 @@ active
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);
 	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");
+	CardSetup("Militia",				0, "jesper55561", 			2, 100, 2, 1, Keyword(BEACON), true);
+	CardEvents("Militia", 0, 0,	"Both players have random mana.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
@@ -1000,6 +1004,9 @@ active
 	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random unit on a random tile.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
+	SpellSetup("PLAY NOW BEST ESCAPE",	10, SPELL_CORONA_APOCALYPSE,	"Fill your hand with random legendary units. They cost 0.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("SURPASS METAL GEAR",	10, SPELL_METAL_GEAR,	"Fill your hand with Lurking Crockys. They have Magnetic and cost 0.", SPELL_TYPE_OTHER, 0, true);
+		
 	CardSetup("Bondi",					1, "Mercenary",				4, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
 	CardSetup("Golem",					6, "Arcane Golem",			7, 9, 2, 1, 0, true);

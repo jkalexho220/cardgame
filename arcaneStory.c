@@ -397,6 +397,7 @@ inactive
 		mSetVarByQV("p1commander", "keywords", Keyword(BEACON));
 		mSetVarByQV("p1commander", "OnAttack", 0);
 		mSetVarByQV("p1commander", "attack", 1);
+		mSetVarByQV("p1commander", "range", 1);
 		mSetVarByQV("p1commander", "health", 1);
 		mSetVarByQV("p1commander", "maxhealth", 1);
 		mSetVarByQV("p1commander", "proto", kbGetProtoUnitID("Hero Boar 2"));

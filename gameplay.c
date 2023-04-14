@@ -627,6 +627,7 @@ inactive
 		}
 		
 		removeDeadUnits();
+		updateAuras();
 		refreshGuardAll();
 		
 		if (trQuestVarGet("turnEnd") == 0) {

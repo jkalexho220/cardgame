@@ -779,6 +779,16 @@ void chooseSpell(int spell = 0, int card = -1) {
 			castAddTile("spellTarget", true);
 			castInstructions("Click on any tile to cast. Right click to cancel.");
 		}
+		case SPELL_CORONA_APOCALYPSE:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
+		case SPELL_METAL_GEAR:
+		{
+			castAddTile("spellTarget", true);
+			castInstructions("Click on any tile to cast. Right click to cancel.");
+		}
 		case SPELL_MIRROR_REFLECTION:
 		{
 			castAddMirrorReflectionUnit("spellTarget", 0);
@@ -1559,6 +1569,29 @@ inactive
 				trQuestVarSet("apocalypse", 2);
 				musicToggleBattleMode();
 				xsEnableRule("spell_elven_apocalypse_activate");
+			}
+			case SPELL_CORONA_APOCALYPSE:
+			{
+				trSoundPlayFN("Heaven Games\legendary.wav", "3", -1, "","");
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_corona_apocalypse_activate");
+			}
+			case SPELL_METAL_GEAR:
+			{
+				trQuestVarSetFromRand("soundRandom", 1, 2, true);
+				if(trQuestVarGet("soundRandom") == 1){
+					CharacterLog(3-p, trStringQuestVarGet("card_" + mGetVarByQV("p"+(3-p)+"commander", "proto") + "_name"), "I need help!");
+					trSoundPlayFN("xpack\xtaunts\en\012 i need help.mp3", "2", -1, "","");
+				} else {
+					CharacterLog(3-p, trStringQuestVarGet("card_" + mGetVarByQV("p"+(3-p)+"commander", "proto") + "_name"), "*screaming*");
+					trSoundPlayFN("xpack\xtaunts\en\029 scream.mp3", "2", -1, "","");
+				}
+				
+				trQuestVarSet("apocalypse", 2);
+				musicToggleBattleMode();
+				xsEnableRule("spell_metal_gear_activate");
 			}
 			case SPELL_MIRROR_REFLECTION:
 			{
@@ -3342,6 +3375,60 @@ inactive
 			mSetVar(next, "keywords", SetBit(mGetVar(next, "keywords"), AIRDROP));
 		}
 		xsDisableRule("spell_elven_apocalypse_activate");
+	}
+}
+
+rule spell_corona_apocalypse_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		int next = 0;
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			trQuestVarSetFromRand("temp", 1, 11, true);
+			if(trQuestVarGet("temp") == 1){
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Hippolyta"), 0, true);
+			} else if(trQuestVarGet("temp") == 2){
+				next = addCardToHand(p, kbGetProtoUnitID("Nemean Lion"), 0, true);
+			} else if(trQuestVarGet("temp") == 3){
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Bellerophon"), 0, true);
+			} else if(trQuestVarGet("temp") == 4){
+				next = addCardToHand(p, kbGetProtoUnitID("Circe"), 0, true);
+			} else if(trQuestVarGet("temp") == 5){
+				next = addCardToHand(p, kbGetProtoUnitID("Heka Gigantes"), 0, true);
+			} else if(trQuestVarGet("temp") == 6){
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Polyphemus"), 0, true);
+			} else if(trQuestVarGet("temp") == 7){
+				next = addCardToHand(p, kbGetProtoUnitID("Tower Mirror"), 0, true);
+			} else if(trQuestVarGet("temp") == 8){
+				next = addCardToHand(p, kbGetProtoUnitID("Guardian"), 0, true);
+			} else if(trQuestVarGet("temp") == 9){
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Achilles"), 0, true);
+			} else if(trQuestVarGet("temp") == 10){
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Heracles"), 0, true);
+			} else {
+				next = addCardToHand(p, kbGetProtoUnitID("Hero Greek Argo"), 0, true);
+			}
+			mSetVar(next, "cost", 0);
+		}
+		xsDisableRule("spell_corona_apocalypse_activate");
+	}
+}
+
+rule spell_metal_gear_activate
+highFrequency
+inactive
+{
+	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+		int p = trQuestVarGet("activePlayer");
+		int next = 0;
+		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
+			next = addCardToHand(p, kbGetProtoUnitID("Apep"), 0, true);
+			mSetVar(next, "cost", 0);
+			mSetVar(next, "keywords", SetBit(mGetVar(next, "keywords"), MAGNETIC));
+		}
+		xsDisableRule("spell_metal_gear_activate");
 	}
 }
 

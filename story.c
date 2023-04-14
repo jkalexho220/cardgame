@@ -1657,12 +1657,13 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
+					trQuestVarSet("p1commanderType", COMMANDER_NOTTUD);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Theseus"));
 					for(x=0;<10){
 						addCardToDeck(2, "Swordsman");
 						addCardToDeck(2, "Jarl");
@@ -1672,12 +1673,13 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 2:
 				{
+					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
+					trQuestVarSet("p2commanderType", COMMANDER_NOTTUD);
 					for(x=0;<10){
 						addCardToDeck(2, "Prisoner");
 						addCardToDeck(2, "Fire Giant");
@@ -1688,69 +1690,90 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 3:
 				{
+					trQuestVarSet("p1commanderType", COMMANDER_YEEBAAGOOON);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
-					for(x=0;<10){
-						addCardToDeck(2, "", SPELL_WATER_CANNON);
-						addCardToDeck(2, "Kraken");
-						addCardToDeck(2, "Hydra");
-						addCardToDeck(2, "Scylla");
-						addCardToDeck(2, "Sea Turtle");
-						addCardToDeck(2, "Leviathan");	
+					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);
+					for(x=0;<9){
+						addCardToDeck(2, "", SPELL_REWIND);
+						addCardToDeck(2, "", SPELL_WARNING_SHOT);	
+						addCardToDeck(2, "", SPELL_SPARK);
+						addCardToDeck(2, "", SPELL_FINAL_EXAM);	
+					}		
+					for(x=0;<6){
+						addCardToDeck(2, "", SPELL_SNIPE);
+						addCardToDeck(2, "", SPELL_EXPLOSION);
+						addCardToDeck(2, "", SPELL_MAGIC_MISSILES);
+						addCardToDeck(2, "", SPELL_SONG_OF_REST);						
+					}
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_BULLET_STORM);
+						addCardToDeck(2, "", SPELL_TIME_POCKET);		
+						addCardToDeck(2, "", SPELL_APOCALYPSE);
+						addCardToDeck(2, "", SPELL_BANHAMMER);			
 					}
 				}
 				case 4:
 				{
+					trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
-					for(x=0;<10){
-						addCardToDeck(2, "", SPELL_REWIND);
-						addCardToDeck(2, "", SPELL_SONG_OF_REST);
-						addCardToDeck(2, "Automaton SPC");
-						addCardToDeck(2, "Ballista");
-						addCardToDeck(2, "Battle Boar");
-						addCardToDeck(2, "Colossus");
-						addCardToDeck(2, "Tower Mirror");
+					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
+					for(x=0;<69){
+						addCardToDeck(2, "Female");
 					}
 				}
 				case 5:
 				{
+					trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
-					for(x=0;<80){
-						addCardToDeck(2, "Guardian");	
+					trQuestVarSet("p2commanderType", COMMANDER_GOD);
+					for(x=0;<9){
+						addCardToDeck(2, "", SPELL_NICKS_PORTAL);
+						addCardToDeck(2, "Chariot Archer");
+						addCardToDeck(2, "Camelry");
+						addCardToDeck(2, "Villager Atlantean Hero");
+					}
+					for(x=0;<6){
+						addCardToDeck(2, "", SPELL_REFRESH_MANA);
+						addCardToDeck(2, "", SPELL_NANOMACHINES);
+						addCardToDeck(2, "Transport Ship Norse");
+						addCardToDeck(2, "Siege Ship Greek");
+					}
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_SPACE_VENT);
+						addCardToDeck(2, "Fire Ship Atlantean");
+						addCardToDeck(2, "Siege Ship Atlantean");
+						addCardToDeck(2, "Catapult");
 					}
 				}
 				case 6:
 				{
+					if((trQuestVarGet("p1commanderType") != COMMANDER_YEEBAAGOOON)&&(trQuestVarGet("p1commanderType") != COMMANDER_ZENOPHOBIA)&&(trQuestVarGet("p1commanderType") != COMMANDER_NOTTUD)){
+						trQuestVarSet("p1commanderType", COMMANDER_NICK);
+					}
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
-					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Odysseus"));
-					for(x=0;<10){
-						addCardToDeck(2, "", SPELL_REFRESH_MANA);
-						addCardToDeck(2, "", SPELL_PETTY_LASER);
-						addCardToDeck(2, "", SPELL_NICKS_PORTAL);
-						addCardToDeck(1, "", SPELL_SPACE_VENT);
-						addCardToDeck(2, "Trireme");
-						addCardToDeck(2, "Siege Ship Greek");
-						addCardToDeck(2, "Siege Ship Atlantean");
-						addCardToDeck(2, "Catapult");
-						addCardToDeck(2, "Hero Greek Argo");
+					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Militia"));
+					for(x=0;<179){
+						addCardToDeckByIndex(x);
+					}
+					for(x=0;<3){
+						addCardToDeck(2, "", SPELL_CORONA_APOCALYPSE);
+						addCardToDeck(2, "", SPELL_METAL_GEAR);
 					}
 				}
 			}
@@ -2269,10 +2292,10 @@ inactive
 				int spell = yGetVar("allUnits","spell");
 				if(trUnitTypeIsSelected("Atlantis Wall Connector")){
 					if (spell == 0) {
-						trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
+						trUnitChangeName("(" + 1*trQuestVarGet("card_" + proto + "_Cost") + ") " + trStringQuestVarGet("card_" + proto + "_Name"));
 						trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
 					} else {
-						trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
+						trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
 						trUnitChangeProtoUnit("Statue of Lightning");
 						trSetSelectedScale(0.75, 0.2 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.4, 0.75);
 						trUnitSetAnimationPath(""+1*trQuestVarGet("spell_"+spell+"_animation") + ",0,0,0,0");
@@ -2448,102 +2471,6 @@ inactive
 	float health = kbUnitGetCurrentHitpoints(1*trQuestVarGet("p2commander"));
 	xsSetContextPlayer(0);
 	trDamageUnit(health - mGetVarByQV("p2commander", "health"));
-}
-
-rule StoryClass5Mission1
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\building specialist icons 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 20);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Wolf"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Wolf"));
-		}
-	}
-}
-
-rule StoryClass5Mission2
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\improvement focus icons 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 25);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Phoenix Egg"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Phoenix Egg"));
-		}
-	}
-}
-
-rule StoryClass5Mission3
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\improvement poseidons secret icons 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 30);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Servant"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Servant"));
-		}
-	}
-}
-
-rule StoryClass5Mission4
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\improvement engineers icon 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 35);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Eitri"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Eitri"));
-		}
-	}
-}
-
-rule StoryClass5Mission5
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\god power ancestors icon 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 40);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Guardian"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Guardian"));
-		}
-	}
-}
-
-rule StoryClass5Mission6
-highFrequency
-inactive
-{
-	if ((trTime()-cActivationTime) > 0){
-		xsDisableSelf();
-		trShowImageDialog("icons\god power eclipse icon 64", "");
-		trSoundPlayFN("visionswoosh.wav", "1", -1, "","");
-		mSetVarByQV("p2commander", "health", 45);
-		if (trQuestVarGet("missionHardmode") == 1) {
-			summonAtTile(222, 2, kbGetProtoUnitID("Minotaur"));
-			summonAtTile(223, 2, kbGetProtoUnitID("Hoplite"));
-		}
-	}
 }
 
 rule win_destination

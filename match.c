@@ -69,6 +69,7 @@ inactive
 			trQuestVarSet("p2done", 1);
 		}
 		
+		xsEnableRule("gameplay_select_show_keywords");
 		xsEnableRule("match_02_mulligan");
 		xsDisableRule("match_01_mulliganStart");
 	}
@@ -151,7 +152,6 @@ inactive
 		yClearDatabase("temp");
 		shuffleDeck(p);
 	}
-	xsEnableRule("gameplay_select_show_keywords");
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");
 	xsDisableRule("match_03_replace");
@@ -167,8 +167,12 @@ inactive
 			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
 		} else {
 			p = 3 - p;
-			if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
-				trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+			if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))){
+				trQuestVarSetFromRand("maxMana", 1, 10, true);
+			} else {
+				if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
+					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+				}
 			}
 		}
 		trQuestVarSet("activePlayer", p);
