@@ -1609,6 +1609,8 @@
 <Command>	trModifyProtounit("Animal Attractor", 1, 55, 4);</Command>
 <Command>	trModifyProtounit("Animal Attractor", 2, 55, 4);</Command>
 
+<Command>	zInitProtoUnitStat("Meteorite", 1, 1, 100);</Command>
+<Command>	zInitProtoUnitStat("Meteorite", 2, 1, 100);</Command>
 <Command>	zInitProtoUnitStat("Wadjet Spit", 1, 1, 30);</Command>
 <Command>	zInitProtoUnitStat("Wadjet Spit", 2, 1, 30);</Command>
 <Command>	zSetProtoUnitStat("Wadjet Spit", 1, 1, 20);</Command>
@@ -2659,6 +2661,8 @@
 <Command>		trForbidProtounit(p, "Temple");</Command>
 <Command>		trForbidProtounit(p, "Ulfsark");</Command>
 <Command>		trModifyProtounit("Minion", p, 8, -99); // unit lifespan</Command>
+
+<Command>		trModifyProtounit("Hero Greek Achilles", p, 5, 99); // carry capacity</Command>
 <Command>	}</Command>
 
 <Command>	trModifyProtounit("Dwarf", 0, 55, 4);</Command>
@@ -2689,7 +2693,7 @@
 <Command>	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");</Command>
 <Command>	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);</Command>
 <Command>	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");</Command>
-<Command>	CardSetup("Militia",				0, "jesper55561", 			2, 100, 2, 1, Keyword(BEACON), true);</Command>
+<Command>	CardSetup("Militia",				0, "jesper55561", 			2, 60, 2, 1, Keyword(BEACON), true);</Command>
 <Command>	CardEvents("Militia", 0, 0,	"Both players have random mana.");</Command>
 
 <Command>	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);</Command>
@@ -6381,27 +6385,27 @@
 <Command>			{</Command>
 <Command>				case 1:</Command>
 <Command>				{</Command>
-<Command>					return ("Hoof, Sword and Arrow");</Command>
+<Command>					return ("Invasion Time");</Command>
 <Command>				}</Command>
 <Command>				case 2:</Command>
 <Command>				{</Command>
-<Command>					return ("Magical Staff");</Command>
+<Command>					return ("No Holding Back");</Command>
 <Command>				}</Command>
 <Command>				case 3:</Command>
 <Command>				{</Command>
-<Command>					return ("Water Horse");</Command>
+<Command>					return ("Into The Yeebaaverse");</Command>
 <Command>				}</Command>
 <Command>				case 4:</Command>
 <Command>				{</Command>
-<Command>					return ("Cogs");</Command>
+<Command>					return ("Take A Break");</Command>
 <Command>				}</Command>
 <Command>				case 5:</Command>
 <Command>				{</Command>
-<Command>					return ("Nasty Hand");</Command>
+<Command>					return ("Final Showdown");</Command>
 <Command>				}</Command>
 <Command>				case 6:</Command>
 <Command>				{</Command>
-<Command>					return ("Black Star");</Command>
+<Command>					return ("You Beat The Game, Or Did You?");</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
@@ -6704,22 +6708,77 @@
 <Command>		trUnitSelectByQV("class"+class+"mission"+i);</Command>
 <Command>		if(trUnitIsSelected()){</Command>
 <Command>			if (ValidateCollection()) {</Command>
-<Command><![CDATA[				if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {]]></Command>
-<Command>					int cards = 2 + i;</Command>
-<Command>					if(getClassProgress(class) == i){</Command>
-<Command>						trQuestVarSet("missionHardmode", 0);</Command>
-<Command>						collectionMission = GetMissionTitle(class,i);</Command>
-<Command>						collectionReward = "(Reward: " + cards + " Class Cards)";</Command>
-<Command>					} else {</Command>
-<Command>						trQuestVarSet("missionHardmode", 1);</Command>
-<Command>						collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";</Command>
-<Command>						collectionReward = "(Reward: " + cards + " Random Cards)";</Command>
+<Command>				bool okay = true;</Command>
+<Command>				if(class == CLASS_SPACE){</Command>
+<Command>					int ct = kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("currentCommander")));</Command>
+<Command>					switch(i)</Command>
+<Command>					{</Command>
+<Command>						case 1:</Command>
+<Command>						{</Command>
+<Command>							if(ct != CommanderToProtounit(COMMANDER_NOTTUD)){</Command>
+<Command>								okay = false;</Command>
+<Command>								uiClearSelection();</Command>
+<Command>								trSoundPlayFN("cantdothat.wav");</Command>
+<Command>								uiMessageBox("Your commander must be nottud for this mission.");</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>						case 2:</Command>
+<Command>						{</Command>
+<Command>							if(ct != CommanderToProtounit(COMMANDER_ROGERS)){</Command>
+<Command>								okay = false;</Command>
+<Command>								uiClearSelection();</Command>
+<Command>								trSoundPlayFN("cantdothat.wav");</Command>
+<Command>								uiMessageBox("Your commander must be phdorogers4 for this mission.");</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>						case 3:</Command>
+<Command>						{</Command>
+<Command>							if(ct != CommanderToProtounit(COMMANDER_YEEBAAGOOON)){</Command>
+<Command>								okay = false;</Command>
+<Command>								uiClearSelection();</Command>
+<Command>								trSoundPlayFN("cantdothat.wav");</Command>
+<Command>								uiMessageBox("Your commander must be Yeebaagooon for this mission.");</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>						case 4:</Command>
+<Command>						{</Command>
+<Command>							if(ct != CommanderToProtounit(COMMANDER_NICK)){</Command>
+<Command>								okay = false;</Command>
+<Command>								uiClearSelection();</Command>
+<Command>								trSoundPlayFN("cantdothat.wav");</Command>
+<Command>								uiMessageBox("Your commander must be Nickonhawk for this mission.");</Command>
+<Command>							}</Command>
+<Command>						}</Command>
+<Command>						case 6:</Command>
+<Command>						{</Command>
+<Command><![CDATA[							if((ct != kbGetProtoUnitID("Pharaoh of Osiris"))&&(ct != kbGetProtoUnitID("Hoplite"))&&(ct != kbGetProtoUnitID("Minotaur"))&&(ct != kbGetProtoUnitID("Hero Greek Odysseus"))){]]></Command>
+<Command>								okay = false;</Command>
+<Command>								uiClearSelection();</Command>
+<Command>								trSoundPlayFN("cantdothat.wav");</Command>
+<Command>								uiMessageBox("Your commander must be Nickonhawk, Zenophobia, Yeebaagooon or nottud for this mission.");</Command>
+<Command>							}</Command>
+
+<Command>						}</Command>
 <Command>					}</Command>
-<Command>					trQuestVarSet("missionSelection", i);</Command>
-<Command>					trQuestVarSet("missionClass", class);</Command>
-<Command>					//xsEnableRule("CollectionEnter");</Command>
-<Command>					trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);</Command>
-<Command>					CollectionGodPowers();</Command>
+<Command>				}</Command>
+<Command>				if(okay){</Command>
+<Command><![CDATA[					if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {]]></Command>
+<Command>						int cards = 2 + i;</Command>
+<Command>						if(getClassProgress(class) == i){</Command>
+<Command>							trQuestVarSet("missionHardmode", 0);</Command>
+<Command>							collectionMission = GetMissionTitle(class,i);</Command>
+<Command>							collectionReward = "(Reward: " + cards + " Class Cards)";</Command>
+<Command>						} else {</Command>
+<Command>							trQuestVarSet("missionHardmode", 1);</Command>
+<Command>							collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";</Command>
+<Command>							collectionReward = "(Reward: " + cards + " Random Cards)";</Command>
+<Command>						}</Command>
+<Command>						trQuestVarSet("missionSelection", i);</Command>
+<Command>						trQuestVarSet("missionClass", class);</Command>
+<Command>						//xsEnableRule("CollectionEnter");</Command>
+<Command>						trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);</Command>
+<Command>						CollectionGodPowers();</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>			} else {</Command>
 <Command>				uiClearSelection();</Command>
@@ -7334,6 +7393,8 @@
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>	updateAuras();</Command>
+<Command>	// Throne Shield</Command>
+<Command>	xsEnableRule("update_auras_delay");</Command>
 
 <Command><![CDATA[	if (mGetVarByQV("p1commander", "health") <= 0) {]]></Command>
 <Command>		trQuestVarSet("p1defeated", 1);</Command>
@@ -7344,6 +7405,15 @@
 <Command>		xsEnableRule("match_end");</Command>
 <Command>	}</Command>
 <Command>}</Command>
+
+<Command>rule update_auras_delay</Command>
+<Command>highFrequency</Command>
+<Command>inactive</Command>
+<Command>{</Command>
+<Command>	xsDisableSelf();</Command>
+<Command>	updateAuras();</Command>
+<Command>}</Command>
+
 
 
 
@@ -8756,6 +8826,7 @@
 <Command>		vector step = vector(0,0,0);</Command>
 <Command>		vector end = vector(0,0,0);</Command>
 <Command>		vector dir = vector(0,0,0);</Command>
+<Command>		vector pos = vector(0,0,0);</Command>
 <Command>		trSoundPlayFN("godpower.wav","1",-1,"","");</Command>
 <Command>		trQuestVarSet("p"+p+"spellDamage", trCountUnitsInArea("128",p,"Oracle Scout",45) + trQuestVarGet("p"+p+"spellDamageNonOracle"));</Command>
 <Command>		switch(spell)</Command>
@@ -9568,8 +9639,8 @@
 <Command>			{</Command>
 <Command>				trVectorSetUnitPos("laserstart", "spellTarget");</Command>
 <Command>				trVectorSetUnitPos("laserend", "spellDirection");</Command>
-<Command>				trVectorQuestVarSet("dir", trGetUnitVector("laserstart", "laserend"));</Command>
-<Command>				trVectorQuestVarSet("laserStart", trVectorQuestVarGet("laserStart") + (trVectorQuestVarGet("dir") * 6.0));</Command>
+<Command>				dir = trGetUnitVector("laserstart", "laserend");</Command>
+<Command>				start = trVectorQuestVarGet("laserStart") + (dir * 6.0);</Command>
 <Command>				tile = mGetVarByQV("spellTarget", "tile");</Command>
 
 <Command>				while(done) {</Command>
@@ -9578,14 +9649,14 @@
 <Command><![CDATA[					for(z=0; < zGetVarByIndex("tiles", "neighborCount", tile)) {]]></Command>
 <Command>						neighbor = zGetVarByIndex("tiles", "neighbor"+z, tile);</Command>
 <Command><![CDATA[						if (neighbor < trQuestVarGet("ztilesend")) {]]></Command>
-<Command>							trVectorQuestVarSet("current", kbGetBlockPosition(""+neighbor));</Command>
-<Command><![CDATA[							if (trDistanceBetweenVectorsSquared("current", "pos") < 1) {]]></Command>
+<Command>							pos = kbGetBlockPosition(""+neighbor);</Command>
+<Command><![CDATA[							if (distanceBetweenVectors(start, pos) < 1.0) {]]></Command>
 <Command>								trQuestVarSet("occupant", zGetVarByIndex("tiles", "occupant", neighbor));</Command>
 <Command>								if (trQuestVarGet("occupant") > 0) {</Command>
 <Command>									yAddToDatabase("worldSplitterHit", "occupant");</Command>
 <Command>								}</Command>
 <Command>								tile = neighbor;</Command>
-<Command>								trVectorQuestVarSet("pos", trVectorQuestVarGet("current") + (trVectorQuestVarGet("dir") * 6.0));</Command>
+<Command>								start = pos + dir * 6.0;</Command>
 <Command>								done = true;</Command>
 <Command>								break;</Command>
 <Command>							}</Command>
@@ -9595,95 +9666,93 @@
 
 <Command>				trVectorQuestVarSet("laserEnd", kbGetBlockPosition(""+tile));</Command>
 
+<Command>				if (trQuestVarGet("p"+p+"phoenix") == 0) {</Command>
+<Command>					trQuestVarSet("p"+p+"phoenix", trGetNextUnitScenarioNameNumber());</Command>
+<Command>					trArmyDispatch(""+p+",0","Phoenix",1,1,0,1,0,true);</Command>
+<Command>					trQuestVarSet("p"+p+"floater", trGetNextUnitScenarioNameNumber());</Command>
+<Command>					trArmyDispatch(""+p+",0","Phoenix",1,1,0,1,0,true);</Command>
+
+<Command>					trQuestVarSet("p"+p+"meteorite", trGetNextUnitScenarioNameNumber());</Command>
+<Command>					trArmyDispatch(""+p+",0", "Dwarf", 1, 1, 0, 1, 0, true);</Command>
+<Command>					trUnitSelectClear();</Command>
+<Command>					trUnitSelectByQV("p"+p+"meteorite");</Command>
+<Command>					spyEffect(1*trQuestVarGet("p"+p+"meteorite"), "Cinematic Block", "p"+p+"meteoriteDeployer");</Command>
+
+<Command>					trQuestVarSet("p"+p+"worldSplitterLaser", trGetNextUnitScenarioNameNumber());</Command>
+<Command>					trArmyDispatch(""+p+",0", "Dwarf", 1, 1, 0, 1, 0, true);</Command>
+<Command>				}</Command>
+
+<Command>				zSetProtoUnitStat("Meteorite", p, 1, 1);</Command>
+
 <Command>				tile = mGetVarByQV("spellTarget", "tile");</Command>
-
-<Command>				trQuestVarSet("laserProj", deployAtTile(p, "Dwarf", tile));</Command>
 <Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
+<Command>				trUnitSelectByID(tile);</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Transport Ship Greek"));</Command>
+<Command>				trSetUnitOrientation(dir, vector(0,1,0), true);</Command>
+<Command>				trUnitConvert(p);</Command>
 
-<Command>				trQuestVarSet("laserAimer", deployAtTile(p, "Dwarf", tile));</Command>
+<Command>				// garrison floater and meteorite</Command>
 <Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);</Command>
+<Command>				trUnitSelectByQV("p"+p+"floater", true);</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Dwarf"));</Command>
+<Command>				trImmediateUnitGarrison(""+tile);</Command>
+<Command>				trUnitChangeProtoUnit("Phoenix");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"meteorite", true);</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Dwarf"));</Command>
+<Command>				trImmediateUnitGarrison(""+tile);</Command>
+<Command>				trUnitChangeProtoUnit("Dwarf");</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"meteorite");</Command>
+<Command>				trSetSelectedScale(0,0,0);</Command>
+<Command>				trSetUnitOrientation(dir, vector(0,1,0), true);</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"floater");</Command>
 <Command>				trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));</Command>
 
 <Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("laserAimer"));</Command>
+<Command>				trUnitSelectByQV("spellTarget");</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
+<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"floater"));</Command>
+<Command>				trMutateSelected(mGetVarByQV("spellTarget", "proto"));</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"phoenix");</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Phoenix"));</Command>
+<Command>				trUnitOverrideAnimation(2, 0, true, false, -1);</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
+<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"floater"));</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Phoenix"));</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
+<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"floater"));</Command>
+<Command>				trUnitChangeProtoUnit("Phoenix");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
 <Command>				trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));</Command>
 
 <Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);</Command>
+<Command>				trUnitSelectByQV("p"+p+"floater");</Command>
 <Command>				trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));</Command>
+<Command>				trSetUnitOrientation(dir, vector(0,1,0), true);</Command>
 
-<Command>				trQuestVarSet("laserPhoenix", deployAtTile(p, "Phoenix", tile));</Command>
-<Command>				trVectorSetUnitPos("phoenixPos", "laserPhoenix");</Command>
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);</Command>
-<Command>				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);</Command>
-<Command>				trUnitOverrideAnimation(15,0,true,true,-1);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Hero Greek Ajax"));</Command>
+<Command>				trQuestVarSet("p"+p+"worldSplitterActive", 1);</Command>
 
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("spellTarget"));</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
-<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("laserPhoenix"));</Command>
-<Command>				trMutateSelected(1*mGetVarByQV("spellTarget", "proto"));</Command>
+<Command>				trVectorQuestVarSet("p"+p+"worldSplitterDir", dir);</Command>
+<Command>				trVectorQuestVarSet("p"+p+"worldSplitterPrev", kbGetBlockPosition(""+tile));</Command>
+
+<Command>				trQuestVarSet("p"+p+"worldSplitterTimeout", trTimeMS() + 1000);</Command>
+
+<Command>				trVectorQuestVarSet("laserStart", kbGetBlockPosition(""+1*trQuestVarGet("p"+p+"worldSplitterLaser")));</Command>
 
 <Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Phoenix"));</Command>
-
-<Command>				trQuestVarSet("laserMeteorite", deployAtTile(p, "Dwarf", tile));</Command>
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Meteorite"));</Command>
-<Command>				trUnitOverrideAnimation(6,0,true,true,-1);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Relic"));</Command>
-
-<Command>				trQuestVarSet("laserGround", deployAtTile(p, "Dwarf", tile));</Command>
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserGround"), true);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Hero Greek Achilles"));</Command>
-
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);</Command>
-<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("laserGround"));</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Meteorite"));</Command>
-
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserGround"), true);</Command>
-<Command>				trMutateSelected(kbGetProtoUnitID("Rocket"));</Command>
-<Command>				trSoundPlayFN("attackwarning.wav","1",-1,"","");</Command>
-<Command>				trSoundPlayFN("phoenixselect2.wav","1",-1,"","");</Command>
-<Command>				// laser stuff</Command>
-
-<Command>				trQuestVarSet("laserStartY", 10.0);</Command>
-
-<Command>				trVectorQuestVarSet("laserStep", trVectorQuestVarGet("dir") * 2.0);</Command>
-<Command>				trVectorQuestVarSet("laserNormal", xsVectorSet(trVectorQuestVarGetZ("dir"), 0, trVectorQuestVarGetX("dir")));</Command>
-
-<Command>				trQuestVarSet("laserStepDist", 0);</Command>
-<Command>				trVectorQuestVarSet("laserSFX", trVectorQuestVarGet("laserStart"));</Command>
-
-<Command>				trQuestVarSet("laserheading", 57.295779 * trAngleBetweenVectors("dir", "laserStep"));</Command>
-
-
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);</Command>
-<Command>				trUnitTeleport(trVectorQuestVarGetX("laserStart"), 10.0, trVectorQuestVarGetZ("laserStart"));</Command>
-<Command>				trSetUnitOrientation(trVectorQuestVarGet("dir"), xsVectorSet(0,1,0), true);</Command>
-
-<Command>				trQuestVarSet("laserAngle", 1.550796);</Command>
-
-<Command>				trUnitSelectClear();</Command>
-<Command>				trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>				trSetSelectedScale(1,1,1);</Command>
-
-<Command>				trQuestVarSet("bossSpell", 2);</Command>
-<Command>				trQuestVarSet("bossNext", trTimeMS() + 1000);</Command>
-
-<Command>				zSetProtoUnitStat("Wadjet Spit", p, 1, 8);</Command>
+<Command>				trUnitSelectByID(tile);</Command>
+<Command>				trUnitConvert(0);</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Victory Marker"));</Command>
 <Command>				xsEnableRule("spell_world_splitter_activate");</Command>
 <Command>			}</Command>
 <Command>			case SPELL_SOUL_SIPHON:</Command>
@@ -10762,11 +10831,12 @@
 <Command>}</Command>
 
 <Command>void laserEnd(int eventId = -1) {</Command>
+<Command>	int p = trQuestVarGet("activePlayer");</Command>
+<Command>	trQuestVarSet("p"+p+"worldSplitterActive", 3);</Command>
+<Command>	trQuestVarSet("p"+p+"worldSplitterTimeout", trTimeMS() + 1000);</Command>
 <Command>	trUnitSelectClear();</Command>
-<Command>	trUnitSelect(""+1*trQuestVarGet("laserGround"), true);</Command>
-<Command>	trMutateSelected(kbGetProtoUnitID("Rocket"));</Command>
-<Command>	trQuestVarSet("bossSpell", 4);</Command>
-<Command>	trQuestVarSet("laserEndTime", trTimeMS() + 500);</Command>
+<Command>	trUnitSelectByQV("p"+p+"meteorite");</Command>
+<Command>	trMutateSelected(kbGetProtoUnitID("Cinematic Block"));</Command>
 <Command>}</Command>
 
 <Command>rule spell_world_splitter_activate</Command>
@@ -10774,94 +10844,114 @@
 <Command>inactive</Command>
 <Command>{</Command>
 <Command>	int p = trQuestVarGet("activePlayer");</Command>
-<Command>	if (trQuestVarGet("bossSpell") == 2) {</Command>
-<Command>		if (trTimeMS() > trQuestVarGet("bossNext")) {</Command>
-<Command>			trQuestVarSet("laserCurDist", 0);</Command>
-<Command>			trQuestVarSet("laserNextDist", 10.0 * xsCos(trQuestVarGet("laserAngle")) / xsSin(trQuestVarGet("laserAngle")));</Command>
-<Command>			trQuestVarSet("laserNextDistSquared", xsPow(trQuestVarGet("laserNextDist"), 2));</Command>
-<Command>			trQuestVarSet("speed", 60.0 * (trQuestVarGet("laserNextDist") - trQuestVarGet("laserCurDist")));</Command>
 
-<Command>			zSetProtoUnitStat("Wadjet Spit", p, 1, trQuestVarGet("speed"));</Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserGround"), true);</Command>
-<Command>			trMutateSelected(kbGetProtoUnitID("Wadjet Spit"));</Command>
-<Command>			trUnitMoveToPoint(trVectorQuestVarGetX("laserEnd"),0,trVectorQuestVarGetZ("laserEnd"), -1);</Command>
+<Command>	// world splitter</Command>
+<Command>	vector dir = vector(0,0,0);</Command>
+<Command>	vector pos = vector(0,0,0);</Command>
+<Command>	vector next = vector(0,0,0);</Command>
+<Command>	int target = 0;</Command>
+<Command>	float dist = 0;</Command>
+<Command>	float scale = 0;</Command>
+<Command>	switch(1*trQuestVarGet("p"+p+"worldSplitterActive"))</Command>
+<Command>	{</Command>
+<Command>	case 1:</Command>
+<Command>		{</Command>
+<Command>			if (trTimeMS() > trQuestVarGet("p"+p+"worldSplitterTimeout")) {</Command>
+<Command>				zSetProtoUnitStat("Meteorite", p, 1, 1.0);</Command>
+<Command>				trQuestVarSet("p"+p+"worldSplitterActive", 2);</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"meteorite");</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Meteorite"));</Command>
+<Command>				trUnitOverrideAnimation(6, 0, true, false, -1); // EXPLOSION</Command>
+<Command>				dir = trVectorQuestVarGet("p"+p+"worldSplitterDir");</Command>
+<Command>				pos = trVectorQuestVarGet("laserEnd");</Command>
+<Command>				trUnitMoveToPoint(xsVectorGetX(pos), 0, xsVectorGetZ(pos), EVENT_LASER_END, false);</Command>
 
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>			trUnitHighlight(3.0, false);</Command>
-<Command>			trSetSelectedScale(12.0,12.0,50.0);</Command>
-<Command>			trSoundPlayFN("sonofosirisbolt.wav","1",-1,"","");</Command>
-<Command>			trSoundPlayFN("nidhoggflame2.wav","1",-1,"","");</Command>
-<Command>			trSoundPlayFN("phoenixattack.wav","1",-1,"","");</Command>
-<Command>			trQuestVarSet("bossSpell", 3);</Command>
-<Command>			trQuestVarSet("laserEndTime", trTimeMS() + 2000);</Command>
-<Command>		}</Command>
-<Command>	} else if (trQuestVarGet("bossSpell") == 3) {</Command>
-<Command>		trVectorQuestVarSet("laserPos", kbGetBlockPosition(""+1*trQuestVarGet("laserGround"), true));</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
+<Command>				trSetSelectedScale(12.0,12.0,50.0);</Command>
+<Command>				trUnitHighlight(50.0, false);</Command>
+<Command>				trSetUnitOrientation(vector(0,1,0), rotationMatrix(dir, 1.0, 0), true);</Command>
 
-<Command>		// adjust speed;</Command>
-<Command>		trQuestVarSet("laserCurDistSquared", trDistanceBetweenVectorsSquared("laserPos", "laserStart"));</Command>
-<Command>		if (trQuestVarGet("laserCurDistSquared") > trQuestVarGet("laserNextDistSquared")) {</Command>
-<Command>			trQuestVarSet("laserCurDist", xsSqrt(trQuestVarGet("laserCurDistSquared")));</Command>
-<Command>			trQuestVarSet("laserAngle", xsAtan(10.0 / trQuestVarGet("laserCurDist")) - 0.02);</Command>
-
-<Command>			trQuestVarSet("laserNextDist", 10.0 * xsCos(trQuestVarGet("laserAngle")) / xsSin(trQuestVarGet("laserAngle")));</Command>
-<Command>			trQuestVarSet("laserNextDistSquared", xsPow(trQuestVarGet("laserNextDist"), 2));</Command>
-<Command>			trQuestVarSet("speed", 60.0 * (trQuestVarGet("laserNextDist") - trQuestVarGet("laserCurDist")));</Command>
-<Command>			zSetProtoUnitStat("Wadjet Spit", p, 1, trQuestVarGet("speed"));</Command>
-<Command>		}</Command>
-
-<Command>		if (trQuestVarGet("laserCurDist") > trQuestVarGet("laserStepDist") + 2.0) {</Command>
-<Command>			bool f = true;</Command>
-<Command><![CDATA[			while(trQuestVarGet("laserStepDist") < trQuestVarGet("laserCurDist")) {]]></Command>
-<Command>				trQuestVarSet("next", trGetNextUnitScenarioNameNumber());</Command>
-<Command>				trArmyDispatch("1,10","Dwarf",1,trVectorQuestVarGetX("laserSFX"),0,trVectorQuestVarGetZ("laserSFX"),trQuestVarGet("laserheading"),f);</Command>
-<Command>				f = false;</Command>
-<Command>				trQuestVarSet("laserStepDist", trQuestVarGet("laserStepDist") + 2.0);</Command>
-<Command>				trVectorQuestVarSet("laserSFX", trVectorQuestVarGet("laserSFX") + trVectorQuestVarGet("laserStep"));</Command>
+<Command>				trSoundPlayFN("sonofosirisbolt.wav");</Command>
+<Command>				trSoundPlayFN("phoenixattack.wav");</Command>
 <Command>			}</Command>
-<Command>			trArmySelect("1,10");</Command>
-<Command>			trUnitChangeProtoUnit("Tartarian Gate flame");</Command>
 <Command>		}</Command>
+<Command>	case 2:</Command>
+<Command>		{</Command>
+<Command>			// calculate my speed</Command>
+<Command>			pos = kbGetBlockPosition(""+1*trQuestVarGet("p"+p+"meteorite"));</Command>
+<Command>			if (distanceBetweenVectors(pos, trVectorQuestVarGet("laserStart")) > 0.0) {</Command>
+<Command>				//point the laser at the meteorite</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
+<Command>				trSetUnitOrientation(xsVectorNormalize(trVectorQuestVarGet("laserstart") - pos), rotationMatrix(trVectorQuestVarGet("p"+p+"worldSplitterDir"), 0.0, 1.0), true);</Command>
 
-<Command>		// adjust aim;</Command>
-<Command>		trVectorQuestVarSet("laserAim", trGetUnitVector3d("laserStart", "laserPos", -1.0));</Command>
-<Command>		trVectorQuestVarSet("laserAim2", trCrossProduct("laserAim", "laserNormal"));</Command>
-<Command>		trUnitSelectClear();</Command>
-<Command>		trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);</Command>
-<Command>		trSetUnitOrientation(trVectorQuestVarGet("laserAim"), trVectorQuestVarGet("laserAim2"), true);</Command>
+<Command>				dist = distanceBetweenVectors(pos, trVectorQuestVarGet("laserStart"), false);</Command>
+<Command>				dir = xsVectorSet(dist, 0, xsVectorGetY(trVectorQuestVarGet("laserstart") - pos)); // construct a vector representation of the 3d angle</Command>
+<Command>				dir = rotationMatrix(dir, 0.9998, -0.019999); // the angle one second from now is 0.02 radians further</Command>
+<Command>				dir = dir * (xsVectorGetY(trVectorQuestVarGet("laserstart") - pos) / xsVectorGetZ(dir)); // scale it back up</Command>
 
-<Command>		if (trTimeMS() > trQuestVarGet("laserEndTime")) {</Command>
-<Command>			laserEnd();</Command>
-<Command>		}</Command>
-<Command>	} else if (trQuestVarGet("bossSpell") == 4) {</Command>
-<Command>		trQuestVarSet("scale", 0.024 * (trQuestVarGet("laserEndTime") - trTimeMS()));</Command>
-<Command><![CDATA[		if (trQuestVarGet("scale") < 0) {]]></Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("spellTarget"));</Command>
-<Command>			trUnitChangeProtoUnit(kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));</Command>
-<Command>			scaleUnit(1*trQuestVarGet("spellTarget"));</Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserPhoenix"), true);</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserAimer"), true);</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserGround"), true);</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserMeteorite"), true);</Command>
-<Command>			trUnitDestroy();</Command>
-<Command>			zSetProtoUnitStat("Wadjet Spit", p, 1, 20);</Command>
-<Command>			xsDisableRule("spell_world_splitter_activate");</Command>
-<Command>			for(x=yGetDatabaseCount("worldSplitterHit"); >0) {</Command>
-<Command>				yDatabaseNext("worldSplitterHit");</Command>
-<Command>				startAttack(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("worldSplitterHit"), false, false);</Command>
+<Command>				scale = 60.0 * (xsVectorGetX(dir) - dist); // this is our speed if we need to reach that next spot in 1/60th of a second</Command>
+<Command>				zSetProtoUnitStat("Meteorite", p, 1, scale);</Command>
 <Command>			}</Command>
-<Command>			yClearDatabase("worldSplitterHit");</Command>
-<Command>			trQuestVarSet("bossSpell", 0);</Command>
-<Command>			xsEnableRule("spell_attack_complete");</Command>
-<Command>		} else {</Command>
-<Command>			trUnitSelectClear();</Command>
-<Command>			trUnitSelect(""+1*trQuestVarGet("laserProj"), true);</Command>
-<Command>			trSetSelectedScale(trQuestVarGet("scale"), trQuestVarGet("scale"), 50.0);</Command>
+<Command>			next = pos;</Command>
+<Command>			pos = trVectorQuestVarGet("p"+p+"worldSplitterPrev");</Command>
+<Command>			dist = distanceBetweenVectors(next, pos);</Command>
+<Command>			if (dist > 9.0) {</Command>
+<Command>				dir = trVectorQuestVarGet("p"+p+"worldSplitterDir");</Command>
+<Command>				dist = xsSqrt(dist);</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"meteoriteDeployer");</Command>
+<Command>				trUnitChangeProtoUnit("Transport Ship Greek");</Command>
+<Command>				target = trGetNextUnitScenarioNameNumber();</Command>
+<Command>				trArmyDispatch(""+p+",0","Dwarf",1,xsVectorGetX(pos),0,xsVectorGetZ(pos),0,true);</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelect(""+target, true);</Command>
+<Command>				trImmediateUnitGarrison(""+1*trQuestVarGet("p"+p+"meteoriteDeployer"));</Command>
+<Command>				trUnitChangeProtoUnit("Tartarian Gate flame");</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"meteoriteDeployer");</Command>
+<Command>				trUnitChangeProtoUnit("Cinematic Block");</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelect(""+target, true);</Command>
+<Command>				trSetSelectedScale(1.0, 1.0, dist * 0.3);</Command>
+<Command>				trVectorQuestVarSet("p"+p+"worldSplitterPrev", next);</Command>
+<Command>			}</Command>
+<Command>		}</Command>
+<Command>	case 3:</Command>
+<Command>		{</Command>
+<Command>			scale = 0.012 * (trQuestVarGet("p"+p+"worldSplitterTimeout") - trTimeMS());</Command>
+<Command>			if (scale > 0) {</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
+<Command>				trSetSelectedScale(scale, scale, 50.0);</Command>
+<Command>			} else {</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("spellTarget");</Command>
+<Command>				trUnitChangeProtoUnit(kbGetProtoUnitName(mGetVarByQV("spellTarget", "proto")));</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"phoenix");</Command>
+<Command>				trUnitChangeProtoUnit("Cinematic Block");</Command>
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"worldSplitterLaser");</Command>
+<Command>				trUnitChangeProtoUnit("Cinematic Block");</Command>
+
+<Command>				trUnitSelectClear();</Command>
+<Command>				trUnitSelectByQV("p"+p+"floater");</Command>
+<Command>				trMutateSelected(kbGetProtoUnitID("Cinematic Block"));</Command>
+<Command>				trQuestVarSet("p"+p+"worldSplitterActive", 0);</Command>
+
+<Command>				xsDisableSelf();</Command>
+<Command>				xsEnableRule("spell_attack_complete");</Command>
+
+<Command>				for(x=yGetDatabaseCount("worldSplitterHit"); >0) {</Command>
+<Command>					yDatabaseNext("worldSplitterHit");</Command>
+<Command>					startAttack(1*trQuestVarGet("spellTarget"), 1*trQuestVarGet("worldSplitterHit"), false, false);</Command>
+<Command>				}</Command>
+<Command>			}</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -14425,11 +14515,13 @@
 <Command>			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);</Command>
 <Command>		} else {</Command>
 <Command>			p = 3 - p;</Command>
-<Command><![CDATA[			if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))){]]></Command>
-<Command>				trQuestVarSetFromRand("maxMana", 1, 10, true);</Command>
-<Command>			} else {</Command>
-<Command><![CDATA[				if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {]]></Command>
-<Command>					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);</Command>
+<Command>			if(p == 1){</Command>
+<Command><![CDATA[				if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))) {]]></Command>
+<Command>					trQuestVarSetFromRand("maxMana", 1, 10, true);</Command>
+<Command>				} else {</Command>
+<Command><![CDATA[					if (trQuestVarGet("maxMana") < 10) {]]></Command>
+<Command>						trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);</Command>
+<Command>					}</Command>
 <Command>				}</Command>
 <Command>			}</Command>
 <Command>		}</Command>
@@ -16327,37 +16419,43 @@
 <Command>				case 1:</Command>
 <Command>				{</Command>
 <Command>					trQuestVarSet("p1commanderType", COMMANDER_NOTTUD);</Command>
-<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
-<Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trPaintTerrain(0, 0, 59, 59, 0, T_GREEK_ROAD, false);</Command>
+<Command>					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);</Command>
+<Command>					trQuestVarSet("dimension", 6);</Command>
 <Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
 <Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Theseus"));</Command>
-<Command><![CDATA[					for(x=0;<10){]]></Command>
-<Command>						addCardToDeck(2, "Swordsman");</Command>
-<Command>						addCardToDeck(2, "Jarl");</Command>
-<Command>						addCardToDeck(2, "Mountain Giant");</Command>
-<Command>						addCardToDeck(2, "Hero Greek Hippolyta");</Command>
+<Command>					summonAtTile(166, 2, kbGetProtoUnitID("Hero Greek Hippolyta"));</Command>
+<Command><![CDATA[					for(x=0; <10) {]]></Command>
+<Command>						addCardToDeck(2, "Wolf");</Command>
+<Command>						addCardToDeck(2, "", SPELL_MOONBEAM);</Command>
+<Command>						addCardToDeck(2, "", SPELL_CRESCENT_STRIKE);</Command>
+<Command>						addCardToDeck(2, "", SPELL_PROTECTION);</Command>
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 2:</Command>
 <Command>				{</Command>
 <Command>					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);</Command>
-<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
+<Command>					trPaintTerrain(0, 0, 59, 59, 0, T_FOREST_PALM, false);</Command>
+<Command>					trQuestVarSet("customTerrainEmpty", T_SAND_D);</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
 <Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
 <Command>					trQuestVarSet("p2commanderType", COMMANDER_NOTTUD);</Command>
+<Command>					summonAtTile(222, 2, kbGetProtoUnitID("Oracle Scout"));</Command>
+<Command>					summonAtTile(223, 2, kbGetProtoUnitID("Oracle Scout"));</Command>
 <Command><![CDATA[					for(x=0;<10){]]></Command>
-<Command>						addCardToDeck(2, "Prisoner");</Command>
+<Command>						addCardToDeck(2, "Frost Giant");</Command>
 <Command>						addCardToDeck(2, "Fire Giant");</Command>
-<Command>						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);</Command>
-<Command>						addCardToDeck(2, "Chimera");</Command>
-<Command>						addCardToDeck(2, "Hero Greek Bellerophon");</Command>
+<Command>						addCardToDeck(2, "", SPELL_PYROBALL);</Command>
+<Command>						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);</Command>
+<Command>						addCardToDeck(2, "Golem");</Command>
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 3:</Command>
 <Command>				{</Command>
 <Command>					trQuestVarSet("p1commanderType", COMMANDER_YEEBAAGOOON);</Command>
-<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
-<Command>					trQuestVarSet("dimension", 8);</Command>
+<Command>					trPaintTerrain(0, 0, 59, 59, 0, T_OLYMPUS_A, false);</Command>
+<Command>					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);</Command>
+<Command>					trQuestVarSet("dimension", 5);</Command>
 <Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
 <Command>					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);</Command>
 <Command><![CDATA[					for(x=0;<9){]]></Command>
@@ -16381,21 +16479,21 @@
 <Command>				}</Command>
 <Command>				case 4:</Command>
 <Command>				{</Command>
+<Command>					trPaintTerrain(0, 0, 60, 60, 0, 1, false);</Command>
 <Command>					trQuestVarSet("p1commanderType", COMMANDER_NICK);</Command>
-<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
-<Command>					trQuestVarSet("dimension", 8);</Command>
-<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("dimension", 6);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);</Command>
 <Command>					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);</Command>
-<Command><![CDATA[					for(x=0;<69){]]></Command>
+<Command><![CDATA[					for(x=0;<20){]]></Command>
 <Command>						addCardToDeck(2, "Female");</Command>
+<Command>						addCardToDeck(2, "Guardian");</Command>
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>				case 5:</Command>
 <Command>				{</Command>
-<Command>					trQuestVarSet("p1commanderType", COMMANDER_NICK);</Command>
 <Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
-<Command>					trQuestVarSet("dimension", 8);</Command>
-<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
+<Command>					trQuestVarSet("dimension", 7);</Command>
+<Command>					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_ATLANTIS);</Command>
 <Command>					trQuestVarSet("p2commanderType", COMMANDER_GOD);</Command>
 <Command><![CDATA[					for(x=0;<9){]]></Command>
 <Command>						addCardToDeck(2, "", SPELL_NICKS_PORTAL);</Command>
@@ -16421,12 +16519,13 @@
 <Command><![CDATA[					if((trQuestVarGet("p1commanderType") != COMMANDER_YEEBAAGOOON)&&(trQuestVarGet("p1commanderType") != COMMANDER_ZENOPHOBIA)&&(trQuestVarGet("p1commanderType") != COMMANDER_NOTTUD)){]]></Command>
 <Command>						trQuestVarSet("p1commanderType", COMMANDER_NICK);</Command>
 <Command>					}</Command>
-<Command>					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black</Command>
+<Command>					trPaintTerrain(0, 0, 59, 59, 5, 3, false);</Command>
+<Command>					trQuestVarSet("customTerrainEmpty", T_HADES_FOREST);</Command>
 <Command>					trQuestVarSet("dimension", 8);</Command>
 <Command>					trQuestVarSet("zenoMakeRandomStuffPlease", -1);</Command>
 <Command>					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Militia"));</Command>
 <Command><![CDATA[					for(x=0;<179){]]></Command>
-<Command>						addCardToDeckByIndex(x);</Command>
+<Command>						addCardToDeckByIndex(2, x);</Command>
 <Command>					}</Command>
 <Command><![CDATA[					for(x=0;<3){]]></Command>
 <Command>						addCardToDeck(2, "", SPELL_CORONA_APOCALYPSE);</Command>
@@ -18661,9 +18760,14 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
+<Command>		mSetVarByQV("p2commander", "attack", 2);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 20);</Command>
+<Command>		mSetVarByQV("p2commander", "maxhealth", 20);</Command>
+<Command>		mSetVarByQV("p2commander", "keywords", mGetVarByQV("p2commander", "keywords") + Keyword(BEACON));</Command>
 <Command>		CinematicPlay("HeavenGames\c6m1_", 1, 12);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 30);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18675,8 +18779,10 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m2_", 1, 4);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 30);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18688,8 +18794,10 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m3_", 1, 1);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 45);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 45);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18701,8 +18809,10 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m4_", 1, 8);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 45);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 45);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18714,8 +18824,10 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m5_", 1, 1);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 40);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 60);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 60);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18727,8 +18839,10 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m6_", 1, 6);</Command>
+<Command>		mSetVarByQV("p2commander", "health", 60);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
-<Command>			mSetVarByQV("p2commander", "health", mGetVarByQV("p2commander", "health")*2);</Command>
+<Command>			mSetVarByQV("p2commander", "health", 90);</Command>
+<Command>			mSetVarByQV("p2commander", "maxhealth", 90);</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>

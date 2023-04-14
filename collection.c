@@ -455,27 +455,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Hoof, Sword and Arrow");
+					return ("Invasion Time");
 				}
 				case 2:
 				{
-					return ("Magical Staff");
+					return ("No Holding Back");
 				}
 				case 3:
 				{
-					return ("Water Horse");
+					return ("Into The Yeebaaverse");
 				}
 				case 4:
 				{
-					return ("Cogs");
+					return ("Take A Break");
 				}
 				case 5:
 				{
-					return ("Nasty Hand");
+					return ("Final Showdown");
 				}
 				case 6:
 				{
-					return ("Black Star");
+					return ("You Beat The Game, Or Did You?");
 				}
 			}
 		}
@@ -811,22 +811,77 @@ inactive
 		trUnitSelectByQV("class"+class+"mission"+i);
 		if(trUnitIsSelected()){
 			if (ValidateCollection()) {
-				if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
-					int cards = 2 + i;
-					if(getClassProgress(class) == i){
-						trQuestVarSet("missionHardmode", 0);
-						collectionMission = GetMissionTitle(class,i);
-						collectionReward = "(Reward: " + cards + " Class Cards)";
-					} else {
-						trQuestVarSet("missionHardmode", 1);
-						collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-						collectionReward = "(Reward: " + cards + " Random Cards)";
+				bool okay = true;
+				if(class == CLASS_SPACE){
+					int ct = kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("currentCommander")));
+					switch(i)
+					{
+						case 1:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_NOTTUD)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be nottud for this mission.");
+							}
+						}
+						case 2:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_ROGERS)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be phdorogers4 for this mission.");
+							}
+						}
+						case 3:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_YEEBAAGOOON)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Yeebaagooon for this mission.");
+							}
+						}
+						case 4:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_NICK)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Nickonhawk for this mission.");
+							}
+						}
+						case 6:
+						{
+							if((ct != kbGetProtoUnitID("Pharaoh of Osiris"))&&(ct != kbGetProtoUnitID("Hoplite"))&&(ct != kbGetProtoUnitID("Minotaur"))&&(ct != kbGetProtoUnitID("Hero Greek Odysseus"))){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Nickonhawk, Zenophobia, Yeebaagooon or nottud for this mission.");
+							}
+
+						}
 					}
-					trQuestVarSet("missionSelection", i);
-					trQuestVarSet("missionClass", class);
-					//xsEnableRule("CollectionEnter");
-					trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
-					CollectionGodPowers();
+				} 
+				if(okay){
+					if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
+						int cards = 2 + i;
+						if(getClassProgress(class) == i){
+							trQuestVarSet("missionHardmode", 0);
+							collectionMission = GetMissionTitle(class,i);
+							collectionReward = "(Reward: " + cards + " Class Cards)";
+						} else {
+							trQuestVarSet("missionHardmode", 1);
+							collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+							collectionReward = "(Reward: " + cards + " Random Cards)";
+						}
+						trQuestVarSet("missionSelection", i);
+						trQuestVarSet("missionClass", class);
+						//xsEnableRule("CollectionEnter");
+						trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
+						CollectionGodPowers();
+					}
 				}
 			} else {
 				uiClearSelection();

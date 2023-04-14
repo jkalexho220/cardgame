@@ -1659,41 +1659,47 @@ void SetupMission(int class = 0, int mission = 0){
 				{
 					trQuestVarSet("p1commanderType", COMMANDER_NOTTUD);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
-					trQuestVarSet("dimension", 8);
+					trPaintTerrain(0, 0, 59, 59, 0, T_GREEK_ROAD, false);
+					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
+					trQuestVarSet("dimension", 6);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Hero Greek Theseus"));
-					for(x=0;<10){
-						addCardToDeck(2, "Swordsman");
-						addCardToDeck(2, "Jarl");
-						addCardToDeck(2, "Mountain Giant");
-						addCardToDeck(2, "Hero Greek Hippolyta");
+					summonAtTile(166, 2, kbGetProtoUnitID("Hero Greek Hippolyta"));
+					for(x=0; <10) {
+						addCardToDeck(2, "Wolf");
+						addCardToDeck(2, "", SPELL_MOONBEAM);
+						addCardToDeck(2, "", SPELL_CRESCENT_STRIKE);
+						addCardToDeck(2, "", SPELL_PROTECTION);
 					}
 				}
 				case 2:
 				{
 					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
+					trPaintTerrain(0, 0, 59, 59, 0, T_FOREST_PALM, false);
+					trQuestVarSet("customTerrainEmpty", T_SAND_D);
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", COMMANDER_NOTTUD);
+					summonAtTile(222, 2, kbGetProtoUnitID("Oracle Scout"));
+					summonAtTile(223, 2, kbGetProtoUnitID("Oracle Scout"));
 					for(x=0;<10){
-						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Frost Giant");
 						addCardToDeck(2, "Fire Giant");
-						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
-						addCardToDeck(2, "Chimera");
-						addCardToDeck(2, "Hero Greek Bellerophon");
+						addCardToDeck(2, "", SPELL_PYROBALL);
+						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
+						addCardToDeck(2, "Golem");
 					}
 				}
 				case 3:
 				{
 					trQuestVarSet("p1commanderType", COMMANDER_YEEBAAGOOON);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
-					trQuestVarSet("dimension", 8);
+					trPaintTerrain(0, 0, 59, 59, 0, T_OLYMPUS_A, false);
+					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);
+					trQuestVarSet("dimension", 5);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", COMMANDER_YEEBAAGOOON);
@@ -1718,24 +1724,24 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 4:
 				{
+					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
 					trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
-					trQuestVarSet("dimension", 8);
-					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("dimension", 6);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
-					for(x=0;<69){
+					for(x=0;<20){
 						addCardToDeck(2, "Female");
+						addCardToDeck(2, "Guardian");
 					}
 				}
 				case 5:
 				{
-					trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					/* Arena */
 					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
-					trQuestVarSet("dimension", 8);
-					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
+					trQuestVarSet("dimension", 7);
+					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_ATLANTIS);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", COMMANDER_GOD);
 					for(x=0;<9){
@@ -1763,13 +1769,14 @@ void SetupMission(int class = 0, int mission = 0){
 						trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					}
 					/* Arena */
-					trPaintTerrain(0, 0, 60, 60, 5, 4, false); // Black
+					trPaintTerrain(0, 0, 59, 59, 5, 3, false);
+					trQuestVarSet("customTerrainEmpty", T_HADES_FOREST);
 					trQuestVarSet("dimension", 8);
 					trQuestVarSet("zenoMakeRandomStuffPlease", -1);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Militia"));
 					for(x=0;<179){
-						addCardToDeckByIndex(x);
+						addCardToDeckByIndex(2, x);
 					}
 					for(x=0;<3){
 						addCardToDeck(2, "", SPELL_CORONA_APOCALYPSE);

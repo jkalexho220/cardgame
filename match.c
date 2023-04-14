@@ -167,11 +167,13 @@ inactive
 			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
 		} else {
 			p = 3 - p;
-			if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))){
-				trQuestVarSetFromRand("maxMana", 1, 10, true);
-			} else {
-				if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
-					trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+			if(p == 1){
+				if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))) {
+					trQuestVarSetFromRand("maxMana", 1, 10, true);
+				} else {
+					if (trQuestVarGet("maxMana") < 10) {
+						trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+					}
 				}
 			}
 		}

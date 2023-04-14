@@ -346,6 +346,8 @@ void removeDeadUnits() {
 		}
 	}
 	updateAuras();
+	// Throne Shield
+	xsEnableRule("update_auras_delay");
 	
 	if (mGetVarByQV("p1commander", "health") <= 0) {
 		trQuestVarSet("p1defeated", 1);
@@ -356,6 +358,15 @@ void removeDeadUnits() {
 		xsEnableRule("match_end");
 	}
 }
+
+rule update_auras_delay
+highFrequency
+inactive
+{
+	xsDisableSelf();
+	updateAuras();
+}
+
 
 
 
