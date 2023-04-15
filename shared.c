@@ -842,6 +842,12 @@ runImmediately
 		trTechSetStatus(p, 7, 4); // heavy infantry
 		trTechSetStatus(p, 476, 4); // iron all
 		trTechSetStatus(p, 412, 4); // Iron wall
+
+		//unobtainable
+		trTechSetStatus(p, 34, 0); //pickaxe
+		trTechSetStatus(p, 35, 0); //hand axe
+		trTechSetStatus(p, 9, 0); //husbandry
+		trTechSetStatus(p, 101, 0); //hunting dogs
 	}
 	
 	// Disable god powers

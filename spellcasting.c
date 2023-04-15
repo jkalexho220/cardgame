@@ -2452,7 +2452,7 @@ inactive
 				} else {
 					trSoundPlayFN("ancestorsbirth.wav","1",-1,"","");
 					for(x=3; >0) {
-						summonAtTile(1*trQuestVarGet("spellTarget"+x), p, kbGetProtoUnitID("Minion"));
+						mSetVar(summonAtTile(1*trQuestVarGet("spellTarget"+x), p, kbGetProtoUnitID("Minion")), "action", ACTION_READY);
 					}
 				}
 			}
@@ -3020,7 +3020,6 @@ inactive
 			case SPELL_RECHARGE:
 			{
 				trSoundPlayFN("suckup2.wav");
-				done = false;
 				trUnitSelectClear();
 				trUnitSelect(""+deployAtTile(0, "Deconstruct Unit", mGetVarByQV("p"+p+"commander", "tile")), true);
 				trUnitOverrideAnimation(18, 0, false, true, -1);

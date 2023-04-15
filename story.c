@@ -954,7 +954,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Hydra");
 						addCardToDeck(2, "", SPELL_TELETIDE);
 						addCardToDeck(2, "", SPELL_WRATH_OF_SEA);
-						addCardToDeck(2, "", SPELL_DEVOUR);
+						addCardToDeck(2, "Leviathan");
 					}
 					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
@@ -987,7 +987,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Leviathan");
 						addCardToDeck(2, "Hydra");
 						addCardToDeck(2, "Sea Turtle");
-						addCardToDeck(2, "", SPELL_DEVOUR);
+						addCardToDeck(2, "Archer Atlantean");
 					}
 					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
@@ -1078,7 +1078,7 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_ZENOS_PARADOX);
 						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);
 						addCardToDeck(2, "", SPELL_TIME_POCKET);
-						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);
+						addCardToDeck(2, "", SPELL_DEVOUR);
 					}
 					trQuestVarSet("p2class2", CLASS_NAGA);
 				}
@@ -1146,7 +1146,7 @@ void SetupMission(int class = 0, int mission = 0){
 					for(x=0; <6) {
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "", SPELL_WARNING_SHOT);
-						addCardToDeck(2, "", SPELL_MAGIC_MISSILES);
+						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);
 						addCardToDeck(2, "", SPELL_NANOMACHINES);
 					}
 				}

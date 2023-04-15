@@ -279,7 +279,7 @@ void removeDeadUnits() {
 					mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
 					mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
 					mSetVarByQV("allUnits", "maxhealth", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "maxhealth"));
-					mSetVarByQV("allUnits", "scale", 0.25*trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));
+					mSetVarByQV("allUnits", "scale", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));
 					scaleUnit(1*trQuestVarGet("allUnits"));
 				}
 			}

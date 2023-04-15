@@ -797,7 +797,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "stunTime", 0);
 		mSetVar(next, "victory", 0);
 		mSetVar(next, "victoryAmbush", 0);
-		mSetVar(next, "scale", 1);
+		mSetVar(next, "scale", 2);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
 		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
@@ -1494,7 +1494,8 @@ highFrequency
 	CardEvents("Throwing Axeman", 0, 0,									"Your units cost 1 less.");
 	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random unit from your deck on my tile.");
 	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
-	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
+	CardEvents("Guild", 0, 0,											"At the end of your turn, create a Gearwalker.");
+	CardEvents("Mining Camp", 0, 0,										"At the end of your turn, create a Scrap Metal.");
 	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");

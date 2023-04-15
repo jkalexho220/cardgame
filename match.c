@@ -28,6 +28,10 @@ inactive
 			trQuestVarSet("p"+p+"maxHandSize", 10);
 		}
 
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {
+			mSetVarByQV("p"+p+"commander", "health", 40);
+		}
+
 		trQuestVarSet("p"+p+"lastProto", kbGetProtoUnitID("Minion"));
 	}
 	// Ravens

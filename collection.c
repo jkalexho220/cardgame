@@ -685,13 +685,12 @@ inactive
 			if (getClassProgress(CLASS_SPACE) == 0) {
 				// DISABLED FOR BETA
 				//trDelayedRuleActivation(""); // unlock space
+				trQuestVarSet("nextClass", 5);
+				trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
+				trEventFire(EVENT_CHOOSE_CLASS);
 			}
-		} else if (totalProgress == 14) {
-			// BETA ONLY. Players will unlock one extra class of their choosing for the beta
-			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
 		} else {
-			// DISABLED FOR BETA
-			//trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
+			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
 		}
 	}
 	

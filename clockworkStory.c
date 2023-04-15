@@ -125,7 +125,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m3_", 1, 5);
-		//teleportToTile(1*trQuestVarGet("p2commander"), 233);
+		teleportToTile(1*trQuestVarGet("p2commander"), 233, true);
 	}
 }
 
