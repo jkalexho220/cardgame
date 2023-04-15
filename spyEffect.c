@@ -4,6 +4,7 @@ int xSpyRequestAnim = 0;
 int xSpyRequestAnimPath = 0;
 int xSpyRequestDest = 0;
 int xSpyRequestScale = 0;
+int xSpyTarget = 0;
 int spyreset = 0;
 int spysearch = 0;
 
@@ -12,6 +13,7 @@ active
 highFrequency
 {
 	dSpyRequests = xInitDatabase("spyRequests");
+	xSpyTarget = xInitAddInt(dSpyRequests, "target");
 	xSpyRequestProto = xInitAddInt(dSpyRequests, "proto");
 	xSpyRequestAnim = xInitAddInt(dSpyRequests, "anime");
 	xSpyRequestAnimPath = xInitAddString(dSpyRequests, "path");
@@ -34,10 +36,11 @@ Casts spy on the currently selected unit. The spy will transform into the specif
 Returns the index of the spy eye in case the user wants to reference it later. The name of the
 spy eye will be set in the quest var "spyEye"+x, where x is the integer returned by this function.
 */
-void spyEffect(string proto = "", string dest = "unused", vector scale = vector(0,0,0), int anim = -1, string animPath = "0,0,0,0,0,0,0") {
+void spyEffect(int target = 0, string proto = "", string dest = "unused", vector scale = vector(0,0,0), int anim = -1, string animPath = "0,0,0,0,0,0,0") {
 	int newest = xAddDatabaseBlock(dSpyRequests);
 	xSetInt(dSpyRequests, xSpyRequestProto, kbGetProtoUnitID(proto), newest);
 	xSetInt(dSpyRequests, xSpyRequestAnim, anim, newest);
+	xSetInt(dSpyRequests, xSpyTarget, target, newest);
 	xSetString(dSpyRequests, xSpyRequestDest, dest, newest);
 	xSetVector(dSpyRequests, xSpyRequestScale, scale, newest);
 	xSetString(dSpyRequests, xSpyRequestAnimPath, animPath);
@@ -54,6 +57,12 @@ active
 		for(i=spysearch; < trGetNextUnitScenarioNameNumber()) {
 			id = kbGetBlockID(""+i, true);
 			if (kbGetUnitBaseTypeID(id) == kbGetProtoUnitID("Spy Eye")) {
+				// wrong spy
+				while ((distanceBetweenVectors(kbGetBlockPosition(""+i, true), kbGetBlockPosition(""+xGetInt(dSpyRequests, xSpyTarget))) > 1.0) &&
+					(xGetDatabaseCount(dSpyRequests) > 0)) {
+					ChatLog(0, "Spy request for " + kbGetProtoUnitName(xGetInt(dSpyRequests, xSpyRequestProto)) + " failed.");
+					xFreeDatabaseBlock(dSpyRequests);
+				}
 				scale = xGetVector(dSpyRequests, xSpyRequestScale);
 				trUnitSelectClear();
 				trUnitSelectByID(id);

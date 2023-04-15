@@ -39,9 +39,8 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m2_", 1, 4);
-		zSetVarByIndex("tiles", "occupant", mGetVarByQV("p2commander", "tile"), 0);
-		teleportToTile(1*trQuestVarGet("p1commander"), 132);
-		teleportToTile(1*trQuestVarGet("p2commander"), 152);
+		teleportToTile(1*trQuestVarGet("p1commander"), 132, true);
+		teleportToTile(1*trQuestVarGet("p2commander"), 152, true);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(x=0; <6) {
@@ -126,7 +125,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m3_", 1, 5);
-		//teleportToTile(1*trQuestVarGet("p2commander"), 233);
+		teleportToTile(1*trQuestVarGet("p2commander"), 233, true);
 	}
 }
 
@@ -189,8 +188,7 @@ inactive
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m5_", 1, 6);
 		damageUnit(1*trQuestVarGet("p1commander"), 18);
-		zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p2commander", "tile"), 0);
-		teleportToTile(1*trQuestVarGet("p2commander"), 219);
+		teleportToTile(1*trQuestVarGet("p2commander"), 219, true);
 		xsEnableRule("StoryClass3Mission5_1");
 		xsEnableRule("StoryClass3Mission5_end");
 		xsEnableRule("StoryClass3Mission5_story");
@@ -237,8 +235,7 @@ inactive
 			}
 			case 2:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 128);
+				teleportToTile(1*trQuestVarGet("p1commander"), 128, true);
 				SummonLaser(139, 130);
 				SummonLaser(141, 131);
 				SummonLaser(146, 134);
@@ -249,8 +246,7 @@ inactive
 			case 3:
 			{
 				trMessageSetText("Survive this turn! (Check your hand)", -1);
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 128);
+				teleportToTile(1*trQuestVarGet("p1commander"), 128, true);
 				SummonLaser(146, 145);
 				SummonLaser(137, 134);
 				SummonLaser(135, 129);
@@ -261,8 +257,7 @@ inactive
 			}
 			case 4:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 145);
+				teleportToTile(1*trQuestVarGet("p1commander"), 145, true);
 				SummonLaser(146, 145);
 				SummonLaser(137, 134);
 				SummonLaser(135, 129);
@@ -277,8 +272,7 @@ inactive
 			}
 			case 5:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 132);
+				teleportToTile(1*trQuestVarGet("p1commander"), 132, true);
 				SummonLaser(144, 145);
 				SummonLaser(137, 134);
 				SummonLaser(129, 128);
@@ -292,8 +286,7 @@ inactive
 			}
 			case 6:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 128);
+				teleportToTile(1*trQuestVarGet("p1commander"), 128, true);
 				SummonLaser(146, 145);
 				for (x=145; >=134) {
 					mSetVar(summonAtTile(x, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
@@ -304,8 +297,7 @@ inactive
 			}
 			case 7:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 142);
+				teleportToTile(1*trQuestVarGet("p1commander"), 142, true);
 				SummonLaser(137, 134);
 				SummonLaser(136, 130);
 				mSetVar(summonAtTile(135, 2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
@@ -322,8 +314,7 @@ inactive
 			}
 			case 8:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 135);
+				teleportToTile(1*trQuestVarGet("p1commander"), 135, true);
 				mSetVar(summonAtTile(129,2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				mSetVar(summonAtTile(136,2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
 				mSetVar(summonAtTile(137,2, kbGetProtoUnitID("Ape of Set")), "attack", 3);
@@ -333,15 +324,14 @@ inactive
 				mSetVar(summonAtTile(128, 1, kbGetProtoUnitID("Throwing Axeman")), "action", ACTION_READY);
 				
 				addCardToHand(1, 0, SPELL_EXPLOSION, true);
-				addCardToHand(1, 0, SPELL_DOUBLEBLAST, true);
+				addCardToHand(1, 0, SPELL_MAGIC_MISSILES, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);
 				addCardToHand(1, kbGetProtoUnitID("Oracle Scout"), 0, true);
 				addCardToHand(1, 0, SPELL_ZENOS_PARADOX, true);
 			}
 			case 9:
 			{
-				zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("p1commander", "tile"), 0);
-				teleportToTile(1*trQuestVarGet("p1commander"), 132);
+				teleportToTile(1*trQuestVarGet("p1commander"), 132, true);
 				SummonLaser(135, 132);
 				SummonLaser(129, 132);
 				SummonLaser(128, 132);

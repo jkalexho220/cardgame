@@ -128,8 +128,7 @@ inactive
 		CinematicPlay("HeavenGames\c5m4_", 1, 3);
 		
 		xsEnableRule("StoryClass4Mission4_end");
-		zSetVarByIndex("tiles", "occupant", mGetVarByQV("p2commander", "tile"), 0);
-		teleportToTile(1*trQuestVarGet("p2commander"), 255);
+		teleportToTile(1*trQuestVarGet("p2commander"), 255, true);
 
 		xsEnableRule("StoryClass4Mission4_explain");
 		xsEnableRule("StoryClass4Mission4_win");

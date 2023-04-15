@@ -23,7 +23,7 @@ const int ANIM_CHARGING = 1;
 const int ANIM_GORE = 2;
 
 void scaleUnit(int unit = 0) {
-	float scale = xsSqrt(mGetVar(unit, "scale"));
+	float scale = xsSqrt(0.5 * mGetVar(unit, "scale"));
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
 	trSetSelectedScale(scale, scale, scale);
@@ -69,7 +69,7 @@ void transferUnit(string to = "", string from = "") {
 }
 
 
-void teleportToTile(int name = 0, int tile = 0) {
+void teleportToTile(int name = 0, int tile = 0, bool vacateOldTile = false) {
 	int p = mGetVar(name, "player");
 	
 	if (HasKeyword(GUARD, 1*mGetVar(name, "keywords"))) {
@@ -78,7 +78,10 @@ void teleportToTile(int name = 0, int tile = 0) {
 		}
 		tileGuard(tile, true);
 	}
-	
+
+	if (vacateOldTile) {
+		zSetVarByIndex("tiles", "occupant", mGetVar(name, "tile"), 0);
+	}
 	
 	trUnitSelectClear();
 	trUnitSelectByID(tile);
@@ -110,22 +113,59 @@ void OnCreate(int unit = 0) {
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
 	if (HasKeyword(DECAY, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Poison SFX");
+		spyEffect(unit, "Poison SFX");
 	}
 	if (HasKeyword(DODGE, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Well of Urd");
+		spyEffect(unit, "Well of Urd", "unused", vector(0,1,0));
 	}
 	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Sky Passage", "stealthSFX" + unit);
+		spyEffect(unit, "Sky Passage", "stealthSFX" + unit);
 	}
 	if (HasKeyword(WARD, 1*mGetVar(unit, "keywords"))) {
-		spyEffect("Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
+		spyEffect(unit, "Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
 	}
 	switch(proto)
 	{
 	case kbGetProtoUnitID("Lancer Hero"):
 		{
-			spyEffect("Phoenix From Egg", "unused", vector(1,1,1));
+			spyEffect(unit, "Phoenix From Egg", "unused", vector(1,1,1));
+		}
+	case kbGetProtoUnitID("Hero Greek Bellerophon"):
+		{
+			trSoundPlayFN("arkantosarrive.wav");
+		}
+	case kbGetProtoUnitID("Hero Greek Hippolyta"):
+		{
+			trSoundPlayFN("rainofarrows1.wav");
+		}
+	case kbGetProtoUnitID("Tower Mirror"):
+		{
+			trSoundPlayFN("wonder.wav","1",-1,"","");
+		}
+	case kbGetProtoUnitID("Guardian"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
+		}
+	case kbGetProtoUnitID("Hero Greek Achilles"):
+		{
+			trSoundPlayFN("herocreation.wav","1",-1,"","");
+			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
+		}
+	case kbGetProtoUnitID("Circe"):
+		{
+			trSoundPlayFN("lapadesconvert.wav");
+			trSoundPlayFN("timeshift.wav");
+		}
+	case kbGetProtoUnitID("Heka Gigantes"):
+		{
+			trSoundPlayFN("shipdeathsplash.wav");
+			trSoundPlayFN("hekagigantesacknowledge1.wav");
+		}
+	case kbGetProtoUnitID("Hero Greek Polyphemus"):
+		{
+			trSoundPlayFN("herobirth2.wav");
+			trSoundPlayFN("fortress.wav");
 		}
 	}
 }
@@ -427,7 +467,7 @@ void stunUnit(int index = 0) {
 		if (trQuestVarGet("stunSFX" + index) == 0) {
 			trUnitSelectClear();
 			trUnitSelect(""+index);
-			spyEffect("Shockwave stun effect", "stunSFX"+index);
+			spyEffect(index, "Shockwave stun effect", "stunSFX"+index);
 		} else {
 			trUnitSelectClear();
 			trUnitSelect(""+1*mGetVar(index, "stunSFX"));
@@ -551,19 +591,20 @@ void magnetize(int target = 0, int unit = 0) {
 		current = current / 2;
 	}
 	mSetVar(target, "keywords", keywords);
-	mSetVar(target, "scale", mGetVar(target, "scale") + 0.5 * mGetVar(unit, "health"));
+	mSetVar(target, "scale", mGetVar(target, "scale") + mGetVar(unit, "health"));
 	scaleUnit(target);
 	if (HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) && mGetVar(target, "action") == ACTION_SLEEPING) {
 		mSetVar(target, "action", ACTION_READY);
 	}
-	ChatLog(0, "Magnetize! " + unit + " to " + target);
+	//ChatLog(0, "Magnetize! " + unit + " to " + target);
 }
 
 void updateRoxasHealth(int p = 0) {
 	if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {
-		int diff = trQuestVarGet("p"+p+"roxasHealth") - yGetDatabaseCount("p"+p+"deck");
-		trQuestVarSet("p"+p+"roxasHealth", yGetDatabaseCount("p"+p+"deck"));
-		damageUnit(1*trQuestVarGet("p"+p+"commander"), diff);
+		mSetVarByQV("p"+p+"commander", "maxHealth", yGetDatabaseCount("p"+p+"deck"));
+		if (mGetVarByQV("p"+p+"commander", "health") > mGetVarByQV("p"+p+"commander", "maxHealth")) {
+			mSetVarByQV("p"+p+"commander", "health", mGetVarByQV("p"+p+"commander", "maxHealth"));
+		}
 	}
 }
 

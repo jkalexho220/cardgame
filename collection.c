@@ -140,10 +140,10 @@ void CollectionDeploy(int card = 0, int x = 0, int z = 0, bool cardIsCommander =
 	}
 	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
-		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("card_" + proto + "_Cost") + ") " + trStringQuestVarGet("card_" + proto + "_Name"));
 		trUnitChangeProtoUnit(kbGetProtoUnitName(proto));
 	} else {
-		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
 		trUnitChangeProtoUnit("Statue of Lightning");
 		trSetSelectedScale(0.75, 0.1 + xsSqrt(trQuestVarGet("spell_" + spell + "_cost")) * 0.2, 0.75);
@@ -455,27 +455,27 @@ string GetMissionTitle(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					return ("Hoof, Sword and Arrow");
+					return ("Invasion Time");
 				}
 				case 2:
 				{
-					return ("Magical Staff");
+					return ("No Holding Back");
 				}
 				case 3:
 				{
-					return ("Water Horse");
+					return ("Into The Yeebaaverse");
 				}
 				case 4:
 				{
-					return ("Cogs");
+					return ("Take A Break");
 				}
 				case 5:
 				{
-					return ("Nasty Hand");
+					return ("Final Showdown");
 				}
 				case 6:
 				{
-					return ("Black Star");
+					return ("You Beat The Game, Or Did You?");
 				}
 			}
 		}
@@ -634,9 +634,11 @@ inactive
 		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
 			DialogAdd("This is your Collection and Deck. Right Click a Card to move it between the two.");
+			DialogAdd("Cards above the blue horizontal line are in your Deck, while cards below it are in your Collection.");
+			DialogAdd("Each column corresponds to a class. The first column has Adventurer cards and the second one has Arcane.");
 			DialogAdd("Your Deck must have a Commander and 40 Cards from one or two Classes.");
 			DialogAdd("The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
-			DialogAdd("The Story Missions are Outposts. They reward packs containing Class Cards.");
+			DialogAdd("The Story Missions are Obelisks. They reward packs containing Class Cards.");
 			DialogAdd("After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
 			DialogAdd("After completing a Class Story you will unlock the second Commander for that Class.");
 			DialogAdd("Complete your first Class Story to unlock the other Classes.");
@@ -681,7 +683,11 @@ inactive
 	if (newClass) {
 		if (totalProgress == 35) {
 			if (getClassProgress(CLASS_SPACE) == 0) {
-				trDelayedRuleActivation(""); // unlock space
+				// DISABLED FOR BETA
+				//trDelayedRuleActivation(""); // unlock space
+				trQuestVarSet("nextClass", 5);
+				trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
+				trEventFire(EVENT_CHOOSE_CLASS);
 			}
 		} else {
 			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
@@ -804,22 +810,77 @@ inactive
 		trUnitSelectByQV("class"+class+"mission"+i);
 		if(trUnitIsSelected()){
 			if (ValidateCollection()) {
-				if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
-					int cards = 2 + i;
-					if(getClassProgress(class) == i){
-						trQuestVarSet("missionHardmode", 0);
-						collectionMission = GetMissionTitle(class,i);
-						collectionReward = "(Reward: " + cards + " Class Cards)";
-					} else {
-						trQuestVarSet("missionHardmode", 1);
-						collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
-						collectionReward = "(Reward: " + cards + " Random Cards)";
+				bool okay = true;
+				if(class == CLASS_SPACE){
+					int ct = kbGetUnitBaseTypeID(kbGetBlockID(""+1*trQuestVarGet("currentCommander")));
+					switch(i)
+					{
+						case 1:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_NOTTUD)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be nottud for this mission.");
+							}
+						}
+						case 2:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_ROGERS)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be phdorogers4 for this mission.");
+							}
+						}
+						case 3:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_YEEBAAGOOON)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Yeebaagooon for this mission.");
+							}
+						}
+						case 4:
+						{
+							if(ct != CommanderToProtounit(COMMANDER_NICK)){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Nickonhawk for this mission.");
+							}
+						}
+						case 6:
+						{
+							if((ct != kbGetProtoUnitID("Pharaoh of Osiris"))&&(ct != kbGetProtoUnitID("Hoplite"))&&(ct != kbGetProtoUnitID("Minotaur"))&&(ct != kbGetProtoUnitID("Hero Greek Odysseus"))){
+								okay = false;
+								uiClearSelection();
+								trSoundPlayFN("cantdothat.wav");
+								uiMessageBox("Your commander must be Nickonhawk, Zenophobia, Yeebaagooon or nottud for this mission.");
+							}
+
+						}
 					}
-					trQuestVarSet("missionSelection", i);
-					trQuestVarSet("missionClass", class);
-					//xsEnableRule("CollectionEnter");
-					trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
-					CollectionGodPowers();
+				} 
+				if(okay){
+					if (trQuestVarGet("missionSelection") != i || trQuestVarGet("missionClass") != class) {
+						int cards = 2 + i;
+						if(getClassProgress(class) == i){
+							trQuestVarSet("missionHardmode", 0);
+							collectionMission = GetMissionTitle(class,i);
+							collectionReward = "(Reward: " + cards + " Class Cards)";
+						} else {
+							trQuestVarSet("missionHardmode", 1);
+							collectionMission = GetMissionTitle(class,i) + " (HARDMODE)";
+							collectionReward = "(Reward: " + cards + " Random Cards)";
+						}
+						trQuestVarSet("missionSelection", i);
+						trQuestVarSet("missionClass", class);
+						//xsEnableRule("CollectionEnter");
+						trShowChoiceDialog(collectionMission, "Start " + collectionReward, EVENT_START_MISSION, "Cancel", EVENT_DESELECT);
+						CollectionGodPowers();
+					}
 				}
 			} else {
 				uiClearSelection();
@@ -888,6 +949,8 @@ inactive
 		saveDeckAndProgress();
 		map("mouse1down", "game", "uiSelectionButtonDown");
 		map("mouse2up", "game", "uiWorkAtPointer");
+		map("mouse2doubleup", "game", "uiWorkAtPointer");
+		map("delete", "game", "uiDeleteSelectedUnit");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 		trModeEnter("Pregame");
@@ -1066,7 +1129,7 @@ inactive
 	trDelayedRuleActivation("ChooseNewClass_03");
 	xsDisableSelf();
 	// TODO: Make this flashy
-	trShowImageDialog("", "New class unlocked!");
+	trShowImageDialog("HeavenGames\class"+1*trQuestVarGet("nextClass")+"unlock0", "New class unlocked!");
 	trSoundPlayFN("ageadvance.wav");
 }
 
@@ -1075,7 +1138,7 @@ highFrequency
 inactive
 {
 	if (trTime() > cActivationTime) {
-		trShowImageDialog("", "New Commander unlocked!");
+		trShowImageDialog("HeavenGames\class"+1*trQuestVarGet("nextClass")+"unlock1", "New Commander unlocked!");
 		trSoundPlayFN("ui\thunder"+1*trQuestVarGet("nextClass")+".wav");
 		trSoundPlayFN("herocreation.wav");
 		xsDisableSelf();

@@ -7,6 +7,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m1_", 1, 3);
+		mSetVarByQV("p2commander", "attack", 2);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
@@ -68,15 +69,14 @@ inactive
 		xsEnableRule("StoryClass1Mission3_LOS");
 		xsEnableRule("StoryClass1Mission3_explain");
 
-		teleportToTile(1*trQuestVarGet("p2commander"), 254);
+		teleportToTile(1*trQuestVarGet("p2commander"), 254, true);
 		deployAtTile(0, "Garrison Flag Sky Passage", 218);
 
 		// sparkly books of magic
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("libraryMoonblade", "speed", 3);
 			// mSetVarByQV("libraryNanodude", "speed", 3); // this is a bit much
-			zSetVarByIndex("tiles", "occupant", mGetVarByQV("libraryMoonblade", "tile"), 0);
-			teleportToTile(1*trQuestVarGet("libraryMoonblade"), 200);
+			teleportToTile(1*trQuestVarGet("libraryMoonblade"), 200, true);
 		}
 		addMagicBook(158);
 		addMagicBook(143);
@@ -84,6 +84,19 @@ inactive
 		addMagicBook(170);
 		addMagicBook(147);
 		addMagicBook(128);
+
+		trQuestVarSet("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("p1commander"), deployAtTile(2, "Victory Marker", 128));
+		trQuestVarSet("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("deadeye"), deployAtTile(2, "Victory Marker", 128));
+		trQuestVarSet("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("p1commander"), deployAtTile(2, "Victory Marker", 128));
+		trQuestVarSet("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("deadeye"), deployAtTile(2, "Victory Marker", 128));
+
+		trUnitSelectClear();
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("p1commander"));
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("deadeye"));
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("p1commander"));
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("deadeye"));
+		trSetSelectedScale(0,0,0);
+		trMutateSelected(kbGetProtoUnitID("Petosuchus Projectile"));
 
 		trEventSetHandler(EVENT_MUSIC, "StoryClass1Mission3Music");
 		trEventFire(EVENT_MUSIC);
@@ -104,27 +117,50 @@ inactive
 }
 
 bool LibraryCheckLOS(int from = 0, int to = 0) {
+	vector start = kbGetBlockPosition(""+from);
 	vector end = kbGetBlockPosition(""+to);
+	vector dir = getUnitVector(start, end);
+	trUnitSelectClear();
+	trUnitSelectByQV("line"+from+"to"+to);
+	trUnitTeleport(xsVectorGetX(start), xsVectorGetY(start) - 1.0, xsVectorGetZ(start));
+	trSetUnitOrientation(vector(0,0,0) - dir, vector(0,1,0), true);
+
 	int occupant = 0;
-	trQuestVarSet("next", mGetVar(from, "tile"));
-	yClearDatabase("losPath");
-	yAddToDatabase("losPath", "next");
+	int next = mGetVar(from, "tile");
+	float dist = 0;
+
+	dir = dir * 6.0;
+	end = start;
+
+	bool hit = false;
+	
 	for(i=15; >0) {
-		trQuestVarSet("next", getNearestNeighbor(1*trQuestVarGet("next"), end));
-		yAddToDatabase("losPath", "next");
-		if (zGetVarByIndex("tiles", "terrain", 1*trQuestVarGet("next")) == TILE_OCCUPIED) {
-			return(false);
-		} else if (zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("next")) > 0) {
-			occupant = zGetVarByIndex("tiles", "occupant", 1*trQuestVarGet("next"));
+		end = end + dir;
+		dist = dist + 6.0;
+		next = getNearestNeighbor(next, end);
+		if (zGetVarByIndex("tiles", "terrain", next) == TILE_OCCUPIED) {
+			hit = false;
+			break;
+		} else if (zGetVarByIndex("tiles", "occupant", next) > 0) {
+			occupant = zGetVarByIndex("tiles", "occupant", next);
 			if ((occupant == trQuestVarGet("deadeye")) || (occupant == trQuestVarGet("p1commander"))) {
-				return(true);
+				hit = true;
+				break;
 			} else {
-				return(false);
+				hit = false;
+				break;
 			}
 		}
 	}
-	return(false);
+	dist = dist * 1.222222;
+	trSetSelectedScale(3.0, 0.0, dist);
+	if (hit) {
+		trUnitHighlight(0.1, false);
+	}
+	return(hit);
 }
+
+
 
 rule StoryClass1Mission3_Music
 inactive
@@ -140,6 +176,24 @@ inactive
 highFrequency
 {
 	vector pos = vector(0,0,0);
+	if (mGetVarByQV("libraryMoonblade", "stunTime") <= 0) {
+		LibraryCheckLOS(1*trQuestVarGet("libraryMoonblade"), 1*trQuestVarGet("deadeye"));
+		LibraryCheckLOS(1*trQuestVarGet("libraryMoonblade"), 1*trQuestVarGet("p1commander"));
+	} else {
+		trUnitSelectClear();
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("p1commander"));
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryMoonblade")+"to"+1*trQuestVarGet("deadeye"));
+		trSetSelectedScale(0,0,0);
+	}
+	if (mGetVarByQV("libraryNanodude", "stunTime") <= 0) {
+		LibraryCheckLOS(1*trQuestVarGet("libraryNanodude"), 1*trQuestVarGet("deadeye"));
+		LibraryCheckLOS(1*trQuestVarGet("libraryNanodude"), 1*trQuestVarGet("p1commander"));
+	} else {
+		trUnitSelectClear();
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("p1commander"));
+		trUnitSelectByQV("line"+1*trQuestVarGet("libraryNanodude")+"to"+1*trQuestVarGet("deadeye"));
+		trSetSelectedScale(0,0,0);
+	}
 	if (trQuestVarGet("libraryStep") != trQuestVarGet("activePlayer")) {
 		trQuestVarSet("libraryStep", trQuestVarGet("activePlayer"));
 		bool caught = false;
@@ -343,6 +397,7 @@ inactive
 		mSetVarByQV("p1commander", "keywords", Keyword(BEACON));
 		mSetVarByQV("p1commander", "OnAttack", 0);
 		mSetVarByQV("p1commander", "attack", 1);
+		mSetVarByQV("p1commander", "range", 1);
 		mSetVarByQV("p1commander", "health", 1);
 		mSetVarByQV("p1commander", "maxhealth", 1);
 		mSetVarByQV("p1commander", "proto", kbGetProtoUnitID("Hero Boar 2"));
@@ -359,7 +414,6 @@ inactive
 		CinematicPlay("HeavenGames\c2m5_", 1, 4);
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
-		mSetVarByQV("p2commander", "attack", 2);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));
 		generateCard(2, kbGetProtoUnitID("Statue of Lightning"), SPELL_HORROR_MENAGERIE);
 		if (trQuestVarGet("missionHardmode") == 1) {

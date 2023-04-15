@@ -59,6 +59,8 @@ const int SPELL_MIRROR_REFLECTION = 987;
 const int SPELL_KRAKEN_HUG = 986;
 const int SPELL_WATER_PRESSURE = 985;
 const int SPELL_OXYGEN_TANK = 984;
+const int SPELL_CORONA_APOCALYPSE = 983;
+const int SPELL_METAL_GEAR = 982;
 
 const int SPELL_PROTECTION = 812;
 const int SPELL_CRESCENT_STRIKE = 811;
@@ -99,7 +101,7 @@ const int SPELL_EXPLOSION = 18;
 const int SPELL_RUNE_OF_FLAME = 19;
 const int SPELL_RUNE_OF_ICE = 20;
 const int SPELL_FIRE_AND_ICE = 21;
-const int SPELL_DOUBLEBLAST = 22;
+const int SPELL_MAGIC_MISSILES = 22;
 const int SPELL_ELECTROSURGE = 23;
 const int SPELL_CLASS_TIME = 24;
 const int SPELL_COPY_HOMEWORK = 25;
@@ -731,14 +733,14 @@ void displayCardKeywordsAndDescription(int name = 0) {
 		}
 		trChatSend(0, colorizeStat(name, "Attack", "ATK") + " | " + colorizeStat(name, "Health", "HP") + " | " + colorizeStat(name, "Speed", "SPD") + " | " + colorizeStat(name, "Range", "RNG"));
 		
+		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
+			trChatSend(0, "(Uncollectable)");
+		}
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		//trChatSend(0, trStringQuestVarGet("card_"+proto+"_Ability"));
 		trChatSend(0, mGetString(name, "ability"));
-		if ((CardToProto(card) != proto) && (mGetVar(name, "spell") == 0)) {
-			trChatSend(0, "(Uncollectable)");
-		}
 	} else {
 		card = SpellToCard(1*mGetVar(name, "spell"));
 		trChatSend(0, "<color={Playercolor("+p+")}>=== (" + 1*mGetVar(name, "cost") + ") " + trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_name")+" ===</color>");
@@ -756,13 +758,13 @@ void displayCardKeywordsAndDescription(int name = 0) {
 			}
 		}
 		
+		if (CardToSpell(card) != mGetVar(name, "spell")) {
+			trChatSend(0, "(Uncollectable)");
+		}
 		if (mGetVar(name, "keywords") > 0) {
 			trChatSend(0, dialog);
 		}
 		trChatSend(0, trStringQuestVarGet("spell_"+1*mGetVar(name, "spell")+"_description"));
-		if (CardToSpell(card) != mGetVar(name, "spell")) {
-			trChatSend(0, "(Uncollectable)");
-		}
 	}
 	
 	updateMana();
@@ -781,7 +783,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 	trUnitSelect(""+next, false);
 	
 	if (spell == 0 || spell == SPELL_COMMANDER) {
-		trUnitChangeName(trStringQuestVarGet("card_" + proto + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("card_" + proto + "_Cost") + ") " + trStringQuestVarGet("card_" + proto + "_Name"));
 		mSetVar(next, "attack", trQuestVarGet("card_" + proto + "_Attack"));
 		mSetVar(next, "health", trQuestVarGet("card_" + proto + "_Health"));
 		mSetVar(next, "maxHealth", trQuestVarGet("card_" + proto + "_Health"));
@@ -795,10 +797,10 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "stunTime", 0);
 		mSetVar(next, "victory", 0);
 		mSetVar(next, "victoryAmbush", 0);
-		mSetVar(next, "scale", 1);
+		mSetVar(next, "scale", 2);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
-		trUnitChangeName(trStringQuestVarGet("spell_" + spell + "_Name"));
+		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		mSetVar(next, "cost", trQuestVarGet("spell_" + spell + "_Cost"));
 		mSetVar(next, "keywords", trQuestVarGet("spell_"+spell+"_keywords"));
 		proto = kbGetProtoUnitID("Statue of Lightning");
@@ -949,6 +951,8 @@ active
 		trForbidProtounit(p, "Temple");
 		trForbidProtounit(p, "Ulfsark");
 		trModifyProtounit("Minion", p, 8, -99); // unit lifespan
+
+		trModifyProtounit("Hero Greek Achilles", p, 5, 99); // carry capacity
 	}
 
 	trModifyProtounit("Dwarf", 0, 55, 4);
@@ -976,12 +980,14 @@ active
 	
 	CardSetup("Pharaoh Secondary",		0, "Fire Mage", 			2, 20, 2, 2, Keyword(BEACON), true);
 	CardEvents("Pharaoh Secondary", Keyword(ATTACK_SPELL_DAMAGE), 0, 	"After I counterattack, I gain +1 Spell Damage.");
-	CardSetup("King Folstag",			0, "Freeze McGee", 			3, 20, 2, 1, Keyword(BEACON) + Keyword(ARMORED), true);
+	CardSetup("King Folstag",			0, "Freeze McGee", 			2, 20, 2, 1, Keyword(BEACON), true);
 	CardEvents("King Folstag", Keyword(ATTACK_STUN_TARGET), 0, 	"Attack: Stun my target.");
 	CardSetup("Hero Boar",				0, "Polymorphed Mage", 		1, 30, 2, 1, Keyword(BEACON), true);
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);
 	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");
+	CardSetup("Militia",				0, "jesper55561", 			2, 60, 2, 1, Keyword(BEACON), true);
+	CardEvents("Militia", 0, 0,	"Both players have random mana.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
 	SpellSetup("Ground Stomp", 			2, SPELL_GROUND_STOMP, 		"Deal 1 Damage to units adjacent to your Commander.", SPELL_TYPE_OTHER, 0, true);
@@ -996,11 +1002,14 @@ active
 	SpellSetup("Descend From Treetops",	10, SPELL_ELVEN_APOCALYPSE,	"Fill your hand with random elves. They have Airdrop and cost 0.", SPELL_TYPE_OTHER, 0, true);
 	
 	SpellSetup("Kraken Gives You A Hug",8, SPELL_KRAKEN_HUG,	"Opponent draws 8 cards for each unit they control.", SPELL_TYPE_OTHER, 0, true);
-	//SpellSetup("High Pressure",			2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
+	//SpellSetup("High Pressure",		2, SPELL_WATER_PRESSURE,"Set a unit's Attack and Health to 1.", SPELL_TYPE_OFFENSIVE, 0, true);
 	//SpellSetup("Nickonhawk's Portal", 3, SPELL_NICKS_PORTAL, "Summon a random unit on a random tile.", SPELL_TYPE_OTHER, 0, true);
 	SpellSetup("Oxygen Tank",			5, SPELL_OXYGEN_TANK,	"Shuffle this in your deck.", SPELL_TYPE_OTHER, 0, true);
 	
-	CardSetup("Bondi",					1, "Mercenary",				5, 4, 2, 1, 0, true);
+	SpellSetup("PLAY NOW BEST ESCAPE",	10, SPELL_CORONA_APOCALYPSE,	"Fill your hand with random legendary units. They cost 0.", SPELL_TYPE_OTHER, 0, true);
+	SpellSetup("SURPASS METAL GEAR",	10, SPELL_METAL_GEAR,	"Fill your hand with Lurking Crockys. They have Magnetic and cost 0.", SPELL_TYPE_OTHER, 0, true);
+		
+	CardSetup("Bondi",					1, "Mercenary",				4, 4, 2, 1, 0, true);
 	CardEvents("Bondi", 0, 0,								"Play: Pay 2 Mana next turn.");
 	CardSetup("Golem",					6, "Arcane Golem",			7, 9, 2, 1, 0, true);
 	CardEvents("Golem", 0, 0, 								"Ignore odd damage.");
@@ -1143,11 +1152,11 @@ highFrequency
 	SpellSetup("Spark", 				1, SPELL_SPARK, 		"Deal 1 damage.",SPELL_TYPE_OFFENSIVE, 0, true);
 	CardSetup("Hero Boar 2",			1, "Boar",		 		1, 1, 2, 1, 0, true);
 	// 30-34
-	CardSetup("Slinger", 				2, "Apprentice", 		1, 1, 2, 2);
+	CardSetup("Slinger", 				1, "Apprentice", 		1, 1, 2, 2);
 	CardSetup("Maceman", 				2, "School Guard",		2, 3, 2, 1, Keyword(GUARD));
 	SpellSetup("Arcane Explosion",		3, SPELL_EXPLOSION,		"Deal 1 damage to enemies within 1 space of the target location.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Javelin Cavalry Hero",	4, "Magic Messenger",	2, 3, 3, 2); // After you cast a spell, grant me another action.
-	SpellSetup("Doubleblast",			4, SPELL_DOUBLEBLAST,	"Deal 1 damage to two enemies. Draw a card.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Magic Missiles",		4, SPELL_MAGIC_MISSILES,"Deal 1 damage to three enemies.", SPELL_TYPE_OFFENSIVE);
 	// 35-39
 	SpellSetup("Class Time",			3, SPELL_CLASS_TIME,	"Draw a spell and a unit.", SPELL_TYPE_OTHER);
 	SpellSetup("Spellsnipe",			3, SPELL_SNIPE,			"An ally attacks an enemy within range. Add their range to the damage dealt.", SPELL_TYPE_OTHER);
@@ -1209,7 +1218,7 @@ highFrequency
 	// 70-74 (LEGENDARY at 74)
 	SpellSetup("Rune of Water",			5, SPELL_RUNE_OF_WATER,		"Restore 6 health to the enemy Commander to summon a 2|6 Tide Elemental that pushes its targets.", SPELL_TYPE_OTHER);
 	CardSetup("Hydra",					6, "Depth Strider",			4, 6, 1, 1, Keyword(REGENERATE) + Keyword(OVERFLOW));
-	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"Push an enemy in any direction.", SPELL_TYPE_OFFENSIVE);
+	SpellSetup("Water Cannon",			5, SPELL_WATER_CANNON,		"Push a unit in any direction.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Sea Turtle",				6, "Ancient Watcher",		4, 5, 1, 1, Keyword(GUARD) + Keyword(ARMORED));
 	CardSetup("Heka Gigantes",			10, "King of the Depths",	6, 7, 2, 1, Keyword(BEACON)); // All your units have Overflow.
 	// 75-79
@@ -1251,7 +1260,8 @@ highFrequency
 	CardSetup("Pharaoh of Osiris",		0, "Yeebaagooon", 			0, 20, 2, 2, Keyword(BEACON) + Keyword(LIGHTNING), true);
 	SpellSetup("Scrap Metal",			0, SPELL_SCRAP_METAL,		"Gain 1 mana this turn.", SPELL_TYPE_OTHER, 0, true);
 	CardSetup("Outpost",				0, "Lightning Rod",			0, 3, 0, 0, Keyword(CONDUCTOR) + Keyword(AIRDROP), true);
-	CardSetup("Guild",					4, "Gear Factory",			0, 6, 0, 0, 0, true); // At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.
+	CardSetup("Guild",					4, "Gear Factory",			0, 4, 0, 0, Keyword(DECAY), true); // At the end of your turn, create a Gearwalker.
+	CardSetup("Mining Camp",			2, "Scrapyard",				0, 3, 0, 0, Keyword(DECAY), true); // At the end of your turn, create a Scrap MEtal.
 	CardSetup("Wall Connector",			0, "Iron Wall",				0, 3, 0, 0, Keyword(AIRDROP) + Keyword(FLEETING), true);
 	
 	// 90-94
@@ -1279,7 +1289,7 @@ highFrequency
 	SpellSetup("Compress",				3, SPELL_COMPRESS,			"Combine a unit with all of its adjacent allied units, adding up attack, health, and keywords.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Upgrade",				4, SPELL_UPGRADE,			"Give an allied unit +2|+2 and Magnetic.", SPELL_TYPE_DEFENSIVE);
 	// 110-114
-	SpellSetup("Profiteering",			2, SPELL_PROFITEERING,		"Give a unit 'Attack: Draw a card.' This effect does not stack", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Scrapyard",				2, SPELL_PROFITEERING,		"Summon a 0|3 Scrapyard with Decay. It creates a Scrap Metal each turn.", SPELL_TYPE_DEFENSIVE);
 	SpellSetup("Warning Shot",			2, SPELL_WARNING_SHOT,		"Deal 1 damage. Draw a card.", SPELL_TYPE_OFFENSIVE);
 	CardSetup("Hero Greek Atalanta",	5, "Thunderstepper",		1, 3, 3, 1, Keyword(AMBUSH) + Keyword(LIGHTNING)); // After I move, I gain +1 attack.
 	SpellSetup("Rewind",				4, SPELL_REWIND,			"Return an enemy unit to your opponent's hand.", SPELL_TYPE_OTHER);
@@ -1287,7 +1297,7 @@ highFrequency
 	// 115-119 (LEGENDARY at 119)
 	SpellSetup("TEH BANHAMMER",			7, SPELL_BANHAMMER,			"Destroy an enemy unit. If your Commander is Yeebaagooon, also destroy all enemy copies of it.", SPELL_TYPE_OTHER);
 	SpellSetup("Assembly Line",			3, SPELL_ASSEMBLY_LINE,		"Shuffle a copy of your hand into your deck. Draw a card.", SPELL_TYPE_OTHER);
-	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a Gear Factory at the target location. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
+	SpellSetup("Gear Factory",			4, SPELL_GEAR_FACTORY,		"Summon a 0|4 Gear Factory with Decay. It creates a Gearwalker each turn.", SPELL_TYPE_OTHER);
 	SpellSetup("Bullet Storm",			5, SPELL_BULLET_STORM,		"Your Commander attacks all enemies within range.", SPELL_TYPE_OTHER);
 	SpellSetup("The Power Suit",		5, SPELL_POWER_SUIT,		"Give your Commander Magnetic.", SPELL_TYPE_OTHER);
 	xsDisableSelf();
@@ -1438,7 +1448,7 @@ highFrequency
 	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
+	CardEvents("Minotaur", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to your opponent's hand.");
 	
 	CardEvents("Swordsman Hero", 0, 0, 									"After ANY player casts a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Create a Spark.");
@@ -1484,7 +1494,8 @@ highFrequency
 	CardEvents("Throwing Axeman", 0, 0,									"Your units cost 1 less.");
 	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random unit from your deck on my tile.");
 	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");
-	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");
+	CardEvents("Guild", 0, 0,											"At the end of your turn, create a Gearwalker.");
+	CardEvents("Mining Camp", 0, 0,										"At the end of your turn, create a Scrap Metal.");
 	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");
 	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");
 	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");

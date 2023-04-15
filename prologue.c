@@ -445,23 +445,23 @@ highFrequency
 	{
 	case 0:
 		{
-			trShowImageDialog("", "New class unlocked!");
+			trShowImageDialog("HeavenGames\class0unlock0", "New class unlocked!");
 			trSoundPlayFN("ageadvance.wav");
 		}
 	case 1:
 		{
-			trShowImageDialog("", "New Commander unlocked!");
+			trShowImageDialog("HeavenGames\class0unlock1", "New Commander unlocked!");
 			trSoundPlayFN("ui\thunder1.wav");
 			trSoundPlayFN("herocreation.wav");
 		}
 	case 2:
 		{
-			trShowImageDialog("", "New class unlocked!");
+			trShowImageDialog("HeavenGames\class1unlock0", "New class unlocked!");
 			trSoundPlayFN("ageadvance.wav");
 		}
 	case 3:
 		{
-			trShowImageDialog("", "New Commander unlocked!");
+			trShowImageDialog("HeavenGames\class1unlock1", "New Commander unlocked!");
 			trSoundPlayFN("ui\thunder1.wav");
 			trSoundPlayFN("herocreation.wav");
 		}

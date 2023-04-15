@@ -171,7 +171,7 @@ void OnPlay(int unit = 0) {
 						mSetVarByQV("allUnits", "maxhealth", 1 + mGetVarByQV("allUnits", "maxhealth"));
 						trUnitSelectClear();
 						trUnitSelect(""+1*trQuestVarGet("allUnits"), true);
-						spyEffect("Einheriar Boost SFX");
+						spyEffect(1*trQuestVarGet("allUnits"), "Einheriar Boost SFX");
 					}
 				}
 			}
@@ -302,16 +302,12 @@ void OnPlay(int unit = 0) {
 		case kbGetProtoUnitID("Guardian"):
 		{
 			trQuestVarSet("p"+(3-p)+"drawCards", 2 + trQuestVarGet("p"+(3-p)+"drawCards"));
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Hero Greek Achilles"):
 		{
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("xpack\xdialog\xkri075.mp3","1",-1,"", "");
 			trUnitSelectClear();
 			trUnitSelect(""+1*trQuestVarGet("p"+(3-p)+"commander"));
-			spyEffect("Poison SFX");
+			spyEffect(1*trQuestVarGet("p"+(3-p)+"commander"), "Poison SFX");
 			deployAtTile(0, "Kronny Birth SFX", 1*mGetVarByQV("p"+(3-p)+"commander", "tile"));
 			mSetVarByQV("p"+(3-p)+"commander", "keywords", SetBit(1*mGetVarByQV("p"+(3-p)+"commander", "keywords"), DECAY));
 			stunUnit(1*trQuestVarGet("p"+(3-p)+"commander"));
@@ -346,10 +342,6 @@ void OnPlay(int unit = 0) {
 			trQuestVarSet("summonedUnit", unit);
 			chooseSpell(SPELL_SUMMON_ONE);
 			done = false;
-		}
-		case kbGetProtoUnitID("Tower Mirror"):
-		{
-			trSoundPlayFN("wonder.wav","1",-1,"","");
 		}
 		case kbGetProtoUnitID("Fire Siphon"):
 		{

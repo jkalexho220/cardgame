@@ -40,6 +40,8 @@ runImmediately
 	trTechGodPower(2, "Animal magnetism", 1);
 	map("mouse1down", "game", "uiSetSpecialPower(227) uiSpecialPowerAtPointer");	// animal magnetism for left click
 	map("mouse2up", "game", "uiSetSpecialPower(84) uiSpecialPowerAtPointer");		// dwarven mine for right click
+	map("mouse2doubleup", "game", "uiSetSpecialPower(84) uiSpecialPowerAtPointer");		// dwarven mine for right click
+	map("delete", "game", "");
 	map("space", "game", "trackInsert(); trackAddWaypoint();trackPlay(-1,1);");		// space for other stuff
 	map("enter", "game", "uiSetSpecialPower(156) uiSpecialPowerAtPointer");			// rain for enter (end turn)
 	

@@ -38,7 +38,7 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_GET_ARCANE:
 		{
-			trQuestVarSetFromRand("spellChosen", SPELL_SPARK, SPELL_APOCALYPSE, true);
+			trQuestVarSetFromRand("spellChosen", SPELL_EXPLOSION, SPELL_APOCALYPSE, true);
 			generateCard(p, 0, 1*trQuestVarGet("spellChosen"));
 		}
 		case DEATH_SUMMON_ZOMBIE:
@@ -65,7 +65,7 @@ bool OnDeath(int event = -1, int unit = 0){
 						mSetVar(target, "keywords", SetBit(1*mGetVar(target, "keywords"), DECAY));
 						trUnitSelectClear();
 						trUnitSelect(""+target);
-						spyEffect("Poison SFX");
+						spyEffect(target, "Poison SFX");
 					}
 				}
 			}
@@ -279,7 +279,7 @@ void removeDeadUnits() {
 					mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));
 					mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));
 					mSetVarByQV("allUnits", "maxhealth", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "maxhealth"));
-					mSetVarByQV("allUnits", "scale", 0.25*trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));
+					mSetVarByQV("allUnits", "scale", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));
 					scaleUnit(1*trQuestVarGet("allUnits"));
 				}
 			}
@@ -346,6 +346,8 @@ void removeDeadUnits() {
 		}
 	}
 	updateAuras();
+	// Throne Shield
+	xsEnableRule("update_auras_delay");
 	
 	if (mGetVarByQV("p1commander", "health") <= 0) {
 		trQuestVarSet("p1defeated", 1);
@@ -356,6 +358,15 @@ void removeDeadUnits() {
 		xsEnableRule("match_end");
 	}
 }
+
+rule update_auras_delay
+highFrequency
+inactive
+{
+	xsDisableSelf();
+	updateAuras();
+}
+
 
 
 

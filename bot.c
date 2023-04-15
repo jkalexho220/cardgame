@@ -9,6 +9,7 @@ const int BOT_PERSONALITY_DEFAULT = 0;	// Default bot, moves and attacks
 const int BOT_PERSONALITY_TRAINING = 1; // Training bot, passes turn
 const int BOT_PERSONALITY_LIBRARY = 2; // random wandering in the library
 const int BOT_PERSONALITY_SUMMON_FIRST = 3;
+const int BOT_PERSONALITY_ATTACK_SHARPSHOOTER = 4; // KILL
 
 void InitBot(int personality = 0){
 	trQuestVarSet("botPersonality", personality);
@@ -66,6 +67,14 @@ inactive
 		if(trQuestVarGet("botPersonality") == BOT_PERSONALITY_TRAINING){
 			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
 			xsDisableRule("Bot1");
+			xsDisableRule("BotTimer");
+			trQuestVarSet("gameplayPhase", -1);
+		}
+
+		// if the sharpshooter died, we end our turn.
+		if ((trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) && (trQuestVarGet("p1deathCount") == 1)) {
+			trTechInvokeGodPower(2, "Rain", vector(110,0,110), vector(110,0,110));
+			xsDisableSelf();
 			xsDisableRule("BotTimer");
 			trQuestVarSet("gameplayPhase", -1);
 		}
@@ -339,7 +348,11 @@ inactive
 				int bestTile = 0;
 				int bestTileScore = -1000;
 				int currentScore = 0;
-				trVectorSetUnitPos("commanderpos", "p1commander");
+				if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) {
+					trVectorSetUnitPos("commanderpos", "tutorialSharpshooter");
+				} else {
+					trVectorSetUnitPos("commanderpos", "p1commander");
+				}
 				for(x=yGetDatabaseCount("reachable"); >0) {
 					yDatabaseNext("reachable");
 					/*
@@ -359,7 +372,12 @@ inactive
 						} else {
 							currentScore = 2*mGetVarByQV("botActiveUnit", "attack") * trCountUnitsInArea(""+1*trQuestVarGet("reachable"),1,"Unit",1.0+6.0*mGetVarByQV("botActiveUnit", "range"));
 						}
-						currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
+						// in the tutorial, the bot is fearless
+						if (trQuestVarGet("botPersonality") == BOT_PERSONALITY_ATTACK_SHARPSHOOTER) {
+							currentScore = currentScore - 9 * trDistanceToVector("reachable", "commanderpos");
+						} else {
+							currentScore = currentScore - 0.2 * trDistanceToVector("reachable", "commanderpos");
+						}
 						if (currentScore >= bestTileScore) {
 							/*
 							prioritize tiles that can be attacked by the fewest number of enemies
@@ -393,38 +411,41 @@ inactive
 				for (x=yGetDatabaseCount("targets"); >0) {
 					yDatabaseNext("targets");
 					if (HasKeyword(HEALER, 1*mGetVarByQV("botActiveUnit", "keywords"))) {
-						currentScore = mGetVarByQV("targets", "maxHealth") - mGetVarByQV("targets", "health");
+						// prioritize healing low health things that cost a lot
+						currentScore = (mGetVarByQV("targets", "maxHealth") - mGetVarByQV("targets", "health")) * mGetVarByQV("targets", "cost");
 					} else if((trQuestVarGet("botActiveUnit") == trQuestVarGet("p2commander")) && (mGetVarByQV("targets", "attack") >= mGetVarByQV("botActiveUnit", "health"))){
 						continue;
-					}
-					if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){
-						currentScore = mGetVarByQV("targets", "health");
 					} else {
-						currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
-						if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
-							currentScore = currentScore - 1;
-						}
-						if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
-							currentScore = 0;
-						}
-					}
-					// If the target dies, then currentScore = 2 * (target's attack + cost)
-					if (currentScore >= 0) {
-						currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
-					}
-					// If the target can counterattack, we subtract its attack from currentScore
-					if (trDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
-						if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
-							currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
+						if((HasKeyword(DEADLY, 1*mGetVarByQV("botActiveUnit", "keywords"))) && (1*mGetVarByQV("targets", "spell") == 0)){
+							currentScore = mGetVarByQV("targets", "health");
 						} else {
-							if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
-								currentScore = currentScore - xsMax(mGetVarByQV("targets", "attack"), mGetVarByQV("botActiveUnit", "health"));
-								if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
-									currentScore = currentScore + 1;
+							currentScore = mGetVarByQV("botActiveUnit", "attack") - mGetVarByQV("targets", "health");
+							if(HasKeyword(ARMORED, 1*mGetVarByQV("targets", "keywords"))){
+								currentScore = currentScore - 1;
+							}
+							if(HasKeyword(IMMUNE, 1*mGetVarByQV("targets", "keywords"))){
+								currentScore = 0;
+							}
+						}
+						// If the target dies, then currentScore = 2 * (target's attack + cost)
+						if (currentScore >= 0) {
+							currentScore = 2*(mGetVarByQV("targets", "attack") + mGetVarByQV("targets", "cost"));
+						}
+						// If the target can counterattack, we subtract its attack from currentScore
+						if (trDistanceToVector("targets", "pos") <= 1 + 6 * mGetVarByQV("targets", "range")) {
+							if((HasKeyword(DEADLY, 1*mGetVarByQV("targets", "keywords"))) && (1*mGetVarByQV("botActiveUnit", "spell") == 0)){
+								currentScore = currentScore - mGetVarByQV("botActiveUnit", "health");
+							} else {
+								if((1*mGetVarByQV("targets", "stunTime") == 0) && (HasKeyword(IMMUNE, 1*mGetVarByQV("botActiveUnit", "keywords")) == false)){
+									currentScore = currentScore - xsMax(mGetVarByQV("targets", "attack"), mGetVarByQV("botActiveUnit", "health"));
+									if(HasKeyword(ARMORED, 1*mGetVarByQV("botActiveUnit", "keywords"))){
+										currentScore = currentScore + 1;
+									}
 								}
 							}
 						}
 					}
+
 					if (currentScore > bestTargetScore) {
 						bestTargetScore = currentScore;
 						bestTarget = trQuestVarGet("targets");

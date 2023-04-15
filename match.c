@@ -12,8 +12,8 @@ inactive
 		mSetVarByQV("p"+p+"commander", "spell", SPELL_COMMANDER);
 		mSetVarByQV("p"+p+"commander", "action", ACTION_DONE);
 		trUnitSelectClear();
-		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"), true);
-		spyEffect("Healing SFX");
+		trUnitSelect(""+1*trQuestVarGet("p"+p+"commander"));
+		spyEffect(1*trQuestVarGet("p"+p+"commander"), "Healing SFX");
 		
 		trQuestVarSet("p"+p+"drawCards", 4);
 		zSetVarByIndex("tiles", "occupant", 1*trQuestVarGet("p"+p+"startTile"), 1*trQuestVarGet("p"+p+"commander"));
@@ -28,12 +28,20 @@ inactive
 			trQuestVarSet("p"+p+"maxHandSize", 10);
 		}
 
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {
+			mSetVarByQV("p"+p+"commander", "health", 40);
+		}
+
 		trQuestVarSet("p"+p+"lastProto", kbGetProtoUnitID("Minion"));
 	}
 	// Ravens
 	trQuestVarSet("p1block", 869);
 	trQuestVarSet("p2block", 871);
 	trQuestVarSet("maxMana", 0);
+
+	if (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Invisible Target")) {
+		xsEnableRule("win_destination");
+	}
 	
 	xsDisableRule("match_00_start");
 	xsEnableRule("match_01_mulliganStart");
@@ -65,6 +73,7 @@ inactive
 			trQuestVarSet("p2done", 1);
 		}
 		
+		xsEnableRule("gameplay_select_show_keywords");
 		xsEnableRule("match_02_mulligan");
 		xsDisableRule("match_01_mulliganStart");
 	}
@@ -147,7 +156,6 @@ inactive
 		yClearDatabase("temp");
 		shuffleDeck(p);
 	}
-	xsEnableRule("gameplay_select_show_keywords");
 	trQuestVarSet("activePlayer", 2);
 	xsEnableRule("turn_00_start");
 	xsDisableRule("match_03_replace");
@@ -163,8 +171,14 @@ inactive
 			trQuestVarSet("p"+p+"borrowedTime", trQuestVarGet("p"+p+"borrowedTime") - 1);
 		} else {
 			p = 3 - p;
-			if ((p == 1) && (trQuestVarGet("maxMana") < 10)) {
-				trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+			if(p == 1){
+				if((trQuestVarGet("p1commanderType") == kbGetProtoUnitID("Militia")) || (trQuestVarGet("p2commanderType") == kbGetProtoUnitID("Militia"))) {
+					trQuestVarSetFromRand("maxMana", 1, 10, true);
+				} else {
+					if (trQuestVarGet("maxMana") < 10) {
+						trQuestVarSet("maxMana", trQuestVarGet("maxMana") + 1);
+					}
+				}
 			}
 		}
 		trQuestVarSet("activePlayer", p);
@@ -364,10 +378,15 @@ inactive
 				{
 					case kbGetProtoUnitID("Guild"):
 					{
-						if (yGetDatabaseCount("p"+p+"hand") < 10) {
+						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
 							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
 						}
-						damageUnit(1*trQuestVarGet("allUnits"), 2);
+					}
+					case kbGetProtoUnitID("Mining Camp"):
+					{
+						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
+							addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SCRAP_METAL);
+						}
 					}
 					case kbGetProtoUnitID("Argus"):
 					{
@@ -462,6 +481,8 @@ inactive
 		// multiplayer stuff
 		map("mouse1down", "game", "uiSelectionButtonDown");
 		map("mouse2up", "game", "uiWorkAtPointer");
+		map("mouse2doubleup", "game", "uiWorkAtPointer");
+		map("delete", "game", "uiDeleteSelectedUnit");
 		map("space", "game", "uiLookAtSelection");
 		map("enter", "game", "gadgetReal(\"chatInput\") uiIgnoreNextKey");
 	} else {

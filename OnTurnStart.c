@@ -263,12 +263,12 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Monument 4"):
 		{
-			if(yGetDatabaseCount("p"+p+"hand") < 10){
+			if(yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
 				mSetVarByQV("next", "cost", 0);
 			}
-			if(yGetDatabaseCount("p"+p+"hand") < 10){
+			if(yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
 				mSetVarByQV("next", "cost", 0);
@@ -323,12 +323,12 @@ bool OnTurnStart(int unit = 0) {
 				yRemoveFromDatabase("p"+(3-p)+"hand");
 			}
 			
-			if(yGetDatabaseCount("p"+p+"hand") < 10){
+			if(yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
 				mSetVarByQV("next", "cost", 0);
 			}
-			if(yGetDatabaseCount("p"+p+"hand") < 10){
+			if(yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")){
 				trQuestVarSetFromRand("temp", 30, 59, true);
 				generateCard(p, CardToProto(1*trQuestVarGet("temp")), CardToSpell(1*trQuestVarGet("temp")));
 				mSetVarByQV("next", "cost", 0);
