@@ -1657,7 +1657,6 @@ void SetupMission(int class = 0, int mission = 0){
 			{
 				case 1:
 				{
-					trQuestVarSet("p1commanderType", COMMANDER_NOTTUD);
 					/* Arena */
 					trPaintTerrain(0, 0, 59, 59, 0, T_GREEK_ROAD, false);
 					trQuestVarSet("customTerrainEmpty", T_CITY_TILE);
@@ -1675,7 +1674,6 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 2:
 				{
-					trQuestVarSet("p1commanderType", COMMANDER_ROGERS);
 					/* Arena */
 					trPaintTerrain(0, 0, 59, 59, 0, T_FOREST_PALM, false);
 					trQuestVarSet("customTerrainEmpty", T_SAND_D);
@@ -1695,7 +1693,6 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 3:
 				{
-					trQuestVarSet("p1commanderType", COMMANDER_YEEBAAGOOON);
 					/* Arena */
 					trPaintTerrain(0, 0, 59, 59, 0, T_OLYMPUS_A, false);
 					trQuestVarSet("customTerrainEmpty", T_OLYMPUS_TILE);
@@ -1725,16 +1722,31 @@ void SetupMission(int class = 0, int mission = 0){
 				case 4:
 				{
 					trPaintTerrain(0, 0, 60, 60, 0, 1, false);
-					trQuestVarSet("p1commanderType", COMMANDER_NICK);
 					/* Arena */
 					trQuestVarSet("dimension", 6);
 					trQuestVarSet("zenoMakeRandomStuffPlease", TERRAIN_GRASSLAND);
 					/* Opponent */
 					trQuestVarSet("p2commanderType", COMMANDER_ZENOPHOBIA);
-					for(x=0;<20){
+					for(x=0;<6){
 						addCardToDeck(2, "Female");
-						addCardToDeck(2, "Guardian");
+						addCardToDeck(2, "Anubite");
+						addCardToDeck(2, "Tartarian Gate spawn");
+						addCardToDeck(2, "", SPELL_ZENOS_PARADOX);	
 					}
+					for(x=0;<4){
+						addCardToDeck(2, "Wadjet");
+						addCardToDeck(2, "Kraken");
+						addCardToDeck(2, "Hippocampus");
+						addCardToDeck(2, "", SPELL_WATER_CANNON);
+					}
+					for(x=0;<2){
+						addCardToDeck(2, "", SPELL_DEVOUR);
+						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);	
+						addCardToDeck(2, "Man O War");
+						addCardToDeck(2, "Leviathan");						
+					}
+					addCardToDeck(2, "Hero Greek Polyphemus");
+					addCardToDeck(2, "Guardian");	
 				}
 				case 5:
 				{
@@ -1765,9 +1777,6 @@ void SetupMission(int class = 0, int mission = 0){
 				}
 				case 6:
 				{
-					if((trQuestVarGet("p1commanderType") != COMMANDER_YEEBAAGOOON)&&(trQuestVarGet("p1commanderType") != COMMANDER_ZENOPHOBIA)&&(trQuestVarGet("p1commanderType") != COMMANDER_NOTTUD)){
-						trQuestVarSet("p1commanderType", COMMANDER_NICK);
-					}
 					/* Arena */
 					trPaintTerrain(0, 0, 59, 59, 5, 3, false);
 					trQuestVarSet("customTerrainEmpty", T_HADES_FOREST);

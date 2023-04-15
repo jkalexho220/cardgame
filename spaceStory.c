@@ -86,10 +86,10 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c6m6_", 1, 6);
-		mSetVarByQV("p2commander", "health", 60);
+		mSetVarByQV("p2commander", "health", 100);
 		if (trQuestVarGet("missionHardmode") == 1) {
-			mSetVarByQV("p2commander", "health", 90);
-			mSetVarByQV("p2commander", "maxhealth", 90);
+			mSetVarByQV("p2commander", "health", 150);
+			mSetVarByQV("p2commander", "maxhealth", 150);
 		}
 	}
 }
