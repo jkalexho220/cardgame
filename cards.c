@@ -986,7 +986,7 @@ active
 	CardEvents("Hero Boar", Keyword(ATTACK_YEET), 0,						"After I counterattack, return my target to your opponent's hand.");
 	CardSetup("Setna",					0, "Cult Leader", 			1, 25, 2, 2, Keyword(BEACON), true);
 	CardEvents("Setna", 0, 0,										"Each time an ally dies, draw a card and gain 3 mana.");
-	CardSetup("Militia",				0, "jesper55561", 			2, 60, 2, 1, Keyword(BEACON), true);
+	CardSetup("Militia",				0, "jesper55561", 			2, 80, 2, 1, Keyword(BEACON), true);
 	CardEvents("Militia", 0, 0,	"Both players have random mana.");
 	
 	SpellSetup("Intimidating Presence", 1, SPELL_INTIMIDATE, 		"Stun an enemy adjacent to your Commander.", SPELL_TYPE_OFFENSIVE, 0, true);
