@@ -1638,6 +1638,12 @@
 <Command>		trTechSetStatus(p, 7, 4); // heavy infantry</Command>
 <Command>		trTechSetStatus(p, 476, 4); // iron all</Command>
 <Command>		trTechSetStatus(p, 412, 4); // Iron wall</Command>
+
+<Command>		//unobtainable</Command>
+<Command>		trTechSetStatus(p, 34, 0); //pickaxe</Command>
+<Command>		trTechSetStatus(p, 35, 0); //hand axe</Command>
+<Command>		trTechSetStatus(p, 9, 0); //husbandry</Command>
+<Command>		trTechSetStatus(p, 101, 0); //hunting dogs</Command>
 <Command>	}</Command>
 
 <Command>	// Disable god powers</Command>
@@ -2511,7 +2517,7 @@
 <Command>		mSetVar(next, "stunTime", 0);</Command>
 <Command>		mSetVar(next, "victory", 0);</Command>
 <Command>		mSetVar(next, "victoryAmbush", 0);</Command>
-<Command>		mSetVar(next, "scale", 1);</Command>
+<Command>		mSetVar(next, "scale", 2);</Command>
 <Command>		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));</Command>
 <Command>	} else {</Command>
 <Command>		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));</Command>
@@ -3175,7 +3181,8 @@
 <Command>	CardEvents("Throwing Axeman", 0, 0,									"Your units cost 1 less.");</Command>
 <Command>	CardEvents("Helepolis", 0, Keyword(DEATH_SUMMON_RANDOM),			"Death: Summon a random unit from your deck on my tile.");</Command>
 <Command>	CardEvents("Ape of Set", 0, Keyword(DEATH_BOOM_SMALL),				"Death: I attack all adjacent units.");</Command>
-<Command>	CardEvents("Guild", 0, 0,											"At the end of your turn, deal 2 damage to me and add a Gearwalker to your hand.");</Command>
+<Command>	CardEvents("Guild", 0, 0,											"At the end of your turn, create a Gearwalker.");</Command>
+<Command>	CardEvents("Mining Camp", 0, 0,										"At the end of your turn, create a Scrap Metal.");</Command>
 <Command>	CardEvents("Fire Siphon", 0, 0,										"Play: Choose a direction. Turn Start: I fire a laser and attack everything in a line.");</Command>
 <Command>	CardEvents("Tower Mirror", Keyword(ATTACK_ANIMATE_TOWER), 0,		"");</Command>
 <Command>	CardEvents("Onager", Keyword(ATTACK_TEAMWORK), 0,					"Attack: My adjacent allies attack with me. This effect does not stack.");</Command>
@@ -3941,46 +3948,46 @@
 <Command>void MusicHigh(){</Command>
 <Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
 <Command>	if(trQuestVarGet("random") == 1){</Command>
-<Command>		trSoundPlayFN("cinematics\8_in\music.mp3", "26", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\8_in\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 2){</Command>
-<Command>		trSoundPlayFN("cinematics\9_out\music.mp3", "29", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\9_out\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 3){</Command>
-<Command>		trSoundPlayFN("cinematics\23_out\music 2.mp3", "30", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\23_out\music 2.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 4){</Command>
-<Command>		trSoundPlayFN("xpack\xcinematics\8_in\music.mp3", "56", -1, "","");</Command>
+<Command>		trMusicPlay("xpack\xcinematics\8_in\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 <Command>void MusicMedium(){</Command>
 <Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
 <Command>	if(trQuestVarGet("random") == 1){</Command>
-<Command>		trSoundPlayFN("cinematics\05_out\music.mp3", "19", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\05_out\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 2){</Command>
-<Command>		trSoundPlayFN("cinematics\31_out\music.mp3", "34", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\31_out\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 3){</Command>
-<Command>		trSoundPlayFN("cinematics\22_in\music 2.mp3", "14", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\22_in\music 2.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 4){</Command>
-<Command>		trSoundPlayFN("xpack\xcinematics\7_out\music.mp3", "19", -1, "","");</Command>
+<Command>		trMusicPlay("xpack\xcinematics\7_out\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 <Command>void MusicLow(){</Command>
 <Command>	trQuestVarSetFromRand("random", 1, 4, true);</Command>
 <Command>	if(trQuestVarGet("random") == 1){</Command>
-<Command>		trSoundPlayFN("cinematics\26_out\music.mp3", "37", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\26_out\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 2){</Command>
-<Command>		trSoundPlayFN("cinematics\21_in\music.mp3", "51", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\21_in\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 3){</Command>
-<Command>		trSoundPlayFN("cinematics\04_in\music 1.mp3", "13", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\04_in\music 1.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>	if(trQuestVarGet("random") == 4){</Command>
-<Command>		trSoundPlayFN("cinematics\26_in\music.mp3", "26", -1, "","");</Command>
+<Command>		trMusicPlay("cinematics\26_in\music.mp3", "1", 0);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
@@ -4398,7 +4405,7 @@
 <Command>const int ANIM_GORE = 2;</Command>
 
 <Command>void scaleUnit(int unit = 0) {</Command>
-<Command>	float scale = xsSqrt(mGetVar(unit, "scale"));</Command>
+<Command>	float scale = xsSqrt(0.5 * mGetVar(unit, "scale"));</Command>
 <Command>	trUnitSelectClear();</Command>
 <Command>	trUnitSelect(""+unit);</Command>
 <Command>	trSetSelectedScale(scale, scale, scale);</Command>
@@ -4481,7 +4488,7 @@
 <Command>		spyEffect(unit, "Poison SFX");</Command>
 <Command>	}</Command>
 <Command>	if (HasKeyword(DODGE, 1*mGetVar(unit, "keywords"))) {</Command>
-<Command>		spyEffect(unit, "Well of Urd");</Command>
+<Command>		spyEffect(unit, "Well of Urd", "unused", vector(0,1,0));</Command>
 <Command>	}</Command>
 <Command>	if (HasKeyword(STEALTH, 1*mGetVar(unit, "keywords"))) {</Command>
 <Command>		spyEffect(unit, "Sky Passage", "stealthSFX" + unit);</Command>
@@ -4893,19 +4900,20 @@
 <Command>		current = current / 2;</Command>
 <Command>	}</Command>
 <Command>	mSetVar(target, "keywords", keywords);</Command>
-<Command>	mSetVar(target, "scale", mGetVar(target, "scale") + 0.5 * mGetVar(unit, "health"));</Command>
+<Command>	mSetVar(target, "scale", mGetVar(target, "scale") + mGetVar(unit, "health"));</Command>
 <Command>	scaleUnit(target);</Command>
 <Command><![CDATA[	if (HasKeyword(CHARGE, 1*mGetVar(target, "keywords")) && mGetVar(target, "action") == ACTION_SLEEPING) {]]></Command>
 <Command>		mSetVar(target, "action", ACTION_READY);</Command>
 <Command>	}</Command>
-<Command>	ChatLog(0, "Magnetize! " + unit + " to " + target);</Command>
+<Command>	//ChatLog(0, "Magnetize! " + unit + " to " + target);</Command>
 <Command>}</Command>
 
 <Command>void updateRoxasHealth(int p = 0) {</Command>
 <Command>	if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {</Command>
-<Command>		int diff = trQuestVarGet("p"+p+"roxasHealth") - yGetDatabaseCount("p"+p+"deck");</Command>
-<Command>		trQuestVarSet("p"+p+"roxasHealth", yGetDatabaseCount("p"+p+"deck"));</Command>
-<Command>		damageUnit(1*trQuestVarGet("p"+p+"commander"), diff);</Command>
+<Command>		mSetVarByQV("p"+p+"commander", "maxHealth", yGetDatabaseCount("p"+p+"deck"));</Command>
+<Command>		if (mGetVarByQV("p"+p+"commander", "health") > mGetVarByQV("p"+p+"commander", "maxHealth")) {</Command>
+<Command>			mSetVarByQV("p"+p+"commander", "health", mGetVarByQV("p"+p+"commander", "maxHealth"));</Command>
+<Command>		}</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
@@ -6582,13 +6590,12 @@
 <Command>			if (getClassProgress(CLASS_SPACE) == 0) {</Command>
 <Command>				// DISABLED FOR BETA</Command>
 <Command>				//trDelayedRuleActivation(""); // unlock space</Command>
+<Command>				trQuestVarSet("nextClass", 5);</Command>
+<Command>				trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");</Command>
+<Command>				trEventFire(EVENT_CHOOSE_CLASS);</Command>
 <Command>			}</Command>
-<Command>		} else if (totalProgress == 14) {</Command>
-<Command>			// BETA ONLY. Players will unlock one extra class of their choosing for the beta</Command>
-<Command>			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock</Command>
 <Command>		} else {</Command>
-<Command>			// DISABLED FOR BETA</Command>
-<Command>			//trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock</Command>
+<Command>			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock</Command>
 <Command>		}</Command>
 <Command>	}</Command>
 
@@ -7330,7 +7337,7 @@
 <Command>					mSetVarByQV("allUnits", "attack", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "attack"));</Command>
 <Command>					mSetVarByQV("allUnits", "health", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "health"));</Command>
 <Command>					mSetVarByQV("allUnits", "maxhealth", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "maxhealth"));</Command>
-<Command>					mSetVarByQV("allUnits", "scale", 0.25*trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));</Command>
+<Command>					mSetVarByQV("allUnits", "scale", trQuestVarGet("p"+p+"deathCount") + mGetVarByQV("allUnits", "scale"));</Command>
 <Command>					scaleUnit(1*trQuestVarGet("allUnits"));</Command>
 <Command>				}</Command>
 <Command>			}</Command>
@@ -9858,7 +9865,7 @@
 <Command>				} else {</Command>
 <Command>					trSoundPlayFN("ancestorsbirth.wav","1",-1,"","");</Command>
 <Command>					for(x=3; >0) {</Command>
-<Command>						summonAtTile(1*trQuestVarGet("spellTarget"+x), p, kbGetProtoUnitID("Minion"));</Command>
+<Command>						mSetVar(summonAtTile(1*trQuestVarGet("spellTarget"+x), p, kbGetProtoUnitID("Minion")), "action", ACTION_READY);</Command>
 <Command>					}</Command>
 <Command>				}</Command>
 <Command>			}</Command>
@@ -10404,7 +10411,6 @@
 <Command>			case SPELL_RECHARGE:</Command>
 <Command>			{</Command>
 <Command>				trSoundPlayFN("suckup2.wav");</Command>
-<Command>				done = false;</Command>
 <Command>				trUnitSelectClear();</Command>
 <Command>				trUnitSelect(""+deployAtTile(0, "Deconstruct Unit", mGetVarByQV("p"+p+"commander", "tile")), true);</Command>
 <Command>				trUnitOverrideAnimation(18, 0, false, true, -1);</Command>
@@ -14376,6 +14382,10 @@
 <Command>			trQuestVarSet("p"+p+"maxHandSize", 10);</Command>
 <Command>		}</Command>
 
+<Command>		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_ROXAS) {</Command>
+<Command>			mSetVarByQV("p"+p+"commander", "health", 40);</Command>
+<Command>		}</Command>
+
 <Command>		trQuestVarSet("p"+p+"lastProto", kbGetProtoUnitID("Minion"));</Command>
 <Command>	}</Command>
 <Command>	// Ravens</Command>
@@ -15724,7 +15734,7 @@
 <Command>						addCardToDeck(2, "Hydra");</Command>
 <Command>						addCardToDeck(2, "", SPELL_TELETIDE);</Command>
 <Command>						addCardToDeck(2, "", SPELL_WRATH_OF_SEA);</Command>
-<Command>						addCardToDeck(2, "", SPELL_DEVOUR);</Command>
+<Command>						addCardToDeck(2, "Leviathan");</Command>
 <Command>					}</Command>
 <Command>					trQuestVarSet("p2class2", CLASS_NAGA);</Command>
 <Command>				}</Command>
@@ -15757,7 +15767,7 @@
 <Command>						addCardToDeck(2, "Leviathan");</Command>
 <Command>						addCardToDeck(2, "Hydra");</Command>
 <Command>						addCardToDeck(2, "Sea Turtle");</Command>
-<Command>						addCardToDeck(2, "", SPELL_DEVOUR);</Command>
+<Command>						addCardToDeck(2, "Archer Atlantean");</Command>
 <Command>					}</Command>
 <Command>					trQuestVarSet("p2class2", CLASS_NAGA);</Command>
 <Command>				}</Command>
@@ -15848,7 +15858,7 @@
 <Command>						addCardToDeck(2, "", SPELL_ZENOS_PARADOX);</Command>
 <Command>						addCardToDeck(2, "", SPELL_DEATH_APPROACHES);</Command>
 <Command>						addCardToDeck(2, "", SPELL_TIME_POCKET);</Command>
-<Command>						addCardToDeck(2, "", SPELL_WORLD_SPLITTER);</Command>
+<Command>						addCardToDeck(2, "", SPELL_DEVOUR);</Command>
 <Command>					}</Command>
 <Command>					trQuestVarSet("p2class2", CLASS_NAGA);</Command>
 <Command>				}</Command>
@@ -15916,7 +15926,7 @@
 <Command><![CDATA[					for(x=0; <6) {]]></Command>
 <Command>						addCardToDeck(2, "Crossbowman");</Command>
 <Command>						addCardToDeck(2, "", SPELL_WARNING_SHOT);</Command>
-<Command>						addCardToDeck(2, "", SPELL_MAGIC_MISSILES);</Command>
+<Command>						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);</Command>
 <Command>						addCardToDeck(2, "", SPELL_NANOMACHINES);</Command>
 <Command>					}</Command>
 <Command>				}</Command>
@@ -17152,6 +17162,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c1m1_", 1, 2);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 2);</Command>
 
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
@@ -17168,6 +17179,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c1m2_", 1, 5);</Command>
+<Command>		MusicLow();</Command>
 <Command>		xsEnableRule("StoryClass0Mission2_end");</Command>
 
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
@@ -17182,7 +17194,9 @@
 <Command>inactive</Command>
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
+
 <Command>		CinematicPlay("HeavenGames\c1m2_", 6, 8);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17195,7 +17209,9 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
+
 <Command>		CinematicPlay("HeavenGames\c1m3_", 1, 3);</Command>
+<Command>		MusicMedium();</Command>
 
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);</Command>
@@ -17216,6 +17232,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c1m4_", 1, 8);</Command>
+<Command>		MusicLow();</Command>
 <Command>		int tile = mGetVarByQV("p2commander", "tile");</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p2commander"), 255, true);</Command>
 
@@ -17253,6 +17270,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c1m4_", 9, 11);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17266,6 +17284,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c1m5_", 1, 4);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsEnableRule("StoryClass0Mission5_end");</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			summonAtTile(192, 2, kbGetProtoUnitID("Bondi"));</Command>
@@ -17280,6 +17299,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c1m5_", 5, 8);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17302,6 +17322,7 @@
 <Command>			summonAtTile(167, 2, kbGetProtoUnitID("Ornlu"));</Command>
 <Command>		}</Command>
 <Command>		CinematicPlay("HeavenGames\c1m6_", 1, 3);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsEnableRule("StoryClass0Mission6_end");</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -17312,6 +17333,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c1m6_", 4, 15);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17326,6 +17348,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c2m1_", 1, 3);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 2);</Command>
 
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
@@ -17343,6 +17366,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c2m1_", 4, 8);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17356,6 +17380,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c2m2_", 1, 4);</Command>
+<Command>		MusicLow();</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));</Command>
 <Command>			summonAtTile(192, 2, kbGetProtoUnitID("Frost Giant"));</Command>
@@ -17385,6 +17410,7 @@
 <Command>		xsDisableSelf();</Command>
 <Command>		trQuestVarSet("libraryStep", trQuestVarGet("activePlayer"));</Command>
 <Command>		CinematicPlay("HeavenGames\c2m3_", 1, 3);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsEnableRule("StoryClass1Mission3_LOS");</Command>
 <Command>		xsEnableRule("StoryClass1Mission3_explain");</Command>
 
@@ -17681,6 +17707,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c2m4_", 1, 4);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsEnableRule("StoryClass1Mission4_polymorph");</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 20);</Command>
@@ -17731,6 +17758,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c2m5_", 1, 4);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));</Command>
@@ -17755,6 +17783,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0){</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c2m6_", 1, 6);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		summonAtTile(193, 2, kbGetProtoUnitID("Hero Greek Chiron"));</Command>
@@ -17780,6 +17809,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c2m6_", 7, 13);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17795,6 +17825,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m1_", 1, 6);</Command>
+<Command>		MusicLow();</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));</Command>
 <Command>			addCardToDeck(2, "", SPELL_DOMINANCE);</Command>
@@ -17812,6 +17843,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c4m1_", 7, 10);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17826,6 +17858,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m2_", 1, 4);</Command>
+<Command>		MusicLow();</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p1commander"), 132, true);</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p2commander"), 152, true);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
@@ -17912,7 +17945,8 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m3_", 1, 5);</Command>
-<Command>		//teleportToTile(1*trQuestVarGet("p2commander"), 233);</Command>
+<Command>		MusicMedium();</Command>
+<Command>		teleportToTile(1*trQuestVarGet("p2commander"), 233, true);</Command>
 <Command>	}</Command>
 <Command>}</Command>
 
@@ -17924,6 +17958,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m4_", 1, 5);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 15);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 15);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", SetBit(mGetVarByQV("p2commander", "keywords"), BEACON));</Command>
@@ -17961,6 +17996,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c4m4_", 6, 10);</Command>
+<Command>		MusicLow();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -17974,6 +18010,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m5_", 1, 6);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		damageUnit(1*trQuestVarGet("p1commander"), 18);</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p2commander"), 219, true);</Command>
 <Command>		xsEnableRule("StoryClass3Mission5_1");</Command>
@@ -18179,6 +18216,7 @@
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m5_", 7, 16);</Command>
+<Command>		MusicLow();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	}</Command>
@@ -18192,6 +18230,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c4m6_", 1, 10);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 1);</Command>
@@ -18214,6 +18253,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c4m6_", 11, 14);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18228,6 +18268,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m1_", 1, 4);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 4);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(FURIOUS));</Command>
@@ -18247,6 +18288,7 @@
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		trFadeOutAllSounds(0.0);</Command>
 <Command>		CinematicPlay("HeavenGames\c3m1_", 5, 11);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18260,6 +18302,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m2_", 1, 3);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 3);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(LIGHTNING));</Command>
@@ -18290,6 +18333,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c3m2_", 4, 4);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18303,6 +18347,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m3_", 1, 2);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 4);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));</Command>
@@ -18334,6 +18379,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c3m3_", 3, 3);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18347,6 +18393,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m4_", 1, 4);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 1);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(REGENERATE));</Command>
@@ -18379,6 +18426,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m5_", 1, 5);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 40);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 2);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(ETHEREAL));</Command>
@@ -18412,6 +18460,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c3m6_", 1, 22);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		trQuestVarSet("companion", summonAtTile(283, 1, kbGetProtoUnitID("Archer Atlantean Hero")));</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p1commander"), 281);</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p2commander"), 255);</Command>
@@ -18483,6 +18532,7 @@
 <Command>{</Command>
 <Command>	if ((trTime()-cActivationTime) > 2) {</Command>
 <Command>		CinematicPlay("HeavenGames\c3m6_", 23, 27);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	}</Command>
 <Command>}</Command>
@@ -18496,6 +18546,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m1_", 1, 8);</Command>
+<Command>		MusicLow();</Command>
 <Command>		mSetVarByQV("p1commander", "attack", 2);</Command>
 <Command>		mSetVarByQV("p1commander", "health", 12);</Command>
 <Command>		mSetVarByQV("p1commander", "maxhealth", 12);</Command>
@@ -18518,6 +18569,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m1_", 9, 13);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18531,6 +18583,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m2_", 1, 5);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 12);</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 12);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 1);</Command>
@@ -18558,6 +18611,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m2_", 6, 7);</Command>
+<Command>		MusicLow();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18571,6 +18625,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m3_", 1, 8);</Command>
+<Command>		MusicMedium();</Command>
 
 <Command>		mSetVarByQV("p1commander", "keywords", SetBit(mGetVarByQV("p1commander", "keywords"), BEACON));</Command>
 <Command>		mSetVarByQV("p1commander", "attack", 1);</Command>
@@ -18598,6 +18653,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m3_", 9, 15);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18614,6 +18670,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m4_", 1, 3);</Command>
+<Command>		MusicLow();</Command>
 
 <Command>		xsEnableRule("StoryClass4Mission4_end");</Command>
 <Command>		teleportToTile(1*trQuestVarGet("p2commander"), 255, true);</Command>
@@ -18658,6 +18715,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m4_", 4, 15);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18673,6 +18731,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m5_", 1, 3);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		xsEnableRule("StoryClass4Mission5_end");</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			for(i=3; >0) {</Command>
@@ -18693,6 +18752,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m5_", 4, 10);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18707,6 +18767,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c5m6_", 1, 9);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "maxhealth", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		mSetVarByQV("p2commander", "attack", 3);</Command>
@@ -18745,6 +18806,7 @@
 <Command>{</Command>
 <Command>	if (trQuestVarGet("missionComplete") == 1) {</Command>
 <Command>		CinematicPlay("HeavenGames\c5m6_", 10, 11);</Command>
+<Command>		MusicLow();</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>	} else if (PlayerDefeated(1)) {</Command>
 <Command>		xsDisableSelf();</Command>
@@ -18765,6 +18827,7 @@
 <Command>		mSetVarByQV("p2commander", "maxhealth", 20);</Command>
 <Command>		mSetVarByQV("p2commander", "keywords", mGetVarByQV("p2commander", "keywords") + Keyword(BEACON));</Command>
 <Command>		CinematicPlay("HeavenGames\c6m1_", 1, 12);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>			mSetVarByQV("p2commander", "maxhealth", 30);</Command>
@@ -18779,6 +18842,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m2_", 1, 4);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 20);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 30);</Command>
@@ -18794,6 +18858,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m3_", 1, 1);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 45);</Command>
@@ -18809,6 +18874,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m4_", 1, 8);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 30);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 45);</Command>
@@ -18824,6 +18890,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m5_", 1, 1);</Command>
+<Command>		MusicHigh();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 40);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 60);</Command>
@@ -18839,6 +18906,7 @@
 <Command>	if (trQuestVarGet("p2drawCards") > 0) {</Command>
 <Command>		xsDisableSelf();</Command>
 <Command>		CinematicPlay("HeavenGames\c6m6_", 1, 6);</Command>
+<Command>		MusicMedium();</Command>
 <Command>		mSetVarByQV("p2commander", "health", 60);</Command>
 <Command>		if (trQuestVarGet("missionHardmode") == 1) {</Command>
 <Command>			mSetVarByQV("p2commander", "health", 90);</Command>

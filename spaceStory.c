@@ -12,6 +12,7 @@ inactive
 		mSetVarByQV("p2commander", "maxhealth", 20);
 		mSetVarByQV("p2commander", "keywords", mGetVarByQV("p2commander", "keywords") + Keyword(BEACON));
 		CinematicPlay("HeavenGames\c6m1_", 1, 12);
+		MusicHigh();
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 30);
 			mSetVarByQV("p2commander", "maxhealth", 30);
@@ -24,8 +25,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c6m2_", 1, 4);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 20);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 30);
@@ -41,6 +43,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c6m3_", 1, 1);
+		MusicHigh();
 		mSetVarByQV("p2commander", "health", 30);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 45);
@@ -56,6 +59,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c6m4_", 1, 8);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 30);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 45);
@@ -71,6 +75,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c6m5_", 1, 1);
+		MusicHigh();
 		mSetVarByQV("p2commander", "health", 40);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 60);
@@ -86,6 +91,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c6m6_", 1, 6);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 60);
 		if (trQuestVarGet("missionHardmode") == 1) {
 			mSetVarByQV("p2commander", "health", 90);
