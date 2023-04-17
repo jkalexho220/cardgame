@@ -8,6 +8,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m1_", 1, 6);
+		MusicLow();
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			addCardToDeck(2, "", SPELL_DOMINANCE);
@@ -25,6 +26,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c4m1_", 7, 10);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -37,8 +39,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c4m2_", 1, 4);
+		MusicLow();
 		teleportToTile(1*trQuestVarGet("p1commander"), 132, true);
 		teleportToTile(1*trQuestVarGet("p2commander"), 152, true);
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -123,8 +126,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c4m3_", 1, 5);
+		MusicMedium();
 		teleportToTile(1*trQuestVarGet("p2commander"), 233, true);
 	}
 }
@@ -135,8 +139,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c4m4_", 1, 5);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 15);
 		mSetVarByQV("p2commander", "maxhealth", 15);
 		mSetVarByQV("p2commander", "keywords", SetBit(mGetVarByQV("p2commander", "keywords"), BEACON));
@@ -174,6 +179,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c4m4_", 6, 10);
+		MusicLow();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -187,6 +193,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m5_", 1, 6);
+		MusicHigh();
 		damageUnit(1*trQuestVarGet("p1commander"), 18);
 		teleportToTile(1*trQuestVarGet("p2commander"), 219, true);
 		xsEnableRule("StoryClass3Mission5_1");
@@ -392,6 +399,7 @@ inactive
 	if (trQuestVarGet("missionComplete") == 1) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m5_", 7, 16);
+		MusicLow();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
 	}
@@ -405,6 +413,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c4m6_", 1, 10);
+		MusicHigh();
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
 		mSetVarByQV("p2commander", "attack", 1);
@@ -427,6 +436,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c4m6_", 11, 14);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();

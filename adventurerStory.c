@@ -5,6 +5,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m1_", 1, 2);
+		MusicLow();
 		mSetVarByQV("p2commander", "attack", 2);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -21,6 +22,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m2_", 1, 5);
+		MusicLow();
 		xsEnableRule("StoryClass0Mission2_end");
 
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -35,7 +37,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
+		
 		CinematicPlay("HeavenGames\c1m2_", 6, 8);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -48,7 +52,9 @@ inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
+		
 		CinematicPlay("HeavenGames\c1m3_", 1, 3);
+		MusicMedium();
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", trQuestVarGet("p2drawCards") + 2);
@@ -69,6 +75,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c1m4_", 1, 8);
+		MusicLow();
 		int tile = mGetVarByQV("p2commander", "tile");
 		teleportToTile(1*trQuestVarGet("p2commander"), 255, true);
 
@@ -106,6 +113,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c1m4_", 9, 11);
+		MusicHigh();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -117,8 +125,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0){
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c1m5_", 1, 4);
+		MusicMedium();
 		xsEnableRule("StoryClass0Mission5_end");
 		if (trQuestVarGet("missionHardmode") == 1) {
 			summonAtTile(192, 2, kbGetProtoUnitID("Bondi"));
@@ -133,6 +142,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c1m5_", 5, 8);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -155,6 +165,7 @@ inactive
 			summonAtTile(167, 2, kbGetProtoUnitID("Ornlu"));
 		}
 		CinematicPlay("HeavenGames\c1m6_", 1, 3);
+		MusicHigh();
 		xsEnableRule("StoryClass0Mission6_end");
 	}
 }
@@ -165,6 +176,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c1m6_", 4, 15);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
