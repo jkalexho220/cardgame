@@ -121,6 +121,11 @@ inactive
 			}
 			trQuestVarSet("p"+p+"click", 0);
 		}
+
+		yDatabaseNext("allUnits", true);
+		if (trUnitIsSelected()) {
+			displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
+		}
 	}
 }
 

@@ -2594,7 +2594,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				spyEffect(1*trQuestVarGet("spellTarget"), "Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
-				spyEffect(1*trQuestVarGet("spellTarget"), "Well of Urd");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Well of Urd", "unused", vector(0,1,0));
 				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), DODGE));
 			}
 			case SPELL_REWIND:
@@ -3102,6 +3102,7 @@ highFrequency
 {
 	xsDisableSelf();
 	castEnd();
+	uiClearSelection();
 }
 
 rule spell_party_up_activate

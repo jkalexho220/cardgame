@@ -165,8 +165,14 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 		case ATTACK_RETURN:
 		{
 			if ((mGetVar(target, "health") > 0) && (mGetVar(target, "spell") == SPELL_NONE)) {
-				deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
-				trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				if (mGetVar(attacker, "spell") == SPELL_NONE) {
+					// kraken
+					deployAtTile(0, "Meteor Impact Water", 1*mGetVar(target, "tile"));
+					trSoundPlayFN("shipdeathsplash.wav","1",-1,"","");
+				} else {
+					// nottud
+					deployAtTile(0, "Tremor", 1*mGetVar(target, "tile"));
+				}
 				trSoundPlayFN("suckup1.wav","1",-1,"","");
 				returnToHand(target);
 			}

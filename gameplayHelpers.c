@@ -436,17 +436,19 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 			case kbGetProtoUnitID("Minotaur"):
 			{
 				/*
-				Nottud's counter-attack
+				Nottud's attack
 				*/
-				if (mGetVar(attacker, "player") == 3 - trQuestVarGet("activePlayer")){
-					yAddUpdateVar(db, "animation", ANIM_GORE);
-				}
+				yAddUpdateVar(db, "animation", ANIM_GORE);
 			}
 			case kbGetProtoUnitID("Pharaoh of Osiris"):
 			{
 				yAddUpdateVar(db, "animation", ANIM_CHARGING);
 			}
 			case kbGetProtoUnitID("Circe"):
+			{
+				yAddUpdateVar(db, "animation", ANIM_CHARGING);
+			}
+			case kbGetProtoUnitID("Man O War"):
 			{
 				yAddUpdateVar(db, "animation", ANIM_CHARGING);
 			}

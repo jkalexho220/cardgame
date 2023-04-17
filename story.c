@@ -1325,11 +1325,9 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "Chieroballista");
 						addCardToDeck(2, "Prisoner");
-						addCardToDeck(2, "", SPELL_PROFITEERING);
+						addCardToDeck(2, "Slinger");
 					}
 					
-					summonAtTile(190, 2, kbGetProtoUnitID("Hero Greek Atalanta"));
-					summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 			}

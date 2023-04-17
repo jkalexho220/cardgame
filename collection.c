@@ -688,11 +688,29 @@ inactive
 				trQuestVarSet("nextClass", 5);
 				trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
 				trEventFire(EVENT_CHOOSE_CLASS);
+			} else {
+				// rewatch finale
+				trQuestVarSet("rewatchSpace", trGetNextUnitScenarioNameNumber());
+				trArmyDispatch("1,0", "Dwarf", 1, 119, 0, 87, 180, true);
+				trArmySelect("1,0");
+				trUnitChangeName("Rewatch Space Intro");
+				trUnitChangeProtoUnit("Outpost");
+				trSetSelectedScale(1.0, 0.3, 1.0);
+				xsEnableRule("rewatch_space");
 			}
 		} else {
 			trDelayedRuleActivation("ChooseNewClass_00"); // choose next class to unlock
 		}
 	}
+
+	// rewatch opening
+	trQuestVarSet("rewatchIntro", trGetNextUnitScenarioNameNumber());
+	trArmyDispatch("1,0", "Dwarf", 1, 1, 0, 87, 180, true);
+	trArmySelect("1,0");
+	trUnitChangeName("Rewatch Intro");
+	trUnitChangeProtoUnit("Outpost");
+	trSetSelectedScale(1.0, 0.3, 1.0);
+	xsEnableRule("rewatch_intro");
 	
 	xsDisableRule("Collection");
 }
@@ -898,6 +916,42 @@ inactive
 	}
 }
 
+void rewatchIntro(int eventID = -1) {
+	xsSetContextPlayer(0);
+	trUIFadeToColor(0,0,0,1000,1000,false);
+	CinematicPlay("HeavenGames\intro_", 1, 8, "cinematics\26_out\music.mp3");
+}
+
+void rewatchSpace(int eventID = -1) {
+	xsSetContextPlayer(0);
+	trUIFadeToColor(0,0,0,1000,1000,false);
+	CinematicPlay("HeavenGames\intro_", 1, 8, "cinematics\26_out\music.mp3");
+}
+
+rule rewatch_intro
+highFrequency
+inactive
+{
+	trUnitSelectClear();
+	trUnitSelectByQV("rewatchIntro");
+	if (trUnitIsSelected()) {
+		trShowChoiceDialog("Rewatch Intro?", "Yes", EVENT_REWATCH_INTRO, "No", -1);
+		uiClearSelection();
+	}
+}
+
+rule rewatch_space
+highFrequency
+inactive
+{
+	trUnitSelectClear();
+	trUnitSelectByQV("rewatchSpace");
+	if (trUnitIsSelected()) {
+		trShowChoiceDialog("Rewatch Finale Intro?", "Yes", EVENT_REWATCH_SPACE, "No", -1);
+		uiClearSelection();
+	}
+}
+
 void CollectionStartMission(int eventId = -1) {
 	xsSetContextPlayer(0);
 	trPlayerKillAllGodPowers(1);
@@ -908,6 +962,8 @@ void CollectionStartMission(int eventId = -1) {
 	trCounterAbort("deckCount");
 	trCounterAbort("mission");
 	trCounterAbort("reward");
+	xsDisableRule("rewatch_intro");
+	xsDisableRule("rewatch_space");
 	xsDisableRule("CollectionClick");
 	xsDisableRule("CollectionSelect");
 	xsDisableRule("CollectionEnter");

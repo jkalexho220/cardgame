@@ -19,6 +19,9 @@ const int EVENT_MUSIC = 11;
 const int EVENT_CHOOSE_CLASS = 12;
 const int EVENT_NEXT_CLASS = 13;
 
+const int EVENT_REWATCH_INTRO = 14;
+const int EVENT_REWATCH_SPACE = 15;
+
 rule event_assignment
 highFrequency
 active
@@ -38,6 +41,9 @@ active
 	trEventSetHandler(EVENT_NEXT_DELETE, "nextFile");
 
 	trEventSetHandler(EVENT_CHOOSE_LOAD_DELETE, "loadOrDeleteFile");
+
+	trEventSetHandler(EVENT_REWATCH_INTRO, "rewatchIntro");
+	trEventSetHandler(EVENT_REWATCH_SPACE, "rewatchSpace");
 
 	xsDisableSelf();
 }

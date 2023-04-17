@@ -416,6 +416,9 @@ inactive
 				addCardToDeck(2, "Swordsman Hero");
 			}
 			shuffleDeck(2);
+
+			summonAtTile(190, 2, kbGetProtoUnitID("Eitri"));
+			summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 		}
 		xsEnableRule("StoryClass3Mission6_end");
 	}
