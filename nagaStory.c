@@ -7,6 +7,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c3m1_", 1, 4);
+		MusicLow();
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(FURIOUS));
@@ -26,6 +27,7 @@ inactive
 	if (trQuestVarGet("missionComplete") == 1) {
 		trFadeOutAllSounds(0.0);
 		CinematicPlay("HeavenGames\c3m1_", 5, 11);
+		MusicHigh();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -37,8 +39,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0) {
-		xsDisableSelf();
+		xsDisableSelf();	
 		CinematicPlay("HeavenGames\c3m2_", 1, 3);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 3);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(LIGHTNING));
@@ -69,6 +72,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c3m2_", 4, 4);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -82,6 +86,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c3m3_", 1, 2);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 4);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON));
@@ -111,8 +116,9 @@ rule StoryClass2Mission3_end
 highFrequency
 inactive
 {
-	if (trQuestVarGet("missionComplete") == 1) {
+	if (trQuestVarGet("missionComplete") == 1) {		
 		CinematicPlay("HeavenGames\c3m3_", 3, 3);
+		MusicHigh();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -126,6 +132,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c3m4_", 1, 4);
+		MusicLow();
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "attack", 1);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(REGENERATE));
@@ -158,6 +165,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c3m5_", 1, 5);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 40);
 		mSetVarByQV("p2commander", "attack", 2);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(ETHEREAL));
@@ -191,6 +199,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0) {
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c3m6_", 1, 22);
+		MusicHigh();
 		trQuestVarSet("companion", summonAtTile(283, 1, kbGetProtoUnitID("Archer Atlantean Hero")));
 		teleportToTile(1*trQuestVarGet("p1commander"), 281);
 		teleportToTile(1*trQuestVarGet("p2commander"), 255);
@@ -262,6 +271,7 @@ inactive
 {
 	if ((trTime()-cActivationTime) > 2) {
 		CinematicPlay("HeavenGames\c3m6_", 23, 27);
+		MusicMedium();
 		xsDisableSelf();
 	}
 }

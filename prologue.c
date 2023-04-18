@@ -1,46 +1,46 @@
 void MusicHigh(){
 	trQuestVarSetFromRand("random", 1, 4, true);
 	if(trQuestVarGet("random") == 1){
-		trSoundPlayFN("cinematics\8_in\music.mp3", "26", -1, "","");
+		trMusicPlay("cinematics\8_in\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 2){
-		trSoundPlayFN("cinematics\9_out\music.mp3", "29", -1, "","");
+		trMusicPlay("cinematics\9_out\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 3){
-		trSoundPlayFN("cinematics\23_out\music 2.mp3", "30", -1, "","");
+		trMusicPlay("cinematics\23_out\music 2.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 4){
-		trSoundPlayFN("xpack\xcinematics\8_in\music.mp3", "56", -1, "","");
+		trMusicPlay("xpack\xcinematics\8_in\music.mp3", "1", 0);
 	}
 }
 void MusicMedium(){
 	trQuestVarSetFromRand("random", 1, 4, true);
 	if(trQuestVarGet("random") == 1){
-		trSoundPlayFN("cinematics\05_out\music.mp3", "19", -1, "","");
+		trMusicPlay("cinematics\05_out\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 2){
-		trSoundPlayFN("cinematics\31_out\music.mp3", "34", -1, "","");
+		trMusicPlay("cinematics\31_out\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 3){
-		trSoundPlayFN("cinematics\22_in\music 2.mp3", "14", -1, "","");
+		trMusicPlay("cinematics\22_in\music 2.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 4){
-		trSoundPlayFN("xpack\xcinematics\7_out\music.mp3", "19", -1, "","");
+		trMusicPlay("xpack\xcinematics\7_out\music.mp3", "1", 0);
 	}
 }
 void MusicLow(){
 	trQuestVarSetFromRand("random", 1, 4, true);
 	if(trQuestVarGet("random") == 1){
-		trSoundPlayFN("cinematics\26_out\music.mp3", "37", -1, "","");
+		trMusicPlay("cinematics\26_out\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 2){
-		trSoundPlayFN("cinematics\21_in\music.mp3", "51", -1, "","");
+		trMusicPlay("cinematics\21_in\music.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 3){
-		trSoundPlayFN("cinematics\04_in\music 1.mp3", "13", -1, "","");
+		trMusicPlay("cinematics\04_in\music 1.mp3", "1", 0);
 	}
 	if(trQuestVarGet("random") == 4){
-		trSoundPlayFN("cinematics\26_in\music.mp3", "26", -1, "","");
+		trMusicPlay("cinematics\26_in\music.mp3", "1", 0);
 	}
 }
 

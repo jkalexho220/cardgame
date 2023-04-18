@@ -7,6 +7,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m1_", 1, 3);
+		MusicLow();
 		mSetVarByQV("p2commander", "attack", 2);
 		
 		if (trQuestVarGet("missionHardmode") == 1) {
@@ -24,6 +25,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c2m1_", 4, 8);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
@@ -35,8 +37,9 @@ highFrequency
 inactive
 {
 	if (trQuestVarGet("p2drawCards") > 0){
-		xsDisableSelf();
+		xsDisableSelf();		
 		CinematicPlay("HeavenGames\c2m2_", 1, 4);
+		MusicLow();
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			summonAtTile(192, 2, kbGetProtoUnitID("Frost Giant"));
@@ -66,6 +69,7 @@ inactive
 		xsDisableSelf();
 		trQuestVarSet("libraryStep", trQuestVarGet("activePlayer"));
 		CinematicPlay("HeavenGames\c2m3_", 1, 3);
+		MusicMedium();
 		xsEnableRule("StoryClass1Mission3_LOS");
 		xsEnableRule("StoryClass1Mission3_explain");
 
@@ -362,6 +366,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m4_", 1, 4);
+		MusicHigh();
 		xsEnableRule("StoryClass1Mission4_polymorph");
 		mSetVarByQV("p2commander", "health", 20);
 		mSetVarByQV("p2commander", "maxhealth", 20);
@@ -412,6 +417,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m5_", 1, 4);
+		MusicMedium();
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
 		mSetVarByQV("p2commander", "keywords", Keyword(BEACON) + Keyword(WARD));
@@ -436,6 +442,7 @@ inactive
 	if (trQuestVarGet("p2drawCards") > 0){
 		xsDisableSelf();
 		CinematicPlay("HeavenGames\c2m6_", 1, 6);
+		MusicLow();
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
 		summonAtTile(193, 2, kbGetProtoUnitID("Chimera"));
@@ -460,6 +467,7 @@ inactive
 {
 	if (trQuestVarGet("missionComplete") == 1) {
 		CinematicPlay("HeavenGames\c2m6_", 7, 13);
+		MusicMedium();
 		xsDisableSelf();
 	} else if (PlayerDefeated(1)) {
 		xsDisableSelf();
