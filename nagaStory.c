@@ -58,7 +58,7 @@ inactive
 	if (trQuestVarGet("p1mana") == 1) {
 		xsDisableSelf();
 		uiMessageBox("You are underwater. Here's an Oxygen Tank.","");
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
 		xsEnableRule("StoryClass2Mission2_end");
 	}
 }
@@ -101,8 +101,8 @@ inactive
 	if (trQuestVarGet("p1mana") == 1) {
 		xsDisableSelf();
 		uiMessageBox("Two Oxygen Tanks for current depth.","");
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
 		xsEnableRule("StoryClass2Mission3_end");
 	}
 }
@@ -145,9 +145,9 @@ inactive
 	if (trQuestVarGet("p1mana") == 1) {
 		xsDisableSelf();
 		uiMessageBox("Three Oxygen Tanks for current depth.","");
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
 	}
 }
 
@@ -177,10 +177,10 @@ inactive
 	if (trQuestVarGet("p1mana") == 1) {
 		xsDisableSelf();
 		uiMessageBox("Four Oxygen Tanks for current depth.","");
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
-		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
+		addCardToHand(1, 0, SPELL_OXYGEN_TANK, false, true);
 	}
 }
 

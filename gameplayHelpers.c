@@ -23,7 +23,7 @@ const int ANIM_CHARGING = 1;
 const int ANIM_GORE = 2;
 
 void scaleUnit(int unit = 0) {
-	float scale = xsSqrt(0.5 * mGetVar(unit, "scale"));
+	float scale = xsSqrt(0.25 * mGetVar(unit, "scale"));
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
 	trSetSelectedScale(scale, scale, scale);
@@ -671,6 +671,7 @@ active
 			trUnitSelect(""+unit);
 			trUnitChangeProtoUnit("Dust Large");
 			teleportToTile(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "dest"));
+			scaleUnit(1*trQuestVarGet("pushes"));
 			if (yGetVar("pushes", "target") > 0) {
 				startAttack(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "target"), false, false);
 				startAttack(1*yGetVar("pushes", "target"), 1*yGetVar("pushes", "name"), false, false);

@@ -161,7 +161,7 @@ rule StoryClass3Mission4_talk
 highFrequency
 inactive
 {
-	if (trQuestVarGet("activePlayer") == 1) {
+	if (trQuestVarGet("p1mana") == 1) {
 		CharacterLog(1, "Roxas", "Quick! Cast Fortify to barricade the hallways!");
 		xsDisableSelf();
 	}

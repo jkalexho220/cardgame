@@ -438,16 +438,15 @@ inactive
 		CinematicPlay("HeavenGames\c2m6_", 1, 6);
 		mSetVarByQV("p2commander", "health", 30);
 		mSetVarByQV("p2commander", "maxhealth", 30);
-		summonAtTile(193, 2, kbGetProtoUnitID("Hero Greek Chiron"));
-		summonAtTile(192, 2, kbGetProtoUnitID("Hero Greek Chiron"));
+		summonAtTile(193, 2, kbGetProtoUnitID("Chimera"));
+		summonAtTile(192, 2, kbGetProtoUnitID("Chimera"));
 		if (trQuestVarGet("missionHardmode") == 1) {
 			trQuestVarSet("p2drawCards", 2 + trQuestVarGet("p2drawCards"));
 			for(i=5; >0) {
 				addCardToDeck(2, "", SPELL_DOMINANCE);
-				addCardToDeck(2, "Guardian");
 			}
 			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
-			addCardToDeck(2, "", SPELL_HORROR_MENAGERIE);
+			addCardToDeck(2, "", SPELL_TAVERN_BRAWL);
 			shuffleDeck(2);
 		}
 

@@ -51,14 +51,21 @@ void updateHandPlayable(int p = 0) {
 	for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 		yDatabaseNext("p"+p+"hand");
 		cost = mGetVarByQV("p"+p+"hand", "cost");
-		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
-			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
-		} else {
-			cost = cost - trQuestVarGet("p"+p+"unitDiscount");
-		}
+		
 		if (HasKeyword(OVERFLOW, 1*mGetVarByQV("p"+p+"hand", "keywords"))) {
 			cost = cost - trQuestVarGet("p"+p+"manaflow");
 		}
+
+		trUnitSelectClear();
+		trUnitSelectByQV("p"+p+"hand");
+		if (mGetVarByQV("p"+p+"hand", "spell") > 0) {
+			cost = cost - trQuestVarGet("p"+p+"spellDiscount");
+			trUnitChangeName("(" + 1*xsMax(0,cost) + ") " + trStringQuestVarGet("spell_"+mGetVarByQV("p"+p+"hand", "spell")+"_name"));
+		} else {
+			cost = cost - trQuestVarGet("p"+p+"unitDiscount");
+			trUnitChangeName("(" + 1*xsMax(0,cost) + ") " + trStringQuestVarGet("card_"+mGetVarByQV("p"+p+"hand", "proto")+"_name"));
+		}
+
 		if (cost <= trQuestVarGet("p"+p+"mana")) {
 			trUnitSelectClear();
 			trUnitSelectByID(1*yGetVar("p"+p+"hand", "pos"));
@@ -67,7 +74,7 @@ void updateHandPlayable(int p = 0) {
 	}
 }
 
-void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
+void addCardToDeck(int p = 0, string proto = "", int spell = 0, bool created = false) {
 	if (spell == 0) {
 		trQuestVarSet("proto", kbGetProtoUnitID(proto));
 		yAddToDatabase("p"+p+"deck", "proto");
@@ -76,6 +83,9 @@ void addCardToDeck(int p = 0, string proto = "", int spell = 0) {
 		trQuestVarSet("proto", kbGetProtoUnitID("Statue of Lightning"));
 		yAddToDatabase("p"+p+"deck", "proto");
 		yAddUpdateVar("p"+p+"deck", "spell", spell);
+	}
+	if (created) {
+		yAddUpdateVar("p"+p+"deck", "created", 1);
 	}
 }
 
@@ -99,7 +109,7 @@ void addCardToDeckByIndex(int p = 0, int card = 0) {
 /*
 This function should only be called if there is room in the hand!
 */
-int addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false) {
+int addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false, bool created = false) {
 	trQuestVarSet("next", CardInstantiate(p, proto, spell));
 	trUnitSelectClear();
 	trUnitSelect(""+1*trQuestVarGet("next"), true);
@@ -118,6 +128,10 @@ int addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false
 	
 	if ((trCountUnitsInArea("128",p,"Heka Gigantes",45) > 0) && (spell == SPELL_NONE)) {
 		mSetVarByQV("next", "keywords", SetBit(1*trQuestVarGet("card_" + proto + "_Keywords"), OVERFLOW));
+	}
+
+	if ((trQuestVarGet("p"+p+"commanderType") == COMMANDER_NOTTUD) && created) {
+		mSetVarByQV("next", "cost", xsMax(0, mGetVarByQV("next", "cost") - 2));
 	}
 	
 	// Find an empty position in the hand to place the unit.
@@ -156,10 +170,10 @@ int addCardToHand(int p = 0, int proto = 0, int spell = 0, bool fleeting = false
 	return(1*trQuestVarGet("next"));
 }
 
-void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false) {
+void addCardToHandByIndex(int p = 0, int card = 0, bool fleeting = false, bool created = false) {
 	int spell = CardToSpell(card);
-	int proto = CardToProto(card)	;
-	addCardToHand(p, proto, spell, fleeting);
+	int proto = CardToProto(card);
+	addCardToHand(p, proto, spell, fleeting, created);
 }
 
 
@@ -189,7 +203,7 @@ void drawCard(int p = 0, bool fleeting = false) {
 			} else {
 				ChatLog(p, "Drew " + trStringQuestVarGet("spell_" + 1*yGetVar("p"+p+"deck", "spell") + "_Name"));
 			}
-			addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"), fleeting);
+			addCardToHand(p, proto, 1*yGetVar("p"+p+"deck", "spell"), fleeting, 1*yGetVar("p"+p+"deck", "created") == 1);
 			// mad acolyte heals
 			int acolytes = trCountUnitsInArea("128",(3-p),"Theocrat",45);
 			if (acolytes > 0) {
@@ -226,7 +240,7 @@ int generateCard(int p = 0, int proto = 0, int spell = 0, bool fleeting = false)
 		} else {
 			ChatLog(p, "Created " + trStringQuestVarGet("spell_" + spell + "_Name"));
 		}
-		card = addCardToHand(p, proto, spell, fleeting);
+		card = addCardToHand(p, proto, spell, fleeting, true);
 		updateHandPlayable(p);
 		updateMana();
 	} else {

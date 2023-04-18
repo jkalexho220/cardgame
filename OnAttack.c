@@ -132,7 +132,7 @@ void OnAttack(int attacker = 0, int target = 0, int event = 0) {
 				mSetVar(target, "keywords", 0);
 				mSetVar(target, "onAttack", 0);
 				mSetVar(target, "onDeath", 0);
-				mSetVar(target, "scale", 1);
+				mSetVar(target, "scale", 4);
 				mSetString(target, "ability", "");
 			}
 		}
