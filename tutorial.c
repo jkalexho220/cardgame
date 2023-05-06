@@ -231,6 +231,7 @@ highFrequency
 		}
 	case 19:
 		{
+			trQuestVarSet("maxMana", 2);
 			if (trQuestVarGet("p1mana") == 0) {
 				DialogAdd("Good! Notice that the unit you just summoned cannot move or attack this turn.");
 				DialogAdd("Units cannot act the turn they are summoned. Next turn, your Sharpshooter will be able to act!");
@@ -497,7 +498,7 @@ highFrequency
 		}
 	case 33:
 		{
-			if (trQuestVarGet("castDone") == CASTING_NOTHING) {
+			if ((trQuestVarGet("castDone") == CASTING_NOTHING) || (trQuestVarGet("castDone") == CASTING_CANCEL)) {
 				if (mGetVarByQV("gearwalker", "health") > 0) {
 					trSoundPlayFN("cantdothat.wav");
 					for(i=yGetDatabaseCount("allUnits"); >0) {

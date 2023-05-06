@@ -503,7 +503,7 @@ void SetupClass(int class = 0, int terrainType = 0, int terrainSubType = 0){
 	
 	if(doClass){
 		//ChatLog(1, "Setup Class: " + class + " Progress: " + progress);
-		trPaintTerrain(10 * class, 0, 10 + 10 * class, 43, 0, 73, false); // CityTileWaterPool
+		trPaintTerrain(10 * class, 21, 10 + 10 * class, 21, 0, 73, false); // CityTileWaterPool
 		trPaintTerrain(1 + 10 * class, 0, 9 + 10 * class, 20, terrainType, terrainSubType, false);
 		trPaintTerrain(1 + 10 * class, 22, 9 + 10 * class, 42, terrainType, terrainSubType, false);
 		/* Cards */
@@ -633,6 +633,7 @@ inactive
 		xsEnableRule("CollectionSpace");
 		trQuestVarSet("canPressEnter", 1);
 		if(getClassProgress(CLASS_ADVENTURER) == 1 && getClassProgress(CLASS_ARCANE) == 1){
+			trCameraCut(vector(35.135620,123.743736,-86.176926), vector(0,-0.707107,0.707107), vector(0,0.707107,0.707107), vector(1,0,0));
 			DialogAdd("This is your Collection and Deck. Right Click a Card to move it between the two.");
 			DialogAdd("Cards above the blue horizontal line are in your Deck, while cards below it are in your Collection.");
 			DialogAdd("Each column corresponds to a class. The first column has Adventurer cards and the second one has Arcane.");
@@ -640,8 +641,7 @@ inactive
 			DialogAdd("The Deck you make will be used for Story Missions as well as PvP when playing Multiplayer.");
 			DialogAdd("The Story Missions are Obelisks. They reward packs containing Class Cards.");
 			DialogAdd("After beating a Mission you can replay it on Hardmode for packs containing Random Cards.");
-			DialogAdd("After completing a Class Story you will unlock the second Commander for that Class.");
-			DialogAdd("Complete your first Class Story to unlock the other Classes.");
+			DialogAdd("Complete the current stories to unlock the other Classes.");
 			DialogStart();
 		}
 	} else {
@@ -684,10 +684,8 @@ inactive
 		if (totalProgress == 35) {
 			if (getClassProgress(CLASS_SPACE) == 0) {
 				// DISABLED FOR BETA
-				//trDelayedRuleActivation(""); // unlock space
-				trQuestVarSet("nextClass", 5);
-				trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
-				trEventFire(EVENT_CHOOSE_CLASS);
+				trDelayedRuleActivation("unlock_space"); // unlock space
+				CinematicPlay("HeavenGames\spaceIntro_", 1, 19);
 			} else {
 				// rewatch finale
 				trQuestVarSet("rewatchSpace", trGetNextUnitScenarioNameNumber());
@@ -925,7 +923,7 @@ void rewatchIntro(int eventID = -1) {
 void rewatchSpace(int eventID = -1) {
 	xsSetContextPlayer(0);
 	trUIFadeToColor(0,0,0,1000,1000,false);
-	CinematicPlay("HeavenGames\intro_", 1, 8, "cinematics\26_out\music.mp3");
+	CinematicPlay("HeavenGames\spaceIntro_", 1, 19, "cinematics\26_out\music.mp3");
 }
 
 rule rewatch_intro
@@ -1208,5 +1206,19 @@ inactive
 {
 	if (trIsGadgetVisible("ShowImageBox") == false) {
 		saveCollection();
+	}
+}
+
+rule unlock_space
+highFrequency
+inactive
+{
+	if (trTime() > cActivationTime) {
+		if (trQuestVarGet("cinematicStep") == trQuestVarGet("cinematicEnd")) {
+			trQuestVarSet("nextClass", 5);
+			trEventSetHandler(EVENT_CHOOSE_CLASS, "ChooseThisClass");
+			trEventFire(EVENT_CHOOSE_CLASS);
+			xsDisableSelf();
+		}
 	}
 }

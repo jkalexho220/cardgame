@@ -186,6 +186,9 @@ inactive
 				}
 			}
 		}
+		if (trCurrentPlayer() == p) {
+			trOverlayText("Turn start!");
+		}
 		trQuestVarSet("activePlayer", p);
 		trQuestVarSet("turnEnd", 0);
 		trPlayerKillAllGodPowers(p);
