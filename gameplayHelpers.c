@@ -23,7 +23,7 @@ const int ANIM_CHARGING = 1;
 const int ANIM_GORE = 2;
 
 void scaleUnit(int unit = 0) {
-	float scale = xsSqrt(0.5 * mGetVar(unit, "scale"));
+	float scale = xsSqrt(0.25 * mGetVar(unit, "scale"));
 	trUnitSelectClear();
 	trUnitSelect(""+unit);
 	trSetSelectedScale(scale, scale, scale);
@@ -436,17 +436,19 @@ void startAttack(int attacker = 0, int target = 0, bool first = false, bool anim
 			case kbGetProtoUnitID("Minotaur"):
 			{
 				/*
-				Nottud's counter-attack
+				Nottud's attack
 				*/
-				if (mGetVar(attacker, "player") == 3 - trQuestVarGet("activePlayer")){
-					yAddUpdateVar(db, "animation", ANIM_GORE);
-				}
+				yAddUpdateVar(db, "animation", ANIM_GORE);
 			}
 			case kbGetProtoUnitID("Pharaoh of Osiris"):
 			{
 				yAddUpdateVar(db, "animation", ANIM_CHARGING);
 			}
 			case kbGetProtoUnitID("Circe"):
+			{
+				yAddUpdateVar(db, "animation", ANIM_CHARGING);
+			}
+			case kbGetProtoUnitID("Man O War"):
 			{
 				yAddUpdateVar(db, "animation", ANIM_CHARGING);
 			}
@@ -669,6 +671,7 @@ active
 			trUnitSelect(""+unit);
 			trUnitChangeProtoUnit("Dust Large");
 			teleportToTile(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "dest"));
+			scaleUnit(1*trQuestVarGet("pushes"));
 			if (yGetVar("pushes", "target") > 0) {
 				startAttack(1*yGetVar("pushes", "name"), 1*yGetVar("pushes", "target"), false, false);
 				startAttack(1*yGetVar("pushes", "target"), 1*yGetVar("pushes", "name"), false, false);

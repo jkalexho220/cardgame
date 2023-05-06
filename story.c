@@ -915,11 +915,8 @@ void SetupMission(int class = 0, int mission = 0){
 					/* Opponent */
 					trQuestVarSet("p2commanderType", kbGetProtoUnitID("Minotaur"));
 					for(x=0;<3){
-						addCardToDeck(2, "Oracle Scout");
-						addCardToDeck(2, "Centaur");
-						addCardToDeck(2, "Trident Soldier Hero");
-						addCardToDeck(2, "Theocrat");
-						addCardToDeck(2, "Slinger");
+						addCardToDeck(2, "Prisoner");
+						addCardToDeck(2, "Chimera");
 						addCardToDeck(2, "Monument");
 						addCardToDeck(2, "Monument 2");
 						addCardToDeck(2, "Monument 3");
@@ -927,10 +924,13 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "", SPELL_MIRROR_IMAGE);
 						addCardToDeck(2, "", SPELL_MIRROR_REFLECTION);
 						addCardToDeck(2, "", SPELL_PYROBALL);
-						addCardToDeck(2, "", SPELL_DEATH_DOOR);
-						addCardToDeck(2, "", SPELL_FINAL_EXAM);
+						addCardToDeck(2, "", SPELL_COPY_HOMEWORK);
+						addCardToDeck(2, "", SPELL_ASSEMBLY_LINE);
+						addCardToDeck(2, "Jiangshi");
+						addCardToDeck(2, "Jiangshi");
 					}
 					addCardToDeck(2, "Monument 5");
+					trQuestVarSet("p2class2", CLASS_CLOCKWORK);
 				}
 			}
 		}
@@ -1325,11 +1325,9 @@ void SetupMission(int class = 0, int mission = 0){
 						addCardToDeck(2, "Crossbowman");
 						addCardToDeck(2, "Chieroballista");
 						addCardToDeck(2, "Prisoner");
-						addCardToDeck(2, "", SPELL_PROFITEERING);
+						addCardToDeck(2, "Slinger");
 					}
 					
-					summonAtTile(190, 2, kbGetProtoUnitID("Hero Greek Atalanta"));
-					summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 					trQuestVarSet("p2class2", CLASS_ARCANE);
 				}
 			}

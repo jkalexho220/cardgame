@@ -97,5 +97,20 @@ inactive
 			mSetVarByQV("p2commander", "health", 90);
 			mSetVarByQV("p2commander", "maxhealth", 90);
 		}
+
+		trDelayedRuleActivation("StoryClass5Mission_end");
+	}
+}
+
+rule StoryClass5Mission6_end
+highFrequency
+inactive
+{
+	if (trQuestVarGet("missionComplete") == 1) {
+		CinematicPlay("HeavenGames\spaceOutro_", 1, 10);
+		MusicLow();
+		xsDisableSelf();
+	} else if (PlayerDefeated(1)) {
+		xsDisableSelf();
 	}
 }

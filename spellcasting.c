@@ -1493,7 +1493,7 @@ inactive
 			
 			case SPELL_PISTOL_SHOT:
 			{
-				addCardToDeck(p, "", SPELL_RELOAD);
+				addCardToDeck(p, "", SPELL_RELOAD, true);
 				ySetPointer("p"+p+"deck", yGetDatabaseCount("p"+p+"deck"));
 				trSoundPlayFN("shockwave.wav","1",-1,"","");
 				trQuestVarSet("spellProjectile", deployAtTile(0, "Dwarf", 1*mGetVarByQV("p" + p + "commander", "tile")));
@@ -1645,7 +1645,7 @@ inactive
 				trSoundPlayFN("garrison.wav","1",-1,"","");
 				trSoundPlayFN("gaiatreesprout2.wav","1",-1,"","");
 				trSoundPlayFN("villagercreate.wav","1",-1,"","");
-				addCardToDeck(p, "", SPELL_OXYGEN_TANK);
+				addCardToDeck(p, "", SPELL_OXYGEN_TANK, true);
 				shuffleDeck(p);
 			}
 			case SPELL_SPARK:
@@ -2012,10 +2012,9 @@ inactive
 			{
 				trSoundPlayFN("recreation.wav","1",-1,"","");
 				deployAtTile(0, "Vortex start linked", 1*mGetVarByQV("spellTarget", "tile"));
-				addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
-				// if commander is nottud
-				if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NOTTUD) {
-					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
+				// if commander is not nottud
+				if (trQuestVarGet("p"+p+"commanderType") != COMMANDER_NOTTUD) {
+					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")), 0, true);
 				}
 				shuffleDeck(p);
 				xsEnableRule("spell_mirror_image_activate");
@@ -2411,9 +2410,7 @@ inactive
 				damageUnit(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"));
 				deployAtTile(0, "Curse SFX", 1*mGetVarByQV("spellTarget", "tile"));
 				if (HasKeyword(DECAY, 1*mGetVarByQV("spellTarget", "keywords"))) {
-					if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
-						addCardToHand(p, 0, SPELL_DOOM);
-					}
+					generateCard(p, 0, SPELL_DOOM);
 				}
 			}
 			case SPELL_SHADOWSTEP:
@@ -2594,7 +2591,7 @@ inactive
 				trUnitSelectClear();
 				trUnitSelect(""+1*trQuestVarGet("spellTarget"));
 				spyEffect(1*trQuestVarGet("spellTarget"), "Valkyrie", "unused", vector(0,0,0), 15, "1,0,0,0,0,0,0");
-				spyEffect(1*trQuestVarGet("spellTarget"), "Well of Urd");
+				spyEffect(1*trQuestVarGet("spellTarget"), "Well of Urd", "unused", vector(0,1,0));
 				mSetVarByQV("spellTarget", "keywords", SetBit(SetBit(1*mGetVarByQV("spellTarget", "keywords"), WARD), DODGE));
 			}
 			case SPELL_REWIND:
@@ -2664,7 +2661,7 @@ inactive
 				trSoundPlayFN("siegecamp.wav","1",-1,"","");
 				for(x=yGetDatabaseCount("p"+p+"hand"); >0) {
 					yDatabaseNext("p"+p+"hand");
-					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("p"+p+"hand", "proto")), 1*mGetVarByQV("p"+p+"hand","spell"));
+					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("p"+p+"hand", "proto")), 1*mGetVarByQV("p"+p+"hand","spell"), true);
 				}
 				trQuestVarSet("p"+p+"drawCards", 1 + trQuestVarGet("p"+p+"drawCards"));
 			}
@@ -2774,7 +2771,7 @@ inactive
 				}
 				trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
 				damageUnit(1*trQuestVarGet("spellTarget"), 2 + trQuestVarGet("p"+p+"spellDamage"));
-				addCardToDeck(p, "", SPELL_THICK_LASER);
+				addCardToDeck(p, "", SPELL_THICK_LASER, true);
 				shuffleDeck(p);
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 			}
@@ -2784,7 +2781,7 @@ inactive
 					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
 				}
 				damageUnit(1*trQuestVarGet("spellTarget"), 4 + trQuestVarGet("p"+p+"spellDamage"));
-				addCardToDeck(p, "", SPELL_GRAND_LASER);
+				addCardToDeck(p, "", SPELL_GRAND_LASER, true);
 				shuffleDeck(p);
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 			}
@@ -2794,7 +2791,7 @@ inactive
 					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
 				}
 				damageUnit(1*trQuestVarGet("spellTarget"), 6 + trQuestVarGet("p"+p+"spellDamage"));
-				addCardToDeck(p, "", SPELL_OMEGA_LASER);
+				addCardToDeck(p, "", SPELL_OMEGA_LASER, true);
 				shuffleDeck(p);
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 			}
@@ -2804,7 +2801,7 @@ inactive
 					trSoundPlayFN("cranegrunt1.wav","1",-1,"","");
 				}
 				damageUnit(1*trQuestVarGet("spellTarget"), 8 + trQuestVarGet("p"+p+"spellDamage"));
-				addCardToDeck(p, "", SPELL_GODLY_LASER);
+				addCardToDeck(p, "", SPELL_GODLY_LASER, true);
 				shuffleDeck(p);
 				deployAtTile(0, "Lightning sparks", 1*mGetVarByQV("spellTarget", "tile"));
 			}
@@ -3102,6 +3099,7 @@ highFrequency
 {
 	xsDisableSelf();
 	castEnd();
+	uiClearSelection();
 }
 
 rule spell_party_up_activate
@@ -3164,8 +3162,7 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		for(x=yGetDatabaseCount("p"+p+"hand"); < trQuestVarGet("p"+p+"maxHandSize")) {
-			addCardToHand(p, 0, SPELL_METEOR, true);
-			mSetVarByQV("next", "cost", 0);
+			mSetVar(generateCard(p, 0, SPELL_METEOR, true), "cost", 0);
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_apocalypse_activate");
@@ -3178,8 +3175,8 @@ inactive
 {
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
-		for(x=yGetDatabaseCount("p"+p+"hand"); < 10) {
-			addCardToHand(p, kbGetProtoUnitID("Wall Connector"));
+		for(x=yGetDatabaseCount("p"+p+"hand"); < trQuestVarGet("p"+p+"maxHandSize")) {
+			generateCard(p, kbGetProtoUnitID("Wall Connector"));
 		}
 		updateHandPlayable(p);
 		xsDisableRule("spell_fortify_activate");
@@ -3193,9 +3190,9 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		int proto = mGetVarByQV("spellTarget", "proto");
-		if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
-			addCardToHand(p, proto);
-			updateHandPlayable(p);
+		generateCard(p, proto);
+		if (trQuestVarGet("p"+p+"commanderType") == COMMANDER_NOTTUD) {
+			generateCard(p, proto);
 		}
 		xsDisableRule("spell_mirror_image_activate");
 	}
@@ -3437,9 +3434,7 @@ inactive
 	if (trQuestVarGet("castDone") == CASTING_NOTHING) {
 		int p = trQuestVarGet("activePlayer");
 		for(x=2; >0) {
-			if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
-				addCardToHand(p, kbGetProtoUnitID("Outpost"));
-			}
+			generateCard(p, kbGetProtoUnitID("Outpost"));
 		}
 		xsDisableRule("spell_electric_grid_activate");
 	}
@@ -3961,7 +3956,7 @@ highFrequency
 					
 
 					// devour
-					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")));
+					addCardToDeck(p, kbGetProtoUnitName(1*mGetVarByQV("spellTarget", "proto")), 0, true);
 					shuffleDeck(p);
 					zSetVarByIndex("tiles", "occupant", 1*mGetVarByQV("spellTarget", "tile"), 0);
 					for(x=yGetDatabaseCount("allUnits"); >0) {

@@ -38,17 +38,6 @@ void OnPlay(int unit = 0) {
 			trSoundPlayFN("battlecry1.wav","1",-1,"","");
 			trQuestVarSet("pirateShipTarget" + unit, -1);
 		}
-		case kbGetProtoUnitID("Hero Chinese Immortal"):
-		{
-			mSetVar(unit, "scale", 2);
-			scaleUnit(unit);
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("archeryrange.wav","1",-1,"","");
-			if(trQuestVarGet("chats_Immortal_0") == 0){
-				trQuestVarSet("chats_Immortal_0", 1);
-				CharacterLog(p, trStringQuestVarGet("card_" + proto + "_name"), "*intense staring*");
-			}
-		}
 		case kbGetProtoUnitID("Audrey Water"):
 		{
 			trQuestVarSetFromRand("soundRandom", 1, 3, true);
@@ -209,10 +198,14 @@ void OnPlay(int unit = 0) {
 			trQuestVarSet("spellCaster", unit);
 			chooseSpell(SPELL_SHAPESHIFT);
 		}
-		case kbGetProtoUnitID("Hero Greek Chiron"):
+		case kbGetProtoUnitID("Jiangshi"):
 		{
-			trSoundPlayFN("herocreation.wav","1",-1,"","");
-			trSoundPlayFN("sentinelbirth.wav","1",-1,"","");
+			for(i=3; >0) {
+				trQuestVarSetFromRand("rand", 1, NUM_KEYWORDS - 1, true);
+				mSetVar(unit, "keywords", SetBit(mGetVar(unit, "keywords"), 1*trQuestVarGet("rand")));
+			}
+			OnCreate(unit);
+			trSoundPlayFN("changeunit.wav");
 		}
 		case kbGetProtoUnitID("Heka Gigantes"):
 		{
@@ -248,7 +241,7 @@ void OnPlay(int unit = 0) {
 			mSetVar(unit, "health", mGetVar(unit, "health") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "maxhealth", mGetVar(unit, "maxhealth") + trQuestVarGet("p"+p+"manaflow"));
 			mSetVar(unit, "attack", mGetVar(unit, "attack") + trQuestVarGet("p"+p+"manaflow"));
-			mSetVar(unit, "scale", 1 + 0.25 * trQuestVarGet("p"+p+"manaflow"));
+			mSetVar(unit, "scale", 4 + trQuestVarGet("p"+p+"manaflow"));
 			scaleUnit(unit);
 		}
 		case kbGetProtoUnitID("Hippocampus"):

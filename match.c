@@ -121,6 +121,11 @@ inactive
 			}
 			trQuestVarSet("p"+p+"click", 0);
 		}
+
+		yDatabaseNext("allUnits", true);
+		if (trUnitIsSelected()) {
+			displayCardKeywordsAndDescription(1*trQuestVarGet("allUnits"));
+		}
 	}
 }
 
@@ -181,6 +186,9 @@ inactive
 				}
 			}
 		}
+		if (trCurrentPlayer() == p) {
+			trOverlayText("Turn start!");
+		}
 		trQuestVarSet("activePlayer", p);
 		trQuestVarSet("turnEnd", 0);
 		trPlayerKillAllGodPowers(p);
@@ -212,6 +220,11 @@ inactive
 			} else {
 				mSetVarByQV("allUnits", "action", ACTION_DONE);
 			}
+		}
+
+		if (trCurrentPlayer() == p) {
+			// blame yeeb for this
+			uiClearSelection();
 		}
 		
 		/*
@@ -378,15 +391,11 @@ inactive
 				{
 					case kbGetProtoUnitID("Guild"):
 					{
-						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
-							addCardToHand(p, kbGetProtoUnitID("Automaton SPC"));
-						}
+						generateCard(p, kbGetProtoUnitID("Automaton SPC"));
 					}
 					case kbGetProtoUnitID("Mining Camp"):
 					{
-						if (yGetDatabaseCount("p"+p+"hand") < trQuestVarGet("p"+p+"maxHandSize")) {
-							addCardToHand(p, kbGetProtoUnitID("Statue of Lightning"), SPELL_SCRAP_METAL);
-						}
+						generateCard(p, 0, SPELL_SCRAP_METAL);
 					}
 					case kbGetProtoUnitID("Argus"):
 					{

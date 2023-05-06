@@ -797,7 +797,7 @@ int CardInstantiate(int p = 0, int proto = 0, int spell = 0) {
 		mSetVar(next, "stunTime", 0);
 		mSetVar(next, "victory", 0);
 		mSetVar(next, "victoryAmbush", 0);
-		mSetVar(next, "scale", 2);
+		mSetVar(next, "scale", 4);
 		mSetString(next, "ability", trStringQuestVarGet("card_" + proto + "_Ability"));
 	} else {
 		trUnitChangeName("(" + 1*trQuestVarGet("spell_" + spell + "_Cost") + ") " + trStringQuestVarGet("spell_" + spell + "_Name"));
@@ -1028,7 +1028,7 @@ active
 	CardSetup("Monument",				2, "Floating Housekeeper",	0, 5, 1, 0, 0, true);
 	CardEvents("Monument", 0, 0, 		"Turn Start: Deal 1 Damage to damaged units.");
 	CardSetup("Monument 2",				4, "Floating Butler",		0, 10, 1, 0, 0, true);
-	CardEvents("Monument 2", 0, 0, 		"Turn Start: Restore 5 health to my Commander.");
+	CardEvents("Monument 2", 0, 0, 		"Turn Start: Create a random Arcane card.");
 	CardSetup("Monument 3",				6, "Floating Steward",		0, 12, 1, 0, 0, true);
 	CardEvents("Monument 3", 0, 0, 		"Turn Start: Opponent discards a random card.");
 	CardSetup("Monument 4",				8, "Floating Twins",		0, 15, 1, 0, 0, true);
@@ -1048,6 +1048,9 @@ active
 	
 	CardSetup("Theris",					2, "Infernal Jester",		3, 2, 2, 1, 0, true);
 	CardEvents("Theris", 0, Keyword(DEATH_SUMMON_COPY), "Death: Summon a copy of the last unit your opponent summoned.");
+
+	CardSetup("Jiangshi",				3, "Failed Experiment",		4, 4, 2, 1, 0, true);
+	CardEvents("Jiangshi", 0, 0, "Play: Gain 3 random Keywords.");
 	
 	CardSetup("Bireme",					4, "Cloud Sail",			2, 6, 2, 2, Keyword(BEACON) + Keyword(ETHEREAL) + Keyword(STEALTH), true);
 	CardEvents("Bireme", 0, 0, "Turn Start: Gain 1 mana.");
@@ -1055,7 +1058,7 @@ active
 	CardSetup("Javelin Cavalry",		3, "Profit Hunter",			3, 2, 3, 2, Keyword(CHARGE), true);
 	CardEvents("Javelin Cavalry", Keyword(ATTACK_SING), 0, "Attack: Give your Commander another action if he has already acted.");
 	
-	CardSetup("Chieroballista",			4, "Gatling Gun",			3, 4, 2, 2, Keyword(FURIOUS), true);
+	CardSetup("Chieroballista",			4, "Gatling Gun",			3, 4, 1, 2, Keyword(FURIOUS), true);
 	CardSetup("Crossbowman",			2, "Security Sniper",		1, 3, 2, 3, Keyword(AIRDROP) + Keyword(LIGHTNING), true);
 	
 	CardSetup("Female",					2, "Princess Arsch",		1, 2, 2, 1, Keyword(WARD), true);
@@ -1185,7 +1188,7 @@ highFrequency
 	SpellSetup("Final Exam",			2, SPELL_FINAL_EXAM,	"Both players draw two cards.", SPELL_TYPE_OTHER);
 	CardSetup("Sphinx",					6, "Professor of Shapeshifting",		3, 3, 2, 1); // Play: Transform a unit into a copy of another one.
 	SpellSetup("Apocalypse",			10, SPELL_APOCALYPSE,	"Fill your hand with Meteors. They are Fleeting and cost 0.", SPELL_TYPE_OTHER);
-	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a unit to your hand and deck. If your Commander is nottud, add another copy to your deck.", SPELL_TYPE_DEFENSIVE);
+	SpellSetup("Mirror Image",			2, SPELL_MIRROR_IMAGE,	"Add a copy of a unit to your hand and deck. If your Commander is nottud, both are added to hand.", SPELL_TYPE_DEFENSIVE);
 	CardSetup("Circe",					7, "Spark Witch",		0, 7, 2, 2, Keyword(WARD)); // Attack: Transform my target into a 1|1 boar.
 	xsDisableSelf();
 	trDelayedRuleActivation("initializeCards_03");
@@ -1448,7 +1451,7 @@ highFrequency
 	CardEvents("Lancer Hero", 0, 0,										"Play: I take 4 damage.");
 	
 	CardEvents("Oracle Hero", Keyword(ATTACK_DISCOUNT), 0, 				"Attack: Reduce the cost of spells in your hand by 1.");
-	CardEvents("Minotaur", Keyword(ATTACK_RETURN), 0,						"Attack: Return my target to your opponent's hand.");
+	CardEvents("Minotaur", 0, 0,										"Cards that didn't start in your deck cost 2 less.");
 	
 	CardEvents("Swordsman Hero", 0, 0, 									"After ANY player casts a spell, grant me +1 attack.");
 	CardEvents("Slinger", 0, 0, 										"Play: Create a Spark.");

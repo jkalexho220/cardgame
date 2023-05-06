@@ -3,7 +3,7 @@ void checkKeys(int p = 0) {
 		trSoundPlayFN("cinematics\10_in\musicsound2.mp3","1",-1,"","");
 		trSoundPlayFN("spybirth.wav","1",-1,"","");
 		ChatLog(0, "<color={Playercolor("+p+")}>{Playername("+p+")}</color> has collected all the keys!");
-		addCardToDeck(p, "Statue of Lightning", SPELL_THE_CALLING);
+		addCardToDeck(p, "Statue of Lightning", SPELL_THE_CALLING, true);
 		shuffleDeck(p);
 		trQuestVarSet("p"+p+"loveKey", 0);
 		trQuestVarSet("p"+p+"laserKey", 0);
@@ -75,7 +75,7 @@ bool OnDeath(int event = -1, int unit = 0){
 		}
 		case DEATH_DARKNESS_RETURNS:
 		{
-			addCardToDeck(p, "Guardian");
+			addCardToDeck(p, "Guardian", 0, true);
 			shuffleDeck(p);
 			trSoundPlayFN("cinematics\32_out\kronosbehinddorrshort.mp3","1",-1,"","");
 			deployAtTile(0, "Kronny Birth SFX", 1*mGetVar(unit, "tile"));

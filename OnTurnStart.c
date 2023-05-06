@@ -79,7 +79,6 @@ bool OnTurnStart(int unit = 0) {
 			if (target < 10) {
 				mSetVarByQV("next", "cost", 0);
 			}
-			return(true);
 		}
 		case kbGetProtoUnitID("Audrey"):
 		{
@@ -204,20 +203,11 @@ bool OnTurnStart(int unit = 0) {
 		}
 		case kbGetProtoUnitID("Monument 2"):
 		{
-			int h = mGetVarByQV("p"+p+"commander", "health");
-			healUnit(1*trQuestVarGet("p"+p+"commander"), 5);
-			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
-			trSoundPlayFN("heal.wav","1",-1,"","");
-			if(1*mGetVarByQV("p"+p+"commander", "health") == h){
-				if(trQuestVarGet("chats_Monument2_1") == 0){
-					trQuestVarSet("chats_Monument2_1", 1);
-					CharacterLog(p, "Floating Butler", "Exemplary outfit. Congratulations.");
-				}
-			} else {
-				if(trQuestVarGet("chats_Monument2_2") == 0){
-					trQuestVarSet("chats_Monument2_2", 1);
-					CharacterLog(p, "Floating Butler", "Outfit issues detected. Addressing.");
-				}
+			trQuestVarSetFromRand("rand", 30, 59, true);
+			generateCard(p, CardToProto(1*trQuestVarGet("rand")), CardToSpell(1*trQuestVarGet("rand")));
+			if(trQuestVarGet("chats_Monument2_2") == 0){
+				trQuestVarSet("chats_Monument2_2", 1);
+				CharacterLog(p, "Floating Butler", "Please try this, sir.");
 			}
 			return (true);
 		}
@@ -293,9 +283,8 @@ bool OnTurnStart(int unit = 0) {
 				}
 			}
 			
-			healUnit(1*trQuestVarGet("p"+p+"commander"), 5);
-			deployAtTile(0, "Regeneration SFX", 1*mGetVarByQV("p"+p+"commander", "tile"));
-			trSoundPlayFN("heal.wav","1",-1,"","");
+			trQuestVarSetFromRand("rand", 30, 59, true);
+			generateCard(p, CardToProto(1*trQuestVarGet("rand")), CardToSpell(1*trQuestVarGet("rand")));
 			
 			if(yGetDatabaseCount("p"+(3-p)+"hand") > 0){
 				trQuestVarSetFromRand("temp", 1, yGetDatabaseCount("p"+(3-p)+"hand"), true);

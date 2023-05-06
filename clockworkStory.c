@@ -166,7 +166,7 @@ rule StoryClass3Mission4_talk
 highFrequency
 inactive
 {
-	if (trQuestVarGet("activePlayer") == 1) {
+	if (trQuestVarGet("p1mana") == 1) {
 		CharacterLog(1, "Roxas", "Quick! Cast Fortify to barricade the hallways!");
 		xsDisableSelf();
 	}
@@ -425,6 +425,9 @@ inactive
 				addCardToDeck(2, "Swordsman Hero");
 			}
 			shuffleDeck(2);
+
+			summonAtTile(190, 2, kbGetProtoUnitID("Eitri"));
+			summonAtTile(191, 2, kbGetProtoUnitID("Eitri"));
 		}
 		xsEnableRule("StoryClass3Mission6_end");
 	}
